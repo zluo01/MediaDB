@@ -24,6 +24,13 @@ export function getFolderInfo(name: string): IFolderInfo {
   return store.get(name) as IFolderInfo;
 }
 
+export async function updateFolderInfo(
+  name: string,
+  info: IFolderInfo
+): Promise<void> {
+  store.set(name, info);
+}
+
 export function removeFolder(name: string): IFolder[] {
   const folders = getFolders().filter(o => o.name !== name);
   store.set(KEY.FOLDER, folders);

@@ -12,7 +12,6 @@ import { getDirectory } from '../../utils/electron';
 import { IFolder } from '../../type';
 import { addFolder } from '../../store';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import path from 'path';
 import { buildDirectory } from '../../utils/parser';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,7 +47,7 @@ function DirectoryModal({
 
   async function handleDirectory() {
     const dir = await getDirectory();
-    const subDir = path.parse(dir).dir.split('/');
+    const subDir = dir.split('/');
     setName(subDir[subDir.length - 1]);
     setDir(dir);
   }

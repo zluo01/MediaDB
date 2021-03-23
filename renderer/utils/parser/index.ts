@@ -1,4 +1,4 @@
-import { IFolderInfo, IMediaData, MOVIE, TV_SERIES } from '../../type';
+import { DEFAULT, IFolderInfo, IMediaData, MOVIE, TV_SERIES } from '../../type';
 import FS from 'fs';
 import Path from 'path';
 import parser from 'fast-xml-parser';
@@ -56,6 +56,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
     }
   }
   return {
+    sort: DEFAULT,
     data: media,
     tags: Array.from(tags),
     genres: Array.from(genres),

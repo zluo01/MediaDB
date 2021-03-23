@@ -3,7 +3,21 @@ export const TV_SERIES = 'tvshow';
 
 type Media = typeof MOVIE | typeof TV_SERIES;
 
+export const DEFAULT = 'Directory';
+export const TITLE_ASC = 'Name(A-Z)';
+export const TITLE_DSC = 'Name(Z-A)';
+export const YEAR_ASC = 'Oldest';
+export const YEAR_DSC = 'Newest';
+
+export type SORT =
+  | typeof DEFAULT
+  | typeof TITLE_ASC
+  | typeof TITLE_DSC
+  | typeof YEAR_ASC
+  | typeof YEAR_DSC;
+
 export interface IFolderInfo {
+  sort: SORT;
   tags: string[];
   genres: string[];
   data: IMediaData[];

@@ -19,7 +19,13 @@ function Home({ currFolderIndex, folders }: IHomeProps): JSX.Element {
     }
   }, [currFolderIndex, folders]);
 
-  return <Layout>{data && <Content folderData={data} />}</Layout>;
+  return (
+    <Layout>
+      {data && (
+        <Content folderName={folders[currFolderIndex].name} folderData={data} />
+      )}
+    </Layout>
+  );
 }
 
 const mapStateToProps = (state: IReduxState) => ({
