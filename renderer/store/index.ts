@@ -27,8 +27,9 @@ export function getFolderInfo(name: string): IFolderInfo {
 export async function updateFolderInfo(
   name: string,
   info: IFolderInfo
-): Promise<void> {
+): Promise<IFolderInfo> {
   store.set(name, info);
+  return info;
 }
 
 export function removeFolder(name: string): IFolder[] {
@@ -51,6 +52,7 @@ export function getSetting(): ISetting {
   return store.get(KEY.SETTING, DefaultSetting) as ISetting;
 }
 
-export function setSetting(setting: ISetting): void {
+export async function setSetting(setting: ISetting): Promise<ISetting> {
   store.set(KEY.SETTING, setting);
+  return setting;
 }

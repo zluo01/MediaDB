@@ -80,12 +80,12 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
   const router = useRouter();
 
   function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
-    const newSetting = {
+    setSetting({
       ...setting,
       showSidePanelName: event.target.checked,
-    };
-    updateSetting(dispatch, newSetting);
-    setSetting(newSetting);
+    })
+      .then(s => updateSetting(dispatch, s))
+      .catch(err => console.error(err));
   }
 
   function handleRemove(name: string) {

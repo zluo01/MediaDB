@@ -13,6 +13,10 @@ interface IHomeProps {
 function Home({ currFolderIndex, folders }: IHomeProps): JSX.Element {
   const [data, setData] = useState<IFolderInfo>();
 
+  function updateData(data: IFolderInfo) {
+    setData(data);
+  }
+
   useEffect(() => {
     if (currFolderIndex >= 0 && currFolderIndex < folders.length) {
       setData(getFolderInfo(folders[currFolderIndex].name));
@@ -22,7 +26,11 @@ function Home({ currFolderIndex, folders }: IHomeProps): JSX.Element {
   return (
     <Layout>
       {data && (
-        <Content folderName={folders[currFolderIndex].name} folderData={data} />
+        <Content
+          folderInfo={folders[currFolderIndex]}
+          folderData={data}
+          updateData={updateData}
+        />
       )}
     </Layout>
   );

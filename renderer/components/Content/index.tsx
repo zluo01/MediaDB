@@ -1,6 +1,7 @@
 import {
   DEFAULT,
   ICardSize,
+  IFolder,
   IFolderInfo,
   IMediaData,
   IReduxState,
@@ -28,6 +29,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SortIcon from '@material-ui/icons/Sort';
 import { updateFolderInfo } from '../../store';
+import { buildDirectory } from '../../utils/parser';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -95,15 +97,17 @@ function getSortType(type: string): SORT {
 }
 
 interface IContentProps {
-  folderName: string;
+  folderInfo: IFolder;
   folderData: IFolderInfo;
   cardSize: ICardSize;
+  updateData: (data: IFolderInfo) => void;
 }
 
 function Content({
-  folderName,
+  folderInfo,
   folderData,
   cardSize,
+  updateData,
 }: IContentProps): JSX.Element {
   const classes = useStyles();
   const anchorRef = React.useRef<HTMLButtonElement>(null);
@@ -125,6 +129,10 @@ function Content({
   function handleToggle() {
     setOpen(prevOpen => !prevOpen);
   }
+
+  useEffect(() => {
+    setData(folderData.data);
+  }, [folderData]);
 
   useEffect(() => {
     const media = [...folderData.data];
@@ -170,7 +178,10 @@ function Content({
   }
 
   function updateSortType(type: string) {
-    updateFolderInfo(folderName, { ...folderData, sort: getSortType(type) })
+    updateFolderInfo(folderInfo.name, {
+      ...folderData,
+      sort: getSortType(type),
+    })
       .then(() => setSortType(type))
       .finally(() => setOpen(false))
       .catch(err => console.error(err));
@@ -192,6 +203,13 @@ function Content({
         openFile(data[contentState.current].file);
         break;
     }
+  }
+
+  function refreshFolder() {
+    buildDirectory(folderInfo.dir)
+      .then(data => updateFolderInfo(folderInfo.name, data))
+      .then(data => updateData(data))
+      .catch(err => console.error(err));
   }
 
   useEffect(() => {
@@ -278,6 +296,7 @@ function Content({
                 className={classes.button}
                 size={'small'}
                 startIcon={<RefreshIcon />}
+                onClick={refreshFolder}
               >
                 Refresh
               </Button>
