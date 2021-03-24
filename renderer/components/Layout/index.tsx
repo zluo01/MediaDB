@@ -245,7 +245,7 @@ function Layout({
             </div>
           </Drawer>
           <div className={classes.content}>
-            <Toolbar />
+            <Toolbar id="back-to-top-anchor" />
             {children}
           </div>
         </div>

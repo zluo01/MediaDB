@@ -32,6 +32,10 @@ import SortIcon from '@material-ui/icons/Sort';
 import { updateFolderInfo } from '../../store';
 import { buildDirectory } from '../../utils/parser';
 import Typography from '@material-ui/core/Typography';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import Fab from '@material-ui/core/Fab';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import Zoom from '@material-ui/core/Zoom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -94,6 +98,15 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 10,
       marginBottom: 5,
     },
+    scroll: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+    fab: {
+      backgroundColor: theme.palette.action.selected,
+      color: theme.palette.action.hover,
+    },
   })
 );
 
@@ -121,6 +134,38 @@ interface IContentProps {
   folderData: IFolderInfo;
   cardSize: ICardSize;
   updateData: (data: IFolderInfo) => void;
+}
+
+interface IScrollProps {
+  children: React.ReactElement;
+}
+
+function ScrollTop(props: IScrollProps) {
+  const { children } = props;
+  const classes = useStyles();
+
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const anchor = (
+      (event.target as HTMLDivElement).ownerDocument || document
+    ).querySelector('#back-to-top-anchor');
+
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  return (
+    <Zoom in={trigger}>
+      <div onClick={handleClick} role="presentation" className={classes.scroll}>
+        {children}
+      </div>
+    </Zoom>
+  );
 }
 
 function Content({
@@ -435,6 +480,15 @@ function Content({
                 );
               }}
             </Grid>
+            <ScrollTop>
+              <Fab
+                className={classes.fab}
+                size="small"
+                aria-label="scroll back to top"
+              >
+                <KeyboardArrowUpIcon />
+              </Fab>
+            </ScrollTop>
           </>
         );
       }}
