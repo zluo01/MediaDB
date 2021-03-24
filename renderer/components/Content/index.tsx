@@ -36,6 +36,7 @@ import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -106,6 +107,12 @@ const useStyles = makeStyles((theme: Theme) =>
     fab: {
       backgroundColor: theme.palette.action.selected,
       color: theme.palette.action.hover,
+    },
+    progress: {
+      color: theme.palette.action.selected,
+      position: 'fixed',
+      right: '50%',
+      top: '36%',
     },
   })
 );
@@ -186,6 +193,7 @@ function Content({
 
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const cWidth = cardSize.width + 15;
   const cHeight = cardSize.height + 60;
@@ -285,10 +293,13 @@ function Content({
     }
   }
 
-  function refreshFolder() {
+  function refreshFolder(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
+    setRefresh(true);
     buildDirectory(folderInfo.dir)
       .then(data => updateFolderInfo(folderInfo.name, data))
       .then(data => updateData(data))
+      .then(() => setRefresh(false))
       .catch(err => console.error(err));
   }
 
@@ -322,6 +333,9 @@ function Content({
         const columnNumber = Math.floor(width / cWidth);
         const rowNumber = Math.ceil(data.length / columnNumber);
         const w = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
+        if (refresh) {
+          return <CircularProgress className={classes.progress} />;
+        }
         return (
           <>
             <div

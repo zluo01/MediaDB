@@ -32,7 +32,7 @@ export async function updateFolderInfo(
   return info;
 }
 
-export function removeFolder(name: string): IFolder[] {
+export async function removeFolder(name: string): Promise<IFolder[]> {
   const folders = getFolders().filter(o => o.name !== name);
   store.set(KEY.FOLDER, folders);
   store.delete(name);

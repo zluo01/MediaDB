@@ -53,7 +53,8 @@ function DirectoryModal({
     setDir(dir);
   }
 
-  function handleSubmit() {
+  function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
     setLoading(true);
     buildDirectory(dir)
       .then(data => updateFolder(addFolder({ name: name, dir: dir }, data)))

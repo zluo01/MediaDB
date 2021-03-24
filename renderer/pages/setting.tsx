@@ -89,7 +89,9 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
   }
 
   function handleRemove(name: string) {
-    updateFolder(dispatch, removeFolder(name));
+    removeFolder(name)
+      .then(data => updateFolder(dispatch, data))
+      .catch(err => console.error(err));
   }
 
   return (

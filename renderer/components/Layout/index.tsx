@@ -33,6 +33,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { changeFolder, updateFolder } from '../../lib/store';
 import { useRouter } from 'next/router';
+import Tooltip from '@material-ui/core/Tooltip';
 
 type TProps = {
   show: boolean;
@@ -208,22 +209,24 @@ function Layout({
                 {folders.map((folder, index) => {
                   const isCurr = index === currFolderIndex;
                   return (
-                    <ListItem
-                      button
-                      title={folder.name}
-                      key={folder.name}
-                      disabled={isCurr}
-                      onClick={() => handleChangeFolder(index)}
-                    >
-                      <ListItemIcon>
-                        <FolderIcon
-                          style={{
-                            fill: isCurr ? '#21e18c' : '#6f7a83',
-                          }}
-                        />
-                      </ListItemIcon>
-                      {showPanelName && <ListItemText primary={folder.name} />}
-                    </ListItem>
+                    <Tooltip key={index} title={folder.name}>
+                      <ListItem
+                        button
+                        disabled={isCurr}
+                        onClick={() => handleChangeFolder(index)}
+                      >
+                        <ListItemIcon>
+                          <FolderIcon
+                            style={{
+                              fill: isCurr ? '#21e18c' : '#6f7a83',
+                            }}
+                          />
+                        </ListItemIcon>
+                        {showPanelName && (
+                          <ListItemText primary={folder.name} />
+                        )}
+                      </ListItem>
+                    </Tooltip>
                   );
                 })}
               </List>
