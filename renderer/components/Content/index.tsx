@@ -14,7 +14,7 @@ import {
 import { FixedSizeGrid as Grid } from 'react-window';
 import MovieCard from '../MovieCard';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { openFile } from '../../utils/electron';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -25,11 +25,13 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import Chip from '@material-ui/core/Chip';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SortIcon from '@material-ui/icons/Sort';
 import { updateFolderInfo } from '../../store';
 import { buildDirectory } from '../../utils/parser';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,6 +76,24 @@ const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.action.hover,
       },
     },
+    filter: {
+      marginLeft: 8,
+      display: 'flex',
+      flexWrap: 'wrap',
+      '& > *': {
+        margin: theme.spacing(0.5),
+      },
+    },
+    chip: {
+      color: theme.palette.action.selected,
+      borderColor: theme.palette.action.selected,
+    },
+    filterTitle: {
+      marginLeft: 8,
+      color: theme.palette.text.secondary,
+      marginTop: 10,
+      marginBottom: 5,
+    },
   })
 );
 
@@ -110,16 +130,22 @@ function Content({
   updateData,
 }: IContentProps): JSX.Element {
   const classes = useStyles();
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = React.useState(false);
+  const anchorRef = useRef<HTMLButtonElement>(null);
+
   const [currIndex, setCurrIndex] = useState(-1);
   const [data, setData] = useState(folderData.data);
   const [sortType, setSortType] = useState<string>(folderData.sort);
 
+  const [tags, setTags] = useState<string[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
+
+  const [open, setOpen] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+
   const cWidth = cardSize.width + 15;
   const cHeight = cardSize.height + 60;
 
-  const contentState = React.useRef(currIndex);
+  const contentState = useRef(currIndex);
 
   function setIndex(index: number) {
     contentState.current = index;
@@ -135,7 +161,16 @@ function Content({
   }, [folderData]);
 
   useEffect(() => {
-    const media = [...folderData.data];
+    let media = [...folderData.data];
+
+    tags.forEach(t => {
+      media = media.filter(o => o.tag.includes(t));
+    });
+
+    genres.forEach(g => {
+      media = media.filter(o => o.genre.includes(g));
+    });
+
     switch (sortType) {
       case DEFAULT:
         setData(media);
@@ -165,7 +200,7 @@ function Content({
         setData(media);
         break;
     }
-  }, [sortType]);
+  }, [sortType, tags, genres]);
 
   function handleClose(event: React.MouseEvent<EventTarget>) {
     if (
@@ -220,6 +255,22 @@ function Content({
     };
   }, [data]);
 
+  function modifiedTags(name: string): void {
+    if (!tags.includes(name)) {
+      setTags(prevState => [...prevState, name]);
+      return;
+    }
+    setTags(tags.filter(o => o !== name));
+  }
+
+  function modifiedGenres(name: string): void {
+    if (!genres.includes(name)) {
+      setGenres(prevState => [...prevState, name]);
+      return;
+    }
+    setGenres(genres.filter(o => o !== name));
+  }
+
   return (
     <AutoSizer>
       {({ width }) => {
@@ -244,6 +295,7 @@ function Content({
                 className={classes.action}
                 size={'small'}
                 startIcon={<FilterListIcon />}
+                onClick={() => setOpenFilter(prevState => !prevState)}
               >
                 Filter
               </Button>
@@ -301,6 +353,62 @@ function Content({
                 Refresh
               </Button>
             </div>
+            {openFilter && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexFlow: 'column nowrap',
+                  width: width - 2 * w,
+                  marginLeft: w,
+                  marginBottom: 20,
+                }}
+              >
+                <Typography
+                  className={classes.filterTitle}
+                  variant="h5"
+                  component="h2"
+                >
+                  Genres
+                </Typography>
+                <div className={classes.filter}>
+                  {folderData.genres.map((value, index) => {
+                    const hasGenre = genres.includes(value);
+                    return (
+                      <Chip
+                        key={index}
+                        className={classes.chip}
+                        label={value}
+                        clickable
+                        onClick={() => modifiedGenres(value)}
+                        variant={hasGenre ? 'default' : 'outlined'}
+                      />
+                    );
+                  })}
+                </div>
+                <Typography
+                  className={classes.filterTitle}
+                  variant="h5"
+                  component="h2"
+                >
+                  Tags
+                </Typography>
+                <div className={classes.filter}>
+                  {folderData.tags.map((value, index) => {
+                    const hasTag = tags.includes(value);
+                    return (
+                      <Chip
+                        key={index}
+                        className={classes.chip}
+                        label={value}
+                        clickable
+                        onClick={() => modifiedTags(value)}
+                        variant={hasTag ? 'default' : 'outlined'}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <Grid
               columnCount={columnNumber}
               columnWidth={cWidth + w * 2}
