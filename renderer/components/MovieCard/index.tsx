@@ -32,6 +32,7 @@ interface IMovieCardProps {
   size: ICardSize;
   select: () => void;
   selected: boolean;
+  index: number;
 }
 
 function MovieCard({
@@ -40,10 +41,12 @@ function MovieCard({
   size,
   select,
   selected,
+  index,
 }: IMovieCardProps): JSX.Element {
   const classes = useStyles({ elevation: selected ? 5 : 0 });
   return (
     <div
+      id={`c${index}`}
       style={style}
       onClick={select}
       onDoubleClick={() => openFile(media.file)}

@@ -252,14 +252,12 @@ function Layout({
             {children}
           </div>
         </div>
-        {openModal && (
-          <DirectoryModal
-            open={openModal}
-            close={handleClose}
-            folders={folders}
-            updateFolder={handleUpdateFolder}
-          />
-        )}
+        <DirectoryModal
+          open={openModal}
+          close={handleClose}
+          folders={folders}
+          updateFolder={handleUpdateFolder}
+        />
       </main>
     </>
   );

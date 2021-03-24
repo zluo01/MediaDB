@@ -64,6 +64,7 @@ function DirectoryModal({
   }
 
   const nameError = folders.map(o => o.name).includes(name);
+
   return (
     <Dialog
       open={open}

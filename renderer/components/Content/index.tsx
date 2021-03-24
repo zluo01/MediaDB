@@ -25,18 +25,17 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import Chip from '@material-ui/core/Chip';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SortIcon from '@material-ui/icons/Sort';
 import { updateFolderInfo } from '../../store';
 import { buildDirectory } from '../../utils/parser';
-import Typography from '@material-ui/core/Typography';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import FilterSection from '../Filter';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,24 +79,6 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.action.selected,
         color: theme.palette.action.hover,
       },
-    },
-    filter: {
-      marginLeft: 8,
-      display: 'flex',
-      flexWrap: 'wrap',
-      '& > *': {
-        margin: theme.spacing(0.5),
-      },
-    },
-    chip: {
-      color: theme.palette.action.selected,
-      borderColor: theme.palette.action.selected,
-    },
-    filterTitle: {
-      marginLeft: 8,
-      color: theme.palette.text.secondary,
-      marginTop: 10,
-      marginBottom: 5,
     },
     scroll: {
       position: 'fixed',
@@ -182,6 +163,7 @@ function Content({
   updateData,
 }: IContentProps): JSX.Element {
   const classes = useStyles();
+  const gridRef = React.createRef<Grid>();
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const [currIndex, setCurrIndex] = useState(-1);
@@ -208,6 +190,21 @@ function Content({
   function handleToggle() {
     setOpen(prevOpen => !prevOpen);
   }
+
+  useEffect(() => {
+    const anchor = document.querySelector(`#c${currIndex}`);
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [currIndex]);
+
+  useEffect(() => {
+    buildDirectory(folderInfo.dir)
+      .then(data => updateFolderInfo(folderInfo.name, data))
+      .then(data => updateData(data))
+      .then(() => setRefresh(false))
+      .catch(err => console.error(err));
+  }, [refresh]);
 
   useEffect(() => {
     setData(folderData.data);
@@ -276,6 +273,8 @@ function Content({
   }
 
   function handleKeyPress(ev: KeyboardEvent) {
+    const c = contentState.current % columnNumber;
+    const r = Math.floor(contentState.current / columnNumber);
     switch (ev.key) {
       case 'ArrowLeft':
         setIndex(
@@ -287,20 +286,18 @@ function Content({
       case 'ArrowRight':
         setIndex((contentState.current + 1) % data.length);
         break;
+      case 'ArrowUp':
+        ev.preventDefault();
+        setIndex(Math.max((r - 1) * columnNumber + c, 0));
+        break;
+      case 'ArrowDown':
+        ev.preventDefault();
+        setIndex(Math.min((r + 1) * columnNumber + c, data.length - 1));
+        break;
       case 'Enter':
         openFile(data[contentState.current].file);
         break;
     }
-  }
-
-  function refreshFolder(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.preventDefault();
-    setRefresh(true);
-    buildDirectory(folderInfo.dir)
-      .then(data => updateFolderInfo(folderInfo.name, data))
-      .then(data => updateData(data))
-      .then(() => setRefresh(false))
-      .catch(err => console.error(err));
   }
 
   useEffect(() => {
@@ -327,10 +324,11 @@ function Content({
     setGenres(genres.filter(o => o !== name));
   }
 
+  let columnNumber: number;
   return (
     <AutoSizer>
       {({ width }) => {
-        const columnNumber = Math.floor(width / cWidth);
+        columnNumber = Math.floor(width / cWidth);
         const rowNumber = Math.ceil(data.length / columnNumber);
         const w = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
         if (refresh) {
@@ -407,68 +405,24 @@ function Content({
                 className={classes.button}
                 size={'small'}
                 startIcon={<RefreshIcon />}
-                onClick={refreshFolder}
+                onClick={() => setRefresh(true)}
               >
                 Refresh
               </Button>
             </div>
             {openFilter && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexFlow: 'column nowrap',
-                  width: width - 2 * w,
-                  marginLeft: w,
-                  marginBottom: 20,
-                }}
-              >
-                <Typography
-                  className={classes.filterTitle}
-                  variant="h5"
-                  component="h2"
-                >
-                  Genres
-                </Typography>
-                <div className={classes.filter}>
-                  {folderData.genres.map((value, index) => {
-                    const hasGenre = genres.includes(value);
-                    return (
-                      <Chip
-                        key={index}
-                        className={classes.chip}
-                        label={value}
-                        clickable
-                        onClick={() => modifiedGenres(value)}
-                        variant={hasGenre ? 'default' : 'outlined'}
-                      />
-                    );
-                  })}
-                </div>
-                <Typography
-                  className={classes.filterTitle}
-                  variant="h5"
-                  component="h2"
-                >
-                  Tags
-                </Typography>
-                <div className={classes.filter}>
-                  {folderData.tags.map((value, index) => {
-                    const hasTag = tags.includes(value);
-                    return (
-                      <Chip
-                        key={index}
-                        className={classes.chip}
-                        label={value}
-                        clickable
-                        onClick={() => modifiedTags(value)}
-                        variant={hasTag ? 'default' : 'outlined'}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
+              <FilterSection
+                folderData={folderData}
+                width={width}
+                space={w}
+                tags={tags}
+                genres={genres}
+                modifiedTags={modifiedTags}
+                modifiedGenres={modifiedGenres}
+              />
             )}
             <Grid
+              ref={gridRef}
               columnCount={columnNumber}
               columnWidth={cWidth + w * 2}
               rowCount={rowNumber}
@@ -490,6 +444,7 @@ function Content({
                     size={data.size}
                     select={() => setIndex(index)}
                     selected={currIndex === index}
+                    index={index}
                   />
                 );
               }}
