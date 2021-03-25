@@ -160,7 +160,6 @@ function ScrollTop(props: IScrollProps) {
 
 const FilterSection = dynamic(() => import('../Filter'), { ssr: false });
 
-// Todo fix columnNumber updates
 function Content({
   folderInfo,
   folderData,
@@ -185,11 +184,19 @@ function Content({
   const cWidth = cardSize.width + 15;
   const cHeight = cardSize.height + 60;
 
-  const contentState = useRef(currIndex);
+  // const contentState = useRef(currIndex);
+  const contentState = useRef({
+    currIndex: currIndex,
+    columnNumber: 0,
+  });
 
   function setIndex(index: number) {
-    contentState.current = index;
+    contentState.current = { ...contentState.current, currIndex: index };
     setCurrIndex(index);
+  }
+
+  function setColumnNum(num: number) {
+    contentState.current = { ...contentState.current, columnNumber: num };
   }
 
   function handleToggle() {
@@ -288,19 +295,15 @@ function Content({
   }
 
   function handleKeyPress(ev: KeyboardEvent) {
-    console.log(columnNumber)
-    const c = contentState.current % columnNumber;
-    const r = Math.floor(contentState.current / columnNumber);
+    const { currIndex, columnNumber } = contentState.current;
+    const c = currIndex % columnNumber;
+    const r = Math.floor(currIndex / columnNumber);
     switch (ev.key) {
       case 'ArrowLeft':
-        setIndex(
-          contentState.current - 1 < 0
-            ? data.length - 1
-            : contentState.current - 1
-        );
+        setIndex(currIndex - 1 < 0 ? data.length - 1 : currIndex - 1);
         break;
       case 'ArrowRight':
-        setIndex((contentState.current + 1) % data.length);
+        setIndex((currIndex + 1) % data.length);
         break;
       case 'ArrowUp':
         ev.preventDefault();
@@ -311,8 +314,8 @@ function Content({
         setIndex(Math.min((r + 1) * columnNumber + c, data.length - 1));
         break;
       case 'Enter':
-        if (data[contentState.current].type === MOVIE) {
-          openFile((data[contentState.current] as IMovieData).file);
+        if (data[currIndex].type === MOVIE) {
+          openFile((data[currIndex] as IMovieData).file);
         }
         break;
     }
@@ -350,11 +353,13 @@ function Content({
     setActors(actors.filter(o => o !== name));
   }
 
-  let columnNumber: number;
   return (
     <AutoSizer>
       {({ width }) => {
-        columnNumber = Math.floor(width / cWidth);
+        const columnNumber = Math.floor(width / cWidth);
+        if (columnNumber !== contentState.current.columnNumber) {
+          setColumnNum(columnNumber);
+        }
         const w = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
         if (refresh) {
           return <CircularProgress className={classes.progress} />;
@@ -448,20 +453,24 @@ function Content({
                 modifiedActors={modifiedActors}
               />
             )}
-              <GridList cellHeight={cHeight} style={{width: width}} cols={columnNumber}>
-                {data.map((media, index) => (
-                  <GridListTile key={index}>
-                    <MovieCard
-                      style={{ width: cWidth + w * 2, height: cHeight }}
-                      media={media as IMovieData}
-                      size={cardSize}
-                      select={() => setIndex(index)}
-                      selected={currIndex === index}
-                      index={index}
-                    />
-                  </GridListTile>
-                ))}
-              </GridList>
+            <GridList
+              cellHeight={cHeight}
+              style={{ width: width }}
+              cols={columnNumber}
+            >
+              {data.map((media, index) => (
+                <GridListTile key={index}>
+                  <MovieCard
+                    style={{ width: cWidth + w * 2, height: cHeight }}
+                    media={media as IMovieData}
+                    size={cardSize}
+                    select={() => setIndex(index)}
+                    selected={currIndex === index}
+                    index={index}
+                  />
+                </GridListTile>
+              ))}
+            </GridList>
             <ScrollTop>
               <Fab
                 className={classes.fab}

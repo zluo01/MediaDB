@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { openFile } from '../../utils/electron';
-import { ICardSize, IMovieData } from "../../type";
+import { ICardSize, IMovieData } from '../../type';
 import {
   Theme,
   createStyles,
