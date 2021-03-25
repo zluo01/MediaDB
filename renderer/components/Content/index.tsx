@@ -13,7 +13,6 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '../../type';
-import { FixedSizeGrid as Grid } from 'react-window';
 import MovieCard from '../MovieCard';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import React, { useEffect, useRef, useState } from 'react';
@@ -38,6 +37,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import dynamic from 'next/dynamic';
+import { GridList, GridListTile } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -158,11 +158,9 @@ function ScrollTop(props: IScrollProps) {
   );
 }
 
-const FilterSection = dynamic(
-  () => import('../Filter'),
-  { ssr: false }
-)
+const FilterSection = dynamic(() => import('../Filter'), { ssr: false });
 
+// Todo fix columnNumber updates
 function Content({
   folderInfo,
   folderData,
@@ -170,7 +168,6 @@ function Content({
   updateData,
 }: IContentProps): JSX.Element {
   const classes = useStyles();
-  const gridRef = React.createRef<Grid>();
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const [currIndex, setCurrIndex] = useState(-1);
@@ -291,6 +288,7 @@ function Content({
   }
 
   function handleKeyPress(ev: KeyboardEvent) {
+    console.log(columnNumber)
     const c = contentState.current % columnNumber;
     const r = Math.floor(contentState.current / columnNumber);
     switch (ev.key) {
@@ -357,7 +355,6 @@ function Content({
     <AutoSizer>
       {({ width }) => {
         columnNumber = Math.floor(width / cWidth);
-        const rowNumber = Math.ceil(data.length / columnNumber);
         const w = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
         if (refresh) {
           return <CircularProgress className={classes.progress} />;
@@ -451,34 +448,20 @@ function Content({
                 modifiedActors={modifiedActors}
               />
             )}
-            <Grid
-              ref={gridRef}
-              columnCount={columnNumber}
-              columnWidth={cWidth + w * 2}
-              rowCount={rowNumber}
-              rowHeight={cHeight}
-              height={cHeight * rowNumber + 10}
-              width={width}
-              itemData={{
-                media: data,
-                size: cardSize,
-              }}
-            >
-              {({ style, columnIndex, rowIndex, data }) => {
-                const index = rowIndex * columnNumber + columnIndex;
-                if (index >= data.media.length) return null;
-                return (
-                  <MovieCard
-                    style={style}
-                    media={data.media[index]}
-                    size={data.size}
-                    select={() => setIndex(index)}
-                    selected={currIndex === index}
-                    index={index}
-                  />
-                );
-              }}
-            </Grid>
+              <GridList cellHeight={cHeight} style={{width: width}} cols={columnNumber}>
+                {data.map((media, index) => (
+                  <GridListTile key={index}>
+                    <MovieCard
+                      style={{ width: cWidth + w * 2, height: cHeight }}
+                      media={media as IMovieData}
+                      size={cardSize}
+                      select={() => setIndex(index)}
+                      selected={currIndex === index}
+                      index={index}
+                    />
+                  </GridListTile>
+                ))}
+              </GridList>
             <ScrollTop>
               <Fab
                 className={classes.fab}

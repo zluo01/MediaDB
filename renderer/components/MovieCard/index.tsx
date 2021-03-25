@@ -1,15 +1,14 @@
-import React, { CSSProperties, memo } from 'react';
+import React, { CSSProperties } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { openFile } from '../../utils/electron';
-import { ICardSize, IMovieData } from '../../type';
+import { ICardSize, IMovieData } from "../../type";
 import {
   Theme,
   createStyles,
   makeStyles,
   lighten,
 } from '@material-ui/core/styles';
-import { areEqual } from "react-window";
 
 const useStyles = makeStyles<Theme, { elevation: number }>((theme: Theme) =>
   createStyles({
@@ -71,4 +70,4 @@ function MovieCard({
   );
 }
 
-export default memo(MovieCard, areEqual);
+export default MovieCard;

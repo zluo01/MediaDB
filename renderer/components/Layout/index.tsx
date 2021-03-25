@@ -33,7 +33,7 @@ import { connect } from 'react-redux';
 import { changeFolder, updateFolder } from '../../lib/store';
 import { useRouter } from 'next/router';
 import Tooltip from '@material-ui/core/Tooltip';
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
 type TProps = {
   show: boolean;
@@ -132,10 +132,7 @@ type ILayoutProps = {
   dispatch: Dispatch<IFolderAction | IChangeFolderAction>;
 };
 
-const DirectoryModal = dynamic(
-  () => import('../Directory'),
-  { ssr: false }
-)
+const DirectoryModal = dynamic(() => import('../Directory'), { ssr: false });
 
 function Layout({
   children,
