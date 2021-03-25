@@ -22,7 +22,6 @@ import FolderIcon from '@material-ui/icons/Folder';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SearchIcon from '@material-ui/icons/Search';
-import DirectoryModal from '../Directory';
 import {
   IChangeFolderAction,
   IFolder,
@@ -34,6 +33,7 @@ import { connect } from 'react-redux';
 import { changeFolder, updateFolder } from '../../lib/store';
 import { useRouter } from 'next/router';
 import Tooltip from '@material-ui/core/Tooltip';
+import dynamic from "next/dynamic";
 
 type TProps = {
   show: boolean;
@@ -131,6 +131,11 @@ type ILayoutProps = {
   showPanelName: boolean;
   dispatch: Dispatch<IFolderAction | IChangeFolderAction>;
 };
+
+const DirectoryModal = dynamic(
+  () => import('../Directory'),
+  { ssr: false }
+)
 
 function Layout({
   children,

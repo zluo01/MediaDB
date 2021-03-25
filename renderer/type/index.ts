@@ -1,8 +1,6 @@
 export const MOVIE = 'movie';
 export const TV_SERIES = 'tvshow';
 
-type Media = typeof MOVIE | typeof TV_SERIES;
-
 export const DEFAULT = 'Directory';
 export const TITLE_ASC = 'Name(A-Z)';
 export const TITLE_DSC = 'Name(Z-A)';
@@ -20,11 +18,12 @@ export interface IFolderInfo {
   sort: SORT;
   tags: string[];
   genres: string[];
+  actors: string[];
   data: IMediaData[];
 }
 
-export interface IMediaData {
-  type: Media;
+export interface IMovieData {
+  type: typeof MOVIE;
   file: string;
   title: string;
   year: string;
@@ -32,7 +31,18 @@ export interface IMediaData {
   fanart: string;
   genre: string[];
   tag: string[];
+  actors: string[];
 }
+
+export interface ITVShowData {
+  type: typeof TV_SERIES;
+  title: string;
+  genre: string[];
+  tag: string[];
+  actors: string[];
+}
+
+export type IMediaData = IMovieData | ITVShowData;
 
 export interface ICardSize {
   width: number;

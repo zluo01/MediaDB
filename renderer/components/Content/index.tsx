@@ -4,7 +4,9 @@ import {
   IFolder,
   IFolderInfo,
   IMediaData,
+  IMovieData,
   IReduxState,
+  MOVIE,
   SORT,
   TITLE_ASC,
   TITLE_DSC,
@@ -35,7 +37,7 @@ import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import FilterSection from '../Filter';
+import dynamic from 'next/dynamic';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -156,6 +158,11 @@ function ScrollTop(props: IScrollProps) {
   );
 }
 
+const FilterSection = dynamic(
+  () => import('../Filter'),
+  { ssr: false }
+)
+
 function Content({
   folderInfo,
   folderData,
@@ -172,6 +179,7 @@ function Content({
 
   const [tags, setTags] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
+  const [actors, setActors] = useState<string[]>([]);
 
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
@@ -194,16 +202,18 @@ function Content({
   useEffect(() => {
     const anchor = document.querySelector(`#c${currIndex}`);
     if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [currIndex]);
 
   useEffect(() => {
-    buildDirectory(folderInfo.dir)
-      .then(data => updateFolderInfo(folderInfo.name, data))
-      .then(data => updateData(data))
-      .then(() => setRefresh(false))
-      .catch(err => console.error(err));
+    if (refresh) {
+      buildDirectory(folderInfo.dir)
+        .then(data => updateFolderInfo(folderInfo.name, data))
+        .then(data => updateData(data))
+        .then(() => setRefresh(false))
+        .catch(err => console.error(err));
+    }
   }, [refresh]);
 
   useEffect(() => {
@@ -219,6 +229,10 @@ function Content({
 
     genres.forEach(g => {
       media = media.filter(o => o.genre.includes(g));
+    });
+
+    actors.forEach(a => {
+      media = media.filter(o => o.actors.includes(a));
     });
 
     switch (sortType) {
@@ -238,19 +252,23 @@ function Content({
         setData(media);
         break;
       case YEAR_DSC:
-        media.sort((a: IMediaData, b: IMediaData) =>
-          a.year < b.year ? 1 : -1
-        );
-        setData(media);
+        if (media[0].type === MOVIE) {
+          media.sort((a: IMediaData, b: IMediaData) =>
+            (a as IMovieData).year < (b as IMovieData).year ? 1 : -1
+          );
+          setData(media);
+        }
         break;
       case YEAR_ASC:
-        media.sort((a: IMediaData, b: IMediaData) =>
-          a.year > b.year ? 1 : -1
-        );
+        if (media[0].type === MOVIE) {
+          media.sort((a: IMediaData, b: IMediaData) =>
+            (a as IMovieData).year > (b as IMovieData).year ? 1 : -1
+          );
+        }
         setData(media);
         break;
     }
-  }, [sortType, tags, genres]);
+  }, [sortType, tags, genres, actors]);
 
   function handleClose(event: React.MouseEvent<EventTarget>) {
     if (
@@ -295,7 +313,9 @@ function Content({
         setIndex(Math.min((r + 1) * columnNumber + c, data.length - 1));
         break;
       case 'Enter':
-        openFile(data[contentState.current].file);
+        if (data[contentState.current].type === MOVIE) {
+          openFile((data[contentState.current] as IMovieData).file);
+        }
         break;
     }
   }
@@ -322,6 +342,14 @@ function Content({
       return;
     }
     setGenres(genres.filter(o => o !== name));
+  }
+
+  function modifiedActors(name: string): void {
+    if (!actors.includes(name)) {
+      setActors(prevState => [...prevState, name]);
+      return;
+    }
+    setActors(actors.filter(o => o !== name));
   }
 
   let columnNumber: number;
@@ -417,8 +445,10 @@ function Content({
                 space={w}
                 tags={tags}
                 genres={genres}
+                actors={actors}
                 modifiedTags={modifiedTags}
                 modifiedGenres={modifiedGenres}
+                modifiedActors={modifiedActors}
               />
             )}
             <Grid

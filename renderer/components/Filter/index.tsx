@@ -33,8 +33,10 @@ interface IFilerSection {
   space: number;
   tags: string[];
   genres: string[];
+  actors: string[];
   modifiedTags: (name: string) => void;
   modifiedGenres: (name: string) => void;
+  modifiedActors: (name: string) => void;
 }
 
 function FilterSection({
@@ -43,8 +45,10 @@ function FilterSection({
   space,
   tags,
   genres,
+  actors,
   modifiedTags,
   modifiedGenres,
+  modifiedActors,
 }: IFilerSection): JSX.Element {
   const classes = useStyles();
   return (
@@ -62,7 +66,6 @@ function FilterSection({
       </Typography>
       <div className={classes.filter}>
         {folderData.genres.map((value, index) => {
-          const hasGenre = genres.includes(value);
           return (
             <Chip
               key={index}
@@ -70,7 +73,24 @@ function FilterSection({
               label={value}
               clickable
               onClick={() => modifiedGenres(value)}
-              variant={hasGenre ? 'default' : 'outlined'}
+              variant={genres.includes(value) ? 'default' : 'outlined'}
+            />
+          );
+        })}
+      </div>
+      <Typography className={classes.filterTitle} variant="h5" component="h2">
+        Actors
+      </Typography>
+      <div className={classes.filter}>
+        {folderData.actors.map((value, index) => {
+          return (
+            <Chip
+              key={index}
+              className={classes.chip}
+              label={value}
+              clickable
+              onClick={() => modifiedActors(value)}
+              variant={actors.includes(value) ? 'default' : 'outlined'}
             />
           );
         })}
@@ -80,7 +100,6 @@ function FilterSection({
       </Typography>
       <div className={classes.filter}>
         {folderData.tags.map((value, index) => {
-          const hasTag = tags.includes(value);
           return (
             <Chip
               key={index}
@@ -88,7 +107,7 @@ function FilterSection({
               label={value}
               clickable
               onClick={() => modifiedTags(value)}
-              variant={hasTag ? 'default' : 'outlined'}
+              variant={tags.includes(value) ? 'default' : 'outlined'}
             />
           );
         })}
