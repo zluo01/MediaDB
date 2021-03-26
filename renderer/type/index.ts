@@ -19,6 +19,7 @@ export interface IFolderInfo {
   tags: string[];
   genres: string[];
   actors: string[];
+  studios: string[];
   data: IMediaData[];
 }
 
@@ -31,7 +32,8 @@ export interface IMovieData {
   fanart: string;
   genre: string[];
   tag: string[];
-  actors: string[];
+  actor: string[];
+  studio: string[];
 }
 
 export interface ITVShowData {
@@ -39,7 +41,11 @@ export interface ITVShowData {
   title: string;
   genre: string[];
   tag: string[];
-  actors: string[];
+  actor: string[];
+  shows: { name: string; files: string[] }[];
+  poster: string[];
+  fanart: string[];
+  studio: string[];
 }
 
 export type IMediaData = IMovieData | ITVShowData;
@@ -84,3 +90,17 @@ export interface ISettingAction {
   type: typeof UPDATE_SETTING;
   payload: ISetting;
 }
+
+export interface IFilterPros {
+  tags: string[];
+  genres: string[];
+  actors: string[];
+  studios: string[];
+}
+
+export const TAG = 1;
+export const GENRE = 2;
+export const ACTOR = 3;
+export const STUDIO = 4;
+
+export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;

@@ -59,6 +59,8 @@ function DirectoryModal({
     buildDirectory(dir)
       .then(data => updateFolder(addFolder({ name: name, dir: dir }, data)))
       .then(() => setLoading(false))
+      .then(() => setDir(''))
+      .then(() => setName(''))
       .finally(() => close())
       .catch(error => console.error(error));
   }
@@ -107,7 +109,7 @@ function DirectoryModal({
       </DialogContent>
       <DialogActions className={classes.root}>
         <Button onClick={close}>Cancel</Button>
-        <Button onClick={handleSubmit} disabled={!dir}>
+        <Button onClick={handleSubmit} disabled={!dir || loading}>
           {loading ? 'loading...' : 'Add'}
         </Button>
       </DialogActions>

@@ -2,7 +2,14 @@ import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { IFolderInfo } from '../../type';
+import {
+  ACTOR,
+  FILTER,
+  GENRE,
+  IFilterPros,
+  IFolderInfo,
+  TAG,
+} from '../../type';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,24 +38,16 @@ interface IFilerSection {
   folderData: IFolderInfo;
   width: number;
   space: number;
-  tags: string[];
-  genres: string[];
-  actors: string[];
-  modifiedTags: (name: string) => void;
-  modifiedGenres: (name: string) => void;
-  modifiedActors: (name: string) => void;
+  filter: IFilterPros;
+  updateFilter: (type: FILTER, name: string) => void;
 }
 
 function FilterSection({
   folderData,
   width,
   space,
-  tags,
-  genres,
-  actors,
-  modifiedTags,
-  modifiedGenres,
-  modifiedActors,
+  filter,
+  updateFilter,
 }: IFilerSection): JSX.Element {
   const classes = useStyles();
   return (
@@ -72,8 +71,8 @@ function FilterSection({
               className={classes.chip}
               label={value}
               clickable
-              onClick={() => modifiedGenres(value)}
-              variant={genres.includes(value) ? 'default' : 'outlined'}
+              onClick={() => updateFilter(GENRE, value)}
+              variant={filter.genres.includes(value) ? 'default' : 'outlined'}
             />
           );
         })}
@@ -89,8 +88,8 @@ function FilterSection({
               className={classes.chip}
               label={value}
               clickable
-              onClick={() => modifiedActors(value)}
-              variant={actors.includes(value) ? 'default' : 'outlined'}
+              onClick={() => updateFilter(ACTOR, value)}
+              variant={filter.actors.includes(value) ? 'default' : 'outlined'}
             />
           );
         })}
@@ -106,8 +105,8 @@ function FilterSection({
               className={classes.chip}
               label={value}
               clickable
-              onClick={() => modifiedTags(value)}
-              variant={tags.includes(value) ? 'default' : 'outlined'}
+              onClick={() => updateFilter(TAG, value)}
+              variant={filter.tags.includes(value) ? 'default' : 'outlined'}
             />
           );
         })}

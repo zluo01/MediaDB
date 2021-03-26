@@ -1,13 +1,20 @@
 import {
+  ACTOR,
   DEFAULT,
+  FILTER,
+  GENRE,
   ICardSize,
+  IFilterPros,
   IFolder,
   IFolderInfo,
   IMediaData,
   IMovieData,
   IReduxState,
+  ITVShowData,
   MOVIE,
   SORT,
+  STUDIO,
+  TAG,
   TITLE_ASC,
   TITLE_DSC,
   YEAR_ASC,
@@ -38,6 +45,7 @@ import Zoom from '@material-ui/core/Zoom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import dynamic from 'next/dynamic';
 import { GridList, GridListTile } from '@material-ui/core';
+import TVShowCard from '../TVShowCard';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -173,9 +181,12 @@ function Content({
   const [data, setData] = useState(folderData.data);
   const [sortType, setSortType] = useState<string>(folderData.sort);
 
-  const [tags, setTags] = useState<string[]>([]);
-  const [genres, setGenres] = useState<string[]>([]);
-  const [actors, setActors] = useState<string[]>([]);
+  const [filter, setFilter] = useState<IFilterPros>({
+    actors: [],
+    genres: [],
+    studios: [],
+    tags: [],
+  });
 
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
@@ -227,16 +238,16 @@ function Content({
   useEffect(() => {
     let media = [...folderData.data];
 
-    tags.forEach(t => {
+    filter.tags.forEach(t => {
       media = media.filter(o => o.tag.includes(t));
     });
 
-    genres.forEach(g => {
+    filter.genres.forEach(g => {
       media = media.filter(o => o.genre.includes(g));
     });
 
-    actors.forEach(a => {
-      media = media.filter(o => o.actors.includes(a));
+    filter.actors.forEach(a => {
+      media = media.filter(o => o.actor.includes(a));
     });
 
     switch (sortType) {
@@ -272,7 +283,7 @@ function Content({
         setData(media);
         break;
     }
-  }, [sortType, tags, genres, actors]);
+  }, [sortType, filter]);
 
   function handleClose(event: React.MouseEvent<EventTarget>) {
     if (
@@ -329,28 +340,40 @@ function Content({
     };
   }, [data]);
 
-  function modifiedTags(name: string): void {
-    if (!tags.includes(name)) {
-      setTags(prevState => [...prevState, name]);
-      return;
+  function updateFilter(type: FILTER, name: string) {
+    switch (type) {
+      case TAG:
+        if (!filter.tags.includes(name)) {
+          setFilter({ ...filter, tags: [...filter.tags, name] });
+          return;
+        }
+        setFilter({ ...filter, tags: filter.tags.filter(o => o !== name) });
+        break;
+      case GENRE:
+        if (!filter.genres.includes(name)) {
+          setFilter({ ...filter, genres: [...filter.genres, name] });
+          return;
+        }
+        setFilter({ ...filter, genres: filter.genres.filter(o => o !== name) });
+        break;
+      case ACTOR:
+        if (!filter.actors.includes(name)) {
+          setFilter({ ...filter, actors: [...filter.actors, name] });
+          return;
+        }
+        setFilter({ ...filter, actors: filter.actors.filter(o => o !== name) });
+        break;
+      case STUDIO:
+        if (!filter.studios.includes(name)) {
+          setFilter({ ...filter, studios: [...filter.studios, name] });
+          return;
+        }
+        setFilter({
+          ...filter,
+          studios: filter.studios.filter(o => o !== name),
+        });
+        break;
     }
-    setTags(tags.filter(o => o !== name));
-  }
-
-  function modifiedGenres(name: string): void {
-    if (!genres.includes(name)) {
-      setGenres(prevState => [...prevState, name]);
-      return;
-    }
-    setGenres(genres.filter(o => o !== name));
-  }
-
-  function modifiedActors(name: string): void {
-    if (!actors.includes(name)) {
-      setActors(prevState => [...prevState, name]);
-      return;
-    }
-    setActors(actors.filter(o => o !== name));
   }
 
   return (
@@ -445,12 +468,8 @@ function Content({
                 folderData={folderData}
                 width={width}
                 space={w}
-                tags={tags}
-                genres={genres}
-                actors={actors}
-                modifiedTags={modifiedTags}
-                modifiedGenres={modifiedGenres}
-                modifiedActors={modifiedActors}
+                filter={filter}
+                updateFilter={updateFilter}
               />
             )}
             <GridList
@@ -460,14 +479,25 @@ function Content({
             >
               {data.map((media, index) => (
                 <GridListTile key={index}>
-                  <MovieCard
-                    style={{ width: cWidth + w * 2, height: cHeight }}
-                    media={media as IMovieData}
-                    size={cardSize}
-                    select={() => setIndex(index)}
-                    selected={currIndex === index}
-                    index={index}
-                  />
+                  {media.type === MOVIE ? (
+                    <MovieCard
+                      style={{ width: cWidth + w * 2, height: cHeight }}
+                      media={media as IMovieData}
+                      size={cardSize}
+                      select={() => setIndex(index)}
+                      selected={currIndex === index}
+                      index={index}
+                    />
+                  ) : (
+                    <TVShowCard
+                      style={{ width: cWidth + w * 2, height: cHeight }}
+                      media={media as ITVShowData}
+                      size={cardSize}
+                      select={() => setIndex(index)}
+                      selected={currIndex === index}
+                      index={index}
+                    />
+                  )}
                 </GridListTile>
               ))}
             </GridList>
