@@ -250,6 +250,10 @@ function Content({
       media = media.filter(o => o.actor.includes(a));
     });
 
+    filter.studios.forEach(a => {
+      media = media.filter(o => o.studio.includes(a));
+    });
+
     switch (sortType) {
       case DEFAULT:
         setData(media);

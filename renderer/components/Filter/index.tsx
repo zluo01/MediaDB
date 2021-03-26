@@ -8,6 +8,7 @@ import {
   GENRE,
   IFilterPros,
   IFolderInfo,
+  STUDIO,
   TAG,
 } from '../../type';
 
@@ -90,6 +91,23 @@ function FilterSection({
               clickable
               onClick={() => updateFilter(ACTOR, value)}
               variant={filter.actors.includes(value) ? 'default' : 'outlined'}
+            />
+          );
+        })}
+      </div>
+      <Typography className={classes.filterTitle} variant="h5" component="h2">
+        Studios
+      </Typography>
+      <div className={classes.filter}>
+        {folderData.studios.map((value, index) => {
+          return (
+            <Chip
+              key={index}
+              className={classes.chip}
+              label={value}
+              clickable
+              onClick={() => updateFilter(STUDIO, value)}
+              variant={filter.studios.includes(value) ? 'default' : 'outlined'}
             />
           );
         })}

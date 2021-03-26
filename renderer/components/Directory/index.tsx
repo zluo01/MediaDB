@@ -40,8 +40,10 @@ function DirectoryModal({
   folders,
   updateFolder,
 }: IDirectoryModal): JSX.Element {
-  const [dir, setDir] = useState('');
-  const [name, setName] = useState('');
+  const [value, setValue] = useState<IFolder>({
+    dir: '',
+    name: '',
+  });
   const [loading, setLoading] = useState(false);
 
   const classes = useStyles();
@@ -49,23 +51,21 @@ function DirectoryModal({
   async function handleDirectory() {
     const dir = await getDirectory();
     const subDir = dir.split(path.sep);
-    setName(subDir[subDir.length - 1]);
-    setDir(dir);
+    setValue({ ...value, name: subDir[subDir.length - 1], dir: dir });
   }
 
   function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
     setLoading(true);
-    buildDirectory(dir)
-      .then(data => updateFolder(addFolder({ name: name, dir: dir }, data)))
+    buildDirectory(value.dir)
+      .then(data => updateFolder(addFolder(value, data)))
       .then(() => setLoading(false))
-      .then(() => setDir(''))
-      .then(() => setName(''))
-      .finally(() => close())
+      .then(() => setValue({ name: '', dir: '' }))
+      .then(() => close())
       .catch(error => console.error(error));
   }
 
-  const nameError = folders.map(o => o.name).includes(name);
+  const nameError = folders.map(o => o.name).includes(value.name);
 
   return (
     <Dialog
@@ -82,7 +82,7 @@ function DirectoryModal({
         <TextField
           id="dir"
           label="Directory"
-          value={dir}
+          value={value.dir}
           InputProps={{
             endAdornment: (
               <Button onClick={handleDirectory}>
@@ -90,7 +90,7 @@ function DirectoryModal({
               </Button>
             ),
           }}
-          onChange={e => setDir(e.target.value)}
+          onChange={e => setValue({ ...value, dir: e.target.value })}
           required
           fullWidth
         />
@@ -98,9 +98,9 @@ function DirectoryModal({
           id="name"
           label="Name"
           type="text"
-          disabled={!name}
-          value={name}
-          onChange={e => setName(e.target.value)}
+          disabled={!value.name}
+          value={value.name}
+          onChange={e => setValue({ ...value, name: e.target.value })}
           error={nameError}
           helperText={nameError && 'Name Already Exists'}
           required
@@ -109,7 +109,7 @@ function DirectoryModal({
       </DialogContent>
       <DialogActions className={classes.root}>
         <Button onClick={close}>Cancel</Button>
-        <Button onClick={handleSubmit} disabled={!dir || loading}>
+        <Button onClick={handleSubmit} disabled={!value.dir || loading}>
           {loading ? 'loading...' : 'Add'}
         </Button>
       </DialogActions>
