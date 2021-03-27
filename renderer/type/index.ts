@@ -42,8 +42,8 @@ export interface ITVShowData {
   genre: string[];
   tag: string[];
   actor: string[];
-  shows: { name: string; files: string[] }[];
-  poster: string[];
+  shows: { name: string; poster: string; files: string[] }[];
+  poster: string;
   fanart: string[];
   studio: string[];
 }
@@ -104,3 +104,9 @@ export const ACTOR = 3;
 export const STUDIO = 4;
 
 export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;
+
+export interface ICardStyle {
+  width: number;
+  height: number;
+  elevation: number;
+}

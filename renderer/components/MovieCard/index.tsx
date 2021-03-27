@@ -1,8 +1,8 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { openFile } from '../../utils/electron';
-import { ICardSize, IMovieData } from '../../type';
+import { ICardSize, ICardStyle, IMovieData } from '../../type';
 import {
   Theme,
   createStyles,
@@ -10,8 +10,12 @@ import {
   lighten,
 } from '@material-ui/core/styles';
 
-const useStyles = makeStyles<Theme, { elevation: number }>((theme: Theme) =>
+const useStyles = makeStyles<Theme, ICardStyle>((theme: Theme) =>
   createStyles({
+    root: {
+      width: props => props.width,
+      height: props => props.height,
+    },
     paper: {
       display: 'flex',
       flexFlow: 'column nowrap',
@@ -27,11 +31,10 @@ const useStyles = makeStyles<Theme, { elevation: number }>((theme: Theme) =>
 );
 
 interface IMovieCardProps {
-  style: CSSProperties;
+  style: ICardStyle;
   media: IMovieData;
   size: ICardSize;
   select: () => void;
-  selected: boolean;
   index: number;
 }
 
@@ -40,10 +43,9 @@ function MovieCard({
   media,
   size,
   select,
-  selected,
   index,
 }: IMovieCardProps): JSX.Element {
-  const classes = useStyles({ elevation: selected ? 5 : 0 });
+  const classes = useStyles(style);
   return (
     <div
       id={`c${index}`}
@@ -55,7 +57,7 @@ function MovieCard({
         <img
           style={{ width: size.width, height: size.height }}
           alt={media.title}
-          src={`${media.poster}`}
+          src={media.poster}
         />
         <div style={{ width: size.width }}>
           <Typography variant="body2" title={media.title} noWrap={true}>

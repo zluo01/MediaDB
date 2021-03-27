@@ -44,14 +44,13 @@ function a11yProps(index: any) {
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     flexGrow: 1,
-    width: '100%',
-    minWidth: 360,
-    maxWidth: 560,
-    borderRadius: 5,
+    width: 720,
     boxShadow: theme.shadows[3],
   },
   panel: {
     backgroundColor: theme.palette.background.default,
+    width: 'inherit',
+    height: 320,
   },
   box: {
     borderColor: theme.palette.action.selected,
@@ -128,33 +127,46 @@ export default function TVShowCardMenu({
           <TabPanel key={index} value={value} index={index}>
             <Box
               display={'flex'}
-              flexDirection={'column'}
+              flexDirection={'row'}
               flexWrap={'nowrap'}
               justifyContent={'space-around'}
-              minHeight={120}
             >
-              {chunks.map((chunk, idx) => (
-                <Box
-                  key={idx}
-                  display={'flex'}
-                  flexDirection={'row'}
-                  flexWrap={'nowrap'}
-                  width="100%"
-                >
-                  {chunk.map((v, i) => {
-                    return (
-                      <Button
-                        key={i}
-                        variant="outlined"
-                        className={classes.box}
-                        onClick={() => openFile(v)}
-                      >
-                        {idx * chunkSize + i + 1}
-                      </Button>
-                    );
-                  })}
-                </Box>
-              ))}
+              <Box display={'flex'} width={'38.2%'} justifyContent={'center'}>
+                <img
+                  style={{ width: 180, height: 270 }}
+                  alt={data.title}
+                  src={show.poster}
+                />
+              </Box>
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                flexWrap={'wrap'}
+                overflow={'auto'}
+                width={'61.8%'}
+              >
+                {chunks.map((chunk, idx) => (
+                  <Box
+                    key={idx}
+                    display={'flex'}
+                    flexDirection={'row'}
+                    flexWrap={'nowrap'}
+                  >
+                    {chunk.map((v, i) => {
+                      return (
+                        <Button
+                          key={i}
+                          variant="outlined"
+                          className={classes.box}
+                          onClick={() => openFile(v)}
+                        >
+                          {idx * chunkSize + i + 1}
+                        </Button>
+                      );
+                    })}
+                  </Box>
+                ))}
+              </Box>
             </Box>
           </TabPanel>
         );

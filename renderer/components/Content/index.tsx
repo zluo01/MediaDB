@@ -4,6 +4,7 @@ import {
   FILTER,
   GENRE,
   ICardSize,
+  ICardStyle,
   IFilterPros,
   IFolder,
   IFolderInfo,
@@ -481,29 +482,35 @@ function Content({
               style={{ width: width }}
               cols={columnNumber}
             >
-              {data.map((media, index) => (
-                <GridListTile key={index}>
-                  {media.type === MOVIE ? (
-                    <MovieCard
-                      style={{ width: cWidth + w * 2, height: cHeight }}
-                      media={media as IMovieData}
-                      size={cardSize}
-                      select={() => setIndex(index)}
-                      selected={currIndex === index}
-                      index={index}
-                    />
-                  ) : (
-                    <TVShowCard
-                      style={{ width: cWidth + w * 2, height: cHeight }}
-                      media={media as ITVShowData}
-                      size={cardSize}
-                      select={() => setIndex(index)}
-                      selected={currIndex === index}
-                      index={index}
-                    />
-                  )}
-                </GridListTile>
-              ))}
+              {data.map((media, index) => {
+                const style: ICardStyle = {
+                  width: cWidth + w * 2,
+                  height: cHeight,
+                  elevation: currIndex === index ? 5 : 0,
+                };
+                return (
+                  <GridListTile key={index}>
+                    {media.type === MOVIE ? (
+                      <MovieCard
+                        style={style}
+                        media={media as IMovieData}
+                        size={cardSize}
+                        select={() => setIndex(index)}
+                        index={index}
+                      />
+                    ) : (
+                      <TVShowCard
+                        style={style}
+                        media={media as ITVShowData}
+                        size={cardSize}
+                        select={() => setIndex(index)}
+                        selected={currIndex === index}
+                        index={index}
+                      />
+                    )}
+                  </GridListTile>
+                );
+              })}
             </GridList>
             <ScrollTop>
               <Fab

@@ -1,7 +1,7 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import { ICardSize, ITVShowData } from '../../type';
+import { ICardSize, ICardStyle, ITVShowData } from '../../type';
 import {
   Theme,
   createStyles,
@@ -13,8 +13,12 @@ import Fade from '@material-ui/core/Fade';
 import Menu from '../TVShowMenu';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
-const useStyles = makeStyles<Theme, { elevation: number }>((theme: Theme) =>
+const useStyles = makeStyles<Theme, ICardStyle>((theme: Theme) =>
   createStyles({
+    root: {
+      width: props => props.width,
+      height: props => props.height,
+    },
     paper: {
       display: 'flex',
       flexFlow: 'column nowrap',
@@ -35,7 +39,7 @@ const useStyles = makeStyles<Theme, { elevation: number }>((theme: Theme) =>
 );
 
 interface ITVShowCardProps {
-  style: CSSProperties;
+  style: ICardStyle;
   media: ITVShowData;
   size: ICardSize;
   select: () => void;
@@ -51,7 +55,7 @@ function TVShowCard({
   selected,
   index,
 }: ITVShowCardProps): JSX.Element {
-  const classes = useStyles({ elevation: selected ? 5 : 0 });
+  const classes = useStyles(style);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -73,7 +77,7 @@ function TVShowCard({
         <img
           style={{ width: size.width, height: size.height }}
           alt={media.title}
-          src={`${media.poster[0]}`}
+          src={media.poster}
         />
         <div style={{ width: size.width }}>
           <Typography variant="body2" title={media.title} noWrap={true}>

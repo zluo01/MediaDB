@@ -137,12 +137,14 @@ function parseTVShowNFO(
     }
     return parseInt(matchA[1]) - parseInt(matchB[1]);
   });
+  const posters = getPostersForSeasons(dir, files.poster);
   const shows = dir
     .filter(o => o.match(/[Ss][eason]*[\s]*([0-9]*[0-9])/) || o === 'Specials')
-    .map(o => {
+    .map((o, i) => {
       const currPath = Path.join(path, o);
       return {
         name: o,
+        poster: posters[i],
         files: FS.readdirSync(currPath)
           .filter(f =>
             ['m4v', 'avi', 'mp4', 'mkv', 'mpg', 'rmvb'].includes(
@@ -160,9 +162,46 @@ function parseTVShowNFO(
     tag: Array.isArray(d.tag) ? d.tag : [d.tag],
     title: d.title,
     type: 'tvshow',
-    poster: files.poster,
+    poster: files.poster[0],
     studio: Array.isArray(d.studio) ? d.studio : [d.studio],
   };
+}
+
+function getPostersForSeasons(dirs: string[], posters: string[]): string[] {
+  const result: string[] = [];
+  const re = /[Ss][eason]*[\s]*([0-9]*[0-9])/;
+  const se = /[Ss]pecial[s]*/;
+  for (let i = 0; i < dirs.length; i++) {
+    let find = false;
+    if (dirs[i].match(se)) {
+      for (let j = 0; j < posters.length; j++) {
+        if (posters[j].match(se)) {
+          result.push(posters[j]);
+          find = true;
+          break;
+        }
+      }
+      if (!find) {
+        result.push(posters[0]);
+        continue;
+      }
+    }
+    const match = dirs[i].match(re);
+    if (match) {
+      for (let j = 0; j < posters.length; j++) {
+        const pMatch = posters[j].match(re);
+        if (pMatch && parseInt(pMatch[1]) === parseInt(match[1])) {
+          result.push(posters[j]);
+          find = true;
+          break;
+        }
+      }
+      if (!find) {
+        result.push(posters[0]);
+      }
+    }
+  }
+  return result;
 }
 
 function getExtension(filename: string) {
