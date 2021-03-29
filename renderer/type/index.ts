@@ -42,10 +42,16 @@ export interface ITVShowData {
   genre: string[];
   tag: string[];
   actor: string[];
-  shows: { name: string; poster: string; files: string[] }[];
+  shows: IShow[];
   poster: string;
   fanart: string[];
   studio: string[];
+}
+
+export interface IShow {
+  name: string;
+  poster: string;
+  files: string[];
 }
 
 export type IMediaData = IMovieData | ITVShowData;

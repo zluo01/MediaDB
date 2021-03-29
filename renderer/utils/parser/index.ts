@@ -3,11 +3,12 @@ import {
   IFolderInfo,
   IMediaData,
   IMovieData,
+  IShow,
   ITVShowData,
   MOVIE,
   TV_SERIES,
 } from '../../type';
-import FS from 'fs';
+import fs from 'fs';
 import Path from 'path';
 import parser from 'fast-xml-parser';
 
@@ -19,6 +20,9 @@ interface IKeyFiles {
   media: string[];
   dir: string[];
 }
+
+const MATCH_SEASON_NUMBER = /[Ss][eason]*[\s]*([0-9]*[0-9])/;
+const MATCH_SEASON_SPECIAL = /[Ss]pecial[s]*/;
 
 export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   const media: IMediaData[] = [];
@@ -36,27 +40,30 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
       poster: [],
       thumb: [],
     };
-    FS.readdirSync(currDir).forEach(f => {
-      if (f.startsWith('.')) {
+
+    const files = await fs.promises.readdir(currDir, { withFileTypes: true });
+    files.forEach(f => {
+      const fileName = f.name;
+      if (fileName.startsWith('.')) {
         return;
       }
-      const absolute = Path.join(currDir, f);
-      if (FS.statSync(absolute).isDirectory()) {
-        keyFiles.dir.push(f);
+      if (f.isDirectory()) {
+        keyFiles.dir.push(fileName);
         return;
       }
-      const ext = getExtension(f);
+      const absolute = Path.join(currDir, fileName);
+      const ext = getExtension(fileName);
       switch (ext.toLowerCase()) {
         case 'nfo':
-          keyFiles.nfo = f;
+          keyFiles.nfo = f.name;
           break;
         case 'jpg':
         case 'png':
-          if (f.includes('fanart')) {
+          if (fileName.includes('fanart')) {
             keyFiles.fanart.push(Path.join('file://', absolute));
-          } else if (f.includes('poster')) {
+          } else if (fileName.includes('poster')) {
             keyFiles.poster.push(Path.join('file://', absolute));
-          } else if (f.includes('thumb')) {
+          } else if (fileName.includes('thumb')) {
             keyFiles.thumb.push(Path.join('file://', absolute));
           }
           break;
@@ -71,14 +78,14 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
     });
 
     if (keyFiles.nfo) {
-      const data = FS.readFileSync(Path.join(currDir, keyFiles.nfo));
+      const data = await fs.promises.readFile(Path.join(currDir, keyFiles.nfo));
       const result = parser.parse(data.toString());
       let info = null;
       if (result.movie) {
         info = parseMovieNFO(currDir, result, keyFiles);
         queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));
       } else if (result.tvshow) {
-        info = parseTVShowNFO(currDir, result, keyFiles);
+        info = await parseTVShowNFO(currDir, result, keyFiles);
       }
       if (info) {
         media.push(info);
@@ -121,39 +128,45 @@ function parseMovieNFO(path: string, data: any, files: IKeyFiles): IMovieData {
   };
 }
 
-function parseTVShowNFO(
+async function parseTVShowNFO(
   path: string,
   data: any,
   files: IKeyFiles
-): ITVShowData {
+): Promise<ITVShowData> {
   const d = data[TV_SERIES];
   const actors = Array.isArray(d.actor) ? d.actor : [d.actor];
-  const dir = [...files.dir];
+  let dir = [...files.dir];
   dir.sort((a, b) => {
-    const matchA = a.match(/[Ss][eason]*[\s]*([0-9]*[0-9])/);
-    const matchB = b.match(/[Ss][eason]*[\s]*([0-9]*[0-9])/);
+    const matchA = a.match(MATCH_SEASON_NUMBER);
+    const matchB = b.match(MATCH_SEASON_NUMBER);
     if (!matchA || !matchB) {
       return 1;
     }
     return parseInt(matchA[1]) - parseInt(matchB[1]);
   });
   const posters = getPostersForSeasons(dir, files.poster);
-  const shows = dir
-    .filter(o => o.match(/[Ss][eason]*[\s]*([0-9]*[0-9])/) || o === 'Specials')
-    .map((o, i) => {
-      const currPath = Path.join(path, o);
-      return {
-        name: o,
-        poster: posters[i],
-        files: FS.readdirSync(currPath)
-          .filter(f =>
-            ['m4v', 'avi', 'mp4', 'mkv', 'mpg', 'rmvb'].includes(
-              getExtension(f)
-            )
+  dir = dir.filter(
+    o => o.match(MATCH_SEASON_NUMBER) || o.match(MATCH_SEASON_SPECIAL)
+  );
+
+  const shows: IShow[] = [];
+  for (let i = 0; i < dir.length; i++) {
+    const currPath = Path.join(path, dir[i]);
+    const files = await fs.promises.readdir(currPath, { withFileTypes: true });
+    shows.push({
+      name: dir[i],
+      poster: posters[i],
+      files: files
+        .filter(o => !o.isDirectory())
+        .filter(f =>
+          ['m4v', 'avi', 'mp4', 'mkv', 'mpg', 'rmvb'].includes(
+            getExtension(f.name)
           )
-          .map(d => Path.join(currPath, d)),
-      };
+        )
+        .map(d => Path.join(currPath, d.name)),
     });
+  }
+
   return {
     fanart: files.fanart,
     shows: shows,
@@ -169,13 +182,11 @@ function parseTVShowNFO(
 
 function getPostersForSeasons(dirs: string[], posters: string[]): string[] {
   const result: string[] = [];
-  const re = /[Ss][eason]*[\s]*([0-9]*[0-9])/;
-  const se = /[Ss]pecial[s]*/;
   for (let i = 0; i < dirs.length; i++) {
     let find = false;
-    if (dirs[i].match(se)) {
+    if (dirs[i].match(MATCH_SEASON_SPECIAL)) {
       for (let j = 0; j < posters.length; j++) {
-        if (posters[j].match(se)) {
+        if (posters[j].match(MATCH_SEASON_SPECIAL)) {
           result.push(posters[j]);
           find = true;
           break;
@@ -186,10 +197,10 @@ function getPostersForSeasons(dirs: string[], posters: string[]): string[] {
         continue;
       }
     }
-    const match = dirs[i].match(re);
+    const match = dirs[i].match(MATCH_SEASON_NUMBER);
     if (match) {
       for (let j = 0; j < posters.length; j++) {
-        const pMatch = posters[j].match(re);
+        const pMatch = posters[j].match(MATCH_SEASON_NUMBER);
         if (pMatch && parseInt(pMatch[1]) === parseInt(match[1])) {
           result.push(posters[j]);
           find = true;
@@ -204,7 +215,7 @@ function getPostersForSeasons(dirs: string[], posters: string[]): string[] {
   return result;
 }
 
-function getExtension(filename: string) {
+function getExtension(filename: string): string {
   const parts = filename.split('.');
   return parts[parts.length - 1];
 }

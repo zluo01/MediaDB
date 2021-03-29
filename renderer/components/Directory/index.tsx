@@ -44,6 +44,7 @@ function DirectoryModal({
     dir: '',
     name: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const classes = useStyles();
 
@@ -53,9 +54,12 @@ function DirectoryModal({
     setValue({ ...value, name: subDir[subDir.length - 1], dir: dir });
   }
 
-  function handleSubmit() {
+  function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
+    setLoading(true);
     buildDirectory(value.dir)
       .then(data => updateFolder(addFolder(value, data)))
+      .then(() => setLoading(false))
       .then(() => setValue({ name: '', dir: '' }))
       .then(() => close())
       .catch(error => console.error(error));
@@ -104,9 +108,11 @@ function DirectoryModal({
         />
       </DialogContent>
       <DialogActions className={classes.root}>
-        <Button onClick={close}>Cancel</Button>
-        <Button onClick={handleSubmit} disabled={!value.dir}>
-          Add
+        <Button onClick={close} disabled={loading}>
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} disabled={!value.dir || loading}>
+          {loading ? 'loading...' : 'Add'}
         </Button>
       </DialogActions>
     </Dialog>
