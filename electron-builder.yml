@@ -1,5 +1,5 @@
 appId: com.github.zluo01
-productName: MovieDB
+productName: MediaDB
 directories:
   output: dist
   buildResources: resources

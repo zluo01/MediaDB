@@ -210,7 +210,7 @@ function Content({
   }
 
   useEffect(() => {
-    const anchor = document.querySelector(`#c${currIndex}`);
+    const anchor = document.getElementById(`c${currIndex}`);
     if (anchor) {
       anchor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
