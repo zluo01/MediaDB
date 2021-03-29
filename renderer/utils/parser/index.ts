@@ -24,13 +24,17 @@ interface IKeyFiles {
 const MATCH_SEASON_NUMBER = /[Ss][eason]*[\s]*([0-9]*[0-9])/;
 const MATCH_SEASON_SPECIAL = /[Ss]pecial[s]*/;
 
+interface IHash {
+  [v: string]: number;
+}
+
 export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   const media: IMediaData[] = [];
   const queue: string[] = [dir];
-  const tags = new Set<string>();
-  const genres = new Set<string>();
-  const actors = new Set<string>();
-  const studios = new Set<string>();
+  const tags: IHash = {};
+  const genres: IHash = {};
+  const actors: IHash = {};
+  const studios: IHash = {};
   while (queue.length) {
     const currDir = queue.shift() as string;
     const keyFiles: IKeyFiles = {
@@ -89,10 +93,10 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
       }
       if (info) {
         media.push(info);
-        info.tag.forEach(tags.add, tags);
-        info.genre.forEach(genres.add, genres);
-        info.actor.forEach(actors.add, actors);
-        info.studio.forEach(studios.add, studios);
+        update(tags, info.tag);
+        update(genres, info.genre);
+        update(actors, info.actor);
+        update(studios, info.studio);
       }
     } else {
       queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));
@@ -102,10 +106,10 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   return {
     sort: DEFAULT,
     data: media,
-    tags: Array.from(tags).filter(o => o !== ''),
-    genres: Array.from(genres).filter(o => o !== ''),
-    actors: Array.from(actors).filter(o => o !== ''),
-    studios: Array.from(studios).filter(o => o !== ''),
+    tags: Object.keys(tags).filter(o => o !== ''),
+    genres: Object.keys(genres).filter(o => o !== ''),
+    actors: Object.keys(actors).filter(o => o !== ''),
+    studios: Object.keys(studios).filter(o => o !== ''),
   };
 }
 
@@ -213,6 +217,10 @@ function getPostersForSeasons(dirs: string[], posters: string[]): string[] {
     }
   }
   return result;
+}
+
+function update(m: IHash, v: string[]) {
+  v.forEach(o => (m[o] = 1));
 }
 
 function getExtension(filename: string): string {
