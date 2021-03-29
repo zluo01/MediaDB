@@ -1,7 +1,7 @@
 {
   "private": true,
-  "name": "moviedb",
-  "description": "movie database",
+  "name": "mediadb",
+  "description": "database for movie and tv shows",
   "version": "0.0.3",
   "main": "app/background.js",
   "scripts": {

@@ -186,14 +186,14 @@ function Layout({
         />
         <meta name="referrer" content="never" />
         <meta name="referrer" content="no-referrer" />
-        <title>Movie DB</title>
+        <title>Media DB</title>
       </Head>
       <main>
         <div className={classes.root}>
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
               <Typography variant="h6" noWrap>
-                MovieDB
+                MediaDB
               </Typography>
               <div className={classes.search}>
                 <div className={classes.searchIcon}>
