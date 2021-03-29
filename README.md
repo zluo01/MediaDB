@@ -3,4 +3,4 @@
 ## Todo
 
 - Image optimization with caching
-- Add support for none managed folders
+- Add support for non-managed folders
