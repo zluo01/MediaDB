@@ -95,7 +95,7 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
   }
 
   return (
-    <Layout>
+    <Layout disableSearch>
       <Container maxWidth={'md'} fixed>
         <FormControl className={classes.formControl}>
           <Typography variant="h3" component="h2">

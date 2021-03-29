@@ -12,6 +12,7 @@ interface IHomeProps {
 
 function Home({ currFolderIndex, folders }: IHomeProps): JSX.Element {
   const [data, setData] = useState<IFolderInfo>();
+  const [search, setSearch] = useState('');
 
   function updateData(data: IFolderInfo) {
     setData(data);
@@ -24,12 +25,22 @@ function Home({ currFolderIndex, folders }: IHomeProps): JSX.Element {
   }, [currFolderIndex, folders]);
 
   return (
-    <Layout>
+    <Layout updateSearch={setSearch}>
       {data && (
         <Content
           folderInfo={folders[currFolderIndex]}
-          folderData={data}
+          folderData={
+            search
+              ? {
+                  ...data,
+                  data: data.data.filter(o =>
+                    o.title.toLowerCase().includes(search)
+                  ),
+                }
+              : data
+          }
           updateData={updateData}
+          searchState={search !== ''}
         />
       )}
     </Layout>

@@ -45,8 +45,9 @@ export const theme = createMuiTheme({
     },
     action: {
       active: '#5A5F61',
-      selected: '#1AAC54',
+      selected: '#217c46',
       hover: '#094129',
+      disabled: '#094129',
     },
     text: {
       primary: '#e7e9ec',

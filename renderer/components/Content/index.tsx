@@ -125,6 +125,7 @@ interface IContentProps {
   folderInfo: IFolder;
   folderData: IFolderInfo;
   cardSize: ICardSize;
+  searchState: boolean;
   updateData: (data: IFolderInfo) => void;
 }
 
@@ -166,6 +167,7 @@ function Content({
   folderInfo,
   folderData,
   cardSize,
+  searchState,
   updateData,
 }: IContentProps): JSX.Element {
   const classes = useStyles();
@@ -396,6 +398,7 @@ function Content({
                 className={classes.action}
                 size={'small'}
                 startIcon={<FilterListIcon />}
+                disabled={searchState}
                 onClick={() => setOpenFilter(prevState => !prevState)}
               >
                 Filter
@@ -405,6 +408,7 @@ function Content({
                 size={'small'}
                 startIcon={<SortIcon />}
                 ref={anchorRef}
+                disabled={searchState}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
                 onClick={handleToggle}
@@ -450,6 +454,7 @@ function Content({
                 size={'small'}
                 startIcon={<RefreshIcon />}
                 onClick={updateLibrary}
+                disabled={searchState}
               >
                 Refresh
               </Button>

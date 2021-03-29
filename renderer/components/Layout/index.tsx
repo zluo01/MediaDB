@@ -107,6 +107,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
       transition: theme.transitions.create('width'),
+      color: theme.palette.text.primary,
       width: '100%',
       [theme.breakpoints.up('md')]: {
         width: '20ch',
@@ -129,6 +130,8 @@ type ILayoutProps = {
   currFolderIndex: number;
   folders: IFolder[];
   showPanelName: boolean;
+  disableSearch?: boolean;
+  updateSearch?: (text: string) => void;
   dispatch: Dispatch<IFolderAction | IChangeFolderAction>;
 };
 
@@ -139,6 +142,8 @@ function Layout({
   currFolderIndex,
   folders,
   showPanelName,
+  disableSearch,
+  updateSearch,
   dispatch,
 }: ILayoutProps): JSX.Element {
   const classes = useStyles({ show: showPanelName });
@@ -161,6 +166,14 @@ function Layout({
 
   function handleChangeFolder(index: number) {
     changeFolder(dispatch, index);
+  }
+
+  function handleSearch(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    if (updateSearch) {
+      updateSearch(e.target.value);
+    }
   }
 
   return (
@@ -193,6 +206,8 @@ function Layout({
                     input: classes.inputInput,
                   }}
                   inputProps={{ 'aria-label': 'search' }}
+                  onChange={e => handleSearch(e)}
+                  disabled={disableSearch}
                 />
               </div>
               <div className={classes.grow} />
