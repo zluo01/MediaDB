@@ -34,7 +34,7 @@ function Home({ currFolderIndex, folders }: IHomeProps): JSX.Element {
               ? {
                   ...data,
                   data: data.data.filter(o =>
-                    o.title.toLowerCase().includes(search)
+                    o.title.toLowerCase().includes(search.toLowerCase())
                   ),
                 }
               : data
