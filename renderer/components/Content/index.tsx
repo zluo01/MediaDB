@@ -103,8 +103,8 @@ const useStyles = makeStyles((theme: Theme) =>
     progress: {
       color: theme.palette.action.selected,
       position: 'fixed',
-      right: '45%',
-      top: '36%',
+      right: '50%',
+      top: '38.2%',
     },
   })
 );
