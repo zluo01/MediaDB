@@ -75,6 +75,7 @@ export default (
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
+      contextIsolation: false,
       webSecurity: false,
       enableRemoteModule: false,
       ...options.webPreferences,
