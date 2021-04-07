@@ -11,7 +11,6 @@ import {
 import fs from 'fs';
 import Path from 'path';
 import parser from 'fast-xml-parser';
-import { readImage } from '../electron';
 
 interface IKeyFiles {
   nfo?: string;
@@ -87,7 +86,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
       const result = parser.parse(data.toString());
       let info = null;
       if (result.movie) {
-        info = await parseMovieNFO(currDir, result, keyFiles);
+        info = parseMovieNFO(currDir, result, keyFiles);
         queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));
       } else if (result.tvshow) {
         info = await parseTVShowNFO(currDir, result, keyFiles);
@@ -114,11 +113,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   };
 }
 
-async function parseMovieNFO(
-  path: string,
-  data: any,
-  files: IKeyFiles
-): Promise<IMovieData> {
+function parseMovieNFO(path: string, data: any, files: IKeyFiles): IMovieData {
   const d = data[MOVIE];
   const actors = Array.isArray(d.actor) ? d.actor : [d.actor];
   return {
@@ -128,8 +123,8 @@ async function parseMovieNFO(
     file: d.original_filename
       ? Path.join(path, d.original_filename)
       : files.media[0],
-    poster: (await readImage(files.poster[0])) || d.poster || d.thumb,
-    fanart: (await readImage(files.fanart[0])) || d.fanart || d.fanart.thumb,
+    poster: files.poster[0] || d.poster || d.thumb,
+    fanart: files.fanart[0] || d.fanart || d.fanart.thumb,
     genre: Array.isArray(d.genre) ? d.genre : [d.genre],
     actor: actors.map((a: { name: string }) => a.name),
     tag: Array.isArray(d.tag) ? d.tag : [d.tag],
@@ -164,7 +159,7 @@ async function parseTVShowNFO(
     const files = await fs.promises.readdir(currPath, { withFileTypes: true });
     shows.push({
       name: dir[i],
-      poster: await readImage(posters[i]),
+      poster: posters[i],
       files: files
         .filter(o => !o.isDirectory())
         .filter(f =>
@@ -184,7 +179,7 @@ async function parseTVShowNFO(
     tag: Array.isArray(d.tag) ? d.tag : [d.tag],
     title: d.title,
     type: 'tvshow',
-    poster: await readImage(files.poster[0]),
+    poster: files.poster[0],
     studio: Array.isArray(d.studio) ? d.studio : [d.studio],
   };
 }

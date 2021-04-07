@@ -12,6 +12,7 @@ import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
 import Menu from '../TVShowMenu';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import dynamic from 'next/dynamic';
 
 const useStyles = makeStyles<Theme, ICardStyle>((theme: Theme) =>
   createStyles({
@@ -37,6 +38,8 @@ const useStyles = makeStyles<Theme, ICardStyle>((theme: Theme) =>
     },
   })
 );
+
+const Image = dynamic(() => import('../ImageLoader'), { ssr: false });
 
 interface ITVShowCardProps {
   style: ICardStyle;
@@ -74,11 +77,7 @@ function TVShowCard({
       onDoubleClick={handleClick}
     >
       <Paper className={classes.paper}>
-        <img
-          style={{ width: size.width, height: size.height }}
-          alt={media.title}
-          src={media.poster}
-        />
+        <Image dir={media.poster} title={media.title} size={size} />
         <div style={{ width: size.width }}>
           <Typography variant="body2" title={media.title} noWrap={true}>
             {media.title}

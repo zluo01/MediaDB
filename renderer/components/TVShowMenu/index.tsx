@@ -8,6 +8,7 @@ import { ITVShowData } from '../../type';
 import { theme } from '../../lib/theme';
 import Button from '@material-ui/core/Button';
 import { openFile } from '../../utils/electron';
+import dynamic from 'next/dynamic';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -67,6 +68,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
+
+const Image = dynamic(() => import('../ImageLoader'), { ssr: false });
 
 interface ITVShowCardMenuProps {
   data: ITVShowData;
@@ -132,10 +135,10 @@ export default function TVShowCardMenu({
               justifyContent={'space-around'}
             >
               <Box display={'flex'} width={'38.2%'} justifyContent={'center'}>
-                <img
-                  style={{ width: 180, height: 270 }}
-                  alt={data.title}
-                  src={show.poster}
+                <Image
+                  dir={show.poster}
+                  title={data.title}
+                  size={{ width: 180, height: 270 }}
                 />
               </Box>
               <Box
