@@ -1,8 +1,5 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import { openFile } from '../../utils/electron';
-import { ICardSize, ICardStyle, IMovieData } from '../../type';
+import Typography from '@material-ui/core/Typography';
 import {
   Theme,
   createStyles,
@@ -10,6 +7,10 @@ import {
   lighten,
 } from '@material-ui/core/styles';
 import dynamic from 'next/dynamic';
+import React from 'react';
+
+import { ICardSize, ICardStyle, IMovieData } from '../../type';
+import { openFile } from '../../utils/electron';
 
 const useStyles = makeStyles<Theme, ICardStyle>((theme: Theme) =>
   createStyles({

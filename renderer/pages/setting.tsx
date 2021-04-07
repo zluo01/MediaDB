@@ -1,21 +1,28 @@
-import Layout from '../components/Layout';
-
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import Container from '@material-ui/core/Container';
+import Divider from '@material-ui/core/Divider';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import Typography from '@material-ui/core/Typography';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import DeleteIcon from '@material-ui/icons/Delete';
+import FolderIcon from '@material-ui/icons/Folder';
+import { useRouter } from 'next/router';
 import React from 'react';
-import {
-  Button,
-  Checkbox,
-  Container,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  TextareaAutosize,
-} from '@material-ui/core';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+
+import Layout from '../components/Layout';
+import { updateFolder, updateSetting } from '../lib/store';
+import { removeFolder, setSetting } from '../store';
 import {
   IFolder,
   IFolderAction,
@@ -23,15 +30,6 @@ import {
   ISetting,
   ISettingAction,
 } from '../type';
-import { connect } from 'react-redux';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { updateFolder, updateSetting } from '../lib/store';
-import { Dispatch } from 'redux';
-import Typography from '@material-ui/core/Typography';
-import { removeFolder, setSetting } from '../store';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FolderIcon from '@material-ui/icons/Folder';
-import { useRouter } from 'next/router';
 
 interface ISettingProps {
   folders: IFolder[];

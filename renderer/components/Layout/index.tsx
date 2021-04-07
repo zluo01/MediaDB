@@ -1,39 +1,38 @@
-import React, { ReactNode, useState } from 'react';
-import Head from 'next/head';
+import AppBar from '@material-ui/core/AppBar';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import InputBase from '@material-ui/core/InputBase';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 import {
   createStyles,
   fade,
   makeStyles,
   Theme,
 } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import {
-  Divider,
-  Drawer,
-  InputBase,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from '@material-ui/core';
-import FolderIcon from '@material-ui/icons/Folder';
 import AddIcon from '@material-ui/icons/Add';
-import SettingsIcon from '@material-ui/icons/Settings';
+import FolderIcon from '@material-ui/icons/Folder';
 import SearchIcon from '@material-ui/icons/Search';
+import SettingsIcon from '@material-ui/icons/Settings';
+import dynamic from 'next/dynamic';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import React, { ReactNode, useState } from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+
+import { changeFolder, updateFolder } from '../../lib/store';
 import {
   IChangeFolderAction,
   IFolder,
   IFolderAction,
   IReduxState,
 } from '../../type';
-import { Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import { changeFolder, updateFolder } from '../../lib/store';
-import { useRouter } from 'next/router';
-import Tooltip from '@material-ui/core/Tooltip';
-import dynamic from 'next/dynamic';
 
 type TProps = {
   show: boolean;

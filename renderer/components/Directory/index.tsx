@@ -1,19 +1,18 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@material-ui/core';
-import React, { useState } from 'react';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { getDirectory } from '../../utils/electron';
-import { IFolder } from '../../type';
-import { addFolder } from '../../store';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { buildDirectory } from '../../utils/parser';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import path from 'path';
+import React, { useState } from 'react';
+
+import { addFolder } from '../../store';
+import { IFolder } from '../../type';
+import { getDirectory } from '../../utils/electron';
+import { buildDirectory } from '../../utils/parser';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

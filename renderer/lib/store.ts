@@ -1,5 +1,7 @@
-import { AnyAction, createStore, Dispatch } from 'redux';
 import { Context, createWrapper, HYDRATE, MakeStore } from 'next-redux-wrapper';
+import { AnyAction, createStore, Dispatch } from 'redux';
+
+import { getFolders, getSetting } from '../store';
 import {
   CHANGE_FOLDER,
   IChangeFolderAction,
@@ -11,7 +13,6 @@ import {
   UPDATE_FOLDER,
   UPDATE_SETTING,
 } from '../type';
-import { getFolders, getSetting } from '../store';
 
 const initState: IReduxState = {
   currFolderIndex: 0,

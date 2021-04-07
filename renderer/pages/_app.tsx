@@ -1,10 +1,11 @@
-import React from 'react';
-import Head from 'next/head';
-import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { theme } from '../lib/theme';
+import { ThemeProvider } from '@material-ui/core/styles';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import React from 'react';
+
 import { wrapper } from '../lib/store';
+import { theme } from '../lib/theme';
 
 function MyApp(props: AppProps): JSX.Element {
   const { Component, pageProps } = props;

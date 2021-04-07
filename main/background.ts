@@ -1,7 +1,8 @@
 import { app, dialog, ipcMain } from 'electron';
 import serve from 'electron-serve';
-import { createWindow } from './helpers';
 import fs from 'fs';
+
+import { createWindow } from './helpers';
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 

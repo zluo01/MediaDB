@@ -60,13 +60,6 @@ export default (
     return windowState;
   };
 
-  const saveState = () => {
-    if (!win.isMinimized() && !win.isMaximized()) {
-      Object.assign(state, getCurrentPosition(win));
-    }
-    store.set(key, state);
-  };
-
   state = ensureVisibleOnSomeDisplay(restore());
 
   const browserOptions: BrowserWindowConstructorOptions = {
@@ -80,6 +73,13 @@ export default (
   };
 
   const win: BrowserWindow = new BrowserWindow(browserOptions);
+
+  const saveState = () => {
+    if (!win.isMinimized() && !win.isMaximized()) {
+      Object.assign(state, getCurrentPosition(win));
+    }
+    store.set(key, state);
+  };
 
   win.on('close', saveState);
 

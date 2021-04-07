@@ -49,5 +49,11 @@ module.exports = {
         allow: ['warn', 'error'],
       },
     ],
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: ['@material-ui/*/*/*', '!@material-ui/core/test-utils/*'],
+      },
+    ],
   },
 };

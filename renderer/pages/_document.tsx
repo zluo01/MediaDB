@@ -1,6 +1,7 @@
-import React from 'react';
+import ServerStyleSheets from '@material-ui/styles/ServerStyleSheets';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { ServerStyleSheets } from '@material-ui/styles';
+import React from 'react';
+
 import { theme } from '../lib/theme';
 
 export default class MyDocument extends Document {
@@ -13,6 +14,7 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+          <title>MediaDB</title>
         </Head>
         <body>
           <Main />

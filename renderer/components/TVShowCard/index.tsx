@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import Typography from '@material-ui/core/Typography';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
-import { ICardSize, ICardStyle, ITVShowData } from '../../type';
+import Popper from '@material-ui/core/Popper';
+import Typography from '@material-ui/core/Typography';
 import {
   Theme,
   createStyles,
   makeStyles,
   lighten,
 } from '@material-ui/core/styles';
-import Popper from '@material-ui/core/Popper';
-import Fade from '@material-ui/core/Fade';
-import Menu from '../TVShowMenu';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+
+import { ICardSize, ICardStyle, ITVShowData } from '../../type';
+import Menu from '../TVShowMenu';
 
 const useStyles = makeStyles<Theme, ICardStyle>((theme: Theme) =>
   createStyles({
@@ -97,6 +98,7 @@ function TVShowCard({
             },
             preventOverflow: {
               enabled: true,
+              priority: ['left', 'right'],
               boundariesElement: 'scrollParent',
             },
           }}

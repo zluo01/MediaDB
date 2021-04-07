@@ -1,7 +1,8 @@
-import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
-import React from 'react';
+import Typography from '@material-ui/core/Typography';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+
 import {
   ACTOR,
   FILTER,

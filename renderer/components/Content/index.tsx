@@ -1,3 +1,27 @@
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Fab from '@material-ui/core/Fab';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import Grow from '@material-ui/core/Grow';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import Zoom from '@material-ui/core/Zoom';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import SortIcon from '@material-ui/icons/Sort';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import AutoSizer from 'react-virtualized-auto-sizer';
+
+import { updateFolderInfo } from '../../store';
 import {
   ACTOR,
   DEFAULT,
@@ -21,31 +45,9 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '../../type';
-import MovieCard from '../MovieCard';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import React, { useEffect, useRef, useState } from 'react';
-import { connect } from 'react-redux';
 import { openFile } from '../../utils/electron';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import SortIcon from '@material-ui/icons/Sort';
-import { updateFolderInfo } from '../../store';
 import { buildDirectory } from '../../utils/parser';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import Fab from '@material-ui/core/Fab';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import Zoom from '@material-ui/core/Zoom';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import dynamic from 'next/dynamic';
-import { GridList, GridListTile } from '@material-ui/core';
+import MovieCard from '../MovieCard';
 import TVShowCard from '../TVShowCard';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -1,7 +1,8 @@
+import Skeleton from '@material-ui/lab/Skeleton';
 import React, { useEffect, useState } from 'react';
+
 import { ICardSize } from '../../type';
 import { readImage } from '../../utils/electron';
-import Skeleton from '@material-ui/lab/Skeleton';
 
 interface IImageProps {
   dir: string;
@@ -11,13 +12,17 @@ interface IImageProps {
 
 function Image({ dir, title, size }: IImageProps): JSX.Element {
   const [data, setData] = useState<string>();
+  const [error, setError] = useState();
 
   useEffect(() => {
     readImage(dir)
       .then(data => setData(data))
-      .catch(err => console.error(err));
+      .catch(err => setError(err));
   });
 
+  if (error) {
+    return <Skeleton variant="rect" width={size.width} height={size.height} />;
+  }
   if (!data) {
     return (
       <Skeleton

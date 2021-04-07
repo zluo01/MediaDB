@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
-import { IFolder, IFolderInfo, IReduxState } from '../type';
-import { getFolderInfo } from '../store';
 import { connect } from 'react-redux';
+
 import Content from '../components/Content';
+import Layout from '../components/Layout';
+import { getFolderInfo } from '../store';
+import { IFolder, IFolderInfo, IReduxState } from '../type';
 
 interface IHomeProps {
   currFolderIndex: number;
