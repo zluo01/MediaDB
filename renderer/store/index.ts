@@ -20,7 +20,7 @@ export function addFolder(folder: IFolder, values: IFolderInfo): IFolder[] {
   return folders;
 }
 
-export function getFolderInfo(name: string): IFolderInfo {
+export async function getFolderInfo(name: string): Promise<IFolderInfo> {
   return store.get(name) as IFolderInfo;
 }
 

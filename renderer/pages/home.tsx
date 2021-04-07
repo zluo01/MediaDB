@@ -20,7 +20,9 @@ function Home({ currFolderIndex, folders }: IHomeProps): JSX.Element {
 
   useEffect(() => {
     if (currFolderIndex >= 0 && currFolderIndex < folders.length) {
-      setData(getFolderInfo(folders[currFolderIndex].name));
+      getFolderInfo(folders[currFolderIndex].name)
+        .then(data => setData(data))
+        .catch(err => console.error(err));
     }
   }, [currFolderIndex, folders]);
 

@@ -1,6 +1,7 @@
-import { app, dialog, ipcMain, protocol } from 'electron';
+import { app, dialog, ipcMain } from 'electron';
 import serve from 'electron-serve';
 import { createWindow } from './helpers';
+import fs from 'fs';
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 
@@ -12,11 +13,6 @@ if (isProd) {
 
 (async () => {
   await app.whenReady();
-
-  protocol.registerFileProtocol('file', (request, callback) => {
-    const pathname = decodeURIComponent(request.url.replace('file:///', ''));
-    callback(pathname);
-  });
 
   const mainWindow = createWindow('main', {
     width: 1000,
@@ -39,4 +35,8 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle('showDialog', async _event => {
   return await dialog.showOpenDialog({ properties: ['openDirectory'] });
+});
+
+ipcMain.handle('readImage', async (_event, dir) => {
+  return await fs.promises.readFile(dir, { encoding: 'base64' });
 });
