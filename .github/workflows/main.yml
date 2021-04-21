@@ -37,12 +37,18 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: npm run build:win64
           
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
+      - name: Set VERSION variable for macos/ubuntu
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+        run: |
+          echo "VERSION=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)" >> $GITHUB_ENV
+          
+      - name: Set VERSION variable for windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "VERSION=$(node -pe "require('./package.json').version")" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
   
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
         with:
-          name: MediaDB-${{ steps.package-version.outputs.current-version}}-${{ runner.os }}-amd64
+          name: MediaDB-${{ env.VERSION }}-${{ runner.os }}-amd64
           path: dist
