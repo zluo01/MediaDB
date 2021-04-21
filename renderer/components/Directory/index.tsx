@@ -97,10 +97,9 @@ function DirectoryModal({
           id="name"
           label="Name"
           type="text"
-          disabled={!value.name}
           value={value.name}
           onChange={e => setValue({ ...value, name: e.target.value })}
-          error={nameError}
+          error={nameError || !value.name}
           helperText={nameError && 'Name Already Exists'}
           required
           fullWidth
