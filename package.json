@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "electron-serve": "1.1.0",
-    "electron-store": "7.0.3"
+    "electron-store": "8.0.0"
   },
   "devDependencies": {
     "@fontsource/roboto": "4.2.3",
