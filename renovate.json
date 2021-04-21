@@ -11,8 +11,8 @@
       "groupName": "eslint"
     },
     {
-      "matchPackagePatterns": ["@type"],
-      "groupName": "type"
+      "matchPackagePatterns": ["@types/"],
+      "groupName": "types"
     },
     {
       "matchPackagePatterns": ["react"],
