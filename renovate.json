@@ -11,7 +11,7 @@
       "groupName": "eslint"
     },
     {
-      "matchPackagePatterns": ["@types/"],
+      "matchPackagePatterns": ["@types"],
       "groupName": "types"
     },
     {
