@@ -2,7 +2,7 @@
   "private": true,
   "name": "mediadb",
   "description": "database for movie and tv shows",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",

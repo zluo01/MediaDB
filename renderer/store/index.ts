@@ -9,6 +9,11 @@ const KEY = {
   SETTING: 'setting',
 };
 
+export function getFolder(index: number): IFolder {
+  const folders = getFolders();
+  return folders[index];
+}
+
 export function getFolders(): IFolder[] {
   return store.get(KEY.FOLDER, []) as IFolder[];
 }
@@ -18,6 +23,20 @@ export function addFolder(folder: IFolder, values: IFolderInfo): IFolder[] {
   folders.push(folder);
   store.set(KEY.FOLDER, folders);
   store.set(folder.name, values);
+  return folders;
+}
+
+export async function updateFolderName(
+  index: number,
+  name: string
+): Promise<IFolder[]> {
+  const folders = getFolders();
+  const prevName = folders[index].name;
+  const info = store.get(prevName);
+  folders[index].name = name;
+  store.set(KEY.FOLDER, folders);
+  store.delete(prevName);
+  store.set(name, info);
   return folders;
 }
 

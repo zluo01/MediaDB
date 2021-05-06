@@ -14,9 +14,11 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Typography from '@material-ui/core/Typography';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import FolderIcon from '@material-ui/icons/Folder';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -71,11 +73,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// Todo handle exclude directory change
+const EditFolder = dynamic(() => import('../components/FolderEdit'), {
+  ssr: false,
+});
+
 function Setting({ dispatch, folders, setting }: ISettingProps) {
   const classes = useStyles();
 
   const router = useRouter();
+
+  const [folderIndex, setFolderIndex] = useState(-1);
 
   function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
     setSetting({
@@ -90,6 +97,10 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
     removeFolder(name)
       .then(data => updateFolder(dispatch, data))
       .catch(err => console.error(err));
+  }
+
+  function handleUpdateFolder(folders: IFolder[]) {
+    updateFolder(dispatch, folders);
   }
 
   return (
@@ -116,13 +127,20 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
             Imported Folders
           </Typography>
           <List>
-            {folders.map(folder => (
+            {folders.map((folder, index) => (
               <ListItem key={folder.name}>
                 <ListItemIcon>
                   <FolderIcon />
                 </ListItemIcon>
                 <ListItemText primary={folder.name} secondary={folder.dir} />
                 <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="edit"
+                    onClick={() => setFolderIndex(index)}
+                  >
+                    <EditIcon />
+                  </IconButton>
                   <IconButton
                     edge="end"
                     aria-label="delete"
@@ -153,6 +171,12 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
           </Button>
         </FormControl>
       </Container>
+      <EditFolder
+        open={folderIndex >= 0}
+        close={() => setFolderIndex(-1)}
+        folderIndex={folderIndex}
+        updateFolder={handleUpdateFolder}
+      />
     </Layout>
   );
 }
