@@ -59,7 +59,7 @@ export async function removeFolder(name: string): Promise<IFolder[]> {
   return folders;
 }
 
-const DefaultSetting: ISetting = {
+export const DefaultSetting: ISetting = {
   showSidePanelName: true,
   skippingDirectory: [],
   cardSize: {

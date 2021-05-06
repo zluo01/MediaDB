@@ -47,6 +47,7 @@ import {
 } from '../../type';
 import { openFile } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
+import BottomInfoBar from '../BottomInfoBar';
 import MovieCard from '../MovieCard';
 import TVShowCard from '../TVShowCard';
 
@@ -95,7 +96,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     scroll: {
       position: 'fixed',
-      bottom: theme.spacing(2),
+      bottom: theme.spacing(4),
       right: theme.spacing(2),
     },
     fab: {
@@ -487,7 +488,7 @@ function Content({
               />
             )}
             <GridList
-              cellHeight={cHeight}
+              cellHeight={cHeight + 28} // height for bottom bar
               style={{ width: width }}
               cols={columnNumber}
             >
@@ -521,6 +522,7 @@ function Content({
                 );
               })}
             </GridList>
+            <BottomInfoBar selected={data[currIndex]?.title || ''} />
             <ScrollTop>
               <Fab
                 className={classes.fab}

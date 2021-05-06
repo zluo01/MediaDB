@@ -65,9 +65,7 @@ function FolderNameEdit({
       fullWidth={true}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle className={classes.title} id="alert-dialog-slide-title">
-        Add Directory
-      </DialogTitle>
+      <DialogTitle className={classes.title}>Name</DialogTitle>
       <DialogContent className={classes.root}>
         <TextField
           id="name"
