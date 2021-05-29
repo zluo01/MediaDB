@@ -32,7 +32,7 @@ const reducer = (state: IReduxState = initState, action: AnyAction) => {
       return {
         ...state,
         folders: action.payload,
-        currFolderIndex: 0,
+        currFolderIndex: action.index,
       };
     case UPDATE_SETTING:
       return { ...state, setting: action.payload };
@@ -63,11 +63,13 @@ export const changeFolder = (
 
 export const updateFolder = (
   dispatch: Dispatch<IFolderAction>,
-  payload: IFolder[]
+  payload: IFolder[],
+  index?: number
 ): AnyAction => {
   return dispatch({
     type: UPDATE_FOLDER,
     payload: payload,
+    index: index || 0,
   });
 };
 

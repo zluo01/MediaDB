@@ -59,6 +59,10 @@ export async function removeFolder(name: string): Promise<IFolder[]> {
   return folders;
 }
 
+export async function updateFolders(folders: IFolder[]): Promise<void> {
+  store.set(KEY.FOLDER, folders);
+}
+
 export const DefaultSetting: ISetting = {
   showSidePanelName: true,
   skippingDirectory: [],

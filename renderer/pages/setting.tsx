@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Typography from '@material-ui/core/Typography';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -18,13 +17,19 @@ import EditIcon from '@material-ui/icons/Edit';
 import FolderIcon from '@material-ui/icons/Folder';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import Layout from '../components/Layout';
 import { updateFolder, updateSetting } from '../lib/store';
-import { removeFolder, setSetting } from '../store';
+import { removeFolder, setSetting, updateFolders } from '../store';
 import {
   IFolder,
   IFolderAction,
@@ -36,6 +41,7 @@ import {
 interface ISettingProps {
   folders: IFolder[];
   setting: ISetting;
+  currFolderIndex: number;
   dispatch: Dispatch<IFolderAction | ISettingAction>;
 }
 
@@ -77,12 +83,32 @@ const EditFolder = dynamic(() => import('../components/FolderEdit'), {
   ssr: false,
 });
 
-function Setting({ dispatch, folders, setting }: ISettingProps) {
+function reorder(list: IFolder[], startIndex: number, endIndex: number) {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+}
+
+function Setting({
+  dispatch,
+  folders,
+  setting,
+  currFolderIndex,
+}: ISettingProps) {
   const classes = useStyles();
 
   const router = useRouter();
 
+  const [folderData, setFolderData] = useState<IFolder[]>(folders);
   const [folderIndex, setFolderIndex] = useState(-1);
+
+  useEffect(() => {
+    if (JSON.stringify(folders) !== JSON.stringify(folderData)) {
+      setFolderData(folders);
+    }
+  }, [folders]);
 
   function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
     setSetting({
@@ -101,6 +127,23 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
 
   function handleUpdateFolder(folders: IFolder[]) {
     updateFolder(dispatch, folders);
+  }
+
+  function onDragEnd(result: DropResult) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const src = result.source.index;
+    const dst = result.destination.index;
+
+    if (result.source.index !== result.destination.index) {
+      const result = reorder(folderData, src, dst);
+      updateFolders(result)
+        .then(() => updateFolder(dispatch, result, currFolderIndex))
+        .catch(err => console.error(err));
+    }
   }
 
   return (
@@ -126,41 +169,57 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
           <Typography variant="body1" className={classes.text}>
             Imported Folders
           </Typography>
-          <List>
-            {folders.map((folder, index) => (
-              <ListItem key={folder.name}>
-                <ListItemIcon>
-                  <FolderIcon />
-                </ListItemIcon>
-                <ListItemText primary={folder.name} secondary={folder.dir} />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={() => setFolderIndex(index)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleRemove(folder.name)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-          </List>
-          <Typography variant="body1" className={classes.text}>
-            Exclude Directory
-          </Typography>
-          <TextareaAutosize
-            rowsMax={12}
-            rowsMin={6}
-            value={setting.skippingDirectory}
-            placeholder={'Separate directory with comma.'}
-          />
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {provided => (
+                <List ref={provided.innerRef} {...provided.droppableProps}>
+                  {folderData.map((folder, index) => (
+                    <Draggable
+                      key={folder.name}
+                      draggableId={folder.name}
+                      index={index}
+                    >
+                      {provided => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={{ ...provided.draggableProps.style }}
+                        >
+                          <ListItem>
+                            <ListItemIcon>
+                              <FolderIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={folder.name}
+                              secondary={folder.dir}
+                            />
+                            <ListItemSecondaryAction>
+                              <IconButton
+                                edge="end"
+                                aria-label="edit"
+                                onClick={() => setFolderIndex(index)}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                              <IconButton
+                                edge="end"
+                                aria-label="delete"
+                                onClick={() => handleRemove(folder.name)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </List>
+              )}
+            </Droppable>
+          </DragDropContext>
           <Button
             className={classes.button}
             variant={'outlined'}
@@ -184,6 +243,7 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
 const mapStateToProps = (state: IReduxState) => ({
   setting: state.setting,
   folders: state.folders,
+  currFolderIndex: state.currFolderIndex,
 });
 
 export default connect(mapStateToProps)(Setting);
