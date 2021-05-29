@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
@@ -16,7 +15,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import FolderIcon from '@material-ui/icons/Folder';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import {
   DragDropContext,
@@ -91,15 +89,8 @@ function reorder(list: IFolder[], startIndex: number, endIndex: number) {
   return result;
 }
 
-function Setting({
-  dispatch,
-  folders,
-  setting,
-  currFolderIndex,
-}: ISettingProps) {
+function Setting({ dispatch, folders, setting }: ISettingProps) {
   const classes = useStyles();
-
-  const router = useRouter();
 
   const [folderData, setFolderData] = useState<IFolder[]>(folders);
   const [folderIndex, setFolderIndex] = useState(-1);
@@ -141,7 +132,7 @@ function Setting({
     if (result.source.index !== result.destination.index) {
       const result = reorder(folderData, src, dst);
       updateFolders(result)
-        .then(() => updateFolder(dispatch, result, currFolderIndex))
+        .then(() => updateFolder(dispatch, result))
         .catch(err => console.error(err));
     }
   }
@@ -220,14 +211,6 @@ function Setting({
               )}
             </Droppable>
           </DragDropContext>
-          <Button
-            className={classes.button}
-            variant={'outlined'}
-            onClick={() => router.push('/home')}
-            color={'primary'}
-          >
-            Save
-          </Button>
         </FormControl>
       </Container>
       <EditFolder
@@ -243,7 +226,6 @@ function Setting({
 const mapStateToProps = (state: IReduxState) => ({
   setting: state.setting,
   folders: state.folders,
-  currFolderIndex: state.currFolderIndex,
 });
 
 export default connect(mapStateToProps)(Setting);

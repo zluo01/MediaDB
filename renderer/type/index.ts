@@ -77,14 +77,8 @@ export interface IFolder {
 }
 
 export interface IReduxState {
-  currFolderIndex: number;
   setting: ISetting;
   folders: IFolder[];
-}
-
-export interface IChangeFolderAction {
-  type: typeof CHANGE_FOLDER;
-  payload: number;
 }
 
 export interface IFolderAction {

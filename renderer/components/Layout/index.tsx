@@ -26,13 +26,8 @@ import React, { ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { changeFolder, updateFolder } from '../../lib/store';
-import {
-  IChangeFolderAction,
-  IFolder,
-  IFolderAction,
-  IReduxState,
-} from '../../type';
+import { updateFolder } from '../../lib/store';
+import { IFolder, IFolderAction, IReduxState } from '../../type';
 
 type TProps = {
   show: boolean;
@@ -126,12 +121,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type ILayoutProps = {
   children?: ReactNode;
-  currFolderIndex: number;
+  currFolderIndex?: number;
   folders: IFolder[];
   showPanelName: boolean;
   disableSearch?: boolean;
   updateSearch?: (text: string) => void;
-  dispatch: Dispatch<IFolderAction | IChangeFolderAction>;
+  dispatch: Dispatch<IFolderAction>;
 };
 
 const DirectoryModal = dynamic(() => import('../Directory'), { ssr: false });
@@ -161,10 +156,6 @@ function Layout({
 
   function handleUpdateFolder(folders: IFolder[]) {
     updateFolder(dispatch, folders);
-  }
-
-  function handleChangeFolder(index: number) {
-    changeFolder(dispatch, index);
   }
 
   function handleSearch(
@@ -229,7 +220,7 @@ function Layout({
                       <ListItem
                         button
                         disabled={isCurr}
-                        onClick={() => handleChangeFolder(index)}
+                        onClick={() => router.push(`/folder/${index}`)}
                       >
                         <ListItemIcon>
                           <FolderIcon
@@ -280,7 +271,6 @@ function Layout({
 }
 
 const mapStateToProps = (state: IReduxState) => ({
-  currFolderIndex: state.currFolderIndex,
   showPanelName: state.setting.showSidePanelName,
   folders: state.folders,
 });
