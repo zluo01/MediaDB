@@ -173,6 +173,13 @@ function ScrollTop(props: IScrollProps) {
 
 const FilterSection = dynamic(() => import('../Filter'), { ssr: false });
 
+const initFilterState = {
+  actors: [],
+  genres: [],
+  studios: [],
+  tags: [],
+};
+
 function Content({
   folderInfo,
   folderData,
@@ -187,12 +194,7 @@ function Content({
   const [data, setData] = useState(folderData.data);
   const [sortType, setSortType] = useState<string>(folderData.sort);
 
-  const [filter, setFilter] = useState<IFilterPros>({
-    actors: [],
-    genres: [],
-    studios: [],
-    tags: [],
-  });
+  const [filter, setFilter] = useState<IFilterPros>(initFilterState);
 
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
@@ -228,10 +230,10 @@ function Content({
   }, [currIndex]);
 
   useEffect(() => {
-    setData(folderData.data);
-  }, [folderData]);
+    setData(filterData());
+  }, [sortType, filter, folderData]);
 
-  useEffect(() => {
+  function filterData(): IMediaData[] {
     let media = [...folderData.data];
 
     filter.tags.forEach(t => {
@@ -252,26 +254,22 @@ function Content({
 
     switch (sortType) {
       case DEFAULT:
-        setData(media);
         break;
       case TITLE_ASC:
         media.sort((a: IMediaData, b: IMediaData) =>
           a.title > b.title ? 1 : -1
         );
-        setData(media);
         break;
       case TITLE_DSC:
         media.sort((a: IMediaData, b: IMediaData) =>
           a.title < b.title ? 1 : -1
         );
-        setData(media);
         break;
       case YEAR_DSC:
         if (media[0].type === MOVIE) {
           media.sort((a: IMediaData, b: IMediaData) =>
             (a as IMovieData).year < (b as IMovieData).year ? 1 : -1
           );
-          setData(media);
         }
         break;
       case YEAR_ASC:
@@ -280,10 +278,10 @@ function Content({
             (a as IMovieData).year > (b as IMovieData).year ? 1 : -1
           );
         }
-        setData(media);
         break;
     }
-  }, [sortType, filter]);
+    return media;
+  }
 
   function handleClose(event: React.MouseEvent<EventTarget>) {
     if (

@@ -182,7 +182,11 @@ function Layout({
         <div className={classes.root}>
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-              <Typography variant="h6" noWrap>
+              <Typography
+                variant="h6"
+                noWrap
+                onClick={() => router.push('/home')}
+              >
                 MediaDB
               </Typography>
               <div className={classes.search}>
