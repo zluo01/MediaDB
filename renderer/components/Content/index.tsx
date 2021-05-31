@@ -200,9 +200,6 @@ function Content({
   const [openFilter, setOpenFilter] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  const cWidth = cardSize.width + 15;
-  const cHeight = cardSize.height + 60;
-
   // const contentState = useRef(currIndex);
   const contentState = useRef({
     currIndex: currIndex,
@@ -389,6 +386,10 @@ function Content({
   if (refresh) {
     return <CircularProgress className={classes.progress} />;
   }
+
+  const cWidth = cardSize.width + 15;
+  const cHeight = cardSize.height + 60;
+
   return (
     <AutoSizer>
       {({ width }) => {
@@ -486,8 +487,8 @@ function Content({
               />
             )}
             <GridList
-              cellHeight={cHeight + 28} // height for bottom bar
-              style={{ width: width }}
+              cellHeight={cHeight} // height for bottom bar
+              style={{ width: width, paddingBottom: 28 }}
               cols={columnNumber}
             >
               {data.map((media, index) => {
