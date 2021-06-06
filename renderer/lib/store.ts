@@ -1,5 +1,5 @@
 import { Context, createWrapper, HYDRATE, MakeStore } from 'next-redux-wrapper';
-import { AnyAction, createStore, Dispatch } from 'redux';
+import { AnyAction, createStore, Dispatch, Store } from 'redux';
 
 import { getFolders, getSetting } from '../store';
 import {
@@ -59,8 +59,8 @@ export const updateFolder = (
 };
 
 // create a makeStore function
-const makeStore: MakeStore<IReduxState> = (_context: Context) =>
+const makeStore: MakeStore<Store<IReduxState>> = (_context: Context) =>
   createStore(reducer);
 
 // export an assembled wrapper
-export const wrapper = createWrapper<IReduxState>(makeStore);
+export const wrapper = createWrapper<Store<IReduxState>>(makeStore);

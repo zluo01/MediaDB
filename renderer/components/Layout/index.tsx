@@ -176,6 +176,10 @@ function Layout({
         />
         <meta name="referrer" content="never" />
         <meta name="referrer" content="no-referrer" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
         <title>Media DB</title>
       </Head>
       <main>
@@ -186,6 +190,7 @@ function Layout({
                 variant="h6"
                 noWrap
                 onClick={() => router.push('/home')}
+                style={{ cursor: 'pointer' }}
               >
                 MediaDB
               </Typography>
