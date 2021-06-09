@@ -194,6 +194,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
         case 'mp4':
         case 'mkv':
         case 'f4v':
+        case 'wmv':
           keyFiles.media.push(absolute);
           break;
       }

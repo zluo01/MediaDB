@@ -36,6 +36,44 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+interface IFilterSection {
+  name: string;
+  data: string[];
+  filter: string[];
+  type: FILTER;
+  updateFilter: (type: FILTER, name: string) => void;
+}
+
+function FilterSection({
+  name,
+  data,
+  type,
+  filter,
+  updateFilter,
+}: IFilterSection): JSX.Element {
+  const classes = useStyles();
+
+  return (
+    <React.Fragment>
+      <Typography className={classes.filterTitle} variant="h5" component="h2">
+        {name}
+      </Typography>
+      <div className={classes.filter}>
+        {data.sort().map((value, index) => (
+          <Chip
+            key={index}
+            className={classes.chip}
+            label={value}
+            clickable
+            onClick={() => updateFilter(type, value)}
+            variant={filter.includes(value) ? 'default' : 'outlined'}
+          />
+        ))}
+      </div>
+    </React.Fragment>
+  );
+}
+
 interface IFilerSection {
   folderData: IFolderInfo;
   width: number;
@@ -44,14 +82,13 @@ interface IFilerSection {
   updateFilter: (type: FILTER, name: string) => void;
 }
 
-function FilterSection({
+function Filters({
   folderData,
   width,
   space,
   filter,
   updateFilter,
 }: IFilerSection): JSX.Element {
-  const classes = useStyles();
   return (
     <div
       style={{
@@ -62,76 +99,36 @@ function FilterSection({
         marginBottom: 20,
       }}
     >
-      <Typography className={classes.filterTitle} variant="h5" component="h2">
-        Genres
-      </Typography>
-      <div className={classes.filter}>
-        {folderData.genres.map((value, index) => {
-          return (
-            <Chip
-              key={index}
-              className={classes.chip}
-              label={value}
-              clickable
-              onClick={() => updateFilter(GENRE, value)}
-              variant={filter.genres.includes(value) ? 'default' : 'outlined'}
-            />
-          );
-        })}
-      </div>
-      <Typography className={classes.filterTitle} variant="h5" component="h2">
-        Actors
-      </Typography>
-      <div className={classes.filter}>
-        {folderData.actors.map((value, index) => {
-          return (
-            <Chip
-              key={index}
-              className={classes.chip}
-              label={value}
-              clickable
-              onClick={() => updateFilter(ACTOR, value)}
-              variant={filter.actors.includes(value) ? 'default' : 'outlined'}
-            />
-          );
-        })}
-      </div>
-      <Typography className={classes.filterTitle} variant="h5" component="h2">
-        Studios
-      </Typography>
-      <div className={classes.filter}>
-        {folderData.studios.map((value, index) => {
-          return (
-            <Chip
-              key={index}
-              className={classes.chip}
-              label={value}
-              clickable
-              onClick={() => updateFilter(STUDIO, value)}
-              variant={filter.studios.includes(value) ? 'default' : 'outlined'}
-            />
-          );
-        })}
-      </div>
-      <Typography className={classes.filterTitle} variant="h5" component="h2">
-        Tags
-      </Typography>
-      <div className={classes.filter}>
-        {folderData.tags.map((value, index) => {
-          return (
-            <Chip
-              key={index}
-              className={classes.chip}
-              label={value}
-              clickable
-              onClick={() => updateFilter(TAG, value)}
-              variant={filter.tags.includes(value) ? 'default' : 'outlined'}
-            />
-          );
-        })}
-      </div>
+      <FilterSection
+        name={'Genres'}
+        data={folderData.genres}
+        filter={filter.genres}
+        type={GENRE}
+        updateFilter={updateFilter}
+      />
+      <FilterSection
+        name={'Actors'}
+        data={folderData.actors}
+        filter={filter.actors}
+        type={ACTOR}
+        updateFilter={updateFilter}
+      />
+      <FilterSection
+        name={'Studios'}
+        data={folderData.studios}
+        filter={filter.studios}
+        type={STUDIO}
+        updateFilter={updateFilter}
+      />
+      <FilterSection
+        name={'Tags'}
+        data={folderData.tags}
+        filter={filter.tags}
+        type={TAG}
+        updateFilter={updateFilter}
+      />
     </div>
   );
 }
 
-export default FilterSection;
+export default Filters;

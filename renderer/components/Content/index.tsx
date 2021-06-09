@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
     },
     button: {
+      width: 125,
       color: theme.palette.action.selected,
 
       '&:hover': {
@@ -69,6 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     action: {
+      width: 125,
       color: theme.palette.action.selected,
 
       '&:hover': {

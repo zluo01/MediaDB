@@ -3,7 +3,6 @@ import { AnyAction, createStore, Dispatch, Store } from 'redux';
 
 import { getFolders, getSetting } from '../store';
 import {
-  CHANGE_FOLDER,
   IFolder,
   IFolderAction,
   IReduxState,
@@ -24,8 +23,6 @@ const reducer = (state: IReduxState = initState, action: AnyAction) => {
     case HYDRATE:
       // Attention! This will overwrite client state! Real apps should use proper reconciliation.
       return { ...state, ...action.payload };
-    case CHANGE_FOLDER:
-      return { ...state, currFolderIndex: action.payload };
     case UPDATE_FOLDER:
       return {
         ...state,

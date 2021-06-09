@@ -67,7 +67,6 @@ export interface ISetting {
   cardSize: ICardSize;
 }
 
-export const CHANGE_FOLDER = 'CHANGE_FOLDER';
 export const UPDATE_FOLDER = 'FOLDER';
 export const UPDATE_SETTING = 'SETTING';
 
