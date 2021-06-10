@@ -523,7 +523,9 @@ function Content({
                 );
               })}
             </GridList>
-            <BottomInfoBar selected={data[currIndex]?.title || ''} />
+            <BottomInfoBar
+              selected={data[currIndex]?.title || `Total ${data.length}`}
+            />
             <ScrollTop>
               <Fab
                 className={classes.fab}
