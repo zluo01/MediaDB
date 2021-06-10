@@ -40,8 +40,16 @@ jobs:
         run: |
           echo "VERSION=$(node -pe "require('./package.json').version")" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Upload build artifact
+      - name: Upload build artifact for Linux
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: MediaDB-${{ env.VERSION }}-${{ runner.os }}-amd64
-          path: dist
+          path: dist/MediaDB-${{ env.VERSION }}.AppImage
+          
+      - name: Upload build artifact for Windows
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: MediaDB-${{ env.VERSION }}-${{ runner.os }}-amd64
+          path: dist/win-unpacked/*
