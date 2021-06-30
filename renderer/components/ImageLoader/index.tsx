@@ -1,4 +1,5 @@
 import Skeleton from '@material-ui/lab/Skeleton';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 import { ICardSize } from '../../type';
@@ -10,7 +11,7 @@ interface IImageProps {
   size: ICardSize;
 }
 
-function Image({ dir, title, size }: IImageProps): JSX.Element {
+function ImageHolder({ dir, title, size }: IImageProps): JSX.Element {
   const [data, setData] = useState<string>();
   const [error, setError] = useState();
 
@@ -34,12 +35,8 @@ function Image({ dir, title, size }: IImageProps): JSX.Element {
     );
   }
   return (
-    <img
-      style={{ width: size.width, height: size.height }}
-      alt={title}
-      src={data}
-    />
+    <Image src={data} alt={title} width={size.width} height={size.height} />
   );
 }
 
-export default Image;
+export default ImageHolder;
