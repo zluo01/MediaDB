@@ -27,7 +27,7 @@ function MyApp(props: AppProps): JSX.Element {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        <title>with-typescript-material-ui</title>
+        <title>MediaDB</title>
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />

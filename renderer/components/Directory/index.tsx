@@ -53,15 +53,20 @@ function DirectoryModal({
     setValue({ ...value, name: subDir[subDir.length - 1], dir: dir });
   }
 
-  function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  async function handleSubmit(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
     e.preventDefault();
     setLoading(true);
-    buildDirectory(value.dir)
-      .then(data => updateFolder(addFolder(value, data)))
-      .then(() => setLoading(false))
-      .then(() => setValue({ name: '', dir: '' }))
-      .then(() => close())
-      .catch(error => console.error(error));
+    try {
+      const data = await buildDirectory(value.dir);
+      updateFolder(addFolder(value, data));
+      setLoading(false);
+      setValue({ name: '', dir: '' });
+      close();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   const nameError = folders.map(o => o.name).includes(value.name);

@@ -378,11 +378,14 @@ function Content({
   ) {
     e.preventDefault();
     setRefresh(true);
-    buildDirectory(folderInfo.dir)
-      .then(data => updateFolderInfo(folderInfo.name, data))
-      .then(data => updateData(data))
-      .then(() => setRefresh(false))
-      .catch(err => console.error(err));
+    try {
+      const data = await buildDirectory(folderInfo.dir);
+      await updateFolderInfo(folderInfo.name, data);
+      updateData(data);
+      setRefresh(false);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   if (refresh) {

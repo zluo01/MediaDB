@@ -161,64 +161,70 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
       thumb: [],
     };
 
-    const files = await fs.promises.readdir(currDir, { withFileTypes: true });
-    files.forEach(f => {
-      const fileName = f.name;
-      // Skip hidden folders
-      if (fileName.startsWith('.')) {
-        return;
-      }
-      if (f.isDirectory()) {
-        keyFiles.dir.push(fileName);
-        return;
-      }
-      const absolute = Path.join(currDir, fileName);
-      const ext = getExtension(fileName);
-      switch (ext.toLowerCase()) {
-        case 'nfo':
-          keyFiles.nfo = f.name;
-          break;
-        case 'jpg':
-        case 'png':
-          if (fileName.includes('fanart')) {
-            keyFiles.fanart.push(absolute);
-          } else if (fileName.includes('poster')) {
-            keyFiles.poster.push(absolute);
-          } else if (fileName.includes('thumb')) {
-            keyFiles.thumb.push(absolute);
-          }
-          break;
-        case 'm4v':
-        case 'avi':
-        case 'mpg':
-        case 'mp4':
-        case 'mkv':
-        case 'f4v':
-        case 'wmv':
-          keyFiles.media.push(absolute);
-          break;
-      }
-    });
+    try {
+      const files = await fs.promises.readdir(currDir, { withFileTypes: true });
+      files.forEach(f => {
+        const fileName = f.name;
+        // Skip hidden folders
+        if (fileName.startsWith('.')) {
+          return;
+        }
+        if (f.isDirectory()) {
+          keyFiles.dir.push(fileName);
+          return;
+        }
+        const absolute = Path.join(currDir, fileName);
+        const ext = getExtension(fileName);
+        switch (ext.toLowerCase()) {
+          case 'nfo':
+            keyFiles.nfo = f.name;
+            break;
+          case 'jpg':
+          case 'png':
+            if (fileName.includes('fanart')) {
+              keyFiles.fanart.push(absolute);
+            } else if (fileName.includes('poster')) {
+              keyFiles.poster.push(absolute);
+            } else if (fileName.includes('thumb')) {
+              keyFiles.thumb.push(absolute);
+            }
+            break;
+          case 'm4v':
+          case 'avi':
+          case 'mpg':
+          case 'mp4':
+          case 'mkv':
+          case 'f4v':
+          case 'wmv':
+            keyFiles.media.push(absolute);
+            break;
+        }
+      });
 
-    if (keyFiles.nfo) {
-      const data = await fs.promises.readFile(Path.join(currDir, keyFiles.nfo));
-      const result = parser.parse(data.toString());
-      let info = null;
-      if (result.movie) {
-        info = parseMovieNFO(currDir, result, keyFiles);
+      if (keyFiles.nfo) {
+        const data = await fs.promises.readFile(
+          Path.join(currDir, keyFiles.nfo)
+        );
+        const result = parser.parse(data.toString());
+        let info = null;
+        if (result.movie) {
+          info = parseMovieNFO(currDir, result, keyFiles);
+          queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));
+        } else if (result.tvshow) {
+          info = await parseTVShowNFO(currDir, result, keyFiles);
+        }
+        if (info) {
+          media.push(info);
+          update(tags, info.tag);
+          update(genres, info.genre);
+          update(actors, info.actor);
+          update(studios, info.studio);
+        }
+      } else {
         queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));
-      } else if (result.tvshow) {
-        info = await parseTVShowNFO(currDir, result, keyFiles);
       }
-      if (info) {
-        media.push(info);
-        update(tags, info.tag);
-        update(genres, info.genre);
-        update(actors, info.actor);
-        update(studios, info.studio);
-      }
-    } else {
-      queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));
+    } catch (e) {
+      console.error(e);
     }
   }
 

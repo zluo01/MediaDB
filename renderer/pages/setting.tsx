@@ -101,26 +101,32 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
     }
   }, [folders]);
 
-  function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
-    setSetting({
-      ...setting,
-      showSidePanelName: event.target.checked,
-    })
-      .then(s => updateSetting(dispatch, s))
-      .catch(err => console.error(err));
+  async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
+    try {
+      const s = await setSetting({
+        ...setting,
+        showSidePanelName: event.target.checked,
+      });
+      updateSetting(dispatch, s);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  function handleRemove(name: string) {
-    removeFolder(name)
-      .then(data => updateFolder(dispatch, data))
-      .catch(err => console.error(err));
+  async function handleRemove(name: string) {
+    try {
+      const data = await removeFolder(name);
+      updateFolder(dispatch, data);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   function handleUpdateFolder(folders: IFolder[]) {
     updateFolder(dispatch, folders);
   }
 
-  function onDragEnd(result: DropResult) {
+  async function onDragEnd(result: DropResult) {
     // dropped outside the list
     if (!result.destination) {
       return;
@@ -130,10 +136,13 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
     const dst = result.destination.index;
 
     if (result.source.index !== result.destination.index) {
-      const result = reorder(folderData, src, dst);
-      updateFolders(result)
-        .then(() => updateFolder(dispatch, result))
-        .catch(err => console.error(err));
+      try {
+        const result = reorder(folderData, src, dst);
+        await updateFolders(result);
+        updateFolder(dispatch, result);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
