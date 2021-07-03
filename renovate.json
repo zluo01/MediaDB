@@ -7,12 +7,16 @@
       "automerge": true
     },
     {
-      "matchPackagePatterns": ["eslint"],
-      "groupName": "eslint"
+      "matchPackagePatterns": ["@material-ui"],
+      "groupName": "material-ui"
     },
     {
-      "matchPackagePatterns": ["@types"],
-      "groupName": "types"
+      "matchPackagePatterns": ["next"],
+      "groupName": "next"
+    },
+    {
+      "matchPackagePatterns": ["eslint", "@types", "@typescript"],
+      "groupName": "minorDependencies"
     },
     {
       "matchPackagePatterns": ["react"],
