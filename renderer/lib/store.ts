@@ -1,7 +1,6 @@
 import { Context, createWrapper, HYDRATE, MakeStore } from 'next-redux-wrapper';
 import { AnyAction, createStore, Dispatch, Store } from 'redux';
 
-import { getFolders, getSetting } from '../store';
 import {
   IFolder,
   IFolderAction,
@@ -11,6 +10,7 @@ import {
   UPDATE_FOLDER,
   UPDATE_SETTING,
 } from '../type';
+import { getFolders, getSetting } from '../utils/store';
 
 const initState: IReduxState = {
   setting: getSetting(),

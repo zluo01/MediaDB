@@ -21,7 +21,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-import { updateFolderInfo } from '../../store';
 import {
   ACTOR,
   DEFAULT,
@@ -47,6 +46,7 @@ import {
 } from '../../type';
 import { openFile } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
+import { updateFolderInfo } from '../../utils/store';
 import BottomInfoBar from '../BottomInfoBar';
 import MovieCard from '../MovieCard';
 import TVShowCard from '../TVShowCard';

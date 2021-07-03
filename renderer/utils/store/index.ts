@@ -1,6 +1,6 @@
 import Store from 'electron-store';
 
-import { IFolder, IFolderInfo, ISetting } from '../type';
+import { IFolder, IFolderInfo, ISetting } from '../../type';
 
 const store = new Store();
 

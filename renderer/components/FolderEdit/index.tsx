@@ -7,8 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 
-import { getFolder, updateFolderName } from '../../store';
 import { IFolder } from '../../type';
+import { getFolder, updateFolderName } from '../../utils/store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -9,10 +9,10 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import path from 'path';
 import React, { useState } from 'react';
 
-import { addFolder } from '../../store';
 import { IFolder } from '../../type';
 import { getDirectory } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
+import { addFolder } from '../../utils/store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

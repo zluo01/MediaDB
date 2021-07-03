@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import { updateSetting } from '../../lib/store';
-import { DefaultSetting, setSetting } from '../../store';
 import { ICardSize, IReduxState, ISetting, ISettingAction } from '../../type';
+import { DefaultSetting, setSetting } from '../../utils/store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,15 +45,18 @@ function BottomInfoBar({ selected, setting, dispatch }: IBar): JSX.Element {
     return Math.round(ratio * 10) * 10;
   }
 
-  function onChange(_event: any, value: number | number[]) {
+  async function onChange(_event: any, value: number | number[]) {
     const ratio = (value as number) / 100;
     const newSize: ICardSize = {
       width: DefaultSetting.cardSize.width * ratio,
       height: DefaultSetting.cardSize.height * ratio,
     };
-    setSetting({ ...setting, cardSize: newSize })
-      .then(setting => updateSetting(dispatch, setting))
-      .catch(err => console.error(err));
+    try {
+      const newSetting = await setSetting({ ...setting, cardSize: newSize });
+      updateSetting(dispatch, newSetting);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return (

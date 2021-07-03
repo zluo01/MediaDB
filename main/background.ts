@@ -1,6 +1,5 @@
 import { app, dialog, ipcMain } from 'electron';
 import serve from 'electron-serve';
-import fs from 'fs';
 
 import { createWindow } from './helpers';
 
@@ -36,8 +35,4 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle('showDialog', async _event => {
   return await dialog.showOpenDialog({ properties: ['openDirectory'] });
-});
-
-ipcMain.handle('readImage', async (_event, dir) => {
-  return await fs.promises.readFile(dir, { encoding: 'base64' });
 });

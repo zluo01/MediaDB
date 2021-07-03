@@ -27,7 +27,6 @@ import { Dispatch } from 'redux';
 
 import Layout from '../components/Layout';
 import { updateFolder, updateSetting } from '../lib/store';
-import { removeFolder, setSetting, updateFolders } from '../store';
 import {
   IFolder,
   IFolderAction,
@@ -35,6 +34,7 @@ import {
   ISetting,
   ISettingAction,
 } from '../type';
+import { removeFolder, setSetting, updateFolders } from '../utils/store';
 
 interface ISettingProps {
   folders: IFolder[];
