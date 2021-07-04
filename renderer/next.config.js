@@ -1,11 +1,22 @@
-module.exports = {
-  webpack5: false, // temporary work around
-  webpack: config => {
-    config.target = 'electron-renderer';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 
-    // Overcome Webpack referencing `window` in chunks
-    config.output.globalObject = `(typeof self !== 'undefined' ? self : this)`;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withTM = require('next-transpile-modules');
 
-    return config;
-  },
-};
+module.exports = withBundleAnalyzer(
+  withTM(['@material-ui/core', '@material-ui/icons'])({
+    webpack5: false, // temporary work around
+    webpack: config => {
+      config.target = 'electron-renderer';
+
+      // Overcome Webpack referencing `window` in chunks
+      config.output.globalObject = `(typeof self !== 'undefined' ? self : this)`;
+
+      return config;
+    },
+    transpileModules: ['@material-ui/core', '@material-ui/icons'],
+  })
+);

@@ -1,6 +1,4 @@
-import Slider from '@material-ui/core/Slider';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import { Slider, Tooltip, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -43,13 +41,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface IBar {
+interface IFooter {
   selected: string;
   setting: ISetting;
   dispatch: Dispatch<ISettingAction>;
 }
 
-function Footer({ selected, setting, dispatch }: IBar): JSX.Element {
+function Footer({ selected, setting, dispatch }: IFooter): JSX.Element {
   const classes = useStyles({ show: setting.showSidePanelName });
 
   function computeValue(): number {

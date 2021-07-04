@@ -1,17 +1,19 @@
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Fab from '@material-ui/core/Fab';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import Grow from '@material-ui/core/Grow';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import Zoom from '@material-ui/core/Zoom';
+import {
+  Button,
+  CircularProgress,
+  ClickAwayListener,
+  Fab,
+  GridList,
+  GridListTile,
+  Grow,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  useScrollTrigger,
+  Zoom,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -203,7 +205,6 @@ function Content({
   const [openFilter, setOpenFilter] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  // const contentState = useRef(currIndex);
   const contentState = useRef({
     currIndex: currIndex,
     columnNumber: 0,

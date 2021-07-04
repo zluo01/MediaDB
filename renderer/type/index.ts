@@ -113,3 +113,12 @@ export interface ICardStyle {
 export type TProps = {
   show: boolean;
 };
+
+export interface IKeyFiles {
+  nfo?: string;
+  fanart: string[];
+  poster: string[];
+  thumb: string[];
+  media: string[];
+  dir: string[];
+}

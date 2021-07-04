@@ -1,6 +1,6 @@
 {
   "name": "mediadb",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "description": "database for movie and tv shows",
   "main": "app/background.js",
@@ -14,7 +14,8 @@
     "type-check": "tsc --pretty --noEmit",
     "format": "prettier --write .",
     "lint": "eslint . --ext ts --ext tsx --ext js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "analyze": "ANALYZE=true npm run-script build"
   },
   "lint-staged": {
     "*.{ts,tsx,js}": [
@@ -31,7 +32,7 @@
   "devDependencies": {
     "@material-ui/core": "4.11.4",
     "@material-ui/icons": "4.11.2",
-    "@material-ui/lab": "4.0.0-alpha.58",
+    "@next/bundle-analyzer": "^11.0.1",
     "@trivago/prettier-plugin-sort-imports": "2.0.2",
     "@types/node": "14.17.4",
     "@types/react": "17.0.13",
@@ -42,6 +43,7 @@
     "@types/react-virtualized-auto-sizer": "1.0.0",
     "@typescript-eslint/eslint-plugin": "4.28.1",
     "@typescript-eslint/parser": "4.28.1",
+    "babel-plugin-import": "^1.13.3",
     "electron": "13.1.5",
     "electron-builder": "22.11.7",
     "eslint": "7.29.0",
@@ -57,6 +59,7 @@
     "lint-staged": "11.0.0",
     "next": "11.0.1",
     "next-redux-wrapper": "7.0.2",
+    "next-transpile-modules": "^8.0.0",
     "nextron": "6.0.6",
     "prettier": "2.3.2",
     "react": "17.0.2",
