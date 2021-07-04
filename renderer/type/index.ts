@@ -109,3 +109,7 @@ export interface ICardStyle {
   height: number;
   elevation: number;
 }
+
+export type TProps = {
+  show: boolean;
+};

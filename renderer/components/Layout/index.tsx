@@ -27,11 +27,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import { updateFolder } from '../../lib/store';
-import { IFolder, IFolderAction, IReduxState } from '../../type';
-
-type TProps = {
-  show: boolean;
-};
+import { IFolder, IFolderAction, IReduxState, TProps } from '../../type';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -18,6 +18,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import SortIcon from '@material-ui/icons/Sort';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useRef, useState } from 'react';
+import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
@@ -47,7 +48,7 @@ import {
 import { openFile } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
 import { updateFolderInfo } from '../../utils/store';
-import BottomInfoBar from '../BottomInfoBar';
+import Footer from '../Footer';
 import MovieCard from '../MovieCard';
 import TVShowCard from '../TVShowCard';
 
@@ -306,6 +307,7 @@ function Content({
     const { currIndex, columnNumber } = contentState.current;
     const c = currIndex % columnNumber;
     const r = Math.floor(currIndex / columnNumber);
+    let index;
     switch (ev.key) {
       case 'ArrowLeft':
         setIndex(currIndex - 1 < 0 ? data.length - 1 : currIndex - 1);
@@ -315,11 +317,19 @@ function Content({
         break;
       case 'ArrowUp':
         ev.preventDefault();
-        setIndex(Math.max((r - 1) * columnNumber + c, 0));
+        index = (r - 1) * columnNumber + c;
+        if (index < 0) {
+          return;
+        }
+        setIndex(index);
         break;
       case 'ArrowDown':
         ev.preventDefault();
-        setIndex(Math.min((r + 1) * columnNumber + c, data.length - 1));
+        index = (r + 1) * columnNumber + c;
+        if (index > data.length - 1) {
+          return;
+        }
+        setIndex(index);
         break;
       case 'Enter':
         if (data[currIndex].type === MOVIE) {
@@ -503,30 +513,38 @@ function Content({
                   elevation: currIndex === index ? 5 : 0,
                 };
                 return (
-                  <GridListTile key={index}>
-                    {media.type === MOVIE ? (
-                      <MovieCard
-                        style={style}
-                        media={media as IMovieData}
-                        size={cardSize}
-                        select={() => setIndex(index)}
-                        index={index}
-                      />
-                    ) : (
-                      <TVShowCard
-                        style={style}
-                        media={media as ITVShowData}
-                        size={cardSize}
-                        select={() => setIndex(index)}
-                        selected={currIndex === index}
-                        index={index}
-                      />
-                    )}
-                  </GridListTile>
+                  <LazyLoad
+                    key={index}
+                    height={cHeight}
+                    offset={cHeight * 2}
+                    resize
+                    once
+                  >
+                    <GridListTile>
+                      {media.type === MOVIE ? (
+                        <MovieCard
+                          style={style}
+                          media={media as IMovieData}
+                          size={cardSize}
+                          select={() => setIndex(index)}
+                          index={index}
+                        />
+                      ) : (
+                        <TVShowCard
+                          style={style}
+                          media={media as ITVShowData}
+                          size={cardSize}
+                          select={() => setIndex(index)}
+                          selected={currIndex === index}
+                          index={index}
+                        />
+                      )}
+                    </GridListTile>
+                  </LazyLoad>
                 );
               })}
             </GridList>
-            <BottomInfoBar
+            <Footer
               selected={data[currIndex]?.title || `Total ${data.length}`}
             />
             <ScrollTop>

@@ -1,32 +1,44 @@
 import Slider from '@material-ui/core/Slider';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import { updateSetting } from '../../lib/store';
-import { ICardSize, IReduxState, ISetting, ISettingAction } from '../../type';
+import {
+  ICardSize,
+  IReduxState,
+  ISetting,
+  ISettingAction,
+  TProps,
+} from '../../type';
 import { DefaultSetting, setSetting } from '../../utils/store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       position: 'fixed',
-      width: '100%',
+      width: (props: TProps) =>
+        props.show ? 'calc(100% - 240px)' : 'calc(100% - 60px)',
       bottom: 0,
-      right: 0,
+      left: (props: TProps) => (props.show ? 240 : 60),
       height: 28,
       backgroundColor: theme.palette.primary.main,
+      paddingLeft: 5,
+      paddingRight: 20,
+      display: 'flex',
+      flexFlow: 'row nowrap',
+      justifyContent: 'space-between',
     },
     slider: {
       width: 300,
-      marginRight: 25,
-      float: 'right',
       color: theme.palette.action.selected,
     },
     text: {
-      marginLeft: 72,
       color: '#6f7a83',
+      cursor: 'default',
+      width: 'calc(100% - 320px)',
     },
   })
 );
@@ -37,8 +49,8 @@ interface IBar {
   dispatch: Dispatch<ISettingAction>;
 }
 
-function BottomInfoBar({ selected, setting, dispatch }: IBar): JSX.Element {
-  const classes = useStyles();
+function Footer({ selected, setting, dispatch }: IBar): JSX.Element {
+  const classes = useStyles({ show: setting.showSidePanelName });
 
   function computeValue(): number {
     const ratio = setting.cardSize.width / DefaultSetting.cardSize.width;
@@ -61,14 +73,17 @@ function BottomInfoBar({ selected, setting, dispatch }: IBar): JSX.Element {
 
   return (
     <div className={classes.root}>
-      <Typography
-        className={classes.text}
-        variant="body1"
-        component="span"
-        display={'inline'}
-      >
-        {selected}
-      </Typography>
+      <Tooltip title={selected}>
+        <Typography
+          className={classes.text}
+          variant="body1"
+          component="span"
+          display={'inline'}
+          noWrap
+        >
+          {selected}
+        </Typography>
+      </Tooltip>
       <Slider
         className={classes.slider}
         defaultValue={100}
@@ -89,4 +104,4 @@ const mapStateToProps = (state: IReduxState) => ({
   setting: state.setting,
 });
 
-export default connect(mapStateToProps)(BottomInfoBar);
+export default connect(mapStateToProps)(Footer);

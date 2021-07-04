@@ -12,6 +12,7 @@ import {
   MOVIE,
   TV_SERIES,
 } from '../../type';
+import { cacheImage } from '../electron';
 
 interface IKeyFiles {
   nfo?: string;
@@ -214,6 +215,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
           info = await parseTVShowNFO(currDir, result, keyFiles);
         }
         if (info) {
+          await cacheImage(info.poster);
           media.push(info);
           update(tags, info.tag);
           update(genres, info.genre);
