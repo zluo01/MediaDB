@@ -1,26 +1,19 @@
 import {
-  Button,
-  CircularProgress,
   ClickAwayListener,
   Fab,
-  GridList,
-  GridListTile,
   Grow,
   MenuItem,
   MenuList,
-  Paper,
-  Popper,
   useScrollTrigger,
   Zoom,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core/styles';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SortIcon from '@material-ui/icons/Sort';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useRef, useState } from 'react';
-import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
@@ -30,14 +23,12 @@ import {
   FILTER,
   GENRE,
   ICardSize,
-  ICardStyle,
   IFilterPros,
   IFolder,
   IFolderInfo,
   IMediaData,
   IMovieData,
   IReduxState,
-  ITVShowData,
   MOVIE,
   SORT,
   STUDIO,
@@ -51,71 +42,33 @@ import { openFile } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
 import { updateFolderInfo } from '../../utils/store';
 import Footer from '../Footer';
-import MovieCard from '../MovieCard';
-import TVShowCard from '../TVShowCard';
+import MediaGrid from './content';
+import {
+  ActionButton,
+  Divider,
+  Loading,
+  RefreshButton,
+  StyledPaper,
+  StyledPopper,
+} from './styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    divider: {
-      backgroundColor: theme.palette.secondary.main,
-      borderColor: theme.palette.secondary.main,
-      color: theme.palette.secondary.main,
-      flexGrow: 1,
-      margin: theme.spacing(1),
-    },
-    button: {
-      width: 125,
-      color: theme.palette.action.selected,
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+    color: theme.palette.action.hover,
+  },
+}));
 
-      '&:hover': {
-        backgroundColor: theme.palette.action.selected,
-        color: theme.palette.action.hover,
-      },
-    },
-    action: {
-      width: 125,
-      color: theme.palette.action.selected,
+const StyledFab = styled(Fab)(({ theme }) => ({
+  backgroundColor: theme.palette.action.selected,
+  color: theme.palette.action.hover,
+}));
 
-      '&:hover': {
-        backgroundColor: theme.palette.action.selected,
-        color: theme.palette.action.hover,
-      },
-
-      '& > *': {
-        marginRight: theme.spacing(1),
-        marginLeft: theme.spacing(1),
-      },
-    },
-    popper: {
-      zIndex: theme.zIndex.drawer + 1,
-    },
-    paper: {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.action.selected,
-    },
-    paperItem: {
-      '&:hover': {
-        backgroundColor: theme.palette.action.selected,
-        color: theme.palette.action.hover,
-      },
-    },
-    scroll: {
-      position: 'fixed',
-      bottom: theme.spacing(4),
-      right: theme.spacing(2),
-    },
-    fab: {
-      backgroundColor: theme.palette.action.selected,
-      color: theme.palette.action.hover,
-    },
-    progress: {
-      color: theme.palette.action.selected,
-      position: 'fixed',
-      right: '50%',
-      top: '38.2%',
-    },
-  })
-);
+const StyledScroll = styled('div')(({ theme }) => ({
+  position: 'fixed',
+  bottom: theme.spacing(4),
+  right: theme.spacing(2),
+}));
 
 const SORT_TYPES = [DEFAULT, TITLE_ASC, TITLE_DSC, YEAR_ASC, YEAR_DSC];
 
@@ -150,7 +103,6 @@ interface IScrollProps {
 
 function ScrollTop(props: IScrollProps) {
   const { children } = props;
-  const classes = useStyles();
 
   const trigger = useScrollTrigger({
     disableHysteresis: true,
@@ -169,9 +121,9 @@ function ScrollTop(props: IScrollProps) {
 
   return (
     <Zoom in={trigger}>
-      <div onClick={handleClick} role="presentation" className={classes.scroll}>
+      <StyledScroll onClick={handleClick} role="presentation">
         {children}
-      </div>
+      </StyledScroll>
     </Zoom>
   );
 }
@@ -192,7 +144,6 @@ function Content({
   searchState,
   updateData,
 }: IContentProps): JSX.Element {
-  const classes = useStyles();
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const [currIndex, setCurrIndex] = useState(-1);
@@ -226,7 +177,7 @@ function Content({
   useEffect(() => {
     const anchor = document.getElementById(`c${currIndex}`);
     if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [currIndex]);
 
@@ -284,7 +235,7 @@ function Content({
     return media;
   }
 
-  function handleClose(event: React.MouseEvent<EventTarget>) {
+  function handleClose(event: MouseEvent | TouchEvent) {
     if (
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)
@@ -400,11 +351,12 @@ function Content({
   }
 
   if (refresh) {
-    return <CircularProgress className={classes.progress} />;
+    return <Loading />;
   }
 
+  const cInfo = 60;
   const cWidth = cardSize.width + 15;
-  const cHeight = cardSize.height + 60;
+  const cHeight = cardSize.height + cInfo;
 
   return (
     <AutoSizer>
@@ -413,7 +365,7 @@ function Content({
         if (columnNumber !== contentState.current.columnNumber) {
           setColumnNum(columnNumber);
         }
-        const w = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
+        const space = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
         return (
           <>
             <div
@@ -422,23 +374,21 @@ function Content({
                 display: 'flex',
                 flexFlow: 'row nowrap',
                 flex: 1,
-                width: width - 2 * w,
-                marginLeft: w,
+                width: width - 2 * space,
+                marginLeft: space,
                 alignItems: 'center',
               }}
             >
-              <hr className={classes.divider} />
-              <Button
-                className={classes.action}
+              <Divider />
+              <ActionButton
                 size={'small'}
                 startIcon={<FilterListIcon />}
                 disabled={searchState}
                 onClick={() => setOpenFilter(prevState => !prevState)}
               >
                 Filter
-              </Button>
-              <Button
-                className={classes.action}
+              </ActionButton>
+              <ActionButton
                 size={'small'}
                 startIcon={<SortIcon />}
                 ref={anchorRef}
@@ -448,9 +398,8 @@ function Content({
                 onClick={handleToggle}
               >
                 {sortType}
-              </Button>
-              <Popper
-                className={classes.popper}
+              </ActionButton>
+              <StyledPopper
                 open={open}
                 anchorEl={anchorRef.current}
                 role={undefined}
@@ -465,97 +414,61 @@ function Content({
                         placement === 'bottom' ? 'center top' : 'center bottom',
                     }}
                   >
-                    <Paper className={classes.paper}>
+                    <StyledPaper>
                       <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow">
                           {SORT_TYPES.filter(o => o !== sortType).map(type => (
-                            <MenuItem
+                            <StyledMenuItem
                               key={type}
-                              className={classes.paperItem}
                               onClick={() => updateSortType(type)}
                             >
                               {type}
-                            </MenuItem>
+                            </StyledMenuItem>
                           ))}
                         </MenuList>
                       </ClickAwayListener>
-                    </Paper>
+                    </StyledPaper>
                   </Grow>
                 )}
-              </Popper>
-              <Button
-                className={classes.button}
+              </StyledPopper>
+              <RefreshButton
                 size={'small'}
                 startIcon={<RefreshIcon />}
                 onClick={updateLibrary}
                 disabled={searchState}
               >
                 Refresh
-              </Button>
+              </RefreshButton>
             </div>
             {openFilter && (
               <FilterSection
                 folderData={folderData}
                 width={width}
-                space={w}
+                space={space}
                 filter={filter}
                 updateFilter={updateFilter}
               />
             )}
-            <GridList
-              cellHeight={cHeight} // height for bottom bar
-              style={{ width: width, paddingBottom: 28 }}
-              cols={columnNumber}
-            >
-              {data.map((media, index) => {
-                const style: ICardStyle = {
-                  width: cWidth + w * 2,
-                  height: cHeight,
-                  elevation: currIndex === index ? 5 : 0,
-                };
-                return (
-                  <LazyLoad
-                    key={index}
-                    height={cHeight}
-                    offset={cHeight * 2}
-                    resize
-                    once
-                  >
-                    <GridListTile>
-                      {media.type === MOVIE ? (
-                        <MovieCard
-                          style={style}
-                          media={media as IMovieData}
-                          size={cardSize}
-                          select={() => setIndex(index)}
-                          index={index}
-                        />
-                      ) : (
-                        <TVShowCard
-                          style={style}
-                          media={media as ITVShowData}
-                          size={cardSize}
-                          select={() => setIndex(index)}
-                          selected={currIndex === index}
-                          index={index}
-                        />
-                      )}
-                    </GridListTile>
-                  </LazyLoad>
-                );
-              })}
-            </GridList>
+            <MediaGrid
+              size={{
+                columnNumber: columnNumber,
+                cHeight: cHeight,
+                cWidth: cWidth,
+                space: space,
+                width: width,
+                cardSize: cardSize,
+              }}
+              data={data}
+              select={setIndex}
+              currIndex={currIndex}
+            />
             <Footer
               selected={data[currIndex]?.title || `Total ${data.length}`}
             />
             <ScrollTop>
-              <Fab
-                className={classes.fab}
-                size="small"
-                aria-label="scroll back to top"
-              >
+              <StyledFab size="small" aria-label="scroll back to top">
                 <KeyboardArrowUpIcon />
-              </Fab>
+              </StyledFab>
             </ScrollTop>
           </>
         );

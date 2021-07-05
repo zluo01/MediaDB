@@ -21,7 +21,7 @@ export const ActionButtonGroups = styled(DialogActions)(({ theme }) => ({
 }));
 
 export const DialogButton = styled(Button)(({ theme }) => ({
-  width: 80,
+  width: 100,
   color: theme.palette.action.selected,
 
   '&:hover': {

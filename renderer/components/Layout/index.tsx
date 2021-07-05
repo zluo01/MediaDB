@@ -59,6 +59,15 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
 }));
 
+const Root = styled(Box)(() => ({
+  display: 'flex',
+}));
+
+const MainContent = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(5),
+}));
+
 const Drawer = dynamic(() => import('./drawer'), { ssr: false });
 
 type ILayoutProps = {
@@ -102,7 +111,7 @@ function Layout({
         <meta name="referrer" content="no-referrer" />
         <title>Media DB</title>
       </Head>
-      <Box sx={{ display: 'flex' }}>
+      <Root>
         <StyledAppBar position="fixed">
           <Toolbar>
             <Typography
@@ -136,17 +145,11 @@ function Layout({
           folders={folders}
           currFolderIndex={currFolderIndex}
         />
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 5,
-          }}
-        >
+        <MainContent component="main">
           <Toolbar id="back-to-top-anchor" />
           {children}
-        </Box>
-      </Box>
+        </MainContent>
+      </Root>
     </>
   );
 }
