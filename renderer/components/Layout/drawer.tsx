@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   Drawer,
   List,
@@ -8,43 +9,32 @@ import {
   Toolbar,
   Tooltip,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import FolderIcon from '@material-ui/icons/Folder';
 import SettingsIcon from '@material-ui/icons/Settings';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import { updateFolder } from '../../lib/store';
-import { IFolder, IFolderAction, IReduxState, TProps } from '../../type';
+import { IFolder, IFolderAction } from '../../type';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    drawer: {
-      width: (props: TProps) => (props.show ? 240 : 60),
-      flexShrink: 0,
-    },
-    drawerPaper: {
-      width: (props: TProps) => (props.show ? 240 : 60),
-      backgroundColor: theme.palette.secondary.main,
-    },
-    drawerContainer: {
-      overflow: 'hidden',
-    },
-    functionList: {
-      width: '100%',
-      bottom: 0,
-      position: 'absolute',
-      overflow: 'hidden',
-    },
-    icon: {
-      fill: '#6f7a83',
-    },
-  })
-);
+const FunctionList = styled(List)(() => ({
+  width: '100%',
+  bottom: 0,
+  position: 'absolute',
+  overflow: 'hidden',
+}));
+
+const Panel = styled(Drawer)(({ theme }) => ({
+  flexShrink: 0,
+  [`& .MuiDrawer-paper`]: {
+    boxSizing: 'border-box',
+    backgroundColor: theme.palette.secondary.main,
+  },
+}));
 
 const DirectoryModal = dynamic(() => import('../Directory'), { ssr: false });
 
@@ -63,8 +53,6 @@ function SidePanel({
 }: ISidePanel): JSX.Element {
   const router = useRouter();
 
-  const classes = useStyles({ show: showPanelName });
-
   const [openModal, setOpenModal] = useState(false);
 
   function handleOpen() {
@@ -81,15 +69,17 @@ function SidePanel({
 
   return (
     <>
-      <Drawer
-        className={classes.drawer}
+      <Panel
         variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
+        sx={{
+          width: showPanelName ? 240 : 60,
+          [`& .MuiDrawer-paper`]: {
+            width: showPanelName ? 240 : 60,
+          },
         }}
       >
         <Toolbar />
-        <div className={classes.drawerContainer}>
+        <Box sx={{ overflow: 'hidden' }}>
           <List>
             {folders.map((folder, index) => {
               const isCurr = index === currFolderIndex;
@@ -113,23 +103,23 @@ function SidePanel({
               );
             })}
           </List>
-          <List className={classes.functionList}>
+          <FunctionList>
             <Divider />
             <ListItem button onClick={handleOpen}>
               <ListItemIcon>
-                <AddIcon className={classes.icon} />
+                <AddIcon sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
               {showPanelName && <ListItemText primary={'Add Video'} />}
             </ListItem>
             <ListItem button onClick={() => router.push('/setting')}>
               <ListItemIcon>
-                <SettingsIcon className={classes.icon} />
+                <SettingsIcon sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
               {showPanelName && <ListItemText primary={'Setting'} />}
             </ListItem>
-          </List>
-        </div>
-      </Drawer>
+          </FunctionList>
+        </Box>
+      </Panel>
       <DirectoryModal
         open={openModal}
         close={handleClose}
@@ -140,9 +130,4 @@ function SidePanel({
   );
 }
 
-const mapStateToProps = (state: IReduxState) => ({
-  showPanelName: state.setting.showSidePanelName,
-  folders: state.folders,
-});
-
-export default connect(mapStateToProps)(SidePanel);
+export default SidePanel;
