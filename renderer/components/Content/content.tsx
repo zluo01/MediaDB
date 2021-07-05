@@ -1,10 +1,23 @@
-import { ImageListItem, Typography } from '@material-ui/core';
+import {
+  ClickAwayListener,
+  Fade,
+  ImageListItem,
+  Popper,
+  Typography,
+} from '@material-ui/core';
 import { lighten, useTheme } from '@material-ui/core/styles';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { ICardSize, IMediaData, IMovieData, MOVIE } from '../../type';
+import {
+  ICardSize,
+  IMediaData,
+  IMovieData,
+  MOVIE,
+  TV_SERIES,
+} from '../../type';
 import { openFile } from '../../utils/electron';
 import Image from '../ImageLoader';
+import Menu from './showMenu';
 import { CardPaper, CardGrid, CardInfo } from './styles';
 
 interface ContentSize {
@@ -26,6 +39,15 @@ interface ICardProps {
 function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
   const theme = useTheme();
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'transitions-popper' : undefined;
+
   return (
     <CardGrid
       cols={size.columnNumber}
@@ -36,18 +58,15 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
       {data.map((media, index) => {
         const elevation = currIndex === index ? 5 : 0;
         return (
-          // <LazyLoad
-          //   key={index}
-          //   height={cHeight}
-          //   offset={cHeight * 2}
-          //   resize
-          //   once
-          // >
           <ImageListItem
             key={media.poster}
             id={`c${index}`}
             onClick={() => select(index)}
-            onDoubleClick={() => openFile((media as IMovieData).file)} // Todo fix
+            onDoubleClick={e =>
+              media.type === MOVIE
+                ? openFile((media as IMovieData).file)
+                : handleClick(e)
+            }
             sx={{
               width: size.cWidth + size.space * 2,
               height: size.cHeight,
@@ -84,8 +103,47 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
                 sx={{ width: size.cardSize.width }}
               />
             </CardPaper>
+            {media.type === TV_SERIES && (
+              <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                <Popper
+                  id={id}
+                  placement="bottom"
+                  disablePortal={false}
+                  open={open && currIndex === index}
+                  anchorEl={anchorEl}
+                  modifiers={[
+                    {
+                      name: 'flip',
+                      enabled: true,
+                      options: {
+                        altBoundary: true,
+                        rootBoundary: 'document',
+                        padding: 8,
+                      },
+                    },
+                    {
+                      name: 'preventOverflow',
+                      enabled: true,
+                      options: {
+                        altAxis: true,
+                        altBoundary: true,
+                        tether: true,
+                        rootBoundary: 'document',
+                        padding: 8,
+                      },
+                    },
+                  ]}
+                  transition
+                >
+                  {({ TransitionProps }) => (
+                    <Fade {...TransitionProps} timeout={350}>
+                      <Menu data={media} />
+                    </Fade>
+                  )}
+                </Popper>
+              </ClickAwayListener>
+            )}
           </ImageListItem>
-          // </LazyLoad>
         );
       })}
     </CardGrid>
