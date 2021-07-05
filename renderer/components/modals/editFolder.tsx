@@ -1,28 +1,14 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Dialog, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 
 import { IFolder } from '../../type';
 import { getFolder, updateFolderName } from '../../utils/store';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-    title: {
-      textColor: theme.palette.text.primary,
-      backgroundColor: theme.palette.primary.main,
-    },
-  })
-);
+import {
+  ActionButtonGroups,
+  ModalContent,
+  DialogButton,
+  ModalTitle,
+} from './styles';
 
 interface IFolderNameEdit {
   open: boolean;
@@ -37,8 +23,6 @@ function FolderNameEdit({
   folderIndex,
   updateFolder,
 }: IFolderNameEdit): JSX.Element {
-  const classes = useStyles();
-
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -71,27 +55,29 @@ function FolderNameEdit({
       fullWidth={true}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle className={classes.title}>Name</DialogTitle>
-      <DialogContent className={classes.root}>
+      <ModalTitle>Change Name</ModalTitle>
+      <ModalContent>
         <TextField
           id="name"
           label="Name"
           type="text"
+          margin="normal"
+          variant="standard"
           value={name}
           onChange={e => setName(e.target.value)}
           error={!name}
           required
           fullWidth
         />
-      </DialogContent>
-      <DialogActions className={classes.root}>
-        <Button onClick={close} disabled={loading}>
+      </ModalContent>
+      <ActionButtonGroups>
+        <DialogButton onClick={close} disabled={loading}>
           Cancel
-        </Button>
-        <Button onClick={handleSubmit} disabled={loading}>
+        </DialogButton>
+        <DialogButton onClick={handleSubmit} disabled={loading}>
           {loading ? 'loading...' : 'Change'}
-        </Button>
-      </DialogActions>
+        </DialogButton>
+      </ActionButtonGroups>
     </Dialog>
   );
 }

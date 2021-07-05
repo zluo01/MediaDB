@@ -23,7 +23,7 @@ import { updateFolder } from '../../lib/store';
 import { IFolder, IFolderAction, ISettingAction } from '../../type';
 import { removeFolder, updateFolders } from '../../utils/store';
 
-const EditFolder = dynamic(() => import('./folderEdit'), {
+const EditFolder = dynamic(() => import('../modals/editFolder'), {
   ssr: false,
 });
 
@@ -105,6 +105,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
                         />
                         <ListItemSecondaryAction>
                           <IconButton
+                            size={'large'}
                             edge="end"
                             aria-label="edit"
                             onClick={() => setFolderIndex(index)}
@@ -112,6 +113,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
                             <EditIcon />
                           </IconButton>
                           <IconButton
+                            size={'large'}
                             edge="end"
                             aria-label="delete"
                             onClick={() => handleRemove(folder.name)}

@@ -1,3 +1,5 @@
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
 import type { AppProps } from 'next/app';
@@ -8,19 +10,15 @@ import React from 'react';
 import { wrapper } from '../lib/store';
 import { theme } from '../lib/theme';
 
+const cache = createCache({ key: 'css' });
+cache.compat = true;
+
 function MyApp(props: AppProps): JSX.Element {
   const router = useRouter();
   const { Component, pageProps } = props;
 
-  React.useEffect(() => {
-    const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement?.removeChild(jssStyles);
-    }
-  }, []);
-
   return (
-    <React.Fragment>
+    <CacheProvider value={cache}>
       <Head>
         <meta charSet="utf-8" />
         <meta
@@ -33,7 +31,7 @@ function MyApp(props: AppProps): JSX.Element {
         <CssBaseline />
         <Component {...pageProps} key={router.asPath} />
       </ThemeProvider>
-    </React.Fragment>
+    </CacheProvider>
   );
 }
 

@@ -1,12 +1,5 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Dialog, IconButton, TextField } from '@material-ui/core';
+import { styled } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import path from 'path';
 import React, { useState } from 'react';
@@ -15,18 +8,12 @@ import { IFolder } from '../../type';
 import { getDirectory } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
 import { addFolder } from '../../utils/store';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-    title: {
-      textColor: theme.palette.text.primary,
-      backgroundColor: theme.palette.primary.main,
-    },
-  })
-);
+import {
+  ModalTitle,
+  ModalContent,
+  ActionButtonGroups,
+  DialogButton,
+} from './styles';
 
 interface IDirectoryModal {
   open: boolean;
@@ -34,6 +21,14 @@ interface IDirectoryModal {
   folders: IFolder[];
   updateFolder: (folders: IFolder[]) => void;
 }
+
+const MoreButton = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.text.primary,
+
+  '&:hover': {
+    color: theme.palette.action.selected,
+  },
+}));
 
 function DirectoryModal({
   open,
@@ -46,8 +41,6 @@ function DirectoryModal({
     name: '',
   });
   const [loading, setLoading] = useState(false);
-
-  const classes = useStyles();
 
   async function handleDirectory() {
     const dir = await getDirectory();
@@ -71,6 +64,14 @@ function DirectoryModal({
     }
   }
 
+  async function handleClose() {
+    setValue({
+      dir: '',
+      name: '',
+    });
+    close();
+  }
+
   const nameError = folders.map(o => o.name).includes(value.name);
 
   return (
@@ -80,22 +81,23 @@ function DirectoryModal({
       fullWidth={true}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle className={classes.title} id="alert-dialog-slide-title">
-        Add Directory
-      </DialogTitle>
-      <DialogContent className={classes.root}>
+      <ModalTitle id="alert-dialog-slide-title">Add Directory</ModalTitle>
+      <ModalContent>
         <TextField
           id="dir"
           label="Directory"
+          margin="normal"
+          variant="standard"
           value={value.dir}
           InputProps={{
             endAdornment: (
-              <Button onClick={handleDirectory}>
+              <MoreButton onClick={handleDirectory}>
                 <MoreHorizIcon />
-              </Button>
+              </MoreButton>
             ),
           }}
           onChange={e => setValue({ ...value, dir: e.target.value })}
+          autoFocus
           required
           fullWidth
         />
@@ -103,6 +105,8 @@ function DirectoryModal({
           id="name"
           label="Name"
           type="text"
+          margin="dense"
+          variant="standard"
           value={value.name}
           onChange={e => setValue({ ...value, name: e.target.value })}
           error={nameError || !value.name}
@@ -110,15 +114,15 @@ function DirectoryModal({
           required
           fullWidth
         />
-      </DialogContent>
-      <DialogActions className={classes.root}>
-        <Button onClick={close} disabled={loading}>
+      </ModalContent>
+      <ActionButtonGroups>
+        <DialogButton onClick={handleClose} disabled={loading}>
           Cancel
-        </Button>
-        <Button onClick={handleSubmit} disabled={!value.dir || loading}>
+        </DialogButton>
+        <DialogButton onClick={handleSubmit} disabled={!value.dir || loading}>
           {loading ? 'loading...' : 'Add'}
-        </Button>
-      </DialogActions>
+        </DialogButton>
+      </ActionButtonGroups>
     </Dialog>
   );
 }

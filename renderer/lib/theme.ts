@@ -1,10 +1,10 @@
 import { red } from '@material-ui/core/colors';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 
-export const theme = createMuiTheme({
-  overrides: {
+export const theme = createTheme({
+  components: {
     MuiCssBaseline: {
-      '@global': {
+      styleOverrides: `
         html: {
           WebkitFontSmoothing: 'auto',
         },
@@ -27,7 +27,7 @@ export const theme = createMuiTheme({
         '*::-webkit-scrollbar-thumb:window-inactive': {
           background: 'rgba(26,172,84,0.4)',
         },
-      },
+      `,
     },
   },
   palette: {
@@ -37,22 +37,21 @@ export const theme = createMuiTheme({
     secondary: {
       main: '#3b4956',
     },
-    error: {
-      main: red.A400,
+    text: {
+      primary: '#e7e9ec',
+      secondary: '#505962',
     },
     background: {
       default: '#24323f',
+    },
+    error: {
+      main: red.A400,
     },
     action: {
       active: '#5A5F61',
       selected: '#217c46',
       hover: '#094129',
       disabled: '#094129',
-    },
-    text: {
-      primary: '#e7e9ec',
-      secondary: '#505962',
-      disabled: '#505863',
     },
   },
 });

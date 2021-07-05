@@ -1,5 +1,5 @@
 import { Chip, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { styled, useTheme } from '@material-ui/core/styles';
 import React from 'react';
 
 import {
@@ -12,28 +12,17 @@ import {
   TAG,
 } from '../../type';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    filter: {
-      marginLeft: 8,
-      display: 'flex',
-      flexWrap: 'wrap',
-      '& > *': {
-        margin: theme.spacing(0.5),
-      },
-    },
-    chip: {
-      color: theme.palette.action.selected,
-      borderColor: theme.palette.action.selected,
-    },
-    filterTitle: {
-      marginLeft: 8,
-      color: theme.palette.text.secondary,
-      marginTop: 10,
-      marginBottom: 5,
-    },
-  })
-);
+const ChipContainer = styled('div')(() => ({
+  marginLeft: 8,
+  display: 'flex',
+  flexWrap: 'wrap',
+}));
+
+const FilterChip = styled(Chip)(({ theme }) => ({
+  color: theme.palette.action.selected,
+  borderColor: theme.palette.action.selected,
+  margin: theme.spacing(0.5),
+}));
 
 interface IFilterSection {
   name: string;
@@ -50,25 +39,34 @@ function FilterSection({
   filter,
   updateFilter,
 }: IFilterSection): JSX.Element {
-  const classes = useStyles();
+  const theme = useTheme();
 
+  // Todo possible use of styled on Typography in the future
   return (
     <React.Fragment>
-      <Typography className={classes.filterTitle} variant="h5" component="h2">
+      <Typography
+        variant="h5"
+        component="h2"
+        style={{
+          marginLeft: 8,
+          color: theme.palette.text.secondary,
+          marginTop: 10,
+          marginBottom: 5,
+        }}
+      >
         {name}
       </Typography>
-      <div className={classes.filter}>
+      <ChipContainer>
         {data.sort().map((value, index) => (
-          <Chip
+          <FilterChip
             key={index}
-            className={classes.chip}
             label={value}
             clickable
             onClick={() => updateFilter(type, value)}
-            variant={filter.includes(value) ? 'default' : 'outlined'}
+            variant={filter.includes(value) ? 'filled' : 'outlined'}
           />
         ))}
-      </div>
+      </ChipContainer>
     </React.Fragment>
   );
 }

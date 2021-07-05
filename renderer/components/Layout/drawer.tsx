@@ -36,7 +36,9 @@ const Panel = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-const DirectoryModal = dynamic(() => import('../Directory'), { ssr: false });
+const DirectoryModal = dynamic(() => import('../modals/getDirectory'), {
+  ssr: false,
+});
 
 interface ISidePanel {
   folders: IFolder[];
