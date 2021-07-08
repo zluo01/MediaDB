@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import React from 'react';
 
 import { wrapper } from '../lib/store';
@@ -27,6 +28,7 @@ function MyApp(props: AppProps): JSX.Element {
         />
         <title>MediaDB</title>
       </Head>
+      <Script strategy={'beforeInteractive'} src="/libs/wasm_exec.js" />
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Component {...pageProps} key={router.asPath} />

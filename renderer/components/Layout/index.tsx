@@ -2,7 +2,6 @@ import { AppBar, Box, InputBase, Toolbar, Typography } from '@material-ui/core';
 import { alpha, styled } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
@@ -100,57 +99,45 @@ function Layout({
   }
 
   return (
-    <>
-      <Head>
-        <meta
-          charSet="utf-8"
-          name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
-        <meta name="referrer" content="never" />
-        <meta name="referrer" content="no-referrer" />
-        <title>Media DB</title>
-      </Head>
-      <Root>
-        <StyledAppBar position="fixed">
-          <Toolbar>
-            <Typography
-              variant="h6"
-              noWrap
-              onClick={() => router.push('/home')}
-              sx={{
-                cursor: 'pointer',
-                flexGrow: 1,
-                display: { xs: 'none', sm: 'block' },
-              }}
-            >
-              MediaDB
-            </Typography>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <SearchInput
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                onChange={e => handleSearch(e)}
-                disabled={disableSearch}
-              />
-            </Search>
-          </Toolbar>
-        </StyledAppBar>
-        <Drawer
-          dispatch={dispatch}
-          showPanelName={showPanelName}
-          folders={folders}
-          currFolderIndex={currFolderIndex}
-        />
-        <MainContent component="main">
-          <Toolbar id="back-to-top-anchor" />
-          {children}
-        </MainContent>
-      </Root>
-    </>
+    <Root>
+      <StyledAppBar position="fixed">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            noWrap
+            onClick={() => router.push('/home')}
+            sx={{
+              cursor: 'pointer',
+              flexGrow: 1,
+              display: { xs: 'none', sm: 'block' },
+            }}
+          >
+            MediaDB
+          </Typography>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <SearchInput
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={e => handleSearch(e)}
+              disabled={disableSearch}
+            />
+          </Search>
+        </Toolbar>
+      </StyledAppBar>
+      <Drawer
+        dispatch={dispatch}
+        showPanelName={showPanelName}
+        folders={folders}
+        currFolderIndex={currFolderIndex}
+      />
+      <MainContent component="main">
+        <Toolbar id="back-to-top-anchor" />
+        {children}
+      </MainContent>
+    </Root>
   );
 }
 
