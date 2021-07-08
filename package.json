@@ -1,6 +1,6 @@
 {
   "name": "mediadb",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "description": "database for movie and tv shows",
   "main": "app/background.js",
@@ -42,7 +42,6 @@
     "@types/react": "17.0.13",
     "@types/react-beautiful-dnd": "13.1.0",
     "@types/react-dom": "17.0.8",
-    "@types/react-lazyload": "^3.1.0",
     "@types/react-redux": "7.1.16",
     "@types/react-virtualized-auto-sizer": "1.0.0",
     "@typescript-eslint/eslint-plugin": "4.28.1",
@@ -69,7 +68,6 @@
     "react": "17.0.2",
     "react-beautiful-dnd": "13.1.0",
     "react-dom": "17.0.2",
-    "react-lazyload": "^3.2.0",
     "react-redux": "7.2.4",
     "react-virtualized-auto-sizer": "1.0.5",
     "typescript": "4.3.5"

@@ -2,6 +2,7 @@ import {
   Button,
   CircularProgress,
   ImageList,
+  ImageListItem,
   ImageListItemBar,
   Paper,
   Popper,
@@ -49,13 +50,9 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.action.selected,
 }));
 
-export const CardPaper = styled(Paper)(() => ({
-  display: 'flex',
-  flexFlow: 'column nowrap',
+export const MediaCard = styled(ImageListItem)(() => ({
   justifyContent: 'center',
   alignItems: 'center',
-  width: 'inherit',
-  height: 'inherit',
 }));
 
 export const CardGrid = styled(ImageList)(() => ({

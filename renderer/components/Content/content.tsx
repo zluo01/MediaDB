@@ -1,10 +1,4 @@
-import {
-  ClickAwayListener,
-  Fade,
-  ImageListItem,
-  Popper,
-  Typography,
-} from '@material-ui/core';
+import { ClickAwayListener, Fade, Popper, Typography } from '@material-ui/core';
 import { lighten, useTheme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 
@@ -18,7 +12,7 @@ import {
 import { openFile } from '../../utils/electron';
 import Image from '../ImageLoader';
 import Menu from './showMenu';
-import { CardPaper, CardGrid, CardInfo } from './styles';
+import { CardGrid, CardInfo, MediaCard } from './styles';
 
 interface ContentSize {
   columnNumber: number;
@@ -58,7 +52,7 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
       {data.map((media, index) => {
         const elevation = currIndex === index ? 5 : 0;
         return (
-          <ImageListItem
+          <MediaCard
             key={media.poster}
             id={`c${index}`}
             onClick={() => select(index)}
@@ -70,39 +64,34 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
             sx={{
               width: size.cWidth + size.space * 2,
               height: size.cHeight,
+              boxShadow: theme.shadows[elevation],
+              backgroundColor: lighten(
+                theme.palette.background.default,
+                elevation * 0.025
+              ),
             }}
           >
-            <CardPaper
-              sx={{
-                boxShadow: theme.shadows[elevation],
-                backgroundColor: lighten(
-                  theme.palette.background.default,
-                  elevation * 0.025
-                ),
-              }}
-            >
-              <Image
-                dir={media.poster}
-                title={media.title}
-                size={size.cardSize}
-              />
-              <CardInfo
-                title={
-                  <Typography variant="body2" title={media.title} noWrap={true}>
-                    {media.title}
+            <Image
+              dir={media.poster}
+              title={media.title}
+              size={size.cardSize}
+            />
+            <CardInfo
+              title={
+                <Typography variant="body2" title={media.title} noWrap={true}>
+                  {media.title}
+                </Typography>
+              }
+              subtitle={
+                media.type === MOVIE && (
+                  <Typography variant={'caption'} color={'textSecondary'}>
+                    {media.year}
                   </Typography>
-                }
-                subtitle={
-                  media.type === MOVIE && (
-                    <Typography variant={'caption'} color={'textSecondary'}>
-                      {media.year}
-                    </Typography>
-                  )
-                }
-                position="below"
-                sx={{ width: size.cardSize.width }}
-              />
-            </CardPaper>
+                )
+              }
+              position="below"
+              sx={{ width: size.cardSize.width }}
+            />
             {media.type === TV_SERIES && (
               <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                 <Popper
@@ -143,7 +132,7 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
                 </Popper>
               </ClickAwayListener>
             )}
-          </ImageListItem>
+          </MediaCard>
         );
       })}
     </CardGrid>
