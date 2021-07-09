@@ -18,6 +18,9 @@ module.exports = withBundleAnalyzer(
       // Overcome Webpack referencing `window` in chunks
       config.output.globalObject = `(typeof self !== 'undefined' ? self : this)`;
 
+      config.output.webassemblyModuleFilename = 'static/wasm/[modulehash].wasm';
+      config.experiments = { asyncWebAssembly: true };
+
       return config;
     },
     transpileModules: ['@material-ui/core', '@material-ui/icons'],

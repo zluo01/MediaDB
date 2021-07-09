@@ -20,7 +20,6 @@ const StyledFooter = styled('div')(({ theme }) => ({
 }));
 
 const StyledSlider = styled(Slider)(({ theme }) => ({
-  height: 1,
   width: 300,
   color: theme.palette.action.selected,
 }));
@@ -79,6 +78,7 @@ function Footer({ selected, setting, dispatch }: IFooter): JSX.Element {
         aria-label="image-size"
         aria-labelledby="discrete-slider"
         valueLabelDisplay="auto"
+        size={'small'}
         defaultValue={100}
         value={computeValue()}
         step={10}
