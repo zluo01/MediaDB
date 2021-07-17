@@ -4,7 +4,7 @@ import { createTheme } from '@material-ui/core/styles';
 export const theme = createTheme({
   components: {
     MuiCssBaseline: {
-      styleOverrides: `
+      styleOverrides: {
         html: {
           WebkitFontSmoothing: 'auto',
         },
@@ -27,7 +27,7 @@ export const theme = createTheme({
         '*::-webkit-scrollbar-thumb:window-inactive': {
           background: 'rgba(26,172,84,0.4)',
         },
-      `,
+      },
     },
   },
   palette: {
