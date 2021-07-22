@@ -1,4 +1,4 @@
-import { ClickAwayListener, Fade, Popper, Typography } from '@material-ui/core';
+import { ClickAwayListener, Popper, Typography } from '@material-ui/core';
 import { lighten, useTheme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 
@@ -122,13 +122,8 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
                       },
                     },
                   ]}
-                  transition
                 >
-                  {({ TransitionProps }) => (
-                    <Fade {...TransitionProps} timeout={350}>
-                      <Menu data={media} />
-                    </Fade>
-                  )}
+                  <Menu data={media} />
                 </Popper>
               </ClickAwayListener>
             )}
