@@ -30,7 +30,7 @@
     "electron-store": "8.0.0"
   },
   "devDependencies": {
-    "@material-ui/core": "^5.0.0-beta.1",
+    "@material-ui/core": "^5.0.0-beta.2",
     "@material-ui/icons": "5.0.0-beta.1",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
@@ -63,7 +63,7 @@
     "next": "11.0.1",
     "next-redux-wrapper": "7.0.2",
     "next-transpile-modules": "^8.0.0",
-    "nextron": "6.1.0",
+    "nextron": "7.0.0",
     "prettier": "2.3.2",
     "react": "17.0.2",
     "react-beautiful-dnd": "13.1.0",

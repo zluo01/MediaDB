@@ -9,11 +9,9 @@ const withTM = require('next-transpile-modules');
 module.exports = withBundleAnalyzer(
   withTM(['@material-ui/core', '@material-ui/icons'])({
     webpack: (config, { isServer }) => {
-      if (isServer) {
-        return config;
+      if (!isServer) {
+        config.target = 'electron-renderer';
       }
-
-      config.target = 'electron-renderer';
 
       // Overcome Webpack referencing `window` in chunks
       config.output.globalObject = `(typeof self !== 'undefined' ? self : this)`;
