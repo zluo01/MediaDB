@@ -1,24 +1,27 @@
-import createCache from '@emotion/cache';
-import { CacheProvider } from '@emotion/react';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
-import type { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import createEmotionCache from '../lib/createEmotionCache';
 import { wrapper } from '../lib/store';
 import { theme } from '../lib/theme';
 
-const cache = createCache({ key: 'css' });
-cache.compat = true;
+const clientSideEmotionCache = createEmotionCache();
 
-function MyApp(props: AppProps): JSX.Element {
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+function MyApp(props: MyAppProps): JSX.Element {
   const router = useRouter();
-  const { Component, pageProps } = props;
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   return (
-    <CacheProvider value={cache}>
+    <CacheProvider value={emotionCache}>
       <Head>
         <meta charSet="utf-8" />
         <meta
