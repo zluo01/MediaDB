@@ -30,7 +30,7 @@
     "electron-store": "8.0.0"
   },
   "devDependencies": {
-    "@material-ui/core": "^5.0.0-beta.2",
+    "@material-ui/core": "^5.0.0-beta.3",
     "@material-ui/icons": "5.0.0-beta.1",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
