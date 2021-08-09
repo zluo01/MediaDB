@@ -109,3 +109,16 @@ export interface ICardStyle {
   height: number;
   elevation: number;
 }
+
+export type TProps = {
+  show: boolean;
+};
+
+export interface IKeyFiles {
+  nfo?: string;
+  fanart: string[];
+  poster: string[];
+  thumb: string[];
+  media: string[];
+  dir: string[];
+}

@@ -1,40 +1,35 @@
-import AppBar from '@material-ui/core/AppBar';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { AppBar, Box, Button, Tab, Tabs } from '@material-ui/core';
+import { styled, useTheme } from '@material-ui/core/styles';
 import dynamic from 'next/dynamic';
 import React from 'react';
 
-import { theme } from '../../lib/theme';
 import { ITVShowData } from '../../type';
 import { openFile } from '../../utils/electron';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    flexGrow: 1,
-    width: 720,
-    boxShadow: theme.shadows[3],
-  },
-  panel: {
-    backgroundColor: theme.palette.background.default,
-    width: 'inherit',
-  },
-  box: {
-    borderColor: theme.palette.action.selected,
-    color: theme.palette.action.selected,
-    marginRight: 5,
+const Section = styled('div')(({ theme }) => ({
+  flexGrow: 1,
+  width: 720,
+  boxShadow: theme.shadows[3],
+}));
 
-    '& > *': {
-      margin: theme.spacing(1),
-    },
+const EpisodeButton = styled(Button)(({ theme }) => ({
+  borderColor: theme.palette.action.selected,
+  color: theme.palette.action.selected,
+  marginRight: 5,
 
-    '&:hover': {
-      backgroundColor: theme.palette.action.selected,
-      color: theme.palette.action.hover,
-    },
+  '& > *': {
+    margin: theme.spacing(1),
   },
+
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+    color: theme.palette.action.hover,
+  },
+}));
+
+const SeasonPanel = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  width: 'inherit',
 }));
 
 interface TabPanelProps {
@@ -44,13 +39,10 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-  const classes = useStyles();
-
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      className={classes.panel}
+    <SeasonPanel
       role="tabpanel"
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
@@ -58,7 +50,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && <Box p={3}>{children}</Box>}
-    </div>
+    </SeasonPanel>
   );
 }
 
@@ -78,8 +70,8 @@ interface ITVShowCardMenuProps {
 export default function TVShowCardMenu({
   data,
 }: ITVShowCardMenuProps): JSX.Element {
+  const theme = useTheme();
   const chunkSize = 5;
-  const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (_event: React.ChangeEvent<any>, newValue: number) => {
@@ -97,8 +89,9 @@ export default function TVShowCardMenu({
     return result;
   }
 
+  // Todo fix layout by using grid
   return (
-    <div className={classes.root}>
+    <Section>
       <AppBar position="static">
         <Tabs
           value={value}
@@ -110,7 +103,7 @@ export default function TVShowCardMenu({
           {data.shows.map((show, index) => (
             <Tab
               key={index}
-              style={{
+              sx={{
                 color:
                   value !== index
                     ? theme.palette.action.selected
@@ -158,14 +151,13 @@ export default function TVShowCardMenu({
                   >
                     {chunk.map((v, i) => {
                       return (
-                        <Button
+                        <EpisodeButton
                           key={i}
                           variant="outlined"
-                          className={classes.box}
                           onClick={() => openFile(v)}
                         >
                           {idx * chunkSize + i + 1}
-                        </Button>
+                        </EpisodeButton>
                       );
                     })}
                   </Box>
@@ -175,6 +167,6 @@ export default function TVShowCardMenu({
           </TabPanel>
         );
       })}
-    </div>
+    </Section>
   );
 }

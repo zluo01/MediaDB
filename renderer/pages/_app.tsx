@@ -1,26 +1,27 @@
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
-import type { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import createEmotionCache from '../lib/createEmotionCache';
 import { wrapper } from '../lib/store';
 import { theme } from '../lib/theme';
 
-function MyApp(props: AppProps): JSX.Element {
-  const router = useRouter();
-  const { Component, pageProps } = props;
+const clientSideEmotionCache = createEmotionCache();
 
-  React.useEffect(() => {
-    const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement?.removeChild(jssStyles);
-    }
-  }, []);
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+function MyApp(props: MyAppProps): JSX.Element {
+  const router = useRouter();
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   return (
-    <React.Fragment>
+    <CacheProvider value={emotionCache}>
       <Head>
         <meta charSet="utf-8" />
         <meta
@@ -33,7 +34,7 @@ function MyApp(props: AppProps): JSX.Element {
         <CssBaseline />
         <Component {...pageProps} key={router.asPath} />
       </ThemeProvider>
-    </React.Fragment>
+    </CacheProvider>
   );
 }
 

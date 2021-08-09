@@ -11,10 +11,6 @@ export async function getDirectory(): Promise<string> {
   return result.filePaths.length > 0 ? result.filePaths[0] : '';
 }
 
-export async function readImage(dir: string): Promise<string> {
-  const result: Electron.OpenDialogReturnValue = await ipcRenderer.invoke(
-    'readImage',
-    dir
-  );
-  return `data:image/webp;base64,${result}`;
+export async function cacheImage(dir: string): Promise<string> {
+  return await ipcRenderer.invoke('cacheImage', dir);
 }

@@ -1,5 +1,8 @@
+import crypto from 'crypto';
 import { app, dialog, ipcMain } from 'electron';
 import serve from 'electron-serve';
+import fs from 'fs';
+import path from 'path';
 
 import { createWindow } from './helpers';
 
@@ -11,8 +14,15 @@ if (isProd) {
   app.setPath('userData', `${app.getPath('userData')} (development)`);
 }
 
+const imageCache = path.join(app.getPath('userData'), 'thumbnail');
+
 (async () => {
   await app.whenReady();
+
+  // create thumbnail directory
+  if (!fs.existsSync(imageCache)) {
+    fs.mkdirSync(imageCache);
+  }
 
   const mainWindow = createWindow('main', {
     width: 1000,
@@ -35,4 +45,16 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle('showDialog', async _event => {
   return await dialog.showOpenDialog({ properties: ['openDirectory'] });
+});
+
+ipcMain.handle('cacheImage', async (_event, dir) => {
+  const fileName = crypto.createHash('md5').update(dir).digest('hex');
+  const imageCachePath = path.join(imageCache, fileName);
+  try {
+    await fs.promises.copyFile(dir, imageCachePath);
+  } catch (e) {
+    console.error('cache image: ', e);
+    return '';
+  }
+  return imageCachePath;
 });

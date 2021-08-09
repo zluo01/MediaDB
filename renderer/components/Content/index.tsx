@@ -1,17 +1,13 @@
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Fab from '@material-ui/core/Fab';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import Grow from '@material-ui/core/Grow';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import Zoom from '@material-ui/core/Zoom';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import {
+  ClickAwayListener,
+  Fab,
+  Grow,
+  MenuItem,
+  MenuList,
+  useScrollTrigger,
+  Zoom,
+} from '@material-ui/core';
+import { styled } from '@material-ui/core/styles';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -27,14 +23,12 @@ import {
   FILTER,
   GENRE,
   ICardSize,
-  ICardStyle,
   IFilterPros,
   IFolder,
   IFolderInfo,
   IMediaData,
   IMovieData,
   IReduxState,
-  ITVShowData,
   MOVIE,
   SORT,
   STUDIO,
@@ -47,72 +41,34 @@ import {
 import { openFile } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
 import { updateFolderInfo } from '../../utils/store';
-import BottomInfoBar from '../BottomInfoBar';
-import MovieCard from '../MovieCard';
-import TVShowCard from '../TVShowCard';
+import Footer from '../Footer';
+import MediaGrid from './content';
+import {
+  ActionButton,
+  Divider,
+  Loading,
+  RefreshButton,
+  StyledPaper,
+  StyledPopper,
+} from './styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    divider: {
-      backgroundColor: theme.palette.secondary.main,
-      borderColor: theme.palette.secondary.main,
-      color: theme.palette.secondary.main,
-      flexGrow: 1,
-      margin: theme.spacing(1),
-    },
-    button: {
-      width: 125,
-      color: theme.palette.action.selected,
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+    color: theme.palette.action.hover,
+  },
+}));
 
-      '&:hover': {
-        backgroundColor: theme.palette.action.selected,
-        color: theme.palette.action.hover,
-      },
-    },
-    action: {
-      width: 125,
-      color: theme.palette.action.selected,
+const StyledFab = styled(Fab)(({ theme }) => ({
+  backgroundColor: theme.palette.action.selected,
+  color: theme.palette.action.hover,
+}));
 
-      '&:hover': {
-        backgroundColor: theme.palette.action.selected,
-        color: theme.palette.action.hover,
-      },
-
-      '& > *': {
-        marginRight: theme.spacing(1),
-        marginLeft: theme.spacing(1),
-      },
-    },
-    popper: {
-      zIndex: theme.zIndex.drawer + 1,
-    },
-    paper: {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.action.selected,
-    },
-    paperItem: {
-      '&:hover': {
-        backgroundColor: theme.palette.action.selected,
-        color: theme.palette.action.hover,
-      },
-    },
-    scroll: {
-      position: 'fixed',
-      bottom: theme.spacing(4),
-      right: theme.spacing(2),
-    },
-    fab: {
-      backgroundColor: theme.palette.action.selected,
-      color: theme.palette.action.hover,
-    },
-    progress: {
-      color: theme.palette.action.selected,
-      position: 'fixed',
-      right: '50%',
-      top: '38.2%',
-    },
-  })
-);
+const StyledScroll = styled('div')(({ theme }) => ({
+  position: 'fixed',
+  bottom: theme.spacing(4),
+  right: theme.spacing(2),
+}));
 
 const SORT_TYPES = [DEFAULT, TITLE_ASC, TITLE_DSC, YEAR_ASC, YEAR_DSC];
 
@@ -147,7 +103,6 @@ interface IScrollProps {
 
 function ScrollTop(props: IScrollProps) {
   const { children } = props;
-  const classes = useStyles();
 
   const trigger = useScrollTrigger({
     disableHysteresis: true,
@@ -166,9 +121,9 @@ function ScrollTop(props: IScrollProps) {
 
   return (
     <Zoom in={trigger}>
-      <div onClick={handleClick} role="presentation" className={classes.scroll}>
+      <StyledScroll onClick={handleClick} role="presentation">
         {children}
-      </div>
+      </StyledScroll>
     </Zoom>
   );
 }
@@ -189,7 +144,6 @@ function Content({
   searchState,
   updateData,
 }: IContentProps): JSX.Element {
-  const classes = useStyles();
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const [currIndex, setCurrIndex] = useState(-1);
@@ -202,7 +156,6 @@ function Content({
   const [openFilter, setOpenFilter] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  // const contentState = useRef(currIndex);
   const contentState = useRef({
     currIndex: currIndex,
     columnNumber: 0,
@@ -224,7 +177,7 @@ function Content({
   useEffect(() => {
     const anchor = document.getElementById(`c${currIndex}`);
     if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [currIndex]);
 
@@ -282,7 +235,7 @@ function Content({
     return media;
   }
 
-  function handleClose(event: React.MouseEvent<EventTarget>) {
+  function handleClose(event: MouseEvent | TouchEvent) {
     if (
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)
@@ -306,6 +259,7 @@ function Content({
     const { currIndex, columnNumber } = contentState.current;
     const c = currIndex % columnNumber;
     const r = Math.floor(currIndex / columnNumber);
+    let index;
     switch (ev.key) {
       case 'ArrowLeft':
         setIndex(currIndex - 1 < 0 ? data.length - 1 : currIndex - 1);
@@ -315,11 +269,19 @@ function Content({
         break;
       case 'ArrowUp':
         ev.preventDefault();
-        setIndex(Math.max((r - 1) * columnNumber + c, 0));
+        index = (r - 1) * columnNumber + c;
+        if (index < 0) {
+          return;
+        }
+        setIndex(index);
         break;
       case 'ArrowDown':
         ev.preventDefault();
-        setIndex(Math.min((r + 1) * columnNumber + c, data.length - 1));
+        index = (r + 1) * columnNumber + c;
+        if (index > data.length - 1) {
+          return;
+        }
+        setIndex(index);
         break;
       case 'Enter':
         if (data[currIndex].type === MOVIE) {
@@ -389,11 +351,12 @@ function Content({
   }
 
   if (refresh) {
-    return <CircularProgress className={classes.progress} />;
+    return <Loading />;
   }
 
+  const cInfo = 60;
   const cWidth = cardSize.width + 15;
-  const cHeight = cardSize.height + 60;
+  const cHeight = cardSize.height + cInfo;
 
   return (
     <AutoSizer>
@@ -402,7 +365,7 @@ function Content({
         if (columnNumber !== contentState.current.columnNumber) {
           setColumnNum(columnNumber);
         }
-        const w = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
+        const space = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
         return (
           <>
             <div
@@ -411,23 +374,21 @@ function Content({
                 display: 'flex',
                 flexFlow: 'row nowrap',
                 flex: 1,
-                width: width - 2 * w,
-                marginLeft: w,
+                width: width - 2 * space,
+                marginLeft: space,
                 alignItems: 'center',
               }}
             >
-              <hr className={classes.divider} />
-              <Button
-                className={classes.action}
+              <Divider />
+              <ActionButton
                 size={'small'}
                 startIcon={<FilterListIcon />}
                 disabled={searchState}
                 onClick={() => setOpenFilter(prevState => !prevState)}
               >
                 Filter
-              </Button>
-              <Button
-                className={classes.action}
+              </ActionButton>
+              <ActionButton
                 size={'small'}
                 startIcon={<SortIcon />}
                 ref={anchorRef}
@@ -437,9 +398,8 @@ function Content({
                 onClick={handleToggle}
               >
                 {sortType}
-              </Button>
-              <Popper
-                className={classes.popper}
+              </ActionButton>
+              <StyledPopper
                 open={open}
                 anchorEl={anchorRef.current}
                 role={undefined}
@@ -454,89 +414,61 @@ function Content({
                         placement === 'bottom' ? 'center top' : 'center bottom',
                     }}
                   >
-                    <Paper className={classes.paper}>
+                    <StyledPaper>
                       <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow">
                           {SORT_TYPES.filter(o => o !== sortType).map(type => (
-                            <MenuItem
+                            <StyledMenuItem
                               key={type}
-                              className={classes.paperItem}
                               onClick={() => updateSortType(type)}
                             >
                               {type}
-                            </MenuItem>
+                            </StyledMenuItem>
                           ))}
                         </MenuList>
                       </ClickAwayListener>
-                    </Paper>
+                    </StyledPaper>
                   </Grow>
                 )}
-              </Popper>
-              <Button
-                className={classes.button}
+              </StyledPopper>
+              <RefreshButton
                 size={'small'}
                 startIcon={<RefreshIcon />}
                 onClick={updateLibrary}
                 disabled={searchState}
               >
                 Refresh
-              </Button>
+              </RefreshButton>
             </div>
             {openFilter && (
               <FilterSection
                 folderData={folderData}
                 width={width}
-                space={w}
+                space={space}
                 filter={filter}
                 updateFilter={updateFilter}
               />
             )}
-            <GridList
-              cellHeight={cHeight} // height for bottom bar
-              style={{ width: width, paddingBottom: 28 }}
-              cols={columnNumber}
-            >
-              {data.map((media, index) => {
-                const style: ICardStyle = {
-                  width: cWidth + w * 2,
-                  height: cHeight,
-                  elevation: currIndex === index ? 5 : 0,
-                };
-                return (
-                  <GridListTile key={index}>
-                    {media.type === MOVIE ? (
-                      <MovieCard
-                        style={style}
-                        media={media as IMovieData}
-                        size={cardSize}
-                        select={() => setIndex(index)}
-                        index={index}
-                      />
-                    ) : (
-                      <TVShowCard
-                        style={style}
-                        media={media as ITVShowData}
-                        size={cardSize}
-                        select={() => setIndex(index)}
-                        selected={currIndex === index}
-                        index={index}
-                      />
-                    )}
-                  </GridListTile>
-                );
-              })}
-            </GridList>
-            <BottomInfoBar
+            <MediaGrid
+              size={{
+                columnNumber: columnNumber,
+                cHeight: cHeight,
+                cWidth: cWidth,
+                space: space,
+                width: width,
+                cardSize: cardSize,
+              }}
+              data={data}
+              select={setIndex}
+              currIndex={currIndex}
+            />
+            <Footer
               selected={data[currIndex]?.title || `Total ${data.length}`}
             />
             <ScrollTop>
-              <Fab
-                className={classes.fab}
-                size="small"
-                aria-label="scroll back to top"
-              >
+              <StyledFab size="small" aria-label="scroll back to top">
                 <KeyboardArrowUpIcon />
-              </Fab>
+              </StyledFab>
             </ScrollTop>
           </>
         );
