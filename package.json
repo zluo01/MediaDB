@@ -61,7 +61,7 @@
     "husky": "7.0.2",
     "lint-staged": "11.1.2",
     "next": "11.1.2",
-    "next-redux-wrapper": "7.0.4",
+    "next-redux-wrapper": "7.0.5",
     "next-transpile-modules": "8.0.0",
     "nextron": "7.0.0",
     "prettier": "2.3.2",
