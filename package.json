@@ -63,7 +63,7 @@
     "next": "11.1.2",
     "next-redux-wrapper": "7.0.5",
     "next-transpile-modules": "8.0.0",
-    "nextron": "7.0.0",
+    "nextron": "7.1.0",
     "prettier": "2.4.1",
     "react": "17.0.2",
     "react-beautiful-dnd": "13.1.0",
