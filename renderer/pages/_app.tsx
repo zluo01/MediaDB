@@ -1,6 +1,6 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -24,10 +24,7 @@ function MyApp(props: MyAppProps): JSX.Element {
     <CacheProvider value={emotionCache}>
       <Head>
         <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
         <title>MediaDB</title>
       </Head>
       <ThemeProvider theme={theme}>

@@ -1,21 +1,18 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Content from '../../components/Content';
 import Layout from '../../components/Layout';
-import { IFolder, IFolderInfo, IReduxState } from '../../type';
+import { IFolderInfo, IReduxState } from '../../type';
 import { getFolderInfo } from '../../utils/store';
 
-interface IFolderProps {
-  folders: IFolder[];
-}
-
-function Folder({ folders }: IFolderProps) {
+function Folder(): JSX.Element {
   const [data, setData] = useState<IFolderInfo>();
   const [search, setSearch] = useState('');
 
   const router = useRouter();
+  const folders = useSelector((state: IReduxState) => state.folders);
   const fid = parseInt(router.query.id as string);
 
   function updateData(data: IFolderInfo) {
@@ -53,8 +50,4 @@ function Folder({ folders }: IFolderProps) {
   );
 }
 
-const mapStateToProps = (state: IReduxState) => ({
-  folders: state.folders,
-});
-
-export default connect(mapStateToProps)(Folder);
+export default Folder;

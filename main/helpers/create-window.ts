@@ -65,6 +65,8 @@ export default (
   const browserOptions: BrowserWindowConstructorOptions = {
     ...options,
     ...state,
+    minWidth: 1000,
+    minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

@@ -6,8 +6,8 @@ import {
   ImageListItemBar,
   Paper,
   Popper,
-} from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 export const Divider = styled('hr')(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,

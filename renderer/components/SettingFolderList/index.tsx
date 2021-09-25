@@ -1,3 +1,6 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import FolderIcon from '@mui/icons-material/Folder';
 import {
   IconButton,
   List,
@@ -5,10 +8,7 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import FolderIcon from '@material-ui/icons/Folder';
+} from '@mui/material';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import {

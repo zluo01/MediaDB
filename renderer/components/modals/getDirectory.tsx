@@ -1,6 +1,6 @@
-import { Dialog, IconButton, TextField } from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Dialog, IconButton, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import path from 'path';
 import React, { useState } from 'react';
 

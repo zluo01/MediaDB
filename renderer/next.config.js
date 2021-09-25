@@ -7,7 +7,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const withTM = require('next-transpile-modules');
 
 module.exports = withBundleAnalyzer(
-  withTM(['@material-ui/core', '@material-ui/icons'])({
+  withTM(['@mui/material', '@mui/icons-material'])({
     webpack: (config, { isServer }) => {
       if (!isServer) {
         config.target = 'electron-renderer';

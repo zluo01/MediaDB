@@ -1,3 +1,7 @@
+import FilterListIcon from '@mui/icons-material/FilterList';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import SortIcon from '@mui/icons-material/Sort';
 import {
   ClickAwayListener,
   Fab,
@@ -6,15 +10,11 @@ import {
   MenuList,
   useScrollTrigger,
   Zoom,
-} from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import SortIcon from '@material-ui/icons/Sort';
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useRef, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import {
@@ -22,7 +22,6 @@ import {
   DEFAULT,
   FILTER,
   GENRE,
-  ICardSize,
   IFilterPros,
   IFolder,
   IFolderInfo,
@@ -92,7 +91,6 @@ function getSortType(type: string): SORT {
 interface IContentProps {
   folderInfo: IFolder;
   folderData: IFolderInfo;
-  cardSize: ICardSize;
   searchState: boolean;
   updateData: (data: IFolderInfo) => void;
 }
@@ -140,11 +138,12 @@ const initFilterState = {
 function Content({
   folderInfo,
   folderData,
-  cardSize,
   searchState,
   updateData,
 }: IContentProps): JSX.Element {
   const anchorRef = useRef<HTMLButtonElement>(null);
+
+  const cardSize = useSelector((state: IReduxState) => state.setting.cardSize);
 
   const [currIndex, setCurrIndex] = useState(-1);
   const [data, setData] = useState(folderData.data);
@@ -477,8 +476,4 @@ function Content({
   );
 }
 
-const mapStateToProps = (state: IReduxState) => ({
-  cardSize: state.setting.cardSize,
-});
-
-export default connect(mapStateToProps)(Content);
+export default Content;

@@ -1,10 +1,9 @@
-import { Slider, Tooltip, Typography } from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { Slider, Tooltip, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { updateSetting } from '../../lib/store';
-import { ICardSize, IReduxState, ISetting, ISettingAction } from '../../type';
+import { ICardSize, IReduxState } from '../../type';
 import { DefaultSetting, setSetting } from '../../utils/store';
 
 const StyledFooter = styled('div')(({ theme }) => ({
@@ -26,11 +25,12 @@ const StyledSlider = styled(Slider)(({ theme }) => ({
 
 interface IFooter {
   selected: string;
-  setting: ISetting;
-  dispatch: Dispatch<ISettingAction>;
 }
 
-function Footer({ selected, setting, dispatch }: IFooter): JSX.Element {
+function Footer({ selected }: IFooter): JSX.Element {
+  const dispatch = useDispatch();
+  const setting = useSelector((state: IReduxState) => state.setting);
+
   function computeValue(): number {
     const ratio = setting.cardSize.width / DefaultSetting.cardSize.width;
     return Math.round(ratio * 10) * 10;
@@ -91,8 +91,4 @@ function Footer({ selected, setting, dispatch }: IFooter): JSX.Element {
   );
 }
 
-const mapStateToProps = (state: IReduxState) => ({
-  setting: state.setting,
-});
-
-export default connect(mapStateToProps)(Footer);
+export default Footer;

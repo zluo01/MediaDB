@@ -1,16 +1,13 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Layout from '../components/Layout';
-import { IFolder, IReduxState } from '../type';
+import { IReduxState } from '../type';
 
-interface IHomeProps {
-  folders: IFolder[];
-}
-
-function Home({ folders }: IHomeProps): JSX.Element {
+function Home(): JSX.Element {
   const router = useRouter();
+  const folders = useSelector((state: IReduxState) => state.folders);
 
   useEffect(() => {
     if (folders.length > 0) {
@@ -21,8 +18,4 @@ function Home({ folders }: IHomeProps): JSX.Element {
   return <Layout />;
 }
 
-const mapStateToProps = (state: IReduxState) => ({
-  folders: state.folders,
-});
-
-export default connect(mapStateToProps)(Home);
+export default Home;

@@ -3,8 +3,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 export const ModalTitle = styled(DialogTitle)(({ theme }) => ({
   textColor: theme.palette.text.primary,

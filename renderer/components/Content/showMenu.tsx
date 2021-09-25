@@ -1,15 +1,13 @@
-import { AppBar, Box, Button, Tab, Tabs } from '@material-ui/core';
-import { styled, useTheme } from '@material-ui/core/styles';
+import { AppBar, Box, Button, Tab, Tabs } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React from 'react';
 
 import { ITVShowData } from '../../type';
 import { openFile } from '../../utils/electron';
 
-const Section = styled('div')(({ theme }) => ({
-  flexGrow: 1,
-  width: 720,
-  boxShadow: theme.shadows[3],
+const Section = styled('div')(() => ({
+  maxHeight: 420,
 }));
 
 const EpisodeButton = styled(Button)(({ theme }) => ({
@@ -89,16 +87,14 @@ export default function TVShowCardMenu({
     return result;
   }
 
-  // Todo fix layout by using grid
   return (
     <Section>
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Tabs
           value={value}
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
         >
           {data.shows.map((show, index) => (
             <Tab
@@ -131,14 +127,13 @@ export default function TVShowCardMenu({
                 <Image
                   dir={show.poster}
                   title={data.title}
-                  size={{ width: 220, height: 330 }}
+                  size={{ width: 220, height: 320 }}
                 />
               </Box>
               <Box
                 display={'flex'}
                 flexDirection={'column'}
                 flexWrap={'nowrap'}
-                maxHeight={520}
                 overflow={'auto'}
                 width={'61.8%'}
               >

@@ -5,30 +5,16 @@ import {
   FormControl,
   FormControlLabel,
   Typography,
-} from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Layout from '../components/Layout';
 import { updateSetting } from '../lib/store';
-import {
-  IFolder,
-  IFolderAction,
-  IReduxState,
-  ISetting,
-  ISettingAction,
-} from '../type';
+import { IFolder, IReduxState } from '../type';
 import { setSetting } from '../utils/store';
-
-interface ISettingProps {
-  folders: IFolder[];
-  setting: ISetting;
-  currFolderIndex: number;
-  dispatch: Dispatch<IFolderAction | ISettingAction>;
-}
 
 const SettingForm = styled(FormControl)(({ theme }) => ({
   width: 'inherit',
@@ -51,7 +37,10 @@ const FolderList = dynamic(() => import('../components/SettingFolderList'), {
   ssr: false,
 });
 
-function Setting({ dispatch, folders, setting }: ISettingProps) {
+function Setting(): JSX.Element {
+  const dispatch = useDispatch();
+  const { setting, folders } = useSelector((state: IReduxState) => state);
+
   const [folderData, setFolderData] = useState<IFolder[]>(folders);
 
   useEffect(() => {
@@ -100,9 +89,4 @@ function Setting({ dispatch, folders, setting }: ISettingProps) {
   );
 }
 
-const mapStateToProps = (state: IReduxState) => ({
-  setting: state.setting,
-  folders: state.folders,
-});
-
-export default connect(mapStateToProps)(Setting);
+export default Setting;

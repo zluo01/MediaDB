@@ -1,3 +1,6 @@
+import AddIcon from '@mui/icons-material/Add';
+import FolderIcon from '@mui/icons-material/Folder';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {
   Box,
   Divider,
@@ -8,11 +11,8 @@ import {
   ListItemText,
   Toolbar,
   Tooltip,
-} from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/Add';
-import FolderIcon from '@material-ui/icons/Folder';
-import SettingsIcon from '@material-ui/icons/Settings';
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';

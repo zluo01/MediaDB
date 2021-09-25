@@ -1,5 +1,5 @@
-import { ClickAwayListener, Popper, Typography } from '@material-ui/core';
-import { lighten, useTheme } from '@material-ui/core/styles';
+import { Drawer, Typography } from '@mui/material';
+import { lighten, useTheme } from '@mui/material/styles';
 import React, { useState } from 'react';
 
 import {
@@ -33,14 +33,7 @@ interface ICardProps {
 function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
   const theme = useTheme();
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'transitions-popper' : undefined;
+  const [open, setOpen] = useState(false);
 
   return (
     <CardGrid
@@ -56,10 +49,10 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
             key={media.poster}
             id={`c${index}`}
             onClick={() => select(index)}
-            onDoubleClick={e =>
+            onDoubleClick={() =>
               media.type === MOVIE
                 ? openFile((media as IMovieData).file)
-                : handleClick(e)
+                : setOpen(prevState => !prevState)
             }
             sx={{
               width: size.cWidth + size.space * 2,
@@ -93,39 +86,13 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
               sx={{ width: size.cardSize.width }}
             />
             {media.type === TV_SERIES && (
-              <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                <Popper
-                  id={id}
-                  placement="bottom"
-                  disablePortal={false}
-                  open={open && currIndex === index}
-                  anchorEl={anchorEl}
-                  modifiers={[
-                    {
-                      name: 'flip',
-                      enabled: true,
-                      options: {
-                        altBoundary: true,
-                        rootBoundary: 'document',
-                        padding: 8,
-                      },
-                    },
-                    {
-                      name: 'preventOverflow',
-                      enabled: true,
-                      options: {
-                        altAxis: true,
-                        altBoundary: true,
-                        tether: true,
-                        rootBoundary: 'document',
-                        padding: 8,
-                      },
-                    },
-                  ]}
-                >
-                  <Menu data={media} />
-                </Popper>
-              </ClickAwayListener>
+              <Drawer
+                anchor={'bottom'}
+                open={open && currIndex === index}
+                onClose={() => setOpen(false)}
+              >
+                <Menu data={media} />
+              </Drawer>
             )}
           </MediaCard>
         );

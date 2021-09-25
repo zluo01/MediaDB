@@ -50,5 +50,6 @@ module.exports = {
         allow: ['warn', 'error'],
       },
     ],
+    '@next/next/no-document-import-in-page': 'off',
   },
 };

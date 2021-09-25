@@ -1,6 +1,6 @@
-import { AppBar, Box, InputBase, Toolbar, Typography } from '@material-ui/core';
-import { alpha, styled } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
+import SearchIcon from '@mui/icons-material/Search';
+import { AppBar, Box, InputBase, Toolbar, Typography } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';

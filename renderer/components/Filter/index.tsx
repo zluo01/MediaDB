@@ -1,5 +1,5 @@
-import { Chip, Typography } from '@material-ui/core';
-import { styled, useTheme } from '@material-ui/core/styles';
+import { Chip, Typography } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 import React from 'react';
 
 import {
