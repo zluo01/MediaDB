@@ -67,8 +67,14 @@ export interface ISetting {
   cardSize: ICardSize;
 }
 
+export interface IError {
+  open: boolean;
+  msg: string;
+}
+
 export const UPDATE_FOLDER = 'FOLDER';
 export const UPDATE_SETTING = 'SETTING';
+export const NOTIFICATION = 'NOTIFICATION';
 
 export interface IFolder {
   name: string;
@@ -78,6 +84,7 @@ export interface IFolder {
 export interface IReduxState {
   setting: ISetting;
   folders: IFolder[];
+  error: IError;
 }
 
 export interface IFolderAction {

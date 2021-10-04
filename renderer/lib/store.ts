@@ -7,6 +7,7 @@ import {
   IReduxState,
   ISetting,
   ISettingAction,
+  NOTIFICATION,
   UPDATE_FOLDER,
   UPDATE_SETTING,
 } from '../type';
@@ -15,6 +16,10 @@ import { getFolders, getSetting } from '../utils/store';
 const initState: IReduxState = {
   setting: getSetting(),
   folders: getFolders(),
+  error: {
+    open: false,
+    msg: '',
+  },
 };
 
 // create your reducer
@@ -30,6 +35,8 @@ const reducer = (state: IReduxState = initState, action: AnyAction) => {
       };
     case UPDATE_SETTING:
       return { ...state, setting: action.payload };
+    case NOTIFICATION:
+      return { ...state, error: action.payload };
     default:
       return state;
   }
@@ -52,6 +59,20 @@ export const updateFolder = (
   return dispatch({
     type: UPDATE_FOLDER,
     payload: payload,
+  });
+};
+
+export const notify = (
+  dispatch: Dispatch,
+  open: boolean,
+  msg: string
+): AnyAction => {
+  return dispatch({
+    type: UPDATE_FOLDER,
+    payload: {
+      open: open,
+      msg: msg,
+    },
   });
 };
 

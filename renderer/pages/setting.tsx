@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Layout from '../components/Layout';
-import { updateSetting } from '../lib/store';
+import { notify, updateSetting } from '../lib/store';
 import { IFolder, IReduxState } from '../type';
 import { setSetting } from '../utils/store';
 
@@ -57,7 +57,7 @@ function Setting(): JSX.Element {
       });
       updateSetting(dispatch, s);
     } catch (e) {
-      console.error(e);
+      notify(dispatch, true, `Check Box Error: ${e}`);
     }
   }
 

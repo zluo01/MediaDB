@@ -67,7 +67,10 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
             <Image
               dir={media.poster}
               title={media.title}
-              size={size.cardSize}
+              style={{
+                width: size.cardSize.width,
+                height: size.cardSize.height,
+              }}
             />
             <CardInfo
               title={

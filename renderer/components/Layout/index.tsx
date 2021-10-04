@@ -68,6 +68,7 @@ const MainContent = styled(Box)(({ theme }) => ({
 }));
 
 const Drawer = dynamic(() => import('./drawer'), { ssr: false });
+const Error = dynamic(() => import('../Notification'), { ssr: false });
 
 type ILayoutProps = {
   children?: ReactNode;
@@ -137,6 +138,7 @@ function Layout({
         <Toolbar id="back-to-top-anchor" />
         {children}
       </MainContent>
+      <Error />
     </Root>
   );
 }

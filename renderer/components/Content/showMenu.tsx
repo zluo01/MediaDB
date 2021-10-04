@@ -7,13 +7,17 @@ import { ITVShowData } from '../../type';
 import { openFile } from '../../utils/electron';
 
 const Section = styled('div')(() => ({
-  maxHeight: 420,
+  height: '38.2vh',
+  minHeight: 420,
 }));
 
 const EpisodeButton = styled(Button)(({ theme }) => ({
   borderColor: theme.palette.action.selected,
   color: theme.palette.action.selected,
-  marginRight: 5,
+  width: 50,
+  height: 42,
+  marginRight: theme.spacing(1),
+  marginBottom: theme.spacing(1),
 
   '& > *': {
     margin: theme.spacing(1),
@@ -28,6 +32,7 @@ const EpisodeButton = styled(Button)(({ theme }) => ({
 const SeasonPanel = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   width: 'inherit',
+  height: 'calc(100% - 48px)',
 }));
 
 interface TabPanelProps {
@@ -47,7 +52,11 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && (
+        <Box p={3} sx={{ background: 'inherit' }}>
+          {children}
+        </Box>
+      )}
     </SeasonPanel>
   );
 }
@@ -69,23 +78,11 @@ export default function TVShowCardMenu({
   data,
 }: ITVShowCardMenuProps): JSX.Element {
   const theme = useTheme();
-  const chunkSize = 5;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (_event: React.ChangeEvent<any>, newValue: number) => {
     setValue(newValue);
   };
-
-  function splitEpisodes(ep: string[]): string[][] {
-    if (ep.length < chunkSize) {
-      return [ep];
-    }
-    const result: string[][] = [];
-    for (let i = 0; i < ep.length; i += chunkSize) {
-      result.push(ep.slice(i, i + chunkSize));
-    }
-    return result;
-  }
 
   return (
     <Section>
@@ -114,7 +111,6 @@ export default function TVShowCardMenu({
         </Tabs>
       </AppBar>
       {data.shows.map((show, index) => {
-        const chunks = splitEpisodes(show.files);
         return (
           <TabPanel key={index} value={value} index={index}>
             <Box
@@ -127,36 +123,21 @@ export default function TVShowCardMenu({
                 <Image
                   dir={show.poster}
                   title={data.title}
-                  size={{ width: 220, height: 320 }}
+                  style={{ width: 220, height: 320 }}
                 />
               </Box>
-              <Box
-                display={'flex'}
-                flexDirection={'column'}
-                flexWrap={'nowrap'}
-                overflow={'auto'}
-                width={'61.8%'}
-              >
-                {chunks.map((chunk, idx) => (
-                  <Box
-                    key={idx}
-                    display={'flex'}
-                    flexDirection={'row'}
-                    flexWrap={'nowrap'}
-                  >
-                    {chunk.map((v, i) => {
-                      return (
-                        <EpisodeButton
-                          key={i}
-                          variant="outlined"
-                          onClick={() => openFile(v)}
-                        >
-                          {idx * chunkSize + i + 1}
-                        </EpisodeButton>
-                      );
-                    })}
-                  </Box>
-                ))}
+              <Box display={'flex'} width={'61.8%'}>
+                <Box flexDirection={'row'} flexWrap={'wrap'} overflow={'auto'}>
+                  {show.files.map((o, i) => (
+                    <EpisodeButton
+                      key={i}
+                      variant="outlined"
+                      onClick={() => openFile(o)}
+                    >
+                      {i + 1}
+                    </EpisodeButton>
+                  ))}
+                </Box>
               </Box>
             </Box>
           </TabPanel>

@@ -19,8 +19,8 @@ import {
 } from 'react-beautiful-dnd';
 import { Dispatch } from 'redux';
 
-import { updateFolder } from '../../lib/store';
-import { IFolder, IFolderAction, ISettingAction } from '../../type';
+import { notify, updateFolder } from '../../lib/store';
+import { IFolder } from '../../type';
 import { removeFolder, updateFolders } from '../../utils/store';
 
 const EditFolder = dynamic(() => import('../modals/editFolder'), {
@@ -29,7 +29,7 @@ const EditFolder = dynamic(() => import('../modals/editFolder'), {
 
 interface IFolderList {
   folderData: IFolder[];
-  dispatch: Dispatch<IFolderAction | ISettingAction>;
+  dispatch: Dispatch;
 }
 
 function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
@@ -52,7 +52,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
       const data = await removeFolder(name);
       updateFolder(dispatch, data);
     } catch (e) {
-      console.error(e);
+      notify(dispatch, true, `Update Folder Error: ${e}`);
     }
   }
 
@@ -71,7 +71,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
         await updateFolders(result);
         updateFolder(dispatch, result);
       } catch (e) {
-        console.error(e);
+        notify(dispatch, true, `Drag End: ${e}`);
       }
     }
   }

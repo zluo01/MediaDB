@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 
-import { ICardSize } from '../../type';
 import { getCacheImagePath } from '../../utils/store';
 
 interface IImageProps {
   dir: string;
   title: string;
-  size: ICardSize;
+  style: CSSProperties;
 }
 
-function ImageHolder({ dir, title, size }: IImageProps): JSX.Element {
+function ImageHolder({ dir, title, style }: IImageProps): JSX.Element {
   const [src, setSrc] = useState<string>(getCacheImagePath(dir));
 
   async function handleError() {
@@ -22,7 +21,7 @@ function ImageHolder({ dir, title, size }: IImageProps): JSX.Element {
       src={src}
       onError={handleError}
       alt={title}
-      style={{ width: size.width, height: size.height }}
+      style={style}
       loading={'lazy'}
     />
   );

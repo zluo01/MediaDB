@@ -3,7 +3,9 @@ import { Dialog, IconButton, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import path from 'path';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { notify } from '../../lib/store';
 import { IFolder } from '../../type';
 import { getDirectory } from '../../utils/electron';
 import { buildDirectory } from '../../utils/parser';
@@ -36,6 +38,7 @@ function DirectoryModal({
   folders,
   updateFolder,
 }: IDirectoryModal): JSX.Element {
+  const dispatch = useDispatch();
   const [value, setValue] = useState<IFolder>({
     dir: '',
     name: '',
@@ -60,7 +63,7 @@ function DirectoryModal({
       setValue({ name: '', dir: '' });
       close();
     } catch (e) {
-      console.error('import folders', e);
+      notify(dispatch, true, `Import folders: ${e}`);
     }
   }
 
