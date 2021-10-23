@@ -89,7 +89,7 @@ export async function parseTVShowNFO(
   return {
     fanart: files.fanart,
     shows: shows,
-    actor: actors.map((a: { name: string }) => a.name),
+    actor: actors.filter((o: any) => o).map((a: { name: string }) => a.name),
     genre: Array.isArray(d.genre) ? d.genre : [d.genre],
     tag: Array.isArray(d.tag) ? d.tag : [d.tag],
     title: d.title,
