@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -26,16 +26,12 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: npm run build:linux
 
-      - name: Build for macos
-        if: matrix.os == 'macos-latest'
-        run: npm run build:mac
-
       - name: Build for windows
         if: matrix.os == 'windows-latest'
         run: npm run build:win64
 
       - name: Set VERSION variable for macos/ubuntu
-        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest'
         run: |
           echo "VERSION=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)" >> $GITHUB_ENV
 
@@ -50,13 +46,6 @@ jobs:
         with:
           name: MediaDB-${{ env.VERSION }}-${{ runner.os }}-amd64
           path: dist/MediaDB-${{ env.VERSION }}.AppImage
-
-      - name: Upload build artifact for macos
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v2
-        with:
-          name: MediaDB-${{ env.VERSION }}-${{ runner.os }}-amd64
-          path: dist/MediaDB-${{ env.VERSION }}.dmg
 
       - name: Upload build artifact for Windows
         if: matrix.os == 'windows-latest'
