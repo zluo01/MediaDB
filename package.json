@@ -57,7 +57,7 @@
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "5.1.1",
     "eslint-plugin-react": "7.26.1",
-    "fast-xml-parser": "3.20.3",
+    "fast-xml-parser": "3.21.1",
     "husky": "7.0.4",
     "lint-staged": "11.2.3",
     "next": "11.1.2",
