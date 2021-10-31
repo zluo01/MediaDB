@@ -59,7 +59,7 @@
     "eslint-plugin-react": "7.26.1",
     "fast-xml-parser": "3.21.1",
     "husky": "7.0.4",
-    "lint-staged": "11.2.3",
+    "lint-staged": "11.2.6",
     "next": "11.1.2",
     "next-redux-wrapper": "7.0.5",
     "next-transpile-modules": "8.0.0",
