@@ -26,7 +26,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@types/sharp": "^0.29.3",
+    "@types/sharp": "0.29.3",
     "electron-serve": "1.1.0",
     "electron-store": "8.0.1",
     "sharp": "0.29.2"
@@ -40,8 +40,8 @@
     "@mui/material": "5.0.6",
     "@next/bundle-analyzer": "11.1.2",
     "@trivago/prettier-plugin-sort-imports": "3.1.0",
-    "@types/adm-zip": "^0.4.34",
-    "@types/node": "14.17.29",
+    "@types/adm-zip": "0.4.34",
+    "@types/node": "14.17.32",
     "@types/react": "17.0.33",
     "@types/react-beautiful-dnd": "13.1.2",
     "@types/react-dom": "17.0.10",
