@@ -4,6 +4,7 @@ import Path from 'path';
 
 import { DEFAULT, IFolderInfo, IKeyFiles, IMediaData } from '../../type';
 import { cacheImage } from '../electron';
+import { parseComicInfo } from './comic';
 import { parseMovieNFO } from './movie';
 import { getExtension, parseTVShowNFO } from './tvshow';
 
@@ -30,6 +31,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
       media: [],
       poster: [],
       thumb: [],
+      cbr: [],
     };
 
     try {
@@ -69,6 +71,9 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
           case 'wmv':
             keyFiles.media.push(absolute);
             break;
+          case 'cbr':
+            keyFiles.cbr.push(absolute);
+            break;
         }
       });
 
@@ -91,6 +96,11 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
           update(genres, info.genre);
           update(actors, info.actor);
           update(studios, info.studio);
+        }
+      } else if (keyFiles.cbr.length > 0) {
+        for (const cbr of keyFiles.cbr) {
+          const comic = await parseComicInfo(cbr);
+          media.push(comic);
         }
       } else {
         queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));

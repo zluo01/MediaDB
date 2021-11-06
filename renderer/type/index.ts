@@ -1,5 +1,6 @@
 export const MOVIE = 'movie';
 export const TV_SERIES = 'tvshow';
+export const COMIC = 'comic';
 
 export const DEFAULT = 'Directory';
 export const TITLE_ASC = 'Name(A-Z)';
@@ -21,6 +22,17 @@ export interface IFolderInfo {
   actors: string[];
   studios: string[];
   data: IMediaData[];
+}
+
+export interface IComicData {
+  type: typeof COMIC;
+  file: string;
+  title: string;
+  poster: string;
+  genre: string[];
+  tag: string[];
+  actor: string[];
+  studio: string[];
 }
 
 export interface IMovieData {
@@ -54,7 +66,7 @@ export interface IShow {
   files: string[];
 }
 
-export type IMediaData = IMovieData | ITVShowData;
+export type IMediaData = IMovieData | ITVShowData | IComicData;
 
 export interface ICardSize {
   width: number;
@@ -128,4 +140,5 @@ export interface IKeyFiles {
   thumb: string[];
   media: string[];
   dir: string[];
+  cbr: string[];
 }

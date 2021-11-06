@@ -3,6 +3,7 @@ import { app, dialog, ipcMain } from 'electron';
 import serve from 'electron-serve';
 import fs from 'fs';
 import path from 'path';
+import sharp from 'sharp';
 
 import { createWindow } from './helpers';
 
@@ -47,11 +48,12 @@ ipcMain.handle('showDialog', async _event => {
   return await dialog.showOpenDialog({ properties: ['openDirectory'] });
 });
 
-ipcMain.handle('cacheImage', async (_event, dir) => {
+ipcMain.handle('cacheImage', async (_event, dir, img?) => {
   const fileName = crypto.createHash('md5').update(dir).digest('hex');
   const imageCachePath = path.join(imageCache, fileName);
   try {
-    await fs.promises.copyFile(dir, imageCachePath);
+    const sharpInstance = !img ? sharp(dir) : sharp(img);
+    await sharpInstance.resize({ height: 360 }).avif().toFile(imageCachePath);
   } catch (e) {
     console.error('cache image: ', e);
     return '';
