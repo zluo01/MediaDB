@@ -59,11 +59,12 @@ function DirectoryModal({
     try {
       const data = await buildDirectory(value.dir);
       updateFolder(addFolder(value, data));
-      setLoading(false);
       setValue({ name: '', dir: '' });
       close();
     } catch (e) {
       notify(dispatch, true, `Import folders: ${e}`);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -75,12 +76,18 @@ function DirectoryModal({
     close();
   }
 
+  async function onClose() {
+    if (!loading) {
+      close();
+    }
+  }
+
   const nameError = folders.map(o => o.name).includes(value.name);
 
   return (
     <Dialog
       open={open}
-      onClose={close}
+      onClose={onClose}
       fullWidth={true}
       aria-labelledby="form-dialog-title"
     >

@@ -2,6 +2,7 @@ import fs from 'fs';
 import Path from 'path';
 
 import { IKeyFiles, IShow, ITVShowData, TV_SERIES } from '../../type';
+import { cacheImage } from '../electron';
 
 const MATCH_SEASON_NUMBER = /[Ss][eason]*[\s]*([0-9]*[0-9])/;
 const MATCH_SEASON_SPECIAL = /[Ss]pecial[s]*/;
@@ -72,6 +73,7 @@ export async function parseTVShowNFO(
   for (let i = 0; i < dir.length; i++) {
     const currPath = Path.join(path, dir[i]);
     const files = await fs.promises.readdir(currPath, { withFileTypes: true });
+    await cacheImage(posters[i]);
     shows.push({
       name: dir[i],
       poster: posters[i],

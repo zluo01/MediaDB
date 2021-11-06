@@ -2,13 +2,7 @@ import { Drawer, Typography } from '@mui/material';
 import { lighten, useTheme } from '@mui/material/styles';
 import React, { useState } from 'react';
 
-import {
-  ICardSize,
-  IMediaData,
-  IMovieData,
-  MOVIE,
-  TV_SERIES,
-} from '../../type';
+import { ICardSize, IMediaData, MOVIE, TV_SERIES } from '../../type';
 import { openFile } from '../../utils/electron';
 import Image from '../ImageLoader';
 import Menu from './showMenu';
@@ -35,6 +29,18 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
 
   const [open, setOpen] = useState(false);
 
+  async function handleOpen(media: IMediaData) {
+    switch (media.type) {
+      case 'comic':
+      case 'movie':
+        openFile(media.file);
+        break;
+      case 'tvshow':
+        setOpen(prevState => !prevState);
+        break;
+    }
+  }
+
   return (
     <CardGrid
       cols={size.columnNumber}
@@ -49,11 +55,7 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
             key={media.poster}
             id={`c${index}`}
             onClick={() => select(index)}
-            onDoubleClick={() =>
-              media.type === MOVIE
-                ? openFile((media as IMovieData).file)
-                : setOpen(prevState => !prevState)
-            }
+            onDoubleClick={() => handleOpen(media)}
             sx={{
               width: size.cWidth + size.space * 2,
               height: size.cHeight,
