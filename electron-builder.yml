@@ -1,6 +1,5 @@
 appId: com.github.zluo01
 productName: MediaDB
-buildDependenciesFromSource: true
 directories:
   output: dist
   buildResources: resources
