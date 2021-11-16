@@ -39,7 +39,7 @@
     "@mui/icons-material": "5.0.5",
     "@mui/material": "5.0.6",
     "@next/bundle-analyzer": "11.1.2",
-    "@trivago/prettier-plugin-sort-imports": "3.1.0",
+    "@trivago/prettier-plugin-sort-imports": "3.1.1",
     "@types/adm-zip": "0.4.34",
     "@types/node": "14.17.32",
     "@types/react": "17.0.34",
