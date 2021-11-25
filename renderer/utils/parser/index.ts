@@ -72,6 +72,9 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
             keyFiles.media.push(absolute);
             break;
           case 'cbr':
+          case 'cbz':
+          case 'cbt':
+          case 'cb7':
             keyFiles.cbr.push(absolute);
             break;
         }
