@@ -19,9 +19,11 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 
 import {
   ACTOR,
+  COMIC,
   DEFAULT,
   FILTER,
   GENRE,
+  IComicData,
   IFilterPros,
   IFolder,
   IFolderInfo,
@@ -283,8 +285,8 @@ function Content({
         setIndex(index);
         break;
       case 'Enter':
-        if (data[currIndex].type === MOVIE) {
-          openFile((data[currIndex] as IMovieData).file);
+        if (data[currIndex].type === MOVIE || data[currIndex].type === COMIC) {
+          openFile((data[currIndex] as IMovieData | IComicData).file);
         }
         break;
     }

@@ -5,6 +5,8 @@ import { COMIC, IComicData } from '../../type';
 import { cacheImage } from '../electron';
 import { getExtension } from './tvshow';
 
+const COVER_MATCH = /cover/i;
+
 export async function parseComicInfo(dir: string): Promise<IComicData> {
   const validExt = ['jpg', 'png', 'jpeg', 'avif', 'webp'];
   const zip = new AdmZip(dir);
@@ -13,21 +15,17 @@ export async function parseComicInfo(dir: string): Promise<IComicData> {
     .filter(o => !o.isDirectory)
     .filter(o => !o.entryName.startsWith('.'))
     .filter(o => validExt.includes(getExtension(o.entryName)));
-  let data = zipEntries[0].getData();
-  for (const entry of zipEntries) {
-    const name = Path.basename(entry.entryName);
-    if (name.startsWith('cover')) {
-      data = entry.getData();
-    }
-  }
 
-  const title = Path.basename(dir);
-  await cacheImage(Path.basename(dir), data);
+  const cover = zipEntries.filter(o => COVER_MATCH.test(o.entryName));
+  const data = cover.length ? cover[0].getData() : zipEntries[0].getData();
+
+  const fileName = Path.basename(dir);
+  await cacheImage(fileName, data);
   return {
     type: COMIC,
     file: dir,
-    title: title.replace('.' + getExtension(title), ''),
-    poster: Path.basename(dir),
+    title: fileName.replace('.' + getExtension(fileName), ''),
+    poster: fileName,
     actor: [],
     genre: [],
     studio: [],
