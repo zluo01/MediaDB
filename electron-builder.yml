@@ -1,8 +1,5 @@
 appId: com.github.zluo01
 productName: MediaDB
-linux:
-  asarUnpack:
-    - '**/node_modules/sharp/**'
 directories:
   output: dist
   buildResources: resources
