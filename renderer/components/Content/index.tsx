@@ -3,6 +3,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SortIcon from '@mui/icons-material/Sort';
 import {
+  Backdrop,
+  CircularProgress,
   ClickAwayListener,
   Fab,
   Grow,
@@ -47,7 +49,6 @@ import MediaGrid from './content';
 import {
   ActionButton,
   Divider,
-  Loading,
   RefreshButton,
   StyledPaper,
   StyledPopper,
@@ -352,7 +353,14 @@ function Content({
   }
 
   if (refresh) {
-    return <Loading />;
+    return (
+      <Backdrop
+        sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }}
+        open={refresh}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
   }
 
   const cInfo = 60;

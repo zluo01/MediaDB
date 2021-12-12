@@ -47,7 +47,7 @@ module.exports = {
     'no-console': [
       2,
       {
-        allow: ['warn', 'error'],
+        allow: ['warn', 'error', 'debug'],
       },
     ],
     '@next/next/no-document-import-in-page': 'off',

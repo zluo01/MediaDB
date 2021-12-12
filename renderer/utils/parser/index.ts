@@ -2,7 +2,13 @@ import parser from 'fast-xml-parser';
 import fs from 'fs';
 import Path from 'path';
 
-import { DEFAULT, IFolderInfo, IKeyFiles, IMediaData } from '../../type';
+import {
+  DEFAULT,
+  ICacheImage,
+  IFolderInfo,
+  IKeyFiles,
+  IMediaData,
+} from '../../type';
 import { cacheImage } from '../electron';
 import { parseComicInfo } from './comic';
 import { parseMovieNFO } from './movie';
@@ -19,6 +25,7 @@ function update(m: IHash, v: string[]) {
 export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   const media: IMediaData[] = [];
   const queue: string[] = [dir];
+  const thumbnails: ICacheImage[] = [];
   const tags: IHash = {};
   const genres: IHash = {};
   const actors: IHash = {};
@@ -90,10 +97,15 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
           info = parseMovieNFO(currDir, result, keyFiles);
           queue.push(...keyFiles.dir.map(o => Path.join(currDir, o)));
         } else if (result.tvshow) {
-          info = await parseTVShowNFO(currDir, result, keyFiles);
+          info = await parseTVShowNFO(currDir, result, keyFiles, obj =>
+            thumbnails.push(obj)
+          );
         }
         if (info) {
-          await cacheImage(info.poster);
+          thumbnails.push({
+            src: info.poster,
+            data: info.poster,
+          });
           media.push(info);
           update(tags, info.tag);
           update(genres, info.genre);
@@ -102,7 +114,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
         }
       } else if (keyFiles.cbr.length > 0) {
         for (const cbr of keyFiles.cbr) {
-          const comic = await parseComicInfo(cbr);
+          const comic = await parseComicInfo(cbr, obj => thumbnails.push(obj));
           media.push(comic);
         }
       } else {
@@ -112,6 +124,9 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
       console.error(e);
     }
   }
+
+  // creating thumbnails
+  await cacheImage(thumbnails);
 
   return {
     sort: DEFAULT,

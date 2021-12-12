@@ -142,3 +142,8 @@ export interface IKeyFiles {
   dir: string[];
   cbr: string[];
 }
+
+export interface ICacheImage {
+  src: string;
+  data: string | Buffer;
+}

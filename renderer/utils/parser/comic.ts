@@ -1,13 +1,15 @@
 import AdmZip from 'adm-zip';
 import Path from 'path';
 
-import { COMIC, IComicData } from '../../type';
-import { cacheImage } from '../electron';
+import { COMIC, ICacheImage, IComicData } from '../../type';
 import { getExtension } from './tvshow';
 
 const COVER_MATCH = /cover/i;
 
-export async function parseComicInfo(dir: string): Promise<IComicData> {
+export async function parseComicInfo(
+  dir: string,
+  collector: (obj: ICacheImage) => void
+): Promise<IComicData> {
   const validExt = ['jpg', 'png', 'jpeg', 'avif', 'webp'];
   const zip = new AdmZip(dir);
   const zipEntries = zip
@@ -20,7 +22,10 @@ export async function parseComicInfo(dir: string): Promise<IComicData> {
   const data = cover.length ? cover[0].getData() : zipEntries[0].getData();
 
   const fileName = Path.basename(dir);
-  await cacheImage(fileName, data);
+  collector({
+    src: fileName,
+    data: data,
+  });
   return {
     type: COMIC,
     file: dir,

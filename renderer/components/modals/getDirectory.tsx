@@ -107,6 +107,7 @@ function DirectoryModal({
             ),
           }}
           onChange={e => setValue({ ...value, dir: e.target.value })}
+          disabled={loading}
           autoFocus
           required
           fullWidth
@@ -121,6 +122,7 @@ function DirectoryModal({
           onChange={e => setValue({ ...value, name: e.target.value })}
           error={nameError || !value.name}
           helperText={nameError && 'Name Already Exists'}
+          disabled={loading}
           required
           fullWidth
         />
@@ -129,7 +131,10 @@ function DirectoryModal({
         <DialogButton onClick={handleClose} disabled={loading}>
           Cancel
         </DialogButton>
-        <DialogButton onClick={handleSubmit} disabled={!value.dir || loading}>
+        <DialogButton
+          onClick={handleSubmit}
+          disabled={!value.dir || nameError || loading}
+        >
           {loading ? 'loading...' : 'Add'}
         </DialogButton>
       </ActionButtonGroups>
