@@ -26,7 +26,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@types/sharp": "0.29.4",
+    "@types/sharp": "0.29.5",
     "electron-serve": "1.1.0",
     "electron-store": "8.0.1",
     "sharp": "0.29.3"
