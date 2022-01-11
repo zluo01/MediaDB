@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Tab, Tabs } from '@mui/material';
+import { AppBar, Box, Button, Tab, Tabs, Tooltip } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React from 'react';
@@ -93,7 +93,7 @@ export default function TVShowCardMenu({
           variant="scrollable"
           scrollButtons="auto"
         >
-          {data.shows.map((show, index) => (
+          {data.seasons.map((show, index) => (
             <Tab
               key={index}
               sx={{
@@ -104,13 +104,13 @@ export default function TVShowCardMenu({
                 backgroundColor:
                   value !== index ? 'inherit' : theme.palette.action.selected,
               }}
-              label={show.name}
+              label={`Season ${show.season}`}
               {...a11yProps(index)}
             />
           ))}
         </Tabs>
       </AppBar>
-      {data.shows.map((show, index) => {
+      {data.seasons.map((show, index) => {
         return (
           <TabPanel key={index} value={value} index={index}>
             <Box
@@ -128,14 +128,15 @@ export default function TVShowCardMenu({
               </Box>
               <Box display={'flex'} width={'61.8%'}>
                 <Box flexDirection={'row'} flexWrap={'wrap'} overflow={'auto'}>
-                  {show.files.map((o, i) => (
-                    <EpisodeButton
-                      key={i}
-                      variant="outlined"
-                      onClick={() => openFile(o)}
-                    >
-                      {i + 1}
-                    </EpisodeButton>
+                  {show.episodes.map((o, i) => (
+                    <Tooltip key={i} title={o.name}>
+                      <EpisodeButton
+                        variant="outlined"
+                        onClick={() => openFile(o.file)}
+                      >
+                        {o.episode}
+                      </EpisodeButton>
+                    </Tooltip>
                   ))}
                 </Box>
               </Box>

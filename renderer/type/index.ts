@@ -1,5 +1,6 @@
 export const MOVIE = 'movie';
 export const TV_SERIES = 'tvshow';
+export const EPISODE = 'episodedetails';
 export const COMIC = 'comic';
 
 export const DEFAULT = 'Directory';
@@ -41,7 +42,6 @@ export interface IMovieData {
   title: string;
   year: string;
   poster: string;
-  fanart: string;
   genre: string[];
   tag: string[];
   actor: string[];
@@ -54,16 +54,22 @@ export interface ITVShowData {
   genre: string[];
   tag: string[];
   actor: string[];
-  shows: IShow[];
+  seasons: ISeason[];
   poster: string;
-  fanart: string[];
   studio: string[];
 }
 
-export interface IShow {
-  name: string;
+export interface ISeason {
+  season: number;
   poster: string;
-  files: string[];
+  episodes: IEpisode[];
+}
+
+export interface IEpisode {
+  name: string;
+  file: string;
+  season: number;
+  episode: number;
 }
 
 export type IMediaData = IMovieData | ITVShowData | IComicData;
@@ -135,9 +141,7 @@ export type TProps = {
 
 export interface IKeyFiles {
   nfo?: string;
-  fanart: string[];
   poster: string[];
-  thumb: string[];
   media: string[];
   dir: string[];
   cbr: string[];

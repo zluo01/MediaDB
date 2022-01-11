@@ -34,10 +34,8 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
     const currDir = queue.shift() as string;
     const keyFiles: IKeyFiles = {
       dir: [],
-      fanart: [],
       media: [],
       poster: [],
-      thumb: [],
       cbr: [],
     };
 
@@ -61,12 +59,8 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
             break;
           case 'jpg':
           case 'png':
-            if (fileName.includes('fanart')) {
-              keyFiles.fanart.push(absolute);
-            } else if (fileName.includes('poster')) {
-              keyFiles.poster.push(absolute);
-            } else if (fileName.includes('thumb')) {
-              keyFiles.thumb.push(absolute);
+            if (fileName.includes('poster')) {
+              keyFiles.poster.push(fileName);
             }
             break;
           case 'm4v':

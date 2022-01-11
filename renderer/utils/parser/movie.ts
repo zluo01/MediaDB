@@ -17,8 +17,7 @@ export function parseMovieNFO(
     file: d.original_filename
       ? Path.join(path, d.original_filename)
       : files.media[0],
-    poster: files.poster[0] || d.poster || d.thumb,
-    fanart: files.fanart[0] || d.fanart || d.fanart.thumb,
+    poster: Path.join(path, files.poster[0]) || d.poster || d.thumb,
     genre: Array.isArray(d.genre) ? d.genre : [d.genre],
     actor: actors.map((a: { name: string }) => a.name),
     tag: Array.isArray(d.tag) ? d.tag : [d.tag],
