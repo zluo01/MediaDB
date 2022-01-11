@@ -1,4 +1,4 @@
-import parser from 'fast-xml-parser';
+import fxparser from 'fast-xml-parser';
 import fs from 'fs';
 import Path from 'path';
 
@@ -21,6 +21,8 @@ interface IHash {
 function update(m: IHash, v: string[]) {
   v.forEach(o => (m[o] = 1));
 }
+
+const parser = new fxparser.XMLParser();
 
 export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   const media: IMediaData[] = [];
@@ -85,6 +87,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
         const data = await fs.promises.readFile(
           Path.join(currDir, keyFiles.nfo)
         );
+
         const result = parser.parse(data.toString());
         let info = null;
         if (result.movie) {

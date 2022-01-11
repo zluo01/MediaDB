@@ -1,4 +1,4 @@
-import parser from 'fast-xml-parser';
+import fxparser from 'fast-xml-parser';
 import fs from 'fs';
 import _ from 'lodash';
 import Path from 'path';
@@ -12,6 +12,8 @@ import {
   ITVShowData,
   TV_SERIES,
 } from '../../type';
+
+const parser = new fxparser.XMLParser();
 
 export function getExtension(filename: string): string {
   const parts = filename.split('.');
