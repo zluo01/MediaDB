@@ -1,6 +1,6 @@
 {
   "name": "mediadb",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "description": "database for movie and tv shows",
   "main": "app/background.js",
@@ -68,7 +68,7 @@
     "lodash": "4.17.21",
     "next": "12.0.8",
     "next-redux-wrapper": "7.0.5",
-    "next-transpile-modules": "8.0.0",
+    "next-transpile-modules": "9.0.0",
     "nextron": "7.2.0",
     "prettier": "2.5.1",
     "react": "17.0.2",
