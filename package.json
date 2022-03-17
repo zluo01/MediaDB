@@ -1,6 +1,6 @@
 {
   "name": "mediadb",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "description": "database for movie and tv shows",
   "main": "app/background.js",
@@ -51,7 +51,6 @@
     "@typescript-eslint/eslint-plugin": "5.14.0",
     "@typescript-eslint/parser": "5.14.0",
     "adm-zip": "0.5.9",
-    "babel-plugin-import": "1.13.3",
     "electron": "16.1.0",
     "electron-builder": "22.14.13",
     "eslint": "8.11.0",
@@ -68,7 +67,6 @@
     "lodash": "4.17.21",
     "next": "12.1.0",
     "next-redux-wrapper": "7.0.5",
-    "next-transpile-modules": "9.0.0",
     "nextron": "7.2.0",
     "prettier": "2.5.1",
     "react": "17.0.2",

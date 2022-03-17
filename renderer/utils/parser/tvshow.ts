@@ -1,6 +1,7 @@
 import fxparser from 'fast-xml-parser';
 import fs from 'fs';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import padStart from 'lodash/padStart';
 import Path from 'path';
 
 import {
@@ -21,7 +22,7 @@ export function getExtension(filename: string): string {
 }
 
 function getPoster(posters: { [k: string]: string }, season: number): string {
-  const expectedPoster = `season${_.padStart(
+  const expectedPoster = `season${padStart(
     season === 0 ? 'specials' : season.toString(),
     2,
     '0'
@@ -31,7 +32,7 @@ function getPoster(posters: { [k: string]: string }, season: number): string {
 
 async function parseEpisodeInfo(path: string): Promise<IEpisode[]> {
   const files = await fs.promises.readdir(path, { withFileTypes: true });
-  const nfoFiles = _.filter(
+  const nfoFiles = filter(
     files,
     o => !o.isDirectory() && o.name.endsWith('nfo')
   );

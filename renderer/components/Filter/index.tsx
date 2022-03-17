@@ -1,4 +1,4 @@
-import { Chip, Typography } from '@mui/material';
+import { Button, Chip, Stack, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import React from 'react';
 
@@ -44,18 +44,32 @@ function FilterSection({
   // Todo possible use of styled on Typography in the future
   return (
     <React.Fragment>
-      <Typography
-        variant="h5"
-        component="h2"
-        style={{
-          marginLeft: 8,
-          color: theme.palette.text.secondary,
-          marginTop: 10,
-          marginBottom: 5,
-        }}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        spacing={2}
       >
-        {name}
-      </Typography>
+        <Typography
+          variant="h5"
+          component="h2"
+          style={{
+            marginLeft: 8,
+            color: theme.palette.text.secondary,
+            marginTop: 10,
+            marginBottom: 5,
+          }}
+        >
+          {name}
+        </Typography>
+        <Button
+          variant="text"
+          disabled={filter.length === 0}
+          style={{ color: theme.palette.text.secondary }}
+        >
+          Clear
+        </Button>
+      </Stack>
       <ChipContainer>
         {data.sort().map((value, index) => (
           <FilterChip
