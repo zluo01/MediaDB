@@ -67,7 +67,7 @@
     "lodash": "4.17.21",
     "next": "12.1.0",
     "next-redux-wrapper": "7.0.5",
-    "nextron": "7.2.0",
+    "nextron": "7.3.0",
     "prettier": "2.5.1",
     "react": "17.0.2",
     "react-beautiful-dnd": "13.1.0",
