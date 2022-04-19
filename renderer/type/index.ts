@@ -129,16 +129,6 @@ export const STUDIO = 4;
 
 export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;
 
-export interface ICardStyle {
-  width: number;
-  height: number;
-  elevation: number;
-}
-
-export type TProps = {
-  show: boolean;
-};
-
 export interface IKeyFiles {
   nfo?: string;
   poster: string[];
