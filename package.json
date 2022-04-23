@@ -51,7 +51,7 @@
     "@typescript-eslint/eslint-plugin": "5.20.0",
     "@typescript-eslint/parser": "5.20.0",
     "adm-zip": "0.5.9",
-    "electron": "18.0.4",
+    "electron": "18.1.0",
     "electron-builder": "23.0.3",
     "eslint": "8.14.0",
     "eslint-config-next": "12.1.5",
