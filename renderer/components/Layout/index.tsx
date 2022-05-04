@@ -1,13 +1,22 @@
+import CancelIcon from '@mui/icons-material/Cancel';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, InputBase, Toolbar, Typography } from '@mui/material';
+import {
+  AppBar,
+  Box,
+  IconButton,
+  InputAdornment,
+  InputBase,
+  Toolbar,
+  Typography,
+} from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 
-import { IFolder, IFolderAction, IReduxState } from '../../type';
+import { useAppDispatch, useAppSelector } from '../../lib/source';
+import { search } from '../../lib/source/actions';
+import { IState } from '../../type';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -74,29 +83,29 @@ type ILayoutProps = {
   children?: ReactNode;
   currFolderIndex?: number;
   disableSearch?: boolean;
-  updateSearch?: (text: string) => void;
-  showPanelName: boolean;
-  folders: IFolder[];
-  dispatch: Dispatch<IFolderAction>;
 };
 
 function Layout({
   children,
   currFolderIndex,
   disableSearch,
-  updateSearch,
-  showPanelName,
-  folders,
-  dispatch,
 }: ILayoutProps): JSX.Element {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const searchContent = useAppSelector((state: IState) => state.search);
 
   function handleSearch(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
-    if (updateSearch) {
-      updateSearch(e.target.value);
-    }
+    search(dispatch, e.target.value);
+  }
+
+  function handleClearSearch() {
+    search(dispatch, '');
+  }
+
+  function handleMouseDownSearch(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
   }
 
   return (
@@ -122,18 +131,25 @@ function Layout({
             <SearchInput
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
-              onChange={e => handleSearch(e)}
+              value={searchContent}
+              onChange={handleSearch}
               disabled={disableSearch}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClearSearch}
+                    onMouseDown={handleMouseDownSearch}
+                    disabled={!searchContent}
+                  >
+                    <CancelIcon />
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </Search>
         </Toolbar>
       </StyledAppBar>
-      <Drawer
-        dispatch={dispatch}
-        showPanelName={showPanelName}
-        folders={folders}
-        currFolderIndex={currFolderIndex}
-      />
+      <Drawer currFolderIndex={currFolderIndex} />
       <MainContent component="main">
         <Toolbar id="back-to-top-anchor" />
         {children}
@@ -143,9 +159,4 @@ function Layout({
   );
 }
 
-const mapStateToProps = (state: IReduxState) => ({
-  showPanelName: state.setting.showSidePanelName,
-  folders: state.folders,
-});
-
-export default connect(mapStateToProps)(Layout);
+export default Layout;

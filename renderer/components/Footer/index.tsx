@@ -1,9 +1,9 @@
 import { Slider, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { updateSetting } from '../../lib/store';
-import { ICardSize, IReduxState } from '../../type';
+import { useAppDispatch, useAppSelector } from '../../lib/source';
+import { updateSetting } from '../../lib/source/actions';
+import { ICardSize, IState } from '../../type';
 import { DefaultSetting, setSetting } from '../../utils/store';
 
 const StyledFooter = styled('div')(({ theme }) => ({
@@ -28,8 +28,8 @@ interface IFooter {
 }
 
 function Footer({ selected }: IFooter): JSX.Element {
-  const dispatch = useDispatch();
-  const setting = useSelector((state: IReduxState) => state.setting);
+  const dispatch = useAppDispatch();
+  const setting = useAppSelector((state: IState) => state.setting);
 
   function computeValue(): number {
     const ratio = setting.cardSize.width / DefaultSetting.cardSize.width;
@@ -43,8 +43,7 @@ function Footer({ selected }: IFooter): JSX.Element {
       height: DefaultSetting.cardSize.height * ratio,
     };
     try {
-      const newSetting = await setSetting({ ...setting, cardSize: newSize });
-      updateSetting(dispatch, newSetting);
+      updateSetting(dispatch, setSetting({ ...setting, cardSize: newSize }));
     } catch (e) {
       console.error(e);
     }

@@ -1,18 +1,17 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import Content from '../../components/Content';
 import Layout from '../../components/Layout';
-import { IFolderInfo, IReduxState } from '../../type';
+import { useAppSelector } from '../../lib/source';
+import { IFolderInfo, IState } from '../../type';
 import { getFolderInfo } from '../../utils/store';
 
 function Folder(): JSX.Element {
   const [data, setData] = useState<IFolderInfo>();
-  const [search, setSearch] = useState('');
 
   const router = useRouter();
-  const folders = useSelector((state: IReduxState) => state.folders);
+  const { search, folders } = useAppSelector((state: IState) => state);
   const fid = parseInt(router.query.id as string);
 
   function updateData(data: IFolderInfo) {
@@ -21,14 +20,12 @@ function Folder(): JSX.Element {
 
   useEffect(() => {
     if (fid >= 0 && folders) {
-      getFolderInfo(folders[fid].name)
-        .then(data => setData(data))
-        .catch(err => console.error(err));
+      setData(getFolderInfo(folders[fid].name));
     }
   }, [fid, folders]);
 
   return (
-    <Layout currFolderIndex={fid} updateSearch={setSearch}>
+    <Layout currFolderIndex={fid}>
       {data && (
         <Content
           folderInfo={folders[fid]}
@@ -43,7 +40,6 @@ function Folder(): JSX.Element {
               : data
           }
           updateData={updateData}
-          searchState={search !== ''}
         />
       )}
     </Layout>

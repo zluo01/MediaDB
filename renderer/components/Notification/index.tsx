@@ -1,12 +1,12 @@
 import { Alert, AlertTitle, Snackbar } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { notify } from '../../lib/store';
-import { IReduxState } from '../../type';
+import { useAppDispatch, useAppSelector } from '../../lib/source';
+import { notify } from '../../lib/source/actions';
+import { IState } from '../../type';
 
 function Error(): JSX.Element {
-  const dispatch = useDispatch();
-  const { open, msg } = useSelector((state: IReduxState) => state.error);
+  const dispatch = useAppDispatch();
+  const { open, msg } = useAppSelector((state: IState) => state.error);
 
   async function handleClose() {
     notify(dispatch, false, '');

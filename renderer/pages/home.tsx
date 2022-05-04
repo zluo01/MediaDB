@@ -3,11 +3,11 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import Layout from '../components/Layout';
-import { IReduxState } from '../type';
+import { IState } from '../type';
 
 function Home(): JSX.Element {
   const router = useRouter();
-  const folders = useSelector((state: IReduxState) => state.folders);
+  const folders = useSelector((state: IState) => state.folders);
 
   useEffect(() => {
     if (folders.length > 0) {

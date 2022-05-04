@@ -90,6 +90,7 @@ export interface IError {
   msg: string;
 }
 
+export const SEARCH = 'SEARCH';
 export const UPDATE_FOLDER = 'FOLDER';
 export const UPDATE_SETTING = 'SETTING';
 export const NOTIFICATION = 'NOTIFICATION';
@@ -99,20 +100,11 @@ export interface IFolder {
   dir: string;
 }
 
-export interface IReduxState {
+export interface IState {
+  search: string;
   setting: ISetting;
   folders: IFolder[];
   error: IError;
-}
-
-export interface IFolderAction {
-  type: typeof UPDATE_FOLDER;
-  payload: IFolder[];
-}
-
-export interface ISettingAction {
-  type: typeof UPDATE_SETTING;
-  payload: ISetting;
 }
 
 export interface IFilterPros {

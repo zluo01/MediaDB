@@ -29,10 +29,7 @@ export function addFolder(folder: IFolder, values: IFolderInfo): IFolder[] {
   return folders;
 }
 
-export async function updateFolderName(
-  index: number,
-  name: string
-): Promise<IFolder[]> {
+export function updateFolderName(index: number, name: string): IFolder[] {
   const folders = getFolders();
   const prevName = folders[index].name;
   const info = dataStore.get(prevName);
@@ -43,26 +40,23 @@ export async function updateFolderName(
   return folders;
 }
 
-export async function getFolderInfo(name: string): Promise<IFolderInfo> {
+export function getFolderInfo(name: string): IFolderInfo {
   return dataStore.get(name) as IFolderInfo;
 }
 
-export async function updateFolderInfo(
-  name: string,
-  info: IFolderInfo
-): Promise<IFolderInfo> {
+export function updateFolderInfo(name: string, info: IFolderInfo): IFolderInfo {
   dataStore.set(name, info);
   return info;
 }
 
-export async function removeFolder(name: string): Promise<IFolder[]> {
+export function removeFolder(name: string): IFolder[] {
   const folders = getFolders().filter(o => o.name !== name);
   dataStore.set(KEY.FOLDER, folders);
   dataStore.delete(name);
   return folders;
 }
 
-export async function updateFolders(folders: IFolder[]): Promise<void> {
+export function updateFolders(folders: IFolder[]): void {
   dataStore.set(KEY.FOLDER, folders);
 }
 
@@ -79,7 +73,7 @@ export function getSetting(): ISetting {
   return settingStore.get(KEY.SETTING, DefaultSetting) as ISetting;
 }
 
-export async function setSetting(setting: ISetting): Promise<ISetting> {
+export function setSetting(setting: ISetting): ISetting {
   settingStore.set(KEY.SETTING, setting);
   return setting;
 }

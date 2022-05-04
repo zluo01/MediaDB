@@ -19,7 +19,7 @@ import {
 } from 'react-beautiful-dnd';
 import { Dispatch } from 'redux';
 
-import { notify, updateFolder } from '../../lib/store';
+import { notify, updateFolder } from '../../lib/source/actions';
 import { IFolder } from '../../type';
 import { removeFolder, updateFolders } from '../../utils/store';
 
@@ -49,8 +49,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
 
   async function handleRemove(name: string) {
     try {
-      const data = await removeFolder(name);
-      updateFolder(dispatch, data);
+      updateFolder(dispatch, removeFolder(name));
     } catch (e) {
       notify(dispatch, true, `Update Folder Error: ${e}`);
     }
@@ -68,7 +67,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
     if (result.source.index !== result.destination.index) {
       try {
         const result = reorder(folderData, src, dst);
-        await updateFolders(result);
+        updateFolders(result);
         updateFolder(dispatch, result);
       } catch (e) {
         notify(dispatch, true, `Drag End: ${e}`);

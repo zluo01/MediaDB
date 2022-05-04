@@ -16,9 +16,9 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
+import { useAppSelector } from '../../lib/source';
 import {
   ACTOR,
   COMIC,
@@ -31,7 +31,7 @@ import {
   IFolderInfo,
   IMediaData,
   IMovieData,
-  IReduxState,
+  IState,
   MOVIE,
   SORT,
   STUDIO,
@@ -94,7 +94,6 @@ function getSortType(type: string): SORT {
 interface IContentProps {
   folderInfo: IFolder;
   folderData: IFolderInfo;
-  searchState: boolean;
   updateData: (data: IFolderInfo) => void;
 }
 
@@ -141,12 +140,11 @@ const initFilterState = {
 function Content({
   folderInfo,
   folderData,
-  searchState,
   updateData,
 }: IContentProps): JSX.Element {
   const anchorRef = useRef<HTMLButtonElement>(null);
 
-  const cardSize = useSelector((state: IReduxState) => state.setting.cardSize);
+  const { search, setting } = useAppSelector((state: IState) => state);
 
   const [currIndex, setCurrIndex] = useState(-1);
   const [data, setData] = useState(folderData.data);
@@ -159,7 +157,7 @@ function Content({
   const [refresh, setRefresh] = useState(false);
 
   const contentState = useRef({
-    currIndex: currIndex,
+    currIndex,
     columnNumber: 0,
   });
 
@@ -251,10 +249,9 @@ function Content({
     updateFolderInfo(folderInfo.name, {
       ...folderData,
       sort: getSortType(type),
-    })
-      .then(() => setSortType(type))
-      .finally(() => setOpen(false))
-      .catch(err => console.error(err));
+    });
+    setSortType(type);
+    setOpen(false);
   }
 
   function handleKeyPress(ev: KeyboardEvent) {
@@ -364,8 +361,8 @@ function Content({
   }
 
   const cInfo = 60;
-  const cWidth = cardSize.width + 15;
-  const cHeight = cardSize.height + cInfo;
+  const cWidth = setting.cardSize.width + 15;
+  const cHeight = setting.cardSize.height + cInfo;
 
   return (
     <AutoSizer>
@@ -392,7 +389,7 @@ function Content({
               <ActionButton
                 size={'small'}
                 startIcon={<FilterListIcon />}
-                disabled={searchState}
+                disabled={search !== ''}
                 onClick={() => setOpenFilter(prevState => !prevState)}
               >
                 Filter
@@ -401,7 +398,7 @@ function Content({
                 size={'small'}
                 startIcon={<SortIcon />}
                 ref={anchorRef}
-                disabled={searchState}
+                disabled={search !== ''}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
                 onClick={handleToggle}
@@ -444,7 +441,7 @@ function Content({
                 size={'small'}
                 startIcon={<RefreshIcon />}
                 onClick={updateLibrary}
-                disabled={searchState}
+                disabled={search !== ''}
               >
                 Refresh
               </RefreshButton>
@@ -460,12 +457,12 @@ function Content({
             )}
             <MediaGrid
               size={{
-                columnNumber: columnNumber,
-                cHeight: cHeight,
-                cWidth: cWidth,
-                space: space,
-                width: width,
-                cardSize: cardSize,
+                columnNumber,
+                cHeight,
+                cWidth,
+                space,
+                width,
+                cardSize: setting.cardSize,
               }}
               data={data}
               select={setIndex}

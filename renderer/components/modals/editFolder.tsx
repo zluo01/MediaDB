@@ -1,8 +1,8 @@
 import { Dialog, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
-import { notify } from '../../lib/store';
+import { useAppDispatch } from '../../lib/source';
+import { notify } from '../../lib/source/actions';
 import { IFolder } from '../../type';
 import { getFolder, updateFolderName } from '../../utils/store';
 import {
@@ -25,7 +25,7 @@ function FolderNameEdit({
   folderIndex,
   updateFolder,
 }: IFolderNameEdit): JSX.Element {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +41,7 @@ function FolderNameEdit({
     e.preventDefault();
     setLoading(true);
     try {
-      const folders = await updateFolderName(folderIndex, name);
+      const folders = updateFolderName(folderIndex, name);
       updateFolder(folders);
       setLoading(false);
       setName('');

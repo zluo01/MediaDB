@@ -84,9 +84,9 @@ export async function parseTVShowNFO(
       data: poster,
     });
     shows.push({
-      season: season,
-      poster: poster,
-      episodes: episodes,
+      season,
+      poster,
+      episodes,
     });
   }
 

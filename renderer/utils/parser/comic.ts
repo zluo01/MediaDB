@@ -24,7 +24,7 @@ export async function parseComicInfo(
   const fileName = Path.basename(dir);
   collector({
     src: fileName,
-    data: data,
+    data,
   });
   return {
     type: COMIC,

@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import createEmotionCache from '../lib/createEmotionCache';
-import { wrapper } from '../lib/store';
+import { wrapper } from '../lib/source';
 import { theme } from '../lib/theme';
 
 const clientSideEmotionCache = createEmotionCache();

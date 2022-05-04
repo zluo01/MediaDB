@@ -9,11 +9,11 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import Layout from '../components/Layout';
-import { notify, updateSetting } from '../lib/store';
-import { IFolder, IReduxState } from '../type';
+import { useAppDispatch, useAppSelector } from '../lib/source';
+import { notify, updateSetting } from '../lib/source/actions';
+import { IFolder, IState } from '../type';
 import { setSetting } from '../utils/store';
 
 const SettingForm = styled(FormControl)(({ theme }) => ({
@@ -38,8 +38,8 @@ const FolderList = dynamic(() => import('../components/SettingFolderList'), {
 });
 
 function Setting(): JSX.Element {
-  const dispatch = useDispatch();
-  const { setting, folders } = useSelector((state: IReduxState) => state);
+  const dispatch = useAppDispatch();
+  const { setting, folders } = useAppSelector((state: IState) => state);
 
   const [folderData, setFolderData] = useState<IFolder[]>(folders);
 
@@ -51,11 +51,13 @@ function Setting(): JSX.Element {
 
   async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
     try {
-      const s = await setSetting({
-        ...setting,
-        showSidePanelName: event.target.checked,
-      });
-      updateSetting(dispatch, s);
+      updateSetting(
+        dispatch,
+        setSetting({
+          ...setting,
+          showSidePanelName: event.target.checked,
+        })
+      );
     } catch (e) {
       notify(dispatch, true, `Check Box Error: ${e}`);
     }

@@ -6,7 +6,7 @@ import {
   Divider,
   Drawer,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Toolbar,
@@ -16,10 +16,10 @@ import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { Dispatch } from 'redux';
 
-import { updateFolder } from '../../lib/store';
-import { IFolder, IFolderAction } from '../../type';
+import { useAppDispatch, useAppSelector } from '../../lib/source';
+import { updateFolder } from '../../lib/source/actions';
+import { IFolder, IState } from '../../type';
 
 const FunctionList = styled(List)(() => ({
   width: '100%',
@@ -41,19 +41,13 @@ const DirectoryModal = dynamic(() => import('../modals/getDirectory'), {
 });
 
 interface ISidePanel {
-  folders: IFolder[];
-  showPanelName: boolean;
   currFolderIndex?: number;
-  dispatch: Dispatch<IFolderAction>;
 }
 
-function SidePanel({
-  folders,
-  showPanelName,
-  currFolderIndex,
-  dispatch,
-}: ISidePanel): JSX.Element {
+function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { folders, setting } = useAppSelector((state: IState) => state);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -74,9 +68,9 @@ function SidePanel({
       <Panel
         variant="permanent"
         sx={{
-          width: showPanelName ? 240 : 60,
+          width: setting.showSidePanelName ? 240 : 60,
           [`& .MuiDrawer-paper`]: {
-            width: showPanelName ? 240 : 60,
+            width: setting.showSidePanelName ? 240 : 60,
           },
         }}
       >
@@ -87,8 +81,7 @@ function SidePanel({
               const isCurr = index === currFolderIndex;
               return (
                 <Tooltip key={index} title={folder.name}>
-                  <ListItem
-                    button
+                  <ListItemButton
                     disabled={isCurr}
                     onClick={() => router.push(`/folder/${index}`)}
                   >
@@ -99,26 +92,32 @@ function SidePanel({
                         }}
                       />
                     </ListItemIcon>
-                    {showPanelName && <ListItemText primary={folder.name} />}
-                  </ListItem>
+                    {setting.showSidePanelName && (
+                      <ListItemText primary={folder.name} />
+                    )}
+                  </ListItemButton>
                 </Tooltip>
               );
             })}
           </List>
           <FunctionList>
             <Divider />
-            <ListItem button onClick={handleOpen}>
+            <ListItemButton onClick={handleOpen}>
               <ListItemIcon>
                 <AddIcon sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
-              {showPanelName && <ListItemText primary={'Add Video'} />}
-            </ListItem>
-            <ListItem button onClick={() => router.push('/setting')}>
+              {setting.showSidePanelName && (
+                <ListItemText primary={'Add Video'} />
+              )}
+            </ListItemButton>
+            <ListItemButton onClick={() => router.push('/setting')}>
               <ListItemIcon>
                 <SettingsIcon sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
-              {showPanelName && <ListItemText primary={'Setting'} />}
-            </ListItem>
+              {setting.showSidePanelName && (
+                <ListItemText primary={'Setting'} />
+              )}
+            </ListItemButton>
           </FunctionList>
         </Box>
       </Panel>
