@@ -18,7 +18,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
       - run: npm install
 
       - name: Build for linux
@@ -29,7 +29,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: npm run build:win64
 
-      - name: Set VERSION variable for macos/ubuntu
+      - name: Set VERSION variable for ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
           echo "VERSION=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)" >> $GITHUB_ENV
