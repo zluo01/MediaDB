@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2019]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
       - run: npm install
 
       - name: Build for linux
@@ -28,5 +28,5 @@ jobs:
         run: npm run build:linux
 
       - name: Build for windows
-        if: matrix.os == 'windows-2019'
+        if: matrix.os == 'windows-latest'
         run: npm run build:win64
