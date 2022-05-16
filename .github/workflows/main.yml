@@ -28,5 +28,5 @@ jobs:
         run: npm run build:linux
 
       - name: Build for windows
-        if: matrix.os == 'windows-2019'
+        if: matrix.os == 'windows-latest'
         run: npm run build:win64
