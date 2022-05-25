@@ -9,7 +9,10 @@ export function parseMovieNFO(
   files: IKeyFiles
 ): IMovieData {
   const d = data[MOVIE];
-  const actors = Array.isArray(d.actor) ? d.actor : [d.actor];
+  let actors = [];
+  if (d.actor) {
+    actors = Array.isArray(d.actor) ? d.actor : [d.actor];
+  }
   return {
     type: MOVIE,
     title: d.title,

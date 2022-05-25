@@ -1,6 +1,6 @@
 {
   "name": "mediadb",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "database for movie and tv shows",
   "main": "app/background.js",
@@ -63,7 +63,7 @@
     "eslint-plugin-promise": "6.0.0",
     "eslint-plugin-react": "7.30.0",
     "fast-xml-parser": "4.0.7",
-    "husky": "7.0.4",
+    "husky": "8.0.1",
     "lint-staged": "12.4.1",
     "lodash": "4.17.21",
     "next": "12.1.6",
