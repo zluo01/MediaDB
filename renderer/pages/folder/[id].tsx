@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Content from '../../components/Content';
 import Layout from '../../components/Layout';
 import { useAppSelector } from '../../lib/source';
+import { getFolderInfo } from '../../lib/store';
 import { IFolderInfo, IState } from '../../type';
-import { getFolderInfo } from '../../utils/store';
 
 function Folder(): JSX.Element {
   const [data, setData] = useState<IFolderInfo>();

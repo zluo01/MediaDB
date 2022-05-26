@@ -4,12 +4,12 @@ import { styled } from '@mui/material/styles';
 import path from 'path';
 import React, { useState } from 'react';
 
+import { getDirectory } from '../../lib/electron';
+import { buildDirectory } from '../../lib/parser';
 import { useAppDispatch } from '../../lib/source';
 import { notify } from '../../lib/source/actions';
+import { addFolder } from '../../lib/store';
 import { IFolder } from '../../type';
-import { getDirectory } from '../../utils/electron';
-import { buildDirectory } from '../../utils/parser';
-import { addFolder } from '../../utils/store';
 import {
   ModalTitle,
   ModalContent,

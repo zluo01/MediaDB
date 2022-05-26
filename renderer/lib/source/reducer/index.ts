@@ -8,7 +8,7 @@ import {
   UPDATE_FOLDER,
   UPDATE_SETTING,
 } from '../../../type';
-import { getFolders, getSetting } from '../../../utils/store';
+import { getFolders, getSetting } from '../../store';
 
 const initialState: IState = {
   search: '',

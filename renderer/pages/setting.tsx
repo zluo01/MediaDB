@@ -13,8 +13,8 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { useAppDispatch, useAppSelector } from '../lib/source';
 import { notify, updateSetting } from '../lib/source/actions';
+import { setSetting } from '../lib/store';
 import { IFolder, IState } from '../type';
-import { setSetting } from '../utils/store';
 
 const SettingForm = styled(FormControl)(({ theme }) => ({
   width: 'inherit',

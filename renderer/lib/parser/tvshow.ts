@@ -13,6 +13,7 @@ import {
   ITVShowData,
   TV_SERIES,
 } from '../../type';
+import { toArray } from '../../utils';
 
 const parser = new fxparser.XMLParser();
 
@@ -62,8 +63,6 @@ export async function parseTVShowNFO(
   collector: (obj: ICacheImage) => void
 ): Promise<ITVShowData> {
   const d = data[TV_SERIES];
-  const actors = Array.isArray(d.actor) ? d.actor : [d.actor];
-
   const posters = files.poster.reduce((map, poster) => {
     map[poster.replace('.' + getExtension(poster), '')] = poster;
     return map;
@@ -92,12 +91,14 @@ export async function parseTVShowNFO(
 
   return {
     seasons: shows.sort((a, b) => a.season - b.season),
-    actor: actors.filter((o: any) => o).map((a: { name: string }) => a.name),
-    genre: Array.isArray(d.genre) ? d.genre : [d.genre],
-    tag: Array.isArray(d.tag) ? d.tag : [d.tag],
+    actors: toArray(d.actor)
+      .filter((o: any) => o)
+      .map((a: { name: string }) => a.name),
+    genres: toArray(d.genre),
+    tags: toArray(d.tag),
     title: d.title,
     type: TV_SERIES,
     poster: Path.join(path, posters.poster),
-    studio: Array.isArray(d.studio) ? d.studio : [d.studio],
+    studios: toArray(d.studio),
   };
 }

@@ -20,8 +20,8 @@ import {
 import { Dispatch } from 'redux';
 
 import { notify, updateFolder } from '../../lib/source/actions';
+import { removeFolder, updateFolders } from '../../lib/store';
 import { IFolder } from '../../type';
-import { removeFolder, updateFolders } from '../../utils/store';
 
 const EditFolder = dynamic(() => import('../modals/editFolder'), {
   ssr: false,

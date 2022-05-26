@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState } from 'react';
 
-import { getCacheImagePath } from '../../utils/store';
+import { getCacheImagePath } from '../../lib/store';
 
 interface IImageProps {
   dir: string;

@@ -3,8 +3,8 @@ import { styled } from '@mui/material/styles';
 
 import { useAppDispatch, useAppSelector } from '../../lib/source';
 import { updateSetting } from '../../lib/source/actions';
+import { DefaultSetting, setSetting } from '../../lib/store';
 import { ICardSize, IState } from '../../type';
-import { DefaultSetting, setSetting } from '../../utils/store';
 
 const StyledFooter = styled('div')(({ theme }) => ({
   position: 'fixed',

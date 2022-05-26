@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch } from '../../lib/source';
 import { notify } from '../../lib/source/actions';
+import { getFolder, updateFolderName } from '../../lib/store';
 import { IFolder } from '../../type';
-import { getFolder, updateFolderName } from '../../utils/store';
 import {
   ActionButtonGroups,
   ModalContent,

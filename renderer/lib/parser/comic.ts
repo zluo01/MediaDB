@@ -31,9 +31,9 @@ export async function parseComicInfo(
     file: dir,
     title: fileName.replace('.' + getExtension(fileName), ''),
     poster: fileName,
-    actor: [],
-    genre: [],
-    studio: [],
-    tag: [],
+    tags: [],
+    actors: [],
+    genres: [],
+    studios: [],
   };
 }

@@ -29,6 +29,7 @@ interface IFilterSection {
   data: string[];
   filter: string[];
   type: FILTER;
+  clearFilter: (type: FILTER) => void;
   updateFilter: (type: FILTER, name: string) => void;
 }
 
@@ -37,11 +38,10 @@ function FilterSection({
   data,
   type,
   filter,
+  clearFilter,
   updateFilter,
 }: IFilterSection): JSX.Element {
   const theme = useTheme();
-
-  // Todo possible use of styled on Typography in the future
   return (
     <React.Fragment>
       <Stack
@@ -66,6 +66,7 @@ function FilterSection({
           variant="text"
           disabled={filter.length === 0}
           style={{ color: theme.palette.text.secondary }}
+          onClick={() => clearFilter(type)}
         >
           Clear
         </Button>
@@ -90,6 +91,7 @@ interface IFilerSection {
   width: number;
   space: number;
   filter: IFilterPros;
+  clearFilter: (type: FILTER) => void;
   updateFilter: (type: FILTER, name: string) => void;
 }
 
@@ -98,6 +100,7 @@ function Filters({
   width,
   space,
   filter,
+  clearFilter,
   updateFilter,
 }: IFilerSection): JSX.Element {
   return (
@@ -115,6 +118,7 @@ function Filters({
         data={folderData.genres}
         filter={filter.genres}
         type={GENRE}
+        clearFilter={clearFilter}
         updateFilter={updateFilter}
       />
       <FilterSection
@@ -122,6 +126,7 @@ function Filters({
         data={folderData.actors}
         filter={filter.actors}
         type={ACTOR}
+        clearFilter={clearFilter}
         updateFilter={updateFilter}
       />
       <FilterSection
@@ -129,6 +134,7 @@ function Filters({
         data={folderData.studios}
         filter={filter.studios}
         type={STUDIO}
+        clearFilter={clearFilter}
         updateFilter={updateFilter}
       />
       <FilterSection
@@ -136,6 +142,7 @@ function Filters({
         data={folderData.tags}
         filter={filter.tags}
         type={TAG}
+        clearFilter={clearFilter}
         updateFilter={updateFilter}
       />
     </div>

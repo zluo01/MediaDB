@@ -14,11 +14,13 @@ import {
   Zoom,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import dynamic from 'next/dynamic';
 import React, { useEffect, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
+import { openFile } from '../../lib/electron';
+import { buildDirectory } from '../../lib/parser';
 import { useAppSelector } from '../../lib/source';
+import { updateFolderInfo } from '../../lib/store';
 import {
   ACTOR,
   COMIC,
@@ -41,9 +43,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '../../type';
-import { openFile } from '../../utils/electron';
-import { buildDirectory } from '../../utils/parser';
-import { updateFolderInfo } from '../../utils/store';
+import Filters from '../Filter';
 import Footer from '../Footer';
 import MediaGrid from './content';
 import {
@@ -128,8 +128,6 @@ function ScrollTop(props: IScrollProps) {
   );
 }
 
-const FilterSection = dynamic(() => import('../Filter'), { ssr: false });
-
 const initFilterState = {
   actors: [],
   genres: [],
@@ -189,19 +187,19 @@ function Content({
     let media = [...folderData.data];
 
     filter.tags.forEach(t => {
-      media = media.filter(o => o.tag.includes(t));
+      media = media.filter(o => o.tags.includes(t));
     });
 
     filter.genres.forEach(g => {
-      media = media.filter(o => o.genre.includes(g));
+      media = media.filter(o => o.genres.includes(g));
     });
 
     filter.actors.forEach(a => {
-      media = media.filter(o => o.actor.includes(a));
+      media = media.filter(o => o.actors.includes(a));
     });
 
     filter.studios.forEach(a => {
-      media = media.filter(o => o.studio.includes(a));
+      media = media.filter(o => o.studios.includes(a));
     });
 
     switch (sortType) {
@@ -254,7 +252,7 @@ function Content({
     setOpen(false);
   }
 
-  function handleKeyPress(ev: KeyboardEvent) {
+  async function handleKeyPress(ev: KeyboardEvent) {
     const { currIndex, columnNumber } = contentState.current;
     const c = currIndex % columnNumber;
     const r = Math.floor(currIndex / columnNumber);
@@ -284,7 +282,7 @@ function Content({
         break;
       case 'Enter':
         if (data[currIndex].type === MOVIE || data[currIndex].type === COMIC) {
-          openFile((data[currIndex] as IMovieData | IComicData).file);
+          await openFile((data[currIndex] as IMovieData | IComicData).file);
         }
         break;
     }
@@ -298,38 +296,55 @@ function Content({
     };
   }, [data]);
 
+  function getFilterSets(value: string[], name: string): string[] {
+    if (value.includes(name)) {
+      return value.filter(o => o !== name);
+    }
+    return [...value, name];
+  }
+
   function updateFilter(type: FILTER, name: string) {
     switch (type) {
       case TAG:
-        if (!filter.tags.includes(name)) {
-          setFilter({ ...filter, tags: [...filter.tags, name] });
-          return;
-        }
-        setFilter({ ...filter, tags: filter.tags.filter(o => o !== name) });
+        setFilter(prevState => ({
+          ...prevState,
+          tags: getFilterSets(prevState.tags, name),
+        }));
         break;
       case GENRE:
-        if (!filter.genres.includes(name)) {
-          setFilter({ ...filter, genres: [...filter.genres, name] });
-          return;
-        }
-        setFilter({ ...filter, genres: filter.genres.filter(o => o !== name) });
+        setFilter(prevState => ({
+          ...prevState,
+          genres: getFilterSets(prevState.genres, name),
+        }));
         break;
       case ACTOR:
-        if (!filter.actors.includes(name)) {
-          setFilter({ ...filter, actors: [...filter.actors, name] });
-          return;
-        }
-        setFilter({ ...filter, actors: filter.actors.filter(o => o !== name) });
+        setFilter(prevState => ({
+          ...prevState,
+          actors: getFilterSets(prevState.actors, name),
+        }));
         break;
       case STUDIO:
-        if (!filter.studios.includes(name)) {
-          setFilter({ ...filter, studios: [...filter.studios, name] });
-          return;
-        }
-        setFilter({
-          ...filter,
-          studios: filter.studios.filter(o => o !== name),
-        });
+        setFilter(prevState => ({
+          ...prevState,
+          studios: getFilterSets(prevState.studios, name),
+        }));
+        break;
+    }
+  }
+
+  function clearFilter(type: FILTER) {
+    switch (type) {
+      case TAG:
+        setFilter(prevState => ({ ...prevState, tags: [] }));
+        break;
+      case GENRE:
+        setFilter(prevState => ({ ...prevState, genres: [] }));
+        break;
+      case ACTOR:
+        setFilter(prevState => ({ ...prevState, actors: [] }));
+        break;
+      case STUDIO:
+        setFilter(prevState => ({ ...prevState, studios: [] }));
         break;
     }
   }
@@ -447,11 +462,12 @@ function Content({
               </RefreshButton>
             </div>
             {openFilter && (
-              <FilterSection
+              <Filters
                 folderData={folderData}
                 width={width}
                 space={space}
                 filter={filter}
+                clearFilter={clearFilter}
                 updateFilter={updateFilter}
               />
             )}

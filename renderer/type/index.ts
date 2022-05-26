@@ -16,47 +16,38 @@ export type SORT =
   | typeof YEAR_ASC
   | typeof YEAR_DSC;
 
-export interface IFolderInfo {
-  sort: SORT;
+interface ITags {
   tags: string[];
   genres: string[];
   actors: string[];
   studios: string[];
+}
+
+export interface IFolderInfo extends ITags {
+  sort: SORT;
   data: IMediaData[];
 }
 
-export interface IComicData {
+export interface IComicData extends ITags {
   type: typeof COMIC;
   file: string;
   title: string;
   poster: string;
-  genre: string[];
-  tag: string[];
-  actor: string[];
-  studio: string[];
 }
 
-export interface IMovieData {
+export interface IMovieData extends ITags {
   type: typeof MOVIE;
   file: string;
   title: string;
   year: string;
   poster: string;
-  genre: string[];
-  tag: string[];
-  actor: string[];
-  studio: string[];
 }
 
-export interface ITVShowData {
+export interface ITVShowData extends ITags {
   type: typeof TV_SERIES;
   title: string;
-  genre: string[];
-  tag: string[];
-  actor: string[];
-  seasons: ISeason[];
   poster: string;
-  studio: string[];
+  seasons: ISeason[];
 }
 
 export interface ISeason {

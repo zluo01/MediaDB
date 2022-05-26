@@ -3,8 +3,8 @@ import { styled, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React from 'react';
 
+import { openFile } from '../../lib/electron';
 import { ITVShowData } from '../../type';
-import { openFile } from '../../utils/electron';
 
 const Section = styled('div')(() => ({
   height: '38.2vh',

@@ -2,8 +2,8 @@ import { ipcRenderer, shell } from 'electron';
 
 import { ICacheImage } from '../../type';
 
-export function openFile(dir: string): void {
-  shell.openPath(dir).catch(err => console.error(err));
+export async function openFile(dir: string): Promise<void> {
+  await shell.openPath(dir);
 }
 
 export async function getDirectory(): Promise<string> {

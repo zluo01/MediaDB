@@ -2,8 +2,8 @@ import { Drawer, Typography } from '@mui/material';
 import { lighten, useTheme } from '@mui/material/styles';
 import React, { useState } from 'react';
 
+import { openFile } from '../../lib/electron';
 import { ICardSize, IMediaData, MOVIE, TV_SERIES } from '../../type';
-import { openFile } from '../../utils/electron';
 import Image from '../ImageLoader';
 import Menu from './showMenu';
 import { CardGrid, CardInfo, MediaCard } from './styles';
@@ -33,7 +33,7 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
     switch (media.type) {
       case 'comic':
       case 'movie':
-        openFile(media.file);
+        await openFile(media.file);
         break;
       case 'tvshow':
         setOpen(prevState => !prevState);

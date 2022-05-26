@@ -10,17 +10,10 @@ import {
   IMediaData,
 } from '../../type';
 import { cacheImage } from '../electron';
+import { TagAggregator } from './aggregator';
 import { parseComicInfo } from './comic';
 import { parseMovieNFO } from './movie';
 import { getExtension, parseTVShowNFO } from './tvshow';
-
-interface IHash {
-  [v: string]: number;
-}
-
-function update(m: IHash, v: string[]) {
-  v.forEach(o => (m[o] = 1));
-}
 
 const parser = new fxparser.XMLParser();
 
@@ -28,10 +21,8 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   const media: IMediaData[] = [];
   const queue: string[] = [dir];
   const thumbnails: ICacheImage[] = [];
-  const tags: IHash = {};
-  const genres: IHash = {};
-  const actors: IHash = {};
-  const studios: IHash = {};
+  const tagAggregator = new TagAggregator();
+
   while (queue.length) {
     const currDir = queue.shift() as string;
     const keyFiles: IKeyFiles = {
@@ -104,10 +95,7 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
             data: info.poster,
           });
           media.push(info);
-          update(tags, info.tag);
-          update(genres, info.genre);
-          update(actors, info.actor);
-          update(studios, info.studio);
+          tagAggregator.aggregate(info);
         }
       } else if (keyFiles.cbr.length > 0) {
         for (const cbr of keyFiles.cbr) {
@@ -128,9 +116,9 @@ export async function buildDirectory(dir: string): Promise<IFolderInfo> {
   return {
     sort: DEFAULT,
     data: media,
-    tags: Object.keys(tags).filter(o => o !== ''),
-    genres: Object.keys(genres).filter(o => o !== ''),
-    actors: Object.keys(actors).filter(o => o !== ''),
-    studios: Object.keys(studios).filter(o => o !== ''),
+    tags: tagAggregator.getTags(),
+    genres: tagAggregator.getGenres(),
+    actors: tagAggregator.getActors(),
+    studios: tagAggregator.getStudios(),
   };
 }

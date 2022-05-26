@@ -1,6 +1,7 @@
 import Path from 'path';
 
 import { IKeyFiles, IMovieData, MOVIE } from '../../type';
+import { toArray } from '../../utils';
 
 export function parseMovieNFO(
   path: string,
@@ -9,10 +10,6 @@ export function parseMovieNFO(
   files: IKeyFiles
 ): IMovieData {
   const d = data[MOVIE];
-  let actors = [];
-  if (d.actor) {
-    actors = Array.isArray(d.actor) ? d.actor : [d.actor];
-  }
   return {
     type: MOVIE,
     title: d.title,
@@ -21,9 +18,9 @@ export function parseMovieNFO(
       ? Path.join(path, d.original_filename)
       : files.media[0],
     poster: Path.join(path, files.poster[0]) || d.poster || d.thumb,
-    genre: Array.isArray(d.genre) ? d.genre : [d.genre],
-    actor: actors.map((a: { name: string }) => a.name),
-    tag: Array.isArray(d.tag) ? d.tag : [d.tag],
-    studio: Array.isArray(d.studio) ? d.studio : [d.studio],
+    tags: toArray(d.tag),
+    genres: toArray(d.genre),
+    actors: toArray(d.actor).map((a: { name: string }) => a.name),
+    studios: toArray(d.studio),
   };
 }
