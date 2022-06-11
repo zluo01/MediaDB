@@ -26,7 +26,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@types/sharp": "0.30.2",
+    "@types/sharp": "0.30.4",
     "electron-serve": "1.1.0",
     "electron-store": "8.0.2",
     "sharp": "0.30.6"
@@ -43,14 +43,14 @@
     "@trivago/prettier-plugin-sort-imports": "3.2.0",
     "@types/adm-zip": "0.5.0",
     "@types/lodash": "4.14.182",
-    "@types/node": "16.11.38",
+    "@types/node": "16.11.39",
     "@types/react": "18.0.12",
     "@types/react-beautiful-dnd": "13.1.2",
     "@types/react-dom": "18.0.5",
     "@types/react-redux": "7.1.24",
     "@types/react-virtualized-auto-sizer": "1.0.1",
-    "@typescript-eslint/eslint-plugin": "5.27.0",
-    "@typescript-eslint/parser": "5.27.0",
+    "@typescript-eslint/eslint-plugin": "5.27.1",
+    "@typescript-eslint/parser": "5.27.1",
     "adm-zip": "0.5.9",
     "electron": "19.0.4",
     "electron-builder": "23.0.3",
