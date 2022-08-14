@@ -54,7 +54,7 @@
     "adm-zip": "0.5.9",
     "electron": "19.0.12",
     "electron-builder": "23.3.3",
-    "eslint": "8.21.0",
+    "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-standard": "17.0.0",
