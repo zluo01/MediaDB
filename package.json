@@ -29,7 +29,7 @@
     "@types/sharp": "0.30.5",
     "electron-serve": "1.1.0",
     "electron-store": "8.1.0",
-    "sharp": "0.30.7"
+    "sharp": "0.31.0"
   },
   "devDependencies": {
     "@emotion/cache": "11.10.3",
