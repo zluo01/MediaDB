@@ -1,13 +1,37 @@
-import { open } from '@tauri-apps/api/shell';
+import { DEFAULT, IFolder, IFolderInfo } from '@/type';
+import { open } from '@tauri-apps/api/dialog';
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from '@tauri-apps/api/notification';
+import { invoke } from '@tauri-apps/api/tauri';
 
-import { ICacheImage } from '../../type';
-
-export async function openFile(dir: string): Promise<void> {
-  await open(dir);
+export async function openFile(path: string): Promise<void> {
+  await invoke('open_file', { path });
 }
 
 export async function getDirectory(): Promise<string> {
-  return '';
+  const selected = await open({
+    directory: true,
+    multiple: false,
+  });
+  return (selected as string) || '';
 }
 
-export async function cacheImage(source: ICacheImage[]): Promise<void> {}
+export async function notify(errorMsg: string): Promise<void> {
+  let permissionGranted = await isPermissionGranted();
+  if (!permissionGranted) {
+    const permission = await requestPermission();
+    permissionGranted = permission === 'granted';
+  }
+  if (permissionGranted) {
+    sendNotification(errorMsg);
+  }
+}
+
+export async function buildDirectory(folder: IFolder): Promise<IFolderInfo> {
+  const data = (await invoke('parser', { ...folder })) as IFolderInfo;
+  data.sort = DEFAULT;
+  return data;
+}

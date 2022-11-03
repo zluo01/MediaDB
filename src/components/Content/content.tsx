@@ -1,12 +1,20 @@
+import { openFile } from '@/lib/os';
+import { ICardSize, IFolder, IMediaData, MOVIE, TV_SERIES } from '@/type';
 import { Drawer, Typography } from '@mui/material';
 import { lighten, useTheme } from '@mui/material/styles';
+import dynamic from 'next/dynamic';
+import path from 'path';
 import React, { useState } from 'react';
 
-import { openFile } from '../../lib/os';
-import { ICardSize, IMediaData, MOVIE, TV_SERIES } from '../../type';
-import Image from '../ImageLoader';
-import Menu from './showMenu';
 import { CardGrid, CardInfo, MediaCard } from './styles';
+
+const Image = dynamic(() => import('@/components/ImageLoader'), {
+  ssr: false,
+});
+
+const Menu = dynamic(() => import('./menu'), {
+  ssr: false,
+});
 
 interface ContentSize {
   columnNumber: number;
@@ -18,22 +26,29 @@ interface ContentSize {
 }
 
 interface ICardProps {
+  folder: IFolder;
   size: ContentSize;
   data: IMediaData[];
   select: (index: number) => void;
   currIndex: number;
 }
 
-function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
+function MediaGrid({
+  folder,
+  data,
+  size,
+  select,
+  currIndex,
+}: ICardProps): JSX.Element {
   const theme = useTheme();
 
   const [open, setOpen] = useState(false);
 
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
-      case 'comic':
+      // case 'comic':
       case 'movie':
-        await openFile(media.file);
+        await openFile(path.join(folder.path, media.relativePath, media.file));
         break;
       case 'tvshow':
         setOpen(prevState => !prevState);
@@ -52,7 +67,7 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
         const elevation = currIndex === index ? 5 : 0;
         return (
           <MediaCard
-            key={media.poster}
+            key={index}
             id={`c${index}`}
             onClick={() => select(index)}
             onDoubleClick={() => handleOpen(media)}
@@ -67,12 +82,11 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
             }}
           >
             <Image
-              dir={media.poster}
-              title={media.title}
-              style={{
-                width: size.cardSize.width,
-                height: size.cardSize.height,
-              }}
+              folder={folder}
+              src={path.join(media.relativePath, media.posters['main'])}
+              alt={media.title}
+              width={size.cardSize.width}
+              height={size.cardSize.height}
             />
             <CardInfo
               title={
@@ -96,7 +110,7 @@ function MediaGrid({ data, size, select, currIndex }: ICardProps): JSX.Element {
                 open={open && currIndex === index}
                 onClose={() => setOpen(false)}
               >
-                <Menu data={media} />
+                <Menu folder={folder} data={media} />
               </Drawer>
             )}
           </MediaCard>

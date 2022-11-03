@@ -1,10 +1,8 @@
+import { DefaultSetting, updateSetting } from '@/lib/storage';
+import { ICardSize, ISetting } from '@/type';
 import { Slider, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
-import { useAppDispatch, useAppSelector } from '../../lib/source';
-import { updateSetting } from '../../lib/source/actions';
-import { DefaultSetting, setSetting } from '../../lib/store';
-import { ICardSize, IState } from '../../type';
+import { useSWRConfig } from 'swr';
 
 const StyledFooter = styled('div')(({ theme }) => ({
   position: 'fixed',
@@ -24,12 +22,12 @@ const StyledSlider = styled(Slider)(({ theme }) => ({
 }));
 
 interface IFooter {
+  setting: ISetting;
   selected: string;
 }
 
-function Footer({ selected }: IFooter): JSX.Element {
-  const dispatch = useAppDispatch();
-  const setting = useAppSelector((state: IState) => state.setting);
+function Footer({ setting, selected }: IFooter): JSX.Element {
+  const { mutate } = useSWRConfig();
 
   function computeValue(): number {
     const ratio = setting.cardSize.width / DefaultSetting.cardSize.width;
@@ -43,7 +41,7 @@ function Footer({ selected }: IFooter): JSX.Element {
       height: DefaultSetting.cardSize.height * ratio,
     };
     try {
-      updateSetting(dispatch, setSetting({ ...setting, cardSize: newSize }));
+      await updateSetting({ ...setting, cardSize: newSize }, mutate);
     } catch (e) {
       console.error(e);
     }

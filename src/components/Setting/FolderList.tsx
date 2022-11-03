@@ -1,3 +1,11 @@
+import { notify } from '@/lib/os';
+import {
+  FOLDER_LIST,
+  getFolderList,
+  removeFolder,
+  updateFolderList,
+} from '@/lib/storage';
+import { IFolder } from '@/type';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -17,22 +25,14 @@ import {
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
-import { Dispatch } from 'redux';
+import useSWR, { useSWRConfig } from 'swr';
 
-import { notify, updateFolder } from '../../lib/source/actions';
-import { removeFolder, updateFolders } from '../../lib/store';
-import { IFolder } from '../../type';
+const EditFolderModal = dynamic(() => import('@/components/Modal/Folder'));
 
-const EditFolder = dynamic(() => import('../modals/editFolder'), {
-  ssr: false,
-});
+function FolderList(): JSX.Element {
+  const { mutate } = useSWRConfig();
+  const { data: folderList } = useSWR(FOLDER_LIST, getFolderList);
 
-interface IFolderList {
-  folderData: IFolder[];
-  dispatch: Dispatch;
-}
-
-function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
   const [folderIndex, setFolderIndex] = useState(-1);
 
   function reorder(list: IFolder[], startIndex: number, endIndex: number) {
@@ -43,15 +43,11 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
     return result;
   }
 
-  async function handleUpdateFolder(folders: IFolder[]) {
-    updateFolder(dispatch, folders);
-  }
-
-  async function handleRemove(name: string) {
+  async function handleRemove(folder: IFolder) {
     try {
-      updateFolder(dispatch, removeFolder(name));
+      await removeFolder(folder, mutate);
     } catch (e) {
-      notify(dispatch, true, `Update Folder Error: ${e}`);
+      await notify(`Update Folder Error: ${e}`);
     }
   }
 
@@ -66,11 +62,10 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
 
     if (result.source.index !== result.destination.index) {
       try {
-        const result = reorder(folderData, src, dst);
-        updateFolders(result);
-        updateFolder(dispatch, result);
+        const result = reorder(folderList, src, dst);
+        await updateFolderList(result, mutate);
       } catch (e) {
-        notify(dispatch, true, `Drag End: ${e}`);
+        await notify(`Drag End: ${e}`);
       }
     }
   }
@@ -81,7 +76,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
         <Droppable droppableId="droppable">
           {provided => (
             <List ref={provided.innerRef} {...provided.droppableProps}>
-              {folderData.map((folder, index) => (
+              {folderList?.map((folder, index) => (
                 <Draggable
                   key={folder.name}
                   draggableId={folder.name}
@@ -100,7 +95,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
                         </ListItemIcon>
                         <ListItemText
                           primary={folder.name}
-                          secondary={folder.dir}
+                          secondary={folder.path}
                         />
                         <ListItemSecondaryAction>
                           <IconButton
@@ -115,7 +110,7 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
                             size={'large'}
                             edge="end"
                             aria-label="delete"
-                            onClick={() => handleRemove(folder.name)}
+                            onClick={() => handleRemove(folder)}
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -130,11 +125,10 @@ function FolderList({ folderData, dispatch }: IFolderList): JSX.Element {
           )}
         </Droppable>
       </DragDropContext>
-      <EditFolder
+      <EditFolderModal
         open={folderIndex >= 0}
         close={() => setFolderIndex(-1)}
-        folderIndex={folderIndex}
-        updateFolder={handleUpdateFolder}
+        index={folderIndex}
       />
     </>
   );

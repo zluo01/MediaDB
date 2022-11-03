@@ -38,7 +38,7 @@ export const Loading = styled(CircularProgress)(({ theme }) => ({
   color: theme.palette.action.selected,
   position: 'fixed',
   right: '50%',
-  top: '38.2%',
+  top: '50%',
 }));
 
 export const StyledPopper = styled(Popper)(({ theme }) => ({

@@ -1,10 +1,14 @@
+import { openFile } from '@/lib/os';
+import { IEpisode, IFolder, ITVShowData } from '@/type';
 import { AppBar, Box, Button, Tab, Tabs, Tooltip } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
+import path from 'path';
 import React from 'react';
 
-import { openFile } from '../../lib/os';
-import { ITVShowData } from '../../type';
+const Image = dynamic(() => import('@/components/ImageLoader'), {
+  ssr: false,
+});
 
 const Section = styled('div')(() => ({
   height: '38.2vh',
@@ -68,13 +72,13 @@ function a11yProps(index: any) {
   };
 }
 
-const Image = dynamic(() => import('../ImageLoader'), { ssr: false });
-
 interface ITVShowCardMenuProps {
+  folder: IFolder;
   data: ITVShowData;
 }
 
 export default function TVShowCardMenu({
+  folder,
   data,
 }: ITVShowCardMenuProps): JSX.Element {
   const theme = useTheme();
@@ -84,6 +88,12 @@ export default function TVShowCardMenu({
     setValue(newValue);
   };
 
+  async function openEpisodeFile(media: IEpisode) {
+    const filePath = path.join(folder.path, media.relativePath, media.file);
+    await openFile(filePath);
+  }
+
+  const season_keys = Object.keys(data.seasons).sort();
   return (
     <Section>
       <AppBar position="sticky">
@@ -93,7 +103,7 @@ export default function TVShowCardMenu({
           variant="scrollable"
           scrollButtons="auto"
         >
-          {data.seasons.map((show, index) => (
+          {season_keys.map((key, index) => (
             <Tab
               key={index}
               sx={{
@@ -104,46 +114,49 @@ export default function TVShowCardMenu({
                 backgroundColor:
                   value !== index ? 'inherit' : theme.palette.action.selected,
               }}
-              label={`Season ${show.season}`}
+              label={`Season ${key == '00' ? 'SP' : key}`}
               {...a11yProps(index)}
             />
           ))}
         </Tabs>
       </AppBar>
-      {data.seasons.map((show, index) => {
-        return (
-          <TabPanel key={index} value={value} index={index}>
-            <Box
-              display={'flex'}
-              flexDirection={'row'}
-              flexWrap={'nowrap'}
-              justifyContent={'space-around'}
-            >
-              <Box display={'flex'} width={'38.2%'} justifyContent={'center'}>
-                <Image
-                  dir={show.poster}
-                  title={data.title}
-                  style={{ width: 220, height: 320 }}
-                />
-              </Box>
-              <Box display={'flex'} width={'61.8%'}>
-                <Box flexDirection={'row'} flexWrap={'wrap'} overflow={'auto'}>
-                  {show.episodes.map((o, i) => (
-                    <Tooltip key={i} title={o.name}>
-                      <EpisodeButton
-                        variant="outlined"
-                        onClick={() => openFile(o.file)}
-                      >
-                        {o.episode}
-                      </EpisodeButton>
-                    </Tooltip>
-                  ))}
-                </Box>
+      {season_keys.map((key, index) => (
+        <TabPanel key={index} value={value} index={index}>
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            flexWrap={'nowrap'}
+            justifyContent={'space-around'}
+          >
+            <Box display={'flex'} width={'38.2%'} justifyContent={'center'}>
+              <Image
+                folder={folder}
+                src={path.join(
+                  data.relativePath,
+                  data.posters[key] || data.posters['main']
+                )}
+                alt={data.title}
+                width={220}
+                height={320}
+              />
+            </Box>
+            <Box display={'flex'} width={'61.8%'}>
+              <Box flexDirection={'row'} flexWrap={'wrap'} overflow={'auto'}>
+                {data.seasons[key].map((o, i) => (
+                  <Tooltip key={i} title={o.title}>
+                    <EpisodeButton
+                      variant="outlined"
+                      onClick={() => openEpisodeFile(o)}
+                    >
+                      {o.episode}
+                    </EpisodeButton>
+                  </Tooltip>
+                ))}
               </Box>
             </Box>
-          </TabPanel>
-        );
-      })}
+          </Box>
+        </TabPanel>
+      ))}
     </Section>
   );
 }

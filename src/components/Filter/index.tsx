@@ -1,22 +1,16 @@
-import { Button, Chip, Stack, Typography } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/lib/source';
+import { updateFilter } from '@/lib/source/slice/filderReducer';
+import { RootState } from '@/lib/source/store';
+import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Chip,
+  Typography,
+} from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import React from 'react';
-
-import {
-  ACTOR,
-  FILTER,
-  GENRE,
-  IFilterPros,
-  IFolderInfo,
-  STUDIO,
-  TAG,
-} from '../../type';
-
-const ChipContainer = styled('div')(() => ({
-  marginLeft: 8,
-  display: 'flex',
-  flexWrap: 'wrap',
-}));
 
 const FilterChip = styled(Chip)(({ theme }) => ({
   color: theme.palette.action.selected,
@@ -24,12 +18,19 @@ const FilterChip = styled(Chip)(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
 
+const FilterAccordion = styled(Accordion)(({ theme }) => ({
+  backgroundColor: 'inherit',
+  boxShadow: 'none',
+  marginLeft: theme.spacing(1),
+  marginRight: theme.spacing(1),
+}));
+
 interface IFilterSection {
   name: string;
   data: string[];
   filter: string[];
   type: FILTER;
-  clearFilter: (type: FILTER) => void;
+  // clearFilter: (type: FILTER) => void;
   updateFilter: (type: FILTER, name: string) => void;
 }
 
@@ -38,51 +39,35 @@ function FilterSection({
   data,
   type,
   filter,
-  clearFilter,
   updateFilter,
 }: IFilterSection): JSX.Element {
   const theme = useTheme();
+
   return (
-    <React.Fragment>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        spacing={2}
-      >
+    <FilterAccordion>
+      <AccordionSummary>
         <Typography
           variant="h5"
-          component="h2"
-          style={{
-            marginLeft: 8,
-            color: theme.palette.text.secondary,
-            marginTop: 10,
-            marginBottom: 5,
-          }}
+          component="h3"
+          color={theme.palette.text.secondary}
         >
           {name}
         </Typography>
-        <Button
-          variant="text"
-          disabled={filter.length === 0}
-          style={{ color: theme.palette.text.secondary }}
-          onClick={() => clearFilter(type)}
-        >
-          Clear
-        </Button>
-      </Stack>
-      <ChipContainer>
-        {data.sort().map((value, index) => (
-          <FilterChip
-            key={index}
-            label={value}
-            clickable
-            onClick={() => updateFilter(type, value)}
-            variant={filter.includes(value) ? 'filled' : 'outlined'}
-          />
-        ))}
-      </ChipContainer>
-    </React.Fragment>
+      </AccordionSummary>
+      <AccordionDetails>
+        {Array.from(data)
+          .sort()
+          .map((value, index) => (
+            <FilterChip
+              key={index}
+              label={value}
+              clickable
+              onClick={() => updateFilter(type, value)}
+              variant={filter.includes(value) ? 'filled' : 'outlined'}
+            />
+          ))}
+      </AccordionDetails>
+    </FilterAccordion>
   );
 }
 
@@ -90,60 +75,59 @@ interface IFilerSection {
   folderData: IFolderInfo;
   width: number;
   space: number;
-  filter: IFilterPros;
-  clearFilter: (type: FILTER) => void;
-  updateFilter: (type: FILTER, name: string) => void;
 }
 
-function Filters({
-  folderData,
-  width,
-  space,
-  filter,
-  clearFilter,
-  updateFilter,
-}: IFilerSection): JSX.Element {
+function Filters({ folderData, width, space }: IFilerSection): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { tags, genres, actors, studios } = useAppSelector(
+    (state: RootState) => state.filter
+  );
+
+  function update(tag: FILTER, name: string) {
+    dispatch(
+      updateFilter({
+        tag,
+        name,
+      })
+    );
+  }
+
   return (
     <div
       style={{
         display: 'flex',
         flexFlow: 'column nowrap',
         width: width - 2 * space,
-        marginLeft: space,
         marginBottom: 20,
       }}
     >
       <FilterSection
         name={'Genres'}
         data={folderData.genres}
-        filter={filter.genres}
+        filter={genres}
         type={GENRE}
-        clearFilter={clearFilter}
-        updateFilter={updateFilter}
+        updateFilter={update}
       />
       <FilterSection
         name={'Actors'}
         data={folderData.actors}
-        filter={filter.actors}
+        filter={actors}
         type={ACTOR}
-        clearFilter={clearFilter}
-        updateFilter={updateFilter}
+        updateFilter={update}
       />
       <FilterSection
         name={'Studios'}
         data={folderData.studios}
-        filter={filter.studios}
+        filter={studios}
         type={STUDIO}
-        clearFilter={clearFilter}
-        updateFilter={updateFilter}
+        updateFilter={update}
       />
       <FilterSection
         name={'Tags'}
         data={folderData.tags}
-        filter={filter.tags}
+        filter={tags}
         type={TAG}
-        clearFilter={clearFilter}
-        updateFilter={updateFilter}
+        updateFilter={update}
       />
     </div>
   );

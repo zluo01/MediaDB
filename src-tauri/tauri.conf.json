@@ -1,18 +1,38 @@
 {
   "build": {
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run next-dev",
+    "beforeBuildCommand": "npm run next-build",
     "devPath": "http://localhost:1420",
     "distDir": "../dist",
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "mdb",
-    "version": "0.0.0"
+    "productName": "mediadb",
+    "version": "0.4.0"
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "dialog": {
+        "open": true
+      },
+      "notification": {
+        "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "scope": [
+          "*"
+        ],
+        "removeDir": true
+      },
+      "protocol": {
+        "assetScope": [
+          "*"
+        ],
+        "asset": true
+      }
     },
     "bundle": {
       "active": true,
@@ -29,7 +49,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "mediadb",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -58,8 +78,8 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "mdb",
-        "width": 800
+        "title": "MediaDB",
+        "width": 1000
       }
     ]
   }

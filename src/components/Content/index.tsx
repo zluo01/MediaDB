@@ -1,3 +1,21 @@
+import Footer from '@/components/Footer';
+import { buildDirectory, openFile } from '@/lib/os';
+import { useAppSelector } from '@/lib/source';
+import { RootState } from '@/lib/source/store';
+import { updateFolderInfo } from '@/lib/storage';
+import {
+  DEFAULT,
+  IFolderData,
+  IMediaData,
+  IMovieData,
+  ISetting,
+  MOVIE,
+  SORT,
+  TITLE_ASC,
+  TITLE_DSC,
+  YEAR_ASC,
+  YEAR_DSC,
+} from '@/type';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -14,37 +32,12 @@ import {
   Zoom,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import dynamic from 'next/dynamic';
+import path from 'path';
 import React, { useEffect, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { useSWRConfig } from 'swr';
 
-import { openFile } from '../../lib/os';
-import { buildDirectory } from '../../lib/parser';
-import { useAppSelector } from '../../lib/source';
-import { updateFolderInfo } from '../../lib/store';
-import {
-  ACTOR,
-  COMIC,
-  DEFAULT,
-  FILTER,
-  GENRE,
-  IComicData,
-  IFilterPros,
-  IFolder,
-  IFolderInfo,
-  IMediaData,
-  IMovieData,
-  IState,
-  MOVIE,
-  SORT,
-  STUDIO,
-  TAG,
-  TITLE_ASC,
-  TITLE_DSC,
-  YEAR_ASC,
-  YEAR_DSC,
-} from '../../type';
-import Filters from '../Filter';
-import Footer from '../Footer';
 import MediaGrid from './content';
 import {
   ActionButton,
@@ -53,6 +46,10 @@ import {
   StyledPaper,
   StyledPopper,
 } from './styles';
+
+const FilterSection = dynamic(() => import('@/components/Filter'), {
+  ssr: false,
+});
 
 const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   '&:hover': {
@@ -87,14 +84,13 @@ function getSortType(type: string): SORT {
     case YEAR_DSC:
       return YEAR_DSC;
     default:
-      throw new Error('Invalid Type Found: ' + type);
+      throw new Error(`Invalid Type Found: ${type}`);
   }
 }
 
 interface IContentProps {
-  folderInfo: IFolder;
-  folderData: IFolderInfo;
-  updateData: (data: IFolderInfo) => void;
+  setting: ISetting;
+  folderData: IFolderData;
 }
 
 interface IScrollProps {
@@ -128,31 +124,24 @@ function ScrollTop(props: IScrollProps) {
   );
 }
 
-const initFilterState = {
-  actors: [],
-  genres: [],
-  studios: [],
-  tags: [],
-};
-
-function Content({
-  folderInfo,
-  folderData,
-  updateData,
-}: IContentProps): JSX.Element {
+function Content({ setting, folderData }: IContentProps): JSX.Element {
   const anchorRef = useRef<HTMLButtonElement>(null);
 
-  const { search, setting } = useAppSelector((state: IState) => state);
+  const { mutate } = useSWRConfig();
+
+  const { tags, genres, actors, studios } = useAppSelector(
+    (state: RootState) => state.filter
+  );
+  const search = useAppSelector((state: RootState) => state.control.search);
 
   const [currIndex, setCurrIndex] = useState(-1);
-  const [data, setData] = useState(folderData.data);
   const [sortType, setSortType] = useState<string>(folderData.sort);
-
-  const [filter, setFilter] = useState<IFilterPros>(initFilterState);
 
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [refresh, setRefresh] = useState(false);
+
+  const data = filterData();
 
   const contentState = useRef({
     currIndex,
@@ -179,26 +168,22 @@ function Content({
     }
   }, [currIndex]);
 
-  useEffect(() => {
-    setData(filterData());
-  }, [sortType, filter, folderData]);
-
   function filterData(): IMediaData[] {
     let media = [...folderData.data];
 
-    filter.tags.forEach(t => {
+    tags.forEach(t => {
       media = media.filter(o => o.tags.includes(t));
     });
 
-    filter.genres.forEach(g => {
+    genres.forEach(g => {
       media = media.filter(o => o.genres.includes(g));
     });
 
-    filter.actors.forEach(a => {
+    actors.forEach(a => {
       media = media.filter(o => o.actors.includes(a));
     });
 
-    filter.studios.forEach(a => {
+    studios.forEach(a => {
       media = media.filter(o => o.studios.includes(a));
     });
 
@@ -243,111 +228,71 @@ function Content({
     setOpen(false);
   }
 
-  function updateSortType(type: string) {
-    updateFolderInfo(folderInfo.name, {
-      ...folderData,
-      sort: getSortType(type),
-    });
+  async function updateSortType(type: string) {
+    await updateFolderInfo(
+      folderData.name,
+      {
+        ...folderData,
+        sort: getSortType(type),
+      },
+      mutate
+    );
     setSortType(type);
     setOpen(false);
   }
 
-  async function handleKeyPress(ev: KeyboardEvent) {
-    const { currIndex, columnNumber } = contentState.current;
-    const c = currIndex % columnNumber;
-    const r = Math.floor(currIndex / columnNumber);
-    let index;
-    switch (ev.key) {
-      case 'ArrowLeft':
-        setIndex(currIndex - 1 < 0 ? data.length - 1 : currIndex - 1);
-        break;
-      case 'ArrowRight':
-        setIndex((currIndex + 1) % data.length);
-        break;
-      case 'ArrowUp':
-        ev.preventDefault();
-        index = (r - 1) * columnNumber + c;
-        if (index < 0) {
-          return;
-        }
-        setIndex(index);
-        break;
-      case 'ArrowDown':
-        ev.preventDefault();
-        index = (r + 1) * columnNumber + c;
-        if (index > data.length - 1) {
-          return;
-        }
-        setIndex(index);
-        break;
-      case 'Enter':
-        if (data[currIndex].type === MOVIE || data[currIndex].type === COMIC) {
-          await openFile((data[currIndex] as IMovieData | IComicData).file);
-        }
-        break;
-    }
-  }
-
   useEffect(() => {
+    async function handleKeyPress(ev: KeyboardEvent) {
+      const { currIndex, columnNumber } = contentState.current;
+      const c = currIndex % columnNumber;
+      const r = Math.floor(currIndex / columnNumber);
+      let index: number;
+      switch (ev.key) {
+        case 'ArrowLeft':
+          setIndex(currIndex - 1 < 0 ? data.length - 1 : currIndex - 1);
+          break;
+        case 'ArrowRight':
+          setIndex((currIndex + 1) % data.length);
+          break;
+        case 'ArrowUp':
+          ev.preventDefault();
+          index = (r - 1) * columnNumber + c;
+          if (index < 0) {
+            return;
+          }
+          setIndex(index);
+          break;
+        case 'ArrowDown':
+          ev.preventDefault();
+          index = (r + 1) * columnNumber + c;
+          if (index > data.length - 1) {
+            return;
+          }
+          setIndex(index);
+          break;
+        case 'Enter':
+          if (
+            data[currIndex].type === MOVIE
+            // || data[currIndex].type === COMIC
+          ) {
+            const media = data[currIndex] as IMovieData;
+            const filePath = path.join(
+              folderData.path,
+              media.relativePath,
+              media.file
+            );
+            await openFile(filePath);
+          }
+          break;
+      }
+    }
+
     document.addEventListener('keydown', handleKeyPress);
 
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [data]);
-
-  function getFilterSets(value: string[], name: string): string[] {
-    if (value.includes(name)) {
-      return value.filter(o => o !== name);
-    }
-    return [...value, name];
-  }
-
-  function updateFilter(type: FILTER, name: string) {
-    switch (type) {
-      case TAG:
-        setFilter(prevState => ({
-          ...prevState,
-          tags: getFilterSets(prevState.tags, name),
-        }));
-        break;
-      case GENRE:
-        setFilter(prevState => ({
-          ...prevState,
-          genres: getFilterSets(prevState.genres, name),
-        }));
-        break;
-      case ACTOR:
-        setFilter(prevState => ({
-          ...prevState,
-          actors: getFilterSets(prevState.actors, name),
-        }));
-        break;
-      case STUDIO:
-        setFilter(prevState => ({
-          ...prevState,
-          studios: getFilterSets(prevState.studios, name),
-        }));
-        break;
-    }
-  }
-
-  function clearFilter(type: FILTER) {
-    switch (type) {
-      case TAG:
-        setFilter(prevState => ({ ...prevState, tags: [] }));
-        break;
-      case GENRE:
-        setFilter(prevState => ({ ...prevState, genres: [] }));
-        break;
-      case ACTOR:
-        setFilter(prevState => ({ ...prevState, actors: [] }));
-        break;
-      case STUDIO:
-        setFilter(prevState => ({ ...prevState, studios: [] }));
-        break;
-    }
-  }
+  }, [data, folderData.path]);
 
   async function updateLibrary(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -355,9 +300,8 @@ function Content({
     e.preventDefault();
     setRefresh(true);
     try {
-      const data = await buildDirectory(folderInfo.dir);
-      await updateFolderInfo(folderInfo.name, data);
-      updateData(data);
+      const info = await buildDirectory({ ...folderData });
+      await updateFolderInfo(folderData.name, info, mutate);
       setRefresh(false);
     } catch (e) {
       console.error(e);
@@ -378,6 +322,8 @@ function Content({
   const cInfo = 60;
   const cWidth = setting.cardSize.width + 15;
   const cHeight = setting.cardSize.height + cInfo;
+
+  const disabled = search !== '';
 
   return (
     <AutoSizer>
@@ -404,7 +350,7 @@ function Content({
               <ActionButton
                 size={'small'}
                 startIcon={<FilterListIcon />}
-                disabled={search !== ''}
+                disabled={disabled}
                 onClick={() => setOpenFilter(prevState => !prevState)}
               >
                 Filter
@@ -413,7 +359,7 @@ function Content({
                 size={'small'}
                 startIcon={<SortIcon />}
                 ref={anchorRef}
-                disabled={search !== ''}
+                disabled={disabled}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
                 onClick={handleToggle}
@@ -456,19 +402,16 @@ function Content({
                 size={'small'}
                 startIcon={<RefreshIcon />}
                 onClick={updateLibrary}
-                disabled={search !== ''}
+                disabled={disabled}
               >
                 Refresh
               </RefreshButton>
             </div>
             {openFilter && (
-              <Filters
+              <FilterSection
                 folderData={folderData}
                 width={width}
                 space={space}
-                filter={filter}
-                clearFilter={clearFilter}
-                updateFilter={updateFilter}
               />
             )}
             <MediaGrid
@@ -480,11 +423,16 @@ function Content({
                 width,
                 cardSize: setting.cardSize,
               }}
+              folder={{
+                path: folderData.path,
+                name: folderData.name,
+              }}
               data={data}
               select={setIndex}
               currIndex={currIndex}
             />
             <Footer
+              setting={setting}
               selected={data[currIndex]?.title || `Total ${data.length}`}
             />
             <ScrollTop>

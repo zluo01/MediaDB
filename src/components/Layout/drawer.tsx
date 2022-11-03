@@ -1,3 +1,4 @@
+import { FOLDER_LIST, getFolderList, getSetting, SETTING } from '@/lib/storage';
 import AddIcon from '@mui/icons-material/Add';
 import FolderIcon from '@mui/icons-material/Folder';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -13,12 +14,14 @@ import {
   Tooltip,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import useSWR from 'swr';
 
-// import { useAppDispatch, useAppSelector } from '../../lib/source';
-// import { updateFolder } from '../../lib/source/actions';
-import { IFolder, IState } from '../../type';
+const DirectoryModal = dynamic(() => import('@/components/Modal/Directory'), {
+  ssr: false,
+});
 
 const FunctionList = styled(List)(() => ({
   width: '100%',
@@ -35,29 +38,17 @@ const Panel = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-// const DirectoryModal = dynamic(() => import('../modals/getDirectory'), {
-//   ssr: false,
-// });
-
 interface ISidePanel {
   currFolderIndex?: number;
 }
 
 function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
   const router = useRouter();
-  // const dispatch = useAppDispatch();
-  // const { folders, setting } = useAppSelector((state: IState) => state);
 
-  const setting = {
-    showSidePanelName: true,
-    skippingDirectory: [],
-    cardSize: {
-      width: 240,
-      height: 360,
-    },
-  };
+  const isSettingPage = router.asPath === '/setting';
 
-  const folders = [];
+  const { data: setting } = useSWR(SETTING, getSetting);
+  const { data: folderList } = useSWR(FOLDER_LIST, getFolderList);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -69,25 +60,21 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
     setOpenModal(false);
   }
 
-  function handleUpdateFolder(folders: IFolder[]) {
-    // updateFolder(dispatch, folders);
-  }
-
   return (
     <>
       <Panel
         variant="permanent"
         sx={{
-          width: setting.showSidePanelName ? 240 : 60,
+          width: setting?.showSidePanelName ? 240 : 60,
           [`& .MuiDrawer-paper`]: {
-            width: setting.showSidePanelName ? 240 : 60,
+            width: setting?.showSidePanelName ? 240 : 60,
           },
         }}
       >
         <Toolbar />
         <Box sx={{ overflow: 'hidden' }} component={'div'}>
           <List>
-            {folders.map((folder, index) => {
+            {folderList?.map((folder, index) => {
               const isCurr = index === currFolderIndex;
               return (
                 <Tooltip key={index} title={folder.name}>
@@ -102,7 +89,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
                         }}
                       />
                     </ListItemIcon>
-                    {setting.showSidePanelName && (
+                    {setting?.showSidePanelName && (
                       <ListItemText primary={folder.name} />
                     )}
                   </ListItemButton>
@@ -116,27 +103,33 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
               <ListItemIcon>
                 <AddIcon sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
-              {setting.showSidePanelName && (
+              {setting?.showSidePanelName && (
                 <ListItemText primary={'Add Video'} />
               )}
             </ListItemButton>
-            <ListItemButton onClick={() => router.push('/setting')}>
+            <ListItemButton
+              onClick={() => router.push(`/setting`)}
+              disabled={isSettingPage}
+            >
               <ListItemIcon>
-                <SettingsIcon sx={{ fill: '#6f7a83' }} />
+                <SettingsIcon
+                  style={{
+                    fill: isSettingPage ? '#21e18c' : '#6f7a83',
+                  }}
+                />
               </ListItemIcon>
-              {setting.showSidePanelName && (
+              {setting?.showSidePanelName && (
                 <ListItemText primary={'Setting'} />
               )}
             </ListItemButton>
           </FunctionList>
         </Box>
       </Panel>
-      {/*<DirectoryModal*/}
-      {/*  open={openModal}*/}
-      {/*  close={handleClose}*/}
-      {/*  folders={folders}*/}
-      {/*  updateFolder={handleUpdateFolder}*/}
-      {/*/>*/}
+      <DirectoryModal
+        open={openModal}
+        close={handleClose}
+        folderList={folderList}
+      />
     </>
   );
 }

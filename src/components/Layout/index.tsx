@@ -1,3 +1,6 @@
+import { useAppDispatch, useAppSelector } from '@/lib/source';
+import { search } from '@/lib/source/slice/controlSlice';
+import { RootState } from '@/lib/source/store';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -13,9 +16,6 @@ import { alpha, styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';
 
-// import { useAppDispatch, useAppSelector } from '../../lib/source';
-// import { search } from '../../lib/source/actions';
-import { IState } from '../../type';
 import Drawer from './drawer';
 
 const Search = styled('div')(({ theme }) => ({
@@ -76,9 +76,6 @@ const MainContent = styled(Box)(({ theme }) => ({
   padding: theme.spacing(5),
 }));
 
-// const Drawer = dynamic(() => import('./drawer'), { ssr: false });
-// const Error = dynamic(() => import('../Notification'), { ssr: false });
-
 type ILayoutProps = {
   children?: ReactNode;
   currFolderIndex?: number;
@@ -91,17 +88,20 @@ function Layout({
   disableSearch,
 }: ILayoutProps): JSX.Element {
   const router = useRouter();
-  // const dispatch = useAppDispatch();
-  // const searchContent = useAppSelector((state: IState) => state.search);
+  const dispatch = useAppDispatch();
+
+  const searchContent = useAppSelector(
+    (state: RootState) => state.control.search
+  );
 
   function handleSearch(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
-    // search(dispatch, e.target.value);
+    dispatch(search(e.target.value));
   }
 
   function handleClearSearch() {
-    // search(dispatch, '');
+    dispatch(search(''));
   }
 
   function handleMouseDownSearch(event: React.MouseEvent<HTMLButtonElement>) {
@@ -115,7 +115,7 @@ function Layout({
           <Typography
             variant="h6"
             noWrap
-            onClick={() => router.push('/home')}
+            onClick={() => router.push('/')}
             sx={{
               cursor: 'pointer',
               flexGrow: 1,
@@ -131,7 +131,7 @@ function Layout({
             <SearchInput
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
-              value={''}
+              value={searchContent}
               onChange={handleSearch}
               disabled={disableSearch}
               endAdornment={
@@ -139,7 +139,7 @@ function Layout({
                   <IconButton
                     onClick={handleClearSearch}
                     onMouseDown={handleMouseDownSearch}
-                    disabled={!''}
+                    disabled={!searchContent}
                   >
                     <CancelIcon />
                   </IconButton>
@@ -154,7 +154,6 @@ function Layout({
         <Toolbar id="back-to-top-anchor" />
         {children}
       </MainContent>
-      {/*<Error />*/}
     </Root>
   );
 }

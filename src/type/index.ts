@@ -1,6 +1,5 @@
 export const MOVIE = 'movie';
 export const TV_SERIES = 'tvshow';
-export const EPISODE = 'episodedetails';
 export const COMIC = 'comic';
 
 export const DEFAULT = 'Directory';
@@ -28,42 +27,41 @@ export interface IFolderInfo extends ITags {
   data: IMediaData[];
 }
 
-export interface IComicData extends ITags {
-  type: typeof COMIC;
-  file: string;
-  title: string;
-  poster: string;
-}
+export interface IFolderData extends IFolder, IFolderInfo {}
+
+// export interface IComicData extends ITags {
+//   type: typeof COMIC;
+//   file: string;
+//   title: string;
+//   posters: Map<string, string>;
+// }
 
 export interface IMovieData extends ITags {
   type: typeof MOVIE;
   file: string;
   title: string;
   year: string;
-  poster: string;
+  posters: Record<string, string>;
+  relativePath: string;
 }
 
 export interface ITVShowData extends ITags {
   type: typeof TV_SERIES;
   title: string;
-  poster: string;
-  seasons: ISeason[];
-}
-
-export interface ISeason {
-  season: number;
-  poster: string;
-  episodes: IEpisode[];
+  posters: Record<string, string>;
+  seasons: Record<string, IEpisode[]>;
+  relativePath: string;
 }
 
 export interface IEpisode {
-  name: string;
+  title: string;
   file: string;
   season: number;
   episode: number;
+  relativePath: string;
 }
 
-export type IMediaData = IMovieData | ITVShowData | IComicData;
+export type IMediaData = IMovieData | ITVShowData;
 
 export interface ICardSize {
   width: number;
@@ -76,33 +74,25 @@ export interface ISetting {
   cardSize: ICardSize;
 }
 
-export interface IError {
-  open: boolean;
-  msg: string;
-}
-
-export const SEARCH = 'SEARCH';
-export const UPDATE_FOLDER = 'FOLDER';
-export const UPDATE_SETTING = 'SETTING';
-export const NOTIFICATION = 'NOTIFICATION';
-
 export interface IFolder {
   name: string;
-  dir: string;
+  path: string;
 }
 
-export interface IState {
+export interface IControlState {
   search: string;
-  setting: ISetting;
-  folders: IFolder[];
-  error: IError;
 }
 
-export interface IFilterPros {
+export interface IFilterState {
   tags: string[];
   genres: string[];
   actors: string[];
   studios: string[];
+}
+
+export interface IFilterProps {
+  tag: FILTER;
+  name: string;
 }
 
 export const TAG = 1;
@@ -111,16 +101,3 @@ export const ACTOR = 3;
 export const STUDIO = 4;
 
 export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;
-
-export interface IKeyFiles {
-  nfo?: string;
-  poster: string[];
-  media: string[];
-  dir: string[];
-  cbr: string[];
-}
-
-export interface ICacheImage {
-  src: string;
-  data: string | Buffer;
-}
