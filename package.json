@@ -37,7 +37,7 @@
     "@emotion/server": "11.10.0",
     "@emotion/styled": "11.10.5",
     "@mui/icons-material": "5.10.9",
-    "@mui/material": "5.10.11",
+    "@mui/material": "5.10.12",
     "@next/bundle-analyzer": "12.3.2",
     "@reduxjs/toolkit": "1.8.6",
     "@trivago/prettier-plugin-sort-imports": "3.4.0",
