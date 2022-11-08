@@ -1,7 +1,6 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::ffi::{OsString};
 use std::fs;
-use std::os::unix::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
 use crate::nfo_parser::parse_nfo;
 use std::time::{Instant};
@@ -37,7 +36,7 @@ fn read_dir(path: &str) -> (Vec<Media>, Vec<Media>) {
 
             let file_name = path.file_name().unwrap();
             // check for hidden file
-            if file_name.as_bytes().starts_with(&[b'.']) {
+            if file_name.to_str().unwrap().as_bytes().starts_with(&[b'.']) {
                 continue;
             }
 
@@ -47,15 +46,15 @@ fn read_dir(path: &str) -> (Vec<Media>, Vec<Media>) {
             }
 
             let relative_path = utilities::get_relative_path(path.as_path(), root_path);
-            let ext = path.extension().unwrap().as_bytes();
+            let ext = path.extension().unwrap().to_str().unwrap();
             match ext {
-                b"nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
-                b"jpg" | b"png" => if file_name.to_str().unwrap().contains("poster") {
+                "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
+                "jpg" | "png" => if file_name.to_str().unwrap().contains("poster") {
                     media_source.add_poster(relative_path.unwrap().into_os_string())
                 },
-                b"m4v" | b"avi" | b"mpg" | b"mp4" | b"mkv" | b"f4v" | b"wmv" =>
+                "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" =>
                     media_source.add_media(relative_path.unwrap().into_os_string()),
-                b"cbr" | b"cbz" | b"cbt" | b"cb7" =>
+                "cbr" | "cbz" | "cbt" | "cb7" =>
                     media_source.add_comic(relative_path.unwrap().into_os_string()),
                 _ => {}
             }
@@ -168,7 +167,7 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
     let folder_path = thumbnail_path.join(name);
     fs::create_dir_all(&folder_path).expect("Fail to create path.");
     for p in posters {
-        let file_name = format!("{:x}", md5::compute(p.as_os_str().as_bytes()));
+        let file_name = format!("{:x}", md5::compute(p.as_os_str().to_str().unwrap().as_bytes()));
         let source_path = root_path.join(p);
         let dest_path = folder_path.join(file_name);
         let _ = fs::copy(source_path, dest_path);
