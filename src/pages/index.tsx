@@ -1,20 +1,60 @@
+import Content from '@/components/Content';
+import { Loading } from '@/components/Content/styles';
 import Layout from '@/components/Layout';
-import { FOLDER_LIST, getFolderList } from '@/lib/storage';
+import { useAppSelector } from '@/lib/source';
+import { RootState } from '@/lib/source/store';
+import {
+  FOLDER,
+  FOLDER_LIST,
+  getFolder,
+  getFolderInfo,
+  getSetting,
+  SETTING,
+} from '@/lib/storage';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
 import useSWR from 'swr';
 
 function Home(): JSX.Element {
   const router = useRouter();
-  const { data: folderList } = useSWR(FOLDER_LIST, getFolderList);
+  const { search } = useAppSelector((state: RootState) => state.control);
 
-  useEffect(() => {
-    if (folderList?.length > 0) {
-      router.push(`/folder/0`).catch(err => console.error(err));
+  const route = parseInt(router.query.id as string) || 0;
+
+  const { data: setting } = useSWR(SETTING, getSetting);
+  const { data: folder } = useSWR([FOLDER_LIST, route], () => getFolder(route));
+  const { data: folderData } = useSWR(
+    folder?.name ? [FOLDER, folder.name] : null,
+    () => getFolderInfo(folder.name)
+  );
+
+  function getDisplayData() {
+    if (search) {
+      return {
+        ...folder,
+        ...folderData,
+        data: folderData.data.filter(o =>
+          o.title.toLowerCase().includes(search.toLowerCase())
+        ),
+      };
     }
-  }, [folderList, router]);
+    return { ...folder, ...folderData };
+  }
 
-  return <Layout />;
+  function Contents(): JSX.Element {
+    if (!setting || !folder) {
+      return <Loading />;
+    }
+    if (!folderData) {
+      return <div />;
+    }
+    return <Content setting={setting} folderData={getDisplayData()} />;
+  }
+
+  return (
+    <Layout currFolderIndex={route}>
+      <Contents />
+    </Layout>
+  );
 }
 
 export default Home;

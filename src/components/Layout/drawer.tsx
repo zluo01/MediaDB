@@ -80,7 +80,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
                 <Tooltip key={index} title={folder.name}>
                   <ListItemButton
                     disabled={isCurr}
-                    onClick={() => router.push(`/folder/${index}`)}
+                    onClick={() => router.push(`/?id=${index}`)}
                   >
                     <ListItemIcon>
                       <FolderIcon

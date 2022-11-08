@@ -32,7 +32,7 @@ export async function addFolder(
   folder: IFolder,
   info: IFolderInfo,
   mutate: ScopedMutator
-): Promise<void> {
+): Promise<number> {
   const folders = await getFolderList();
   folders.push(folder);
   await Promise.all([
@@ -40,6 +40,7 @@ export async function addFolder(
     dataStore.setItem(folder.name, info),
   ]);
   await Promise.all([mutate(FOLDER_LIST), mutate([FOLDER, folder.name])]);
+  return folders.length - 1;
 }
 
 export async function updateFolderPath(

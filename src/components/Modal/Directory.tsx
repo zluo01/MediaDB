@@ -3,6 +3,7 @@ import { addFolder } from '@/lib/storage';
 import { IFolder } from '@/type';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
+import { useRouter } from 'next/router';
 import path from 'path';
 import React, { useState } from 'react';
 import { useSWRConfig } from 'swr';
@@ -26,6 +27,7 @@ function DirectoryModal({
   close,
   folderList,
 }: IDirectoryModal): JSX.Element {
+  const router = useRouter();
   const { mutate } = useSWRConfig();
 
   const [folder, setFolder] = useState<IFolder>({
@@ -47,8 +49,9 @@ function DirectoryModal({
     setLoading(true);
     try {
       const info = await buildDirectory(folder);
-      await addFolder(folder, info, mutate);
+      const index = await addFolder(folder, info, mutate);
       await handleClose();
+      await router.push(`/?id=${index}`);
     } catch (e) {
       await notify(`Import folders: ${e}`);
     } finally {
