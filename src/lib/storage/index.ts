@@ -68,10 +68,14 @@ export async function removeFolder(folder: IFolder, mutate): Promise<void> {
   await dataStore.setItem(FOLDER, folders);
   await dataStore.removeItem(folder.name);
   const folder_dir = folder.path.substring(folder.path.lastIndexOf('/') + 1);
-  await removeDir(`thumbnails/${folder_dir}`, {
-    dir: BaseDirectory.App,
-    recursive: true,
-  });
+  try {
+    await removeDir(`thumbnails/${folder_dir}`, {
+      dir: BaseDirectory.App,
+      recursive: true,
+    });
+  } catch (e) {
+    console.error(e);
+  }
   await Promise.all([mutate(FOLDER_LIST), mutate([FOLDER, folder.name])]);
 }
 
