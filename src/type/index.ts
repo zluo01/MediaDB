@@ -95,9 +95,9 @@ export interface IFilterProps {
   name: string;
 }
 
-export const TAG = 1;
-export const GENRE = 2;
-export const ACTOR = 3;
-export const STUDIO = 4;
+export const TAG = 'Tags';
+export const GENRE = 'Genres';
+export const ACTOR = 'Actors';
+export const STUDIO = 'Studios';
 
 export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;

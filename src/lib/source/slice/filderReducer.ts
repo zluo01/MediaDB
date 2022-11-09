@@ -1,4 +1,12 @@
-import { ACTOR, GENRE, IFilterProps, IFilterState, STUDIO, TAG } from '@/type';
+import {
+  ACTOR,
+  FILTER,
+  GENRE,
+  IFilterProps,
+  IFilterState,
+  STUDIO,
+  TAG,
+} from '@/type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: IFilterState = {
@@ -19,11 +27,21 @@ export const filterSlice = createSlice({
   name: 'control',
   initialState,
   reducers: {
-    reset: state => {
-      state.tags = [];
-      state.genres = [];
-      state.actors = [];
-      state.studios = [];
+    reset: (state, action: PayloadAction<FILTER>) => {
+      switch (action.payload) {
+        case TAG:
+          state.tags = [];
+          break;
+        case GENRE:
+          state.genres = [];
+          break;
+        case ACTOR:
+          state.actors = [];
+          break;
+        case STUDIO:
+          state.studios = [];
+          break;
+      }
     },
     updateFilter: (state, action: PayloadAction<IFilterProps>) => {
       switch (action.payload.tag) {

@@ -47,7 +47,7 @@ import {
   StyledPopper,
 } from './styles';
 
-const FilterSection = dynamic(() => import('@/components/Filter'), {
+const FilterSection = dynamic(() => import('./filter'), {
   ssr: false,
 });
 
@@ -407,13 +407,6 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
                 Refresh
               </RefreshButton>
             </div>
-            {openFilter && (
-              <FilterSection
-                folderData={folderData}
-                width={width}
-                space={space}
-              />
-            )}
             <MediaGrid
               size={{
                 columnNumber,
@@ -440,6 +433,11 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
                 <KeyboardArrowUpIcon />
               </StyledFab>
             </ScrollTop>
+            <FilterSection
+              folderData={folderData}
+              open={openFilter}
+              close={() => setOpenFilter(false)}
+            />
           </>
         );
       }}
