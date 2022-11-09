@@ -71,23 +71,6 @@ const StyledScroll = styled('div')(({ theme }) => ({
 
 const SORT_TYPES = [DEFAULT, TITLE_ASC, TITLE_DSC, YEAR_ASC, YEAR_DSC];
 
-function getSortType(type: string): SORT {
-  switch (type) {
-    case DEFAULT:
-      return DEFAULT;
-    case TITLE_ASC:
-      return TITLE_ASC;
-    case TITLE_DSC:
-      return TITLE_DSC;
-    case YEAR_ASC:
-      return YEAR_ASC;
-    case YEAR_DSC:
-      return YEAR_DSC;
-    default:
-      throw new Error(`Invalid Type Found: ${type}`);
-  }
-}
-
 interface IContentProps {
   setting: ISetting;
   folderData: IFolderData;
@@ -135,8 +118,6 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
   const search = useAppSelector((state: RootState) => state.control.search);
 
   const [currIndex, setCurrIndex] = useState(-1);
-  const [sortType, setSortType] = useState<string>(folderData.sort);
-
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -187,7 +168,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
       media = media.filter(o => o.studios.includes(a));
     });
 
-    switch (sortType) {
+    switch (folderData.sort) {
       case DEFAULT:
         break;
       case TITLE_ASC:
@@ -233,11 +214,10 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
       folderData.name,
       {
         ...folderData,
-        sort: getSortType(type),
+        sort: type as SORT,
       },
       mutate
     );
-    setSortType(type);
     setOpen(false);
   }
 
@@ -364,7 +344,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
                 aria-haspopup="true"
                 onClick={handleToggle}
               >
-                {sortType}
+                {folderData.sort}
               </ActionButton>
               <StyledPopper
                 open={open}
@@ -384,14 +364,16 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
                     <StyledPaper>
                       <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow">
-                          {SORT_TYPES.filter(o => o !== sortType).map(type => (
-                            <StyledMenuItem
-                              key={type}
-                              onClick={() => updateSortType(type)}
-                            >
-                              {type}
-                            </StyledMenuItem>
-                          ))}
+                          {SORT_TYPES.filter(o => o !== folderData.sort).map(
+                            type => (
+                              <StyledMenuItem
+                                key={type}
+                                onClick={() => updateSortType(type)}
+                              >
+                                {type}
+                              </StyledMenuItem>
+                            )
+                          )}
                         </MenuList>
                       </ClickAwayListener>
                     </StyledPaper>
