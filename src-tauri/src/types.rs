@@ -179,9 +179,9 @@ impl Media {
     }
 
     // json
-    pub fn movie_json(&self) -> Value {
+    pub fn movie_json(&self) -> Option<Value> {
         if let MediaType::Movie = self.media_type {
-            return json!({
+            return Some(json!({
                 "type": "movie",
                 "relativePath": self.relative_path().to_str().unwrap(),
                 "title": self.title,
@@ -192,14 +192,15 @@ impl Media {
                 "genres": self.genres,
                 "actors": self.actors,
                 "studios": self.studios
-            });
+            }));
         }
         panic!("Expect a movie, but get {:?}", self.media_type)
     }
 
-    pub fn tvshow_json(&self, season_map: Option<&HashMap<String, Vec<&Media>>>) -> Value {
+    pub fn tvshow_json(&self, season_map: Option<&HashMap<String, Vec<&Media>>>) -> Option<Value> {
         if season_map.is_none() {
-            panic!("Expect to get seasons data, but get none.")
+            println!("Expect to get seasons data, but get none. {}", self.relative_path.to_string_lossy());
+            return None;
         }
         if let MediaType::TvShow = self.media_type {
             let seasons = season_map
@@ -211,7 +212,7 @@ impl Media {
                     return (season, values.iter().map(|o| o.episode_json()).collect::<Vec<Value>>());
                 })
                 .collect::<HashMap<&String, Vec<Value>>>();
-            return json!({
+            return Some(json!({
                 "type": "tvshow",
                 "relativePath": self.relative_path.to_str().unwrap(),
                 "title": self.title,
@@ -221,12 +222,12 @@ impl Media {
                 "actors": self.actors,
                 "studios": self.studios,
                 "seasons": seasons,
-            });
+            }));
         }
         panic!("Expect a tv show, but get {:?}", self.media_type)
     }
 
-    pub fn episode_json(&self) -> Value {
+    fn episode_json(&self) -> Value {
         if let MediaType::Episode = self.media_type {
             return json!({
                 "title": self.title,

@@ -46,7 +46,12 @@ fn read_dir(path: &str) -> (Vec<Media>, Vec<Media>) {
             }
 
             let relative_path = utilities::get_relative_path(path.as_path(), root_path);
-            let ext = path.extension().unwrap().to_str().unwrap();
+            let extension = path.extension();
+            if extension.is_none() {
+                println!("File does not have proper extension. {}", &path.display());
+                continue;
+            }
+            let ext = extension.unwrap().to_str().unwrap();
             match ext {
                 "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
                 "jpg" | "png" => if file_name.to_str().unwrap().contains("poster") {
@@ -83,6 +88,8 @@ fn handle_media_path(nfo_files: &Vec<OsString>,
         let media = nfo_files
             .iter()
             .map(|o| parse_nfo(root_path, o, &media_source))
+            .filter(|o| o.is_some())
+            .map(|o| o.unwrap())
             .collect::<Vec<Media>>();
         return media;
     }
@@ -150,7 +157,10 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
                 MediaType::TvShow => o.tvshow_json(seasons_map.get(o.relative_path())),
                 _ => panic!("Unexpected media type: {:?}", o.media_type())
             }
-        }).collect::<Vec<Value>>();
+        })
+        .filter(|o| o.is_some())
+        .map(|o| o.unwrap())
+        .collect::<Vec<Value>>();
 
     (json!({
         "data": data,
