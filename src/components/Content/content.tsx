@@ -1,12 +1,12 @@
 import { openFile } from '@/lib/os';
 import { ICardSize, IFolder, IMediaData, MOVIE, TV_SERIES } from '@/type';
-import { Drawer, Typography } from '@mui/material';
+import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { lighten, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import path from 'path';
 import React, { useState } from 'react';
 
-import { CardGrid, CardInfo, MediaCard } from './styles';
+import { CardInfo } from './styles';
 
 const Image = dynamic(() => import('@/components/ImageLoader'), {
   ssr: false,
@@ -16,30 +16,23 @@ const Menu = dynamic(() => import('./menu'), {
   ssr: false,
 });
 
-interface ContentSize {
-  columnNumber: number;
-  cHeight: number;
-  cWidth: number;
-  space: number;
-  width: number;
-  cardSize: ICardSize;
-}
-
 interface ICardProps {
   folder: IFolder;
-  size: ContentSize;
+  size: ICardSize;
   data: IMediaData[];
+  current: number;
   select: (index: number) => void;
-  currIndex: number;
 }
 
 function MediaGrid({
   folder,
   data,
   size,
+  current,
   select,
-  currIndex,
 }: ICardProps): JSX.Element {
+  const cInfo = 60;
+
   const theme = useTheme();
 
   const [open, setOpen] = useState(false);
@@ -56,37 +49,40 @@ function MediaGrid({
     }
   }
 
+  const width = size.width + 10;
   return (
-    <CardGrid
-      cols={size.columnNumber}
-      rowHeight={size.cHeight}
-      sx={{ width: size.width }}
-      gap={0}
+    <Box
+      display={'grid'}
+      sx={{
+        gridTemplateColumns: `repeat(auto-fill, minmax(${width}px, 1fr))`,
+      }}
     >
       {data.map((media, index) => {
-        const elevation = currIndex === index ? 5 : 0;
+        const elevation = current === index ? 5 : 0;
         return (
-          <MediaCard
+          <Stack
             key={index}
             id={`c${index}`}
             onClick={() => select(index)}
             onDoubleClick={() => handleOpen(media)}
-            sx={{
-              width: size.cWidth + size.space * 2,
-              height: size.cHeight,
-              boxShadow: theme.shadows[elevation],
-              backgroundColor: lighten(
-                theme.palette.background.default,
-                elevation * 0.025
-              ),
-            }}
+            width={'100%'}
+            height={size.height + cInfo}
+            direction={'column'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            spacing={0}
+            boxShadow={theme.shadows[elevation]}
+            bgcolor={lighten(
+              theme.palette.background.default,
+              elevation * 0.025
+            )}
           >
             <Image
               folder={folder}
               src={path.join(media.relativePath, media.posters['main'])}
               alt={media.title}
-              width={size.cardSize.width}
-              height={size.cardSize.height}
+              width={size.width}
+              height={size.height}
             />
             <CardInfo
               title={
@@ -102,21 +98,21 @@ function MediaGrid({
                 )
               }
               position="below"
-              sx={{ width: size.cardSize.width }}
+              sx={{ width: size.width }}
             />
             {media.type === TV_SERIES && (
               <Drawer
                 anchor={'bottom'}
-                open={open && currIndex === index}
+                open={open && current === index}
                 onClose={() => setOpen(false)}
               >
                 <Menu folder={folder} data={media} />
               </Drawer>
             )}
-          </MediaCard>
+          </Stack>
         );
       })}
-    </CardGrid>
+    </Box>
   );
 }
 

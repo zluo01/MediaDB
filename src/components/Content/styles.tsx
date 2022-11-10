@@ -1,8 +1,6 @@
 import {
   Button,
   CircularProgress,
-  ImageList,
-  ImageListItem,
   ImageListItemBar,
   Paper,
   Popper,
@@ -14,7 +12,7 @@ export const Divider = styled('hr')(({ theme }) => ({
   borderColor: theme.palette.secondary.main,
   color: theme.palette.secondary.main,
   flexGrow: 1,
-  margin: theme.spacing(1),
+  marginRight: theme.spacing(1),
 }));
 
 export const RefreshButton = styled(Button)(({ theme }) => ({
@@ -48,15 +46,6 @@ export const StyledPopper = styled(Popper)(({ theme }) => ({
 export const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.action.selected,
-}));
-
-export const MediaCard = styled(ImageListItem)(() => ({
-  justifyContent: 'center',
-  alignItems: 'center',
-}));
-
-export const CardGrid = styled(ImageList)(() => ({
-  paddingBottom: 28,
 }));
 
 export const CardInfo = styled(ImageListItemBar)(() => ({

@@ -24,6 +24,7 @@ import {
   Backdrop,
   CircularProgress,
   ClickAwayListener,
+  Container,
   Fab,
   Grow,
   MenuItem,
@@ -35,7 +36,6 @@ import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import path from 'path';
 import React, { useEffect, useRef, useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { useSWRConfig } from 'swr';
 
 import MediaGrid from './content';
@@ -117,37 +117,58 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
   );
   const search = useAppSelector((state: RootState) => state.control.search);
 
-  const [currIndex, setCurrIndex] = useState(-1);
+  const [current, setCurrent] = useState(-1);
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
   const data = filterData();
 
-  const contentState = useRef({
-    currIndex,
-    columnNumber: 0,
-  });
+  useEffect(() => {
+    const anchor = document.getElementById(`c${current}`);
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [current]);
 
-  function setIndex(index: number) {
-    contentState.current = { ...contentState.current, currIndex: index };
-    setCurrIndex(index);
-  }
+  useEffect(() => {
+    async function handleKeyPress(ev: KeyboardEvent) {
+      switch (ev.key) {
+        case 'ArrowLeft':
+          setCurrent(prevState =>
+            prevState - 1 < 0 ? data.length - 1 : prevState - 1
+          );
+          break;
+        case 'ArrowRight':
+          setCurrent(prevState => (prevState + 1) % data.length);
+          break;
+        case 'Enter':
+          if (
+            data[current].type === MOVIE
+            // || data[currIndex].type === COMIC
+          ) {
+            const media = data[current] as IMovieData;
+            const filePath = path.join(
+              folderData.path,
+              media.relativePath,
+              media.file
+            );
+            await openFile(filePath);
+          }
+          break;
+      }
+    }
 
-  function setColumnNum(num: number) {
-    contentState.current = { ...contentState.current, columnNumber: num };
-  }
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [current, data, folderData]);
 
   function handleToggle() {
     setOpen(prevOpen => !prevOpen);
   }
-
-  useEffect(() => {
-    const anchor = document.getElementById(`c${currIndex}`);
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [currIndex]);
 
   function filterData(): IMediaData[] {
     let media = [...folderData.data];
@@ -221,59 +242,6 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     setOpen(false);
   }
 
-  useEffect(() => {
-    async function handleKeyPress(ev: KeyboardEvent) {
-      const { currIndex, columnNumber } = contentState.current;
-      const c = currIndex % columnNumber;
-      const r = Math.floor(currIndex / columnNumber);
-      let index: number;
-      switch (ev.key) {
-        case 'ArrowLeft':
-          setIndex(currIndex - 1 < 0 ? data.length - 1 : currIndex - 1);
-          break;
-        case 'ArrowRight':
-          setIndex((currIndex + 1) % data.length);
-          break;
-        case 'ArrowUp':
-          ev.preventDefault();
-          index = (r - 1) * columnNumber + c;
-          if (index < 0) {
-            return;
-          }
-          setIndex(index);
-          break;
-        case 'ArrowDown':
-          ev.preventDefault();
-          index = (r + 1) * columnNumber + c;
-          if (index > data.length - 1) {
-            return;
-          }
-          setIndex(index);
-          break;
-        case 'Enter':
-          if (
-            data[currIndex].type === MOVIE
-            // || data[currIndex].type === COMIC
-          ) {
-            const media = data[currIndex] as IMovieData;
-            const filePath = path.join(
-              folderData.path,
-              media.relativePath,
-              media.file
-            );
-            await openFile(filePath);
-          }
-          break;
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [data, folderData.path]);
-
   async function updateLibrary(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
@@ -299,131 +267,102 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     );
   }
 
-  const cInfo = 60;
-  const cWidth = setting.cardSize.width + 15;
-  const cHeight = setting.cardSize.height + cInfo;
-
   const disabled = search !== '';
 
   return (
-    <AutoSizer>
-      {({ width }) => {
-        const columnNumber = Math.floor(width / cWidth);
-        if (columnNumber !== contentState.current.columnNumber) {
-          setColumnNum(columnNumber);
-        }
-        const space = (width - columnNumber * cWidth - 1) / (columnNumber * 2);
-        return (
-          <>
-            <div
+    <Container maxWidth={false} disableGutters>
+      <div
+        style={{
+          height: 60,
+          display: 'flex',
+          flexFlow: 'row nowrap',
+          flex: 1,
+          alignItems: 'center',
+        }}
+      >
+        <Divider />
+        <ActionButton
+          size={'small'}
+          startIcon={<FilterListIcon />}
+          disabled={disabled}
+          onClick={() => setOpenFilter(prevState => !prevState)}
+        >
+          Filter
+        </ActionButton>
+        <ActionButton
+          size={'small'}
+          startIcon={<SortIcon />}
+          ref={anchorRef}
+          disabled={disabled}
+          aria-controls={open ? 'menu-list-grow' : undefined}
+          aria-haspopup="true"
+          onClick={handleToggle}
+        >
+          {folderData.sort}
+        </ActionButton>
+        <StyledPopper
+          open={open}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          transition
+          disablePortal
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
               style={{
-                height: 60,
-                display: 'flex',
-                flexFlow: 'row nowrap',
-                flex: 1,
-                width: width - 2 * space,
-                marginLeft: space,
-                alignItems: 'center',
+                transformOrigin:
+                  placement === 'bottom' ? 'center top' : 'center bottom',
               }}
             >
-              <Divider />
-              <ActionButton
-                size={'small'}
-                startIcon={<FilterListIcon />}
-                disabled={disabled}
-                onClick={() => setOpenFilter(prevState => !prevState)}
-              >
-                Filter
-              </ActionButton>
-              <ActionButton
-                size={'small'}
-                startIcon={<SortIcon />}
-                ref={anchorRef}
-                disabled={disabled}
-                aria-controls={open ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                onClick={handleToggle}
-              >
-                {folderData.sort}
-              </ActionButton>
-              <StyledPopper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                transition
-                disablePortal
-              >
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{
-                      transformOrigin:
-                        placement === 'bottom' ? 'center top' : 'center bottom',
-                    }}
-                  >
-                    <StyledPaper>
-                      <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList autoFocusItem={open} id="menu-list-grow">
-                          {SORT_TYPES.filter(o => o !== folderData.sort).map(
-                            type => (
-                              <StyledMenuItem
-                                key={type}
-                                onClick={() => updateSortType(type)}
-                              >
-                                {type}
-                              </StyledMenuItem>
-                            )
-                          )}
-                        </MenuList>
-                      </ClickAwayListener>
-                    </StyledPaper>
-                  </Grow>
-                )}
-              </StyledPopper>
-              <RefreshButton
-                size={'small'}
-                startIcon={<RefreshIcon />}
-                onClick={updateLibrary}
-                disabled={disabled}
-              >
-                Refresh
-              </RefreshButton>
-            </div>
-            <MediaGrid
-              size={{
-                columnNumber,
-                cHeight,
-                cWidth,
-                space,
-                width,
-                cardSize: setting.cardSize,
-              }}
-              folder={{
-                path: folderData.path,
-                name: folderData.name,
-              }}
-              data={data}
-              select={setIndex}
-              currIndex={currIndex}
-            />
-            <Footer
-              setting={setting}
-              selected={data[currIndex]?.title || `Total ${data.length}`}
-            />
-            <ScrollTop>
-              <StyledFab size="small" aria-label="scroll back to top">
-                <KeyboardArrowUpIcon />
-              </StyledFab>
-            </ScrollTop>
-            <FilterSection
-              folderData={folderData}
-              open={openFilter}
-              close={() => setOpenFilter(false)}
-            />
-          </>
-        );
-      }}
-    </AutoSizer>
+              <StyledPaper>
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MenuList autoFocusItem={open} id="menu-list-grow">
+                    {SORT_TYPES.filter(o => o !== folderData.sort).map(type => (
+                      <StyledMenuItem
+                        key={type}
+                        onClick={() => updateSortType(type)}
+                      >
+                        {type}
+                      </StyledMenuItem>
+                    ))}
+                  </MenuList>
+                </ClickAwayListener>
+              </StyledPaper>
+            </Grow>
+          )}
+        </StyledPopper>
+        <RefreshButton
+          size={'small'}
+          startIcon={<RefreshIcon />}
+          onClick={updateLibrary}
+          disabled={disabled}
+        >
+          Refresh
+        </RefreshButton>
+      </div>
+      <MediaGrid
+        size={setting.cardSize}
+        folder={{ ...folderData }}
+        data={data}
+        current={current}
+        select={setCurrent}
+      />
+      <Footer
+        setting={setting}
+        selected={data[current]?.title || `Total ${data.length}`}
+      />
+      <ScrollTop>
+        <StyledFab size="small" aria-label="scroll back to top">
+          <KeyboardArrowUpIcon />
+        </StyledFab>
+      </ScrollTop>
+      <FilterSection
+        folderData={folderData}
+        open={openFilter}
+        close={() => setOpenFilter(false)}
+      />
+    </Container>
   );
 }
 
