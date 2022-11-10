@@ -14,7 +14,7 @@ mod utilities;
 
 #[tauri::command]
 fn parser(app_handle: tauri::AppHandle, name: &str, path: &str) -> Value {
-    let app_dir = app_handle.path_resolver().app_config_dir().unwrap();
+    let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
     return parser::parser(&app_dir, name, path);
 }
 
