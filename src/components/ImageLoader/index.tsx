@@ -1,9 +1,8 @@
 import { IFolder } from '@/type';
-import { appDataDir } from '@tauri-apps/api/path';
+import { appDataDir, join } from '@tauri-apps/api/path';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import crypto from 'crypto';
 import Image, { ImageProps } from 'next/image';
-import path from 'path';
 import React, { useEffect, useState } from 'react';
 
 interface IImageLoaderPops extends ImageProps {
@@ -24,7 +23,7 @@ function ImageLoader({ folder, src, ...props }: IImageLoaderPops): JSX.Element {
         .update(src as string)
         .digest('hex');
       return convertFileSrc(
-        path.join(appDirPath, 'thumbnails', folder_dir, fileName)
+        await join(appDirPath, 'thumbnails', folder_dir, fileName)
       );
     }
 
