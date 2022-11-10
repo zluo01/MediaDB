@@ -76,10 +76,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
         "resizable": true,
+        "fileDropEnabled": false,
         "title": "MediaDB",
-        "width": 1000
+        "maximized": true,
+        "minWidth": 1280,
+        "minHeight": 720
       }
     ]
   }

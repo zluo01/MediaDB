@@ -1,5 +1,5 @@
 import { IFolder } from '@/type';
-import { appDir } from '@tauri-apps/api/path';
+import { appDataDir } from '@tauri-apps/api/path';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import crypto from 'crypto';
 import Image, { ImageProps } from 'next/image';
@@ -15,7 +15,7 @@ function ImageLoader({ folder, src, ...props }: IImageLoaderPops): JSX.Element {
 
   useEffect(() => {
     async function getCacheImagePath(): Promise<string> {
-      const appDirPath = await appDir();
+      const appDirPath = await appDataDir();
       const folder_dir = folder.path.substring(
         folder.path.lastIndexOf('/') + 1
       );
