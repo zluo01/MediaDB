@@ -1,6 +1,6 @@
 {
   "name": "mediadb",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "manager for movie and tv shows",
   "scripts": {
@@ -9,7 +9,7 @@
     "tauri": "tauri",
     "lint": "next lint",
     "build": "tauri build",
-    "dev": "tauri dev",
+    "dev": "RUST_BACKTRACE=full tauri dev",
     "type-check": "tsc --pretty --noEmit",
     "format": "prettier --write .",
     "prepare": "husky install"
@@ -24,7 +24,7 @@
     "@reduxjs/toolkit": "1.9.0",
     "@tauri-apps/api": "1.2.0",
     "localforage": "1.10.0",
-    "next": "13.0.2",
+    "next": "13.0.3",
     "react": "18.2.0",
     "react-beautiful-dnd": "13.1.1",
     "react-dom": "18.2.0",
@@ -34,12 +34,12 @@
   "devDependencies": {
     "@tauri-apps/cli": "1.2.0",
     "@trivago/prettier-plugin-sort-imports": "3.4.0",
-    "@types/node": "18.7.11",
-    "@types/react": "18.0.17",
+    "@types/node": "18.11.9",
+    "@types/react": "18.0.25",
     "@types/react-beautiful-dnd": "13.1.2",
-    "@types/react-dom": "18.0.6",
-    "eslint": "8.26.0",
-    "eslint-config-next": "13.0.2",
+    "@types/react-dom": "18.0.8",
+    "eslint": "8.27.0",
+    "eslint-config-next": "13.0.3",
     "eslint-config-prettier": "8.5.0",
     "husky": "8.0.2",
     "lint-staged": "13.0.3",

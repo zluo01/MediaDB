@@ -77,6 +77,7 @@ export interface ISetting {
 export interface IFolder {
   name: string;
   path: string;
+  appDir?: string;
 }
 
 export interface IControlState {

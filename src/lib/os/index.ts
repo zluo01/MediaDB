@@ -11,6 +11,16 @@ export async function openFile(path: string): Promise<void> {
   await invoke('open_file', { path });
 }
 
+export async function getAppDataPath(): Promise<string> {
+  return await invoke('get_data_path');
+}
+
+export async function buildDirectory(folder: IFolder): Promise<IFolderInfo> {
+  const data = (await invoke('parser', { ...folder })) as IFolderInfo;
+  data.sort = DEFAULT;
+  return data;
+}
+
 export async function getDirectory(): Promise<string> {
   const selected = await open({
     directory: true,
@@ -28,10 +38,4 @@ export async function notify(errorMsg: string): Promise<void> {
   if (permissionGranted) {
     sendNotification(errorMsg);
   }
-}
-
-export async function buildDirectory(folder: IFolder): Promise<IFolderInfo> {
-  const data = (await invoke('parser', { ...folder })) as IFolderInfo;
-  data.sort = DEFAULT;
-  return data;
 }

@@ -1,6 +1,6 @@
-import Content from '@/components/Content';
 import { Loading } from '@/components/Content/styles';
 import Layout from '@/components/Layout';
+import useAppDataPath from '@/lib/hooks';
 import { useAppSelector } from '@/lib/source';
 import { RootState } from '@/lib/source/store';
 import {
@@ -11,11 +11,19 @@ import {
   getSetting,
   SETTING,
 } from '@/lib/storage';
+import { IFolderData } from '@/type';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
+const Content = dynamic(() => import('@/components/Content'), {
+  ssr: false,
+});
+
 function Home(): JSX.Element {
   const router = useRouter();
+  const appDataPath = useAppDataPath();
+
   const { search } = useAppSelector((state: RootState) => state.control);
 
   const route = parseInt(router.query.id as string) || 0;
@@ -27,7 +35,7 @@ function Home(): JSX.Element {
     () => getFolderInfo(folder.name)
   );
 
-  function getDisplayData() {
+  function getDisplayData(): IFolderData {
     if (search) {
       return {
         ...folder,
@@ -35,13 +43,14 @@ function Home(): JSX.Element {
         data: folderData.data.filter(o =>
           o.title.toLowerCase().includes(search.toLowerCase())
         ),
+        appDir: appDataPath,
       };
     }
-    return { ...folder, ...folderData };
+    return { ...folder, ...folderData, appDir: appDataPath };
   }
 
   function Contents(): JSX.Element {
-    if (!setting || !folder) {
+    if (!setting || !folder || !appDataPath) {
       return <Loading />;
     }
     if (!folderData) {
