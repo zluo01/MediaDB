@@ -8,7 +8,11 @@ import {
 import { invoke } from '@tauri-apps/api/tauri';
 
 export async function openFile(path: string): Promise<void> {
-  await invoke('open_file', { path });
+  try {
+    await invoke('open_file', { path });
+  } catch (e) {
+    await notify(e);
+  }
 }
 
 export async function getAppDataPath(): Promise<string> {

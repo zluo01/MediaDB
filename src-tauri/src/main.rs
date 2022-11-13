@@ -25,8 +25,11 @@ fn get_data_path(app_handle: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
-fn open_file(path: &str) {
-    open::that(path).expect(format!("Fail to open file at directory: {}", path).as_str());
+fn open_file(path: &str) -> Result<String, String> {
+    if let Err(err) = open::that(path) {
+        return Err(format!("Fail to open file at directory: {}. Error: {}", path, err).into());
+    }
+    Ok("OK".into())
 }
 
 fn main() {
