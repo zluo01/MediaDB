@@ -16,6 +16,11 @@ const FilterPanel = styled(Drawer)(({ theme }) => ({
   },
 }));
 
+const ChipContainer = styled('div')(() => ({
+  display: 'flex',
+  flexFlow: 'row wrap',
+}));
+
 const FilterChip = styled(Chip)(({ theme }) => ({
   color: theme.palette.action.selected,
   borderColor: theme.palette.action.selected,
@@ -84,7 +89,7 @@ function Filters({ folderData, open, close }: IFilerSection): JSX.Element {
                   Clear
                 </Button>
               </Stack>
-              <div>
+              <ChipContainer>
                 {data.sort().map((value, index) => (
                   <FilterChip
                     key={index}
@@ -94,7 +99,7 @@ function Filters({ folderData, open, close }: IFilerSection): JSX.Element {
                     variant={filter.includes(value) ? 'filled' : 'outlined'}
                   />
                 ))}
-              </div>
+              </ChipContainer>
             </div>
           );
         })}
