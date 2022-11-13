@@ -1,3 +1,4 @@
+import Image from '@/components/ImageLoader';
 import { openFile } from '@/lib/os';
 import { ICardSize, IFolder, IMediaData, MOVIE, TV_SERIES } from '@/type';
 import { Box, Drawer, Stack, Typography } from '@mui/material';
@@ -7,10 +8,6 @@ import path from 'path';
 import React, { useState } from 'react';
 
 import { CardInfo } from './styles';
-
-const Image = dynamic(() => import('@/components/ImageLoader'), {
-  ssr: false,
-});
 
 const Menu = dynamic(() => import('./menu'), {
   ssr: false,

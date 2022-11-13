@@ -1,14 +1,10 @@
+import Image from '@/components/ImageLoader';
 import { openFile } from '@/lib/os';
 import { IEpisode, IFolder, ITVShowData } from '@/type';
 import { AppBar, Box, Button, Tab, Tabs, Tooltip } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import dynamic from 'next/dynamic';
 import path from 'path';
 import React from 'react';
-
-const Image = dynamic(() => import('@/components/ImageLoader'), {
-  ssr: false,
-});
 
 const Section = styled('div')(() => ({
   height: '38.2vh',
