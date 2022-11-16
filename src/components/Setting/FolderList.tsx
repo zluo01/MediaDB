@@ -1,10 +1,6 @@
 import { notify } from '@/lib/os';
-import {
-  FOLDER_LIST,
-  getFolderList,
-  removeFolder,
-  updateFolderList,
-} from '@/lib/storage';
+import { removeFolder, useGetFolderListQuery } from '@/lib/queries';
+import { updateFolderList } from '@/lib/storage';
 import { IFolder } from '@/type';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -25,13 +21,14 @@ import {
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
-import useSWR, { useSWRConfig } from 'swr';
+import { useSWRConfig } from 'swr';
 
 const EditFolderModal = dynamic(() => import('@/components/Modal/Folder'));
 
 function FolderList(): JSX.Element {
   const { mutate } = useSWRConfig();
-  const { data: folderList } = useSWR(FOLDER_LIST, getFolderList);
+  const { data: folderList, mutate: revalidateFolderList } =
+    useGetFolderListQuery();
 
   const [folderIndex, setFolderIndex] = useState(-1);
 
@@ -45,7 +42,7 @@ function FolderList(): JSX.Element {
 
   async function handleRemove(folder: IFolder) {
     try {
-      await removeFolder(folder, mutate);
+      await removeFolder(mutate, folder);
     } catch (e) {
       await notify(`Update Folder Error: ${e}`);
     }
@@ -63,7 +60,8 @@ function FolderList(): JSX.Element {
     if (result.source.index !== result.destination.index) {
       try {
         const result = reorder(folderList, src, dst);
-        await updateFolderList(result, mutate);
+        await updateFolderList(result);
+        await revalidateFolderList();
       } catch (e) {
         await notify(`Drag End: ${e}`);
       }

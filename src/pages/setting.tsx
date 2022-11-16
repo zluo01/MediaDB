@@ -2,7 +2,7 @@ import { Loading } from '@/components/Content/styles';
 import Layout from '@/components/Layout';
 import FolderList from '@/components/Setting/FolderList';
 import { notify } from '@/lib/os';
-import { getSetting, SETTING, updateSetting } from '@/lib/storage';
+import { useGetSettingQuery, setSetting } from '@/lib/queries';
 import {
   Checkbox,
   Container,
@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import { useSWRConfig } from 'swr';
 
 const SettingForm = styled(FormControl)(({ theme }) => ({
   width: 'inherit',
@@ -34,7 +34,7 @@ const SettingTitle = styled(Typography)(({ theme }) => ({
 
 function Setting(): JSX.Element {
   const { mutate } = useSWRConfig();
-  const { data } = useSWR(SETTING, getSetting);
+  const { data } = useGetSettingQuery();
 
   async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
     try {
@@ -42,7 +42,7 @@ function Setting(): JSX.Element {
         ...data,
         showSidePanelName: event.target.checked,
       };
-      await updateSetting(setting, mutate);
+      await setSetting(mutate, setting);
     } catch (e) {
       await notify(`Check Box Error: ${e}`);
     }

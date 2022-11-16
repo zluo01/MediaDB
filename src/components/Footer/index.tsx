@@ -1,4 +1,5 @@
-import { DefaultSetting, updateSetting } from '@/lib/storage';
+import { setSetting } from '@/lib/queries';
+import { DefaultSetting } from '@/lib/storage';
 import { ICardSize, ISetting } from '@/type';
 import { Slider, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -41,7 +42,7 @@ function Footer({ setting, selected }: IFooter): JSX.Element {
       height: DefaultSetting.cardSize.height * ratio,
     };
     try {
-      await updateSetting({ ...setting, cardSize: newSize }, mutate);
+      await setSetting(mutate, { ...setting, cardSize: newSize });
     } catch (e) {
       console.error(e);
     }

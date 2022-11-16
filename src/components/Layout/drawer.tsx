@@ -1,4 +1,4 @@
-import { FOLDER_LIST, getFolderList, getSetting, SETTING } from '@/lib/storage';
+import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
 import AddIcon from '@mui/icons-material/Add';
 import FolderIcon from '@mui/icons-material/Folder';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -17,7 +17,6 @@ import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import useSWR from 'swr';
 
 const DirectoryModal = dynamic(() => import('@/components/Modal/Directory'), {
   ssr: false,
@@ -47,8 +46,8 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
 
   const isSettingPage = router.asPath === '/setting';
 
-  const { data: setting } = useSWR(SETTING, getSetting);
-  const { data: folderList } = useSWR(FOLDER_LIST, getFolderList);
+  const { data: setting } = useGetSettingQuery();
+  const { data: folderList } = useGetFolderListQuery();
 
   const [openModal, setOpenModal] = useState(false);
 

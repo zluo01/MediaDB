@@ -1,5 +1,5 @@
 import { buildDirectory, getDirectory, notify } from '@/lib/os';
-import { addFolder } from '@/lib/storage';
+import { insertFunction } from '@/lib/queries';
 import { IFolder } from '@/type';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
@@ -9,10 +9,10 @@ import React, { useState } from 'react';
 import { useSWRConfig } from 'swr';
 
 import {
-  ModalTitle,
-  ModalContent,
   ActionButtonGroups,
   DialogButton,
+  ModalContent,
+  ModalTitle,
   MoreButton,
 } from './styles';
 
@@ -49,9 +49,9 @@ function DirectoryModal({
     setLoading(true);
     try {
       const info = await buildDirectory(folder);
-      const index = await addFolder(folder, info, mutate);
+      await insertFunction(mutate, folder, info);
       await handleClose();
-      await router.push(`/?id=${index}`);
+      await router.reload();
     } catch (e) {
       await notify(`Import folders: ${e}`);
     } finally {

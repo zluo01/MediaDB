@@ -1,14 +1,14 @@
 import { getDirectory, notify } from '@/lib/os';
-import { FOLDER_LIST, getFolder, updateFolderPath } from '@/lib/storage';
+import { updateFolderPath, useGetFolderQuery } from '@/lib/queries';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import { useSWRConfig } from 'swr';
 
 import {
   ActionButtonGroups,
-  ModalContent,
   DialogButton,
+  ModalContent,
   ModalTitle,
   MoreButton,
 } from './styles';
@@ -21,7 +21,7 @@ interface IFolderNameEdit {
 
 function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
   const { mutate } = useSWRConfig();
-  const { data: folder } = useSWR([FOLDER_LIST, index], () => getFolder(index));
+  const { data: folder } = useGetFolderQuery(index);
 
   const [path, setPath] = useState(folder?.path || '');
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
     e.preventDefault();
     setLoading(true);
     try {
-      await updateFolderPath(index, path, mutate);
+      await updateFolderPath(mutate, index, path);
       setLoading(false);
       setPath('');
       close();

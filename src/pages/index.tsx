@@ -1,20 +1,16 @@
 import { Loading } from '@/components/Content/styles';
 import Layout from '@/components/Layout';
 import useAppDataPath from '@/lib/hooks';
+import {
+  useGetFolderInfoQuery,
+  useGetFolderQuery,
+  useGetSettingQuery,
+} from '@/lib/queries';
 import { useAppSelector } from '@/lib/source';
 import { RootState } from '@/lib/source/store';
-import {
-  FOLDER,
-  FOLDER_LIST,
-  getFolder,
-  getFolderInfo,
-  getSetting,
-  SETTING,
-} from '@/lib/storage';
 import { IFolderData } from '@/type';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
 
 const Content = dynamic(() => import('@/components/Content'), {
   ssr: false,
@@ -28,12 +24,11 @@ function Home(): JSX.Element {
 
   const route = parseInt(router.query.id as string) || 0;
 
-  const { data: setting } = useSWR(SETTING, getSetting);
-  const { data: folder } = useSWR([FOLDER_LIST, route], () => getFolder(route));
-  const { data: folderData } = useSWR(
-    folder?.name ? [FOLDER, folder.name] : null,
-    () => getFolderInfo(folder.name)
-  );
+  const { data: setting, isLoading: isGetSettingLoading } =
+    useGetSettingQuery();
+  const { data: folder, isLoading: isGetFolderLoading } =
+    useGetFolderQuery(route);
+  const { data: folderData } = useGetFolderInfoQuery(folder?.name);
 
   function getDisplayData(): IFolderData {
     if (search) {
@@ -50,7 +45,7 @@ function Home(): JSX.Element {
   }
 
   function Contents(): JSX.Element {
-    if (!setting || !folder || !appDataPath) {
+    if (isGetSettingLoading || isGetFolderLoading || !appDataPath) {
       return <Loading />;
     }
     if (!folderData) {
