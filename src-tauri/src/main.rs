@@ -24,17 +24,9 @@ fn get_data_path(app_handle: tauri::AppHandle) -> String {
     return app_dir.to_str().unwrap().to_string();
 }
 
-#[tauri::command]
-fn open_file(path: &str) -> Result<(), String> {
-    if let Err(err) = open::that(path) {
-        return Err(format!("Fail to open file at directory: {}. Error: {}", path, err).into());
-    }
-    Ok(())
-}
-
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![parser, open_file,get_data_path])
+        .invoke_handler(tauri::generate_handler![parser,get_data_path])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,15 +1,16 @@
 import { DEFAULT, IFolder, IFolderInfo } from '@/type';
-import { open } from '@tauri-apps/api/dialog';
+import { open as openDialog } from '@tauri-apps/api/dialog';
 import {
   isPermissionGranted,
   requestPermission,
   sendNotification,
 } from '@tauri-apps/api/notification';
+import { open } from '@tauri-apps/api/shell';
 import { invoke } from '@tauri-apps/api/tauri';
 
 export async function openFile(path: string): Promise<void> {
   try {
-    await invoke('open_file', { path });
+    await open(path);
   } catch (e) {
     await notify(e);
   }
@@ -26,7 +27,7 @@ export async function buildDirectory(folder: IFolder): Promise<IFolderInfo> {
 }
 
 export async function getDirectory(): Promise<string> {
-  const selected = await open({
+  const selected = await openDialog({
     directory: true,
     multiple: false,
   });

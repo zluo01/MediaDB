@@ -1362,10 +1362,9 @@ checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
 
 [[package]]
 name = "mediadb"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "md5",
- "open",
  "roxmltree",
  "serde",
  "serde_json",
@@ -2541,9 +2540,11 @@ dependencies = [
  "notify-rust",
  "objc",
  "once_cell",
+ "open",
  "percent-encoding",
  "rand 0.8.5",
  "raw-window-handle",
+ "regex",
  "rfd",
  "semver 1.0.14",
  "serde",
@@ -2596,6 +2597,7 @@ dependencies = [
  "png 0.17.7",
  "proc-macro2",
  "quote",
+ "regex",
  "semver 1.0.14",
  "serde",
  "serde_json",
