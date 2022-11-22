@@ -39,7 +39,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
+        platform: [ubuntu-20.04]
+#         platform: [macos-latest, ubuntu-20.04, windows-latest]
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -63,13 +64,12 @@ jobs:
     - name: install dependencies
       run: npm i
 
-    - name: build (ubuntu)
-      if: matrix.platform == 'ubuntu-20.04'
-      run: npm i && npm run build -- --debug
-
     - name: build
-      if: matrix.platform != 'ubuntu-20.04'
-      run: npm i && npm run build
+      run: npm run build -- --debug
+
+#     - name: build
+#       if: matrix.platform != 'ubuntu-20.04'
+#       run: npm i && npm run build
 
     - uses: tauri-apps/tauri-action@v0
       env:
