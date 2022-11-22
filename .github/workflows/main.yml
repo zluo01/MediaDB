@@ -33,12 +33,6 @@ jobs:
       
       - name: install app dependencies and build it
         run: npm i && npm run build
-      
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          releaseId: ${{ needs.create-release.outputs.release_id }}
 
   publish-tauri:
     needs: [ build-tauri ]
