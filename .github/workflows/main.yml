@@ -41,6 +41,7 @@ jobs:
           releaseId: ${{ needs.create-release.outputs.release_id }}
 
   publish-tauri:
+    needs: [ build-tauri ]
     strategy:
       fail-fast: false
       matrix:
