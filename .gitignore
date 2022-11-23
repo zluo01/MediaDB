@@ -27,3 +27,4 @@ dist-ssr
 tsconfig.tsbuildinfo
 out
 .directory
+**.hidden
