@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:22 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>初恋かストーカーか?号泣の恋愛裁判!?</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>1</season>
+  <episode>3</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4322616</id>
+  <uniqueid default="true" type="tvdb">4322616</uniqueid>
+  <rating>0.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>古美門研介（堺雅人）の事務所に、テレビのドキュメンタリー番組の取材が入った。古美門はカメラ映りや、自分のスマートさだけを撮ってもらいたい様子。そのため、黛真知子（新垣結衣）が持ち込んだ国選弁護の話になど見向きもしない。黛はひとりで、村瀬美由希（原田夏希）へのストーカー規制法違反で訴えられた榎戸信也（永山絢斗）の弁護をすることになる。しかし、古美門も番組ディレクターから訴訟に取り組む様子を撮影したいと頼まれた。黛を手伝う気もなく、さりとて当面、仕事の予定のない古美門。すると、助け舟を出すように服部（里見浩太朗）が弁護士会からの依頼を話す。&#13;
+&#13;
+榎戸は黛に、なかなか思っていることを打ち明けようとしない。仕方なく弁護方針を減刑に持ち込もうとする黛。裁判で原告側につく検察官は、黛が法科大学院時代に教壇に立ったことのある相沢秀臣（東根作寿英）。黛は相沢に対して辛い失恋をしていた。&#13;
+&#13;
+一方、古美門は汚い野次で球場から強制退去させられたことに怒る望月ミドリ（阿知波悟美）の球団への倍賞請求を始めた。なんとも勝ち目のなさそうな訴えだが、古美門は余裕しゃくしゃく。球団側の弁護についた三木長一郎（生瀬勝久）は、若手の井手孝雄（矢野聖人）を古美門にぶつける。&#13;
+&#13;
+初公判では、今まで何もしゃべらなかった榎戸が突然無罪を主張したことで黛は混乱。反対にミドリを弁護する古美門は、法廷でお得意の弁舌を繰り広げ始めた。さらに蘭丸（田口淳之介）を使った古美門はミドリに勝利をもたらす。&#13;
+&#13;
+黛は古美門のような手段を使えず、自分の足で榎戸と美由希の関係を調査。榎戸</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4322616.jpg</thumb>
+  <mpaa/>
+  <premiered>2012-05-01</premiered>
+  <aired>2012-05-01</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <actor>
+    <name>Nagayama Kento</name>
+    <role>Shinya Enato</role>
+    <thumb/>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Natsuki Harada</name>
+    <role>Miyuki Murase</role>
+    <thumb/>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Tonesaku Toshihide</name>
+    <role>Hidetomi Aizawa</role>
+    <thumb/>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Ryuuji Sainei</name>
+    <role>Tatsuya Makino</role>
+    <thumb/>
+    <profile/>
+  </actor>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2794</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S01E03 - 初恋かストーカーか号泣の恋愛裁判!.mkv</original_filename>
+  <user_note/>
+</episodedetails>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:25 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>新しい愛の形か重婚か!? 訴えられた妻は夫が3人</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>2</season>
+  <episode>6</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4699409</id>
+  <uniqueid default="false" type="tmdb">968713</uniqueid>
+  <uniqueid default="true" type="tvdb">4699409</uniqueid>
+  <rating>0.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>古美門研介（堺雅人）が、まだ眠りから覚めやらぬ朝、古美門法律事務所を嶋澄江（高林由紀子）という婦人が訪ねてきた。応対する黛真知子（新垣結衣）に、澄江は嫁の愛子（鈴木保奈美）についての相談をする。&#13;
+&#13;
+　澄江によると、愛子は息子の悟（林泰文）のほかに複数の夫を持つ“一妻多夫”を営んでいるらしい。しかも、その事実は悟も了承済み。だが、澄江には理解出来ないため相談に来たのだ。&#13;
+&#13;
+　話を聞いていた服部（里見浩太朗）は、古美門が面白がりそうな案件とうなずく。しかし、黛は古美門が面白がる案件は危険と判断。しかも、年金暮しの澄江に古美門への高額な弁護費用の出費は無理と、黛は羽生晴樹（岡田将生）の『NEXUS』を紹介する。&#13;
+&#13;
+　ようやく起きてきた古美門を置いて、黛は安藤貴和（小雪）の接見に向かい上告への決断を迫る。しかし、逆に貴和から決めかねているのは黛ではないかと、はぐらかされてしまった。確かに黛は、古美門のもとで働き続けたいのだが、羽生からも事務所に誘われて迷っている。貴和から見事に揺れる心を言い当てられたのだ。&#13;
+&#13;
+　接見を終えた黛が事務所に戻ると相談者が来る。朝方、相談に来た澄江が問題にする嫁の愛子。愛子は悟を含めた３人の男性と一緒で、澄江が弁護士に相談したことを知って来たのだ。愛子は誰とも婚姻関係を結ばずに、内縁関係のまま幸せに暮らしていると言う。話を聞いた古美門は黛の不安通りに興味を持ち、愛子たちの弁護人を引き受けた。</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4699409.jpg</thumb>
+  <mpaa/>
+  <premiered>2013-11-13</premiered>
+  <aired>2013-11-13</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2775</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S02E06 - 新しい愛の形か重婚か! 訴えられた妻は夫が3人.mkv</original_filename>
+  <user_note/>
+</episodedetails>

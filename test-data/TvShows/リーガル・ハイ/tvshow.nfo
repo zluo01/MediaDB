@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:17:54 - tinyMediaManager 4.2.5.1-->
+<tvshow>
+  <title>リーガル・ハイ</title>
+  <originaltitle>リーガル・ハイ</originaltitle>
+  <showtitle>リーガル・ハイ</showtitle>
+  <sorttitle/>
+  <year>2012</year>
+  <rating>8.1</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <outline/>
+  <plot>偏屈で毒舌で最低の性格だが、訴訟で一度も敗けたことのない敏腕弁護士と、&#13;
+真面目で正義感が強いが、融通の利かない堅物な新米弁護士。&#13;
+水と油の2人の弁護士が、ぶつかり合いながらも法廷で共闘！&#13;
+闘うことを忘れてしまったすべての人たちに贈る&#13;
+「弁護士ドラマ」史上最も笑える極上のリーガルコメディ！</plot>
+  <tagline/>
+  <runtime>45</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/2fmB1XXHiQCgnk8R0QLP8FoBVwF.jpg</thumb>
+  <thumb aspect="banner">https://assets.fanart.tv/fanart/tv/258840/tvbanner/legal-high-5ff1cff317b76.jpg</thumb>
+  <thumb aspect="clearlogo">https://assets.fanart.tv/fanart/tv/258840/hdtvlogo/legal-high-5de8ea3ae70c6.png</thumb>
+  <thumb aspect="logo">https://assets.fanart.tv/fanart/tv/258840/hdtvlogo/legal-high-5de8ea3ae70c6.png</thumb>
+  <namedseason number="0">特別編</namedseason>
+  <namedseason number="1">シーズン1</namedseason>
+  <namedseason number="2">シーズン2</namedseason>
+  <thumb aspect="poster" season="0" type="season">https://artworks.thetvdb.com/banners/seasons/258840-0.jpg</thumb>
+  <thumb aspect="poster" season="1" type="season">https://artworks.thetvdb.com/banners/seasons/258840-1.jpg</thumb>
+  <thumb aspect="poster" season="2" type="season">https://image.tmdb.org/t/p/original/2fmB1XXHiQCgnk8R0QLP8FoBVwF.jpg</thumb>
+  <thumb aspect="banner" season="0" type="season">https://artworks.thetvdb.com/banners/seasonswide/258840-0.jpg</thumb>
+  <thumb aspect="banner" season="1" type="season">https://artworks.thetvdb.com/banners/seasonswide/258840-1.jpg</thumb>
+  <thumb aspect="banner" season="2" type="season">https://artworks.thetvdb.com/banners/seasonswide/258840-2.jpg</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/1iZU8YJ3PRD5s5YcBIJdsh9NvhO.jpg</thumb>
+  </fanart>
+  <mpaa/>
+  <certification/>
+  <episodeguide>
+    <url cache="auth.json" post="yes">https://api.thetvdb.com/login?{"apikey":"439DFEBA9D3059C6","id":258840}|Content-Type=application/json</url>
+  </episodeguide>
+  <id>258840</id>
+  <imdbid>tt2276587</imdbid>
+  <tmdbid>46234</tmdbid>
+  <uniqueid default="false" type="tmdb">46234</uniqueid>
+  <uniqueid default="false" type="imdb">tt2276587</uniqueid>
+  <uniqueid default="true" type="tvdb">258840</uniqueid>
+  <premiered>2012-04-17</premiered>
+  <status>Ended</status>
+  <watched>false</watched>
+  <playcount/>
+  <genre>Drama</genre>
+  <genre>Comedy</genre>
+  <studio>Fuji TV</studio>
+  <country/>
+  <actor>
+    <name>Masato Sakai</name>
+    <role>Komikado Kensuke </role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/314902.jpg</thumb>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Yui Aragaki</name>
+    <role>Mayuzumi Machiko</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/314903.jpg</thumb>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Katsuhisa Namase</name>
+    <role>Choichiro Miki</role>
+    <thumb>https://image.tmdb.org/t/p/h632/b3dmjOUkCPblOPhPRJTcrgsiVbq.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/91873</profile>
+    <tmdbid>91873</tmdbid>
+  </actor>
+  <actor>
+    <name>Eiko Koike</name>
+    <role>Kimie Sawachi</role>
+    <thumb>https://image.tmdb.org/t/p/h632/sCAqJfpePDvylHyLJXKQ0fhV3xX.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/131191</profile>
+    <tmdbid>131191</tmdbid>
+  </actor>
+  <actor>
+    <name>Kotaro Satomi</name>
+    <role>Hattori</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/386109.jpg</thumb>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Taguchi Junnosuke</name>
+    <role>Ranmaru Kaga</role>
+    <thumb>https://artworks.thetvdb.com/banners/v4/actor/8110936/photo/60dd6cdfc93e2.jpg</thumb>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Masaki Okada</name>
+    <role>Haruki Hanyu</role>
+    <thumb>https://image.tmdb.org/t/p/h632/dgcuWtceAE5lLmJs6D4rhkMKWH3.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/124402</profile>
+    <tmdbid>124402</tmdbid>
+  </actor>
+  <actor>
+    <name>Koyuki</name>
+    <role>Kiwa Ando</role>
+    <thumb>https://image.tmdb.org/t/p/h632/nf1PQoJ0xxXXA7BLl1VF203HX5g.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/9190</profile>
+    <tmdbid>9190</tmdbid>
+  </actor>
+  <trailer/>
+  <dateadded>2021-03-12 16:40:28</dateadded>
+  <!--tinyMediaManager meta data-->
+  <user_note/>
+</tvshow>

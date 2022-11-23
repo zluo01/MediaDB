@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-13 17:35:58 - tinyMediaManager 4.2.5.1-->
+<movie>
+  <title>Batman Begins</title>
+  <originaltitle>Batman Begins</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>2005</year>
+  <ratings>
+    <rating default="false" max="10" name="themoviedb">
+      <value>7.7</value>
+      <votes>17089</votes>
+    </rating>
+    <rating default="true" max="10" name="imdb">
+      <value>8.2</value>
+      <votes>1383958</votes>
+    </rating>
+  </ratings>
+  <userrating>0.0</userrating>
+  <top250>0</top250>
+  <set>
+    <name>The Dark Knight Collection</name>
+    <overview/>
+  </set>
+  <plot>Driven by tragedy, billionaire Bruce Wayne dedicates his life to uncovering and defeating the corruption that plagues his home, Gotham City.  Unable to work within the system, he instead creates a new identity, a symbol of fear for the criminal underworld - The Batman.</plot>
+  <outline>Driven by tragedy, billionaire Bruce Wayne dedicates his life to uncovering and defeating the corruption that plagues his home, Gotham City.  Unable to work within the system, he instead creates a new identity, a symbol of fear for the criminal underworld - The Batman.</outline>
+  <tagline>Evil fears the knight.</tagline>
+  <runtime>140</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/4MpN4kIEqUjW8OPtOQJXlTdHiJV.jpg</thumb>
+  <thumb aspect="banner">https://assets.fanart.tv/fanart/movies/272/moviebanner/batman-begins-5346f3eb22ff7.jpg</thumb>
+  <thumb aspect="clearart">https://assets.fanart.tv/fanart/movies/272/hdmovieclearart/batman-begins-5281d75a7fe23.png</thumb>
+  <thumb aspect="clearlogo">https://assets.fanart.tv/fanart/movies/272/hdmovielogo/batman-begins-51aba262a5c13.png</thumb>
+  <thumb aspect="discart">https://assets.fanart.tv/fanart/movies/272/moviedisc/batman-begins-51f842d7778fd.png</thumb>
+  <thumb aspect="landscape">https://assets.fanart.tv/fanart/movies/272/moviethumb/batman-begins-5798fae27ba2e.jpg</thumb>
+  <thumb aspect="keyart">https://assets.fanart.tv/fanart/movies/272/movieposter/batman-begins-5515aba8dd14c.jpg</thumb>
+  <thumb aspect="logo">https://assets.fanart.tv/fanart/movies/272/hdmovielogo/batman-begins-51aba262a5c13.png</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/zYDjcLWhQWm0l3Cjdsc5jbepzHR.jpg</thumb>
+  </fanart>
+  <mpaa>US:PG-13 / US:Rated PG-13</mpaa>
+  <certification>US:PG-13 / US:Rated PG-13</certification>
+  <id>tt0372784</id>
+  <tmdbid>272</tmdbid>
+  <tmdbCollectionId>263</tmdbCollectionId>
+  <uniqueid default="false" type="tmdb">272</uniqueid>
+  <uniqueid default="false" type="tmdbSet">263</uniqueid>
+  <uniqueid default="true" type="imdb">tt0372784</uniqueid>
+  <country>United Kingdom</country>
+  <country>United States</country>
+  <status/>
+  <code/>
+  <premiered>2005-06-06</premiered>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <lastplayed/>
+  <genre>Action</genre>
+  <genre>Crime</genre>
+  <genre>Drama</genre>
+  <studio>Warner Bros. Pictures</studio>
+  <studio>DC Comics</studio>
+  <studio>DC Entertainment</studio>
+  <studio>Syncopy</studio>
+  <studio>Legendary Pictures</studio>
+  <studio>Patalex III Productions Limited</studio>
+  <credits>Christopher Nolan</credits>
+  <credits>David S. Goyer</credits>
+  <credits>Bob Kane</credits>
+  <director>Christopher Nolan</director>
+  <tag>loss of loved one</tag>
+  <tag>martial arts</tag>
+  <tag>dc comics</tag>
+  <tag>crime fighter</tag>
+  <tag>secret identity</tag>
+  <tag>undercover</tag>
+  <tag>vigilante</tag>
+  <tag>superhero</tag>
+  <tag>based on comic</tag>
+  <tag>rivalry</tag>
+  <tag>tragic hero</tag>
+  <tag>ninja</tag>
+  <tag>super power</tag>
+  <tag>haunted by the past</tag>
+  <tag>evil doctor</tag>
+  <tag>master villain</tag>
+  <tag>unfulfilled love</tag>
+  <actor>
+    <name>Christian Bale</name>
+    <role>Bruce Wayne / Batman</role>
+    <thumb>https://image.tmdb.org/t/p/h632/mJdH3sD8z3K6wTpaH9MvD8oQOKZ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3894</profile>
+    <tmdbid>3894</tmdbid>
+  </actor>
+  <actor>
+    <name>Michael Caine</name>
+    <role>Alfred Pennyworth</role>
+    <thumb>https://image.tmdb.org/t/p/h632/hZruclwEPCKw3e83rnFSIH5sRFZ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3895</profile>
+    <tmdbid>3895</tmdbid>
+  </actor>
+  <actor>
+    <name>Liam Neeson</name>
+    <role>Ducard</role>
+    <thumb>https://image.tmdb.org/t/p/h632/r1DRqmZhLrzhTTwg9PtuMMQTvuB.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3896</profile>
+    <tmdbid>3896</tmdbid>
+  </actor>
+  <actor>
+    <name>Katie Holmes</name>
+    <role>Rachel Dawes</role>
+    <thumb>https://image.tmdb.org/t/p/h632/dSvQMmznCsoXQBSOtU5IBA399R4.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3897</profile>
+    <tmdbid>3897</tmdbid>
+  </actor>
+  <actor>
+    <name>Gary Oldman</name>
+    <role>Commissioner James Gordon</role>
+    <thumb>https://image.tmdb.org/t/p/h632/2v9FVVBUrrkW2m3QOcYkuhq9A6o.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/64</profile>
+    <tmdbid>64</tmdbid>
+  </actor>
+  <actor>
+    <name>Cillian Murphy</name>
+    <role>Jonathan Crane / Scarecrow</role>
+    <thumb>https://image.tmdb.org/t/p/h632/i8dOTC0w6V274ev5iAAvo4Ahhpr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2037</profile>
+    <tmdbid>2037</tmdbid>
+  </actor>
+  <actor>
+    <name>Tom Wilkinson</name>
+    <role>Carmine Falcone</role>
+    <thumb>https://image.tmdb.org/t/p/h632/d5yLk0PK8q7EKR3E3G2txO758IW.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/207</profile>
+    <tmdbid>207</tmdbid>
+  </actor>
+  <actor>
+    <name>Rutger Hauer</name>
+    <role>Earle</role>
+    <thumb>https://image.tmdb.org/t/p/h632/aNvyDYD0YscuwMfgy15wb5gRKph.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/585</profile>
+    <tmdbid>585</tmdbid>
+  </actor>
+  <actor>
+    <name>Ken Watanabe</name>
+    <role>Ra's al Ghul</role>
+    <thumb>https://image.tmdb.org/t/p/h632/psAXOYp9SBOXvg6AXzARDedNQ9P.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3899</profile>
+    <tmdbid>3899</tmdbid>
+  </actor>
+  <actor>
+    <name>Mark Boone Junior</name>
+    <role>Flass</role>
+    <thumb>https://image.tmdb.org/t/p/h632/rcncVr356hpfKX9qOrKL3SJlEO7.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/534</profile>
+    <tmdbid>534</tmdbid>
+  </actor>
+  <actor>
+    <name>Linus Roache</name>
+    <role>Thomas Wayne</role>
+    <thumb>https://image.tmdb.org/t/p/h632/u98VM2S9mbUMCMPvCpk2OUn4Eg2.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3900</profile>
+    <tmdbid>3900</tmdbid>
+  </actor>
+  <actor>
+    <name>Morgan Freeman</name>
+    <role>Lucius Fox</role>
+    <thumb>https://image.tmdb.org/t/p/h632/oIciQWr8VwKoR8TmAw1owaiZFyb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/192</profile>
+    <tmdbid>192</tmdbid>
+  </actor>
+  <actor>
+    <name>Larry Holden</name>
+    <role>Finch</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wXlesadVDSWinrYPjKLeiay3X0m.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/544</profile>
+    <tmdbid>544</tmdbid>
+  </actor>
+  <actor>
+    <name>Gerard Murphy</name>
+    <role>Judge Faden</role>
+    <thumb>https://image.tmdb.org/t/p/h632/2dzWjg6fsfalFEfCsLjo9mFpCIj.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/151943</profile>
+    <tmdbid>151943</tmdbid>
+  </actor>
+  <actor>
+    <name>Colin McFarlane</name>
+    <role>Loeb</role>
+    <thumb>https://image.tmdb.org/t/p/h632/dJDcUzJEhy1vTjnLm72kPaYPpbK.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/128386</profile>
+    <tmdbid>128386</tmdbid>
+  </actor>
+  <actor>
+    <name>Sara Stewart</name>
+    <role>Martha Wayne</role>
+    <thumb>https://image.tmdb.org/t/p/h632/nNjpDF0RuKZ7z5rMI5yxdLDim8z.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3902</profile>
+    <tmdbid>3902</tmdbid>
+  </actor>
+  <actor>
+    <name>Gus Lewis</name>
+    <role>Bruce Wayne (Age 8)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/1pSm7WsILuxbO8jbf5nguDdE8mN.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1172371</profile>
+    <tmdbid>1172371</tmdbid>
+  </actor>
+  <actor>
+    <name>Richard Brake</name>
+    <role>Joe Chill</role>
+    <thumb>https://image.tmdb.org/t/p/h632/JwsiErANShzPSdYsNoiNYdrSg1.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3901</profile>
+    <tmdbid>3901</tmdbid>
+  </actor>
+  <actor>
+    <name>Rade Šerbedžija</name>
+    <role>Homeless Man</role>
+    <thumb>https://image.tmdb.org/t/p/h632/eGK40yJnDCJOhtGXZrhkrkfVOwu.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1118</profile>
+    <tmdbid>1118</tmdbid>
+  </actor>
+  <actor>
+    <name>Emma Lockhart</name>
+    <role>Rachel Dawes (Age 8)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/r6CWNTU2RwCM9iGHykDFxLJmcJd.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/78114</profile>
+    <tmdbid>78114</tmdbid>
+  </actor>
+  <actor>
+    <name>Christine Adams</name>
+    <role>Jessica</role>
+    <thumb>https://image.tmdb.org/t/p/h632/yUMJguEggbkNzUZnvRCYgebU0Ck.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/87194</profile>
+    <tmdbid>87194</tmdbid>
+  </actor>
+  <actor>
+    <name>Catherine Porter</name>
+    <role>Blonde Female Reporter / Assassin</role>
+    <thumb>https://image.tmdb.org/t/p/h632/yT6l0dZ7ioY0Fdu9xxp8IyEJt2x.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1334124</profile>
+    <tmdbid>1334124</tmdbid>
+  </actor>
+  <actor>
+    <name>John Nolan</name>
+    <role>Fredericks</role>
+    <thumb>https://image.tmdb.org/t/p/h632/deEcF1B2s5oiV36HFBPlswbLoqp.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/70225</profile>
+    <tmdbid>70225</tmdbid>
+  </actor>
+  <actor>
+    <name>Karen David</name>
+    <role>Courthouse Reporter #1</role>
+    <thumb>https://image.tmdb.org/t/p/h632/mVEkM2LFiB2cmMHDYFFTE7wkHtY.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/79124</profile>
+    <tmdbid>79124</tmdbid>
+  </actor>
+  <actor>
+    <name>Jonathan D. Ellis</name>
+    <role>Courthouse Reporter #2</role>
+    <thumb>https://image.tmdb.org/t/p/h632/to7mwOlFiVkfFqg5duZoOtCk80K.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1690773</profile>
+    <tmdbid>1690773</tmdbid>
+  </actor>
+  <actor>
+    <name>Tamer Hassan</name>
+    <role>Faden's Limo Driver</role>
+    <thumb>https://image.tmdb.org/t/p/h632/5xDdmxKqRsiPVf2KQ16AK7Fmock.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/39660</profile>
+    <tmdbid>39660</tmdbid>
+  </actor>
+  <actor>
+    <name>Ronan Leahy</name>
+    <role>Uniformed Policeman #1</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/559209</profile>
+    <tmdbid>559209</tmdbid>
+  </actor>
+  <actor>
+    <name>Vincent Wong</name>
+    <role>Old Asian Prisoner</role>
+    <thumb>https://image.tmdb.org/t/p/h632/lWPw6iMQKOSh4w099GkexZKkv4F.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1257821</profile>
+    <tmdbid>1257821</tmdbid>
+  </actor>
+  <actor>
+    <name>Tom Wu</name>
+    <role>Bhutanese Prison Guard #1</role>
+    <thumb>https://image.tmdb.org/t/p/h632/nrTGFvqnih3wQ5yUxKnqvqljaWb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/67212</profile>
+    <tmdbid>67212</tmdbid>
+  </actor>
+  <actor>
+    <name>Mark Chiu</name>
+    <role>Bhutanese Prison Guard #2</role>
+    <thumb>https://image.tmdb.org/t/p/h632/l82UjeKLoSQYXKSw7iewULMcgD.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1690926</profile>
+    <tmdbid>1690926</tmdbid>
+  </actor>
+  <actor>
+    <name>Turbo Kong</name>
+    <role>Enormous Prisoner</role>
+    <thumb>https://image.tmdb.org/t/p/h632/yynWA6zqoFdvrJHWF731mvmCb4o.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/998501</profile>
+    <tmdbid>998501</tmdbid>
+  </actor>
+  <actor>
+    <name>Sai-Kit Yung</name>
+    <role>Chinese Police Officer</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/62937</profile>
+    <tmdbid>62937</tmdbid>
+  </actor>
+  <actor>
+    <name>Chike Chan</name>
+    <role>Chinese Police Officer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/1MSybWnDu56o3i9W1d91q14NP0h.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/211586</profile>
+    <tmdbid>211586</tmdbid>
+  </actor>
+  <actor>
+    <name>Tenzin Clive Ball</name>
+    <role>Himalayan Child</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1691866</profile>
+    <tmdbid>1691866</tmdbid>
+  </actor>
+  <actor>
+    <name>Tenzin Gyurme</name>
+    <role>Old Himalayan Man</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1691868</profile>
+    <tmdbid>1691868</tmdbid>
+  </actor>
+  <actor>
+    <name>Jamie Hayden</name>
+    <role>Stocky Chinese Man</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1646701</profile>
+    <tmdbid>1646701</tmdbid>
+  </actor>
+  <actor>
+    <name>David Murray</name>
+    <role>Jumpy Thug</role>
+    <thumb>https://image.tmdb.org/t/p/h632/xjns7i38YxYPUga6KMCxkxOsBFy.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/93211</profile>
+    <tmdbid>93211</tmdbid>
+  </actor>
+  <actor>
+    <name>John Kazek</name>
+    <role>Dock Thug #2</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1602370</profile>
+    <tmdbid>1602370</tmdbid>
+  </actor>
+  <actor>
+    <name>Darragh Kelly</name>
+    <role>Dock Thug #3</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/556445</profile>
+    <tmdbid>556445</tmdbid>
+  </actor>
+  <actor>
+    <name>Patrick Nolan</name>
+    <role>Dock Cop #1</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2910084</profile>
+    <tmdbid>2910084</tmdbid>
+  </actor>
+  <actor>
+    <name>Joseph Rye</name>
+    <role>Dock Cop #2</role>
+    <thumb>https://image.tmdb.org/t/p/h632/1bk4kfBetEEYSzcWrpy7ra5WDeK.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/5415</profile>
+    <tmdbid>5415</tmdbid>
+  </actor>
+  <actor>
+    <name>Kwaku Ankomah</name>
+    <role>Dock Cop #3</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1691875</profile>
+    <tmdbid>1691875</tmdbid>
+  </actor>
+  <actor>
+    <name>Jo Martin</name>
+    <role>Police Prison Official</role>
+    <thumb>https://image.tmdb.org/t/p/h632/9QQycTj056llWBbkuoDf8NBSXhn.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1691876</profile>
+    <tmdbid>1691876</tmdbid>
+  </actor>
+  <actor>
+    <name>Charles Edwards</name>
+    <role>Wayne Enterprises Executive</role>
+    <thumb>https://image.tmdb.org/t/p/h632/EeEsZzqSRcfzagiDHXySwJrS5S.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/281527</profile>
+    <tmdbid>281527</tmdbid>
+  </actor>
+  <actor>
+    <name>Lucy Russell</name>
+    <role>Female Restaurant Guest</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6aNWltms1Imbl9J4aXWk4p2KRZX.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/28749</profile>
+    <tmdbid>28749</tmdbid>
+  </actor>
+  <actor>
+    <name>Timothy Deenihan</name>
+    <role>Male Restaurant Guest</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1691887</profile>
+    <tmdbid>1691887</tmdbid>
+  </actor>
+  <actor>
+    <name>David Bedella</name>
+    <role>Maitre D</role>
+    <thumb>https://image.tmdb.org/t/p/h632/jY9djn5uSZ2hLRhL41ZXlMHRRD.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/146140</profile>
+    <tmdbid>146140</tmdbid>
+  </actor>
+  <actor>
+    <name>Flavia Masetto</name>
+    <role>Restaurant Blonde #1</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1691892</profile>
+    <tmdbid>1691892</tmdbid>
+  </actor>
+  <actor>
+    <name>Emily Steven-Daly</name>
+    <role>Restaurant Blonde #2</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1691895</profile>
+    <tmdbid>1691895</tmdbid>
+  </actor>
+  <actor>
+    <name>Martin McDougall</name>
+    <role>Gotham Dock Employee</role>
+    <thumb>https://image.tmdb.org/t/p/h632/sqosciocBl1OgQmnBXjSOafDvpt.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/36901</profile>
+    <tmdbid>36901</tmdbid>
+  </actor>
+  <actor>
+    <name>Noah Lee Margetts</name>
+    <role>Arkham Thug #1</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/29615</profile>
+    <tmdbid>29615</tmdbid>
+  </actor>
+  <actor>
+    <name>Joe Hanley</name>
+    <role>Arkham Thug #2</role>
+    <thumb>https://image.tmdb.org/t/p/h632/kqEsRKu2MjFUtRWIKZ5YuyLtMZ5.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1233819</profile>
+    <tmdbid>1233819</tmdbid>
+  </actor>
+  <actor>
+    <name>Karl Shiels</name>
+    <role>Arkham Thug #3</role>
+    <thumb>https://image.tmdb.org/t/p/h632/y9MVZg8h4t162BI2WIjBTOnnlFr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/150578</profile>
+    <tmdbid>150578</tmdbid>
+  </actor>
+  <actor>
+    <name>Roger Griffiths</name>
+    <role>Arkham Uniformed Policeman</role>
+    <thumb>https://image.tmdb.org/t/p/h632/x8n0VqAfRImHMrUFGRSf4tgvDnd.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1225357</profile>
+    <tmdbid>1225357</tmdbid>
+  </actor>
+  <actor>
+    <name>Stephen Walters</name>
+    <role>Arkham Lunatic</role>
+    <thumb>https://image.tmdb.org/t/p/h632/2GBQvbVPFaOzEeR9q9709Tt03ol.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/39681</profile>
+    <tmdbid>39681</tmdbid>
+  </actor>
+  <actor>
+    <name>Richard Laing</name>
+    <role>Arkham Chase Cop</role>
+    <thumb>https://image.tmdb.org/t/p/h632/l1Bk7lrXanwUxIS59vtinwiiqrd.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/40687</profile>
+    <tmdbid>40687</tmdbid>
+  </actor>
+  <actor>
+    <name>Matt Miller</name>
+    <role>Gotham Car Cop #3</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wBtjxJwvsnB378kEltDv5Cx6A69.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/27709</profile>
+    <tmdbid>27709</tmdbid>
+  </actor>
+  <actor>
+    <name>Risteard Cooper</name>
+    <role>Captain Simonson</role>
+    <thumb>https://image.tmdb.org/t/p/h632/cM0PgBm4lLKCqpJaiQqS7RAReM5.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1362118</profile>
+    <tmdbid>1362118</tmdbid>
+  </actor>
+  <actor>
+    <name>Shane Rimmer</name>
+    <role>Older Gotham Water Board Technician</role>
+    <thumb>https://image.tmdb.org/t/p/h632/morFcla0R2Bv3vu3B1HgCmm0eiv.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/10657</profile>
+    <tmdbid>10657</tmdbid>
+  </actor>
+  <actor>
+    <name>Jeremy Theobald</name>
+    <role>Younger Gotham Water Board Technician</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wa2vU6NXa2t4WN1vTXTnojN0irT.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/70230</profile>
+    <tmdbid>70230</tmdbid>
+  </actor>
+  <actor>
+    <name>Alexandra Bastedo</name>
+    <role>Gotham Society Dame</role>
+    <thumb>https://image.tmdb.org/t/p/h632/npjOC1Nuu8mbBvmTOHhbxmlRYAb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/105159</profile>
+    <tmdbid>105159</tmdbid>
+  </actor>
+  <actor>
+    <name>Soo Hee Ding</name>
+    <role>Farmer</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1692416</profile>
+    <tmdbid>1692416</tmdbid>
+  </actor>
+  <actor>
+    <name>Conn Horgan</name>
+    <role>Monorail Driver</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2008160</profile>
+    <tmdbid>2008160</tmdbid>
+  </actor>
+  <actor>
+    <name>Phill Curr</name>
+    <role>Transit Cop</role>
+    <thumb>https://image.tmdb.org/t/p/h632/oJMGLnsl3cXC79OfN1fAh5YfNve.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1692428</profile>
+    <tmdbid>1692428</tmdbid>
+  </actor>
+  <actor>
+    <name>Jack Gleeson</name>
+    <role>Little Boy</role>
+    <thumb>https://image.tmdb.org/t/p/h632/t29CnCe6UKonBAxwNXkpJ54QLYR.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/489467</profile>
+    <tmdbid>489467</tmdbid>
+  </actor>
+  <actor>
+    <name>John Judd</name>
+    <role>Narrows Bridge Cop</role>
+    <thumb>https://image.tmdb.org/t/p/h632/93d6ih4OrAZEy33AeM6L2gWHWhW.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1226707</profile>
+    <tmdbid>1226707</tmdbid>
+  </actor>
+  <actor>
+    <name>Sarah Wateridge</name>
+    <role>Mrs. Dawes</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1094720</profile>
+    <tmdbid>1094720</tmdbid>
+  </actor>
+  <actor>
+    <name>Charlie Kranz</name>
+    <role>Basement Club Manager</role>
+    <thumb>https://image.tmdb.org/t/p/h632/eaXstotIMI1QRgcsIwnCCrtteb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1451681</profile>
+    <tmdbid>1451681</tmdbid>
+  </actor>
+  <actor>
+    <name>Terry McMahon</name>
+    <role>Bad Swat Cop #1</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1111202</profile>
+    <tmdbid>1111202</tmdbid>
+  </actor>
+  <actor>
+    <name>Cedric Young</name>
+    <role>Liquor Store Owner</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/156598</profile>
+    <tmdbid>156598</tmdbid>
+  </actor>
+  <actor>
+    <name>Tim Booth</name>
+    <role>Victor Zsaz</role>
+    <thumb>https://image.tmdb.org/t/p/h632/eA4ew9eyyywC88wgGKbuImQ8xdk.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1469792</profile>
+    <tmdbid>1469792</tmdbid>
+  </actor>
+  <actor>
+    <name>Tom Nolan</name>
+    <role>Valet</role>
+    <thumb>https://image.tmdb.org/t/p/h632/54j3SEN3lVUbEAk0BedWABq1Kxo.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/101658</profile>
+    <tmdbid>101658</tmdbid>
+  </actor>
+  <actor>
+    <name>Leon Delroy Williams</name>
+    <role>Pedestrian</role>
+    <thumb>https://image.tmdb.org/t/p/h632/h1RcTtFdR6z9qoo9i5j3hJoHu97.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1695900</profile>
+    <tmdbid>1695900</tmdbid>
+  </actor>
+  <actor>
+    <name>Roger Yuan</name>
+    <role>Hazmat Technician</role>
+    <thumb>https://image.tmdb.org/t/p/h632/A1iQKcfFvo1OXBkyuHYAgXB5ctb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2974</profile>
+    <tmdbid>2974</tmdbid>
+  </actor>
+  <actor>
+    <name>Joe Sargent</name>
+    <role>Narrows Teenager #1</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695915</profile>
+    <tmdbid>1695915</tmdbid>
+  </actor>
+  <actor>
+    <name>Mel Taylor</name>
+    <role>Narrows Resident</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1208945</profile>
+    <tmdbid>1208945</tmdbid>
+  </actor>
+  <actor>
+    <name>Ilyssa Fradin</name>
+    <role>Barbara Gordon</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wyNyDhf7kLKAL9jHwq3yEujZVuV.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1237293</profile>
+    <tmdbid>1237293</tmdbid>
+  </actor>
+  <actor>
+    <name>Andrew Pleavin</name>
+    <role>Uniformed Policeman #2</role>
+    <thumb>https://image.tmdb.org/t/p/h632/vFYWQCmk1yipKAjUr9J3mBdHKNZ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/17291</profile>
+    <tmdbid>17291</tmdbid>
+  </actor>
+  <actor>
+    <name>Jeff Christian</name>
+    <role>Driving Cop</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/135259</profile>
+    <tmdbid>135259</tmdbid>
+  </actor>
+  <actor>
+    <name>John Burke</name>
+    <role>Arkham Lunatic Cell Mate</role>
+    <thumb>https://image.tmdb.org/t/p/h632/w0Wjfe4eZxe79rpK8thE8rTw3m1.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1583206</profile>
+    <tmdbid>1583206</tmdbid>
+  </actor>
+  <actor>
+    <name>Earlene Bentley</name>
+    <role>Arkham Asylum Nurse</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695939</profile>
+    <tmdbid>1695939</tmdbid>
+  </actor>
+  <actor>
+    <name>Alex Moggridge</name>
+    <role>Arkham Asylum Orderly</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ugPaiTt2LLBxPVXFiMpu8mP5glE.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/208838</profile>
+    <tmdbid>208838</tmdbid>
+  </actor>
+  <actor>
+    <name>Jay Buozzi</name>
+    <role>Asian Man / Ra's al Ghul</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695946</profile>
+    <tmdbid>1695946</tmdbid>
+  </actor>
+  <actor>
+    <name>Jordan Shaw</name>
+    <role>African Boy In Rags</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695947</profile>
+    <tmdbid>1695947</tmdbid>
+  </actor>
+  <actor>
+    <name>Omar Mostafa</name>
+    <role>Falafel Stand Vendor</role>
+    <thumb>https://image.tmdb.org/t/p/h632/98FzjzgWZiEPrjy2tIAGgNXD3pB.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/369256</profile>
+    <tmdbid>369256</tmdbid>
+  </actor>
+  <actor>
+    <name>Patrick Pond</name>
+    <role>Opera Performer #1 Faust (Bass)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2910104</profile>
+    <tmdbid>2910104</tmdbid>
+  </actor>
+  <actor>
+    <name>Poppy Tierney</name>
+    <role>Opera Performer #2 Margaret (Soprano)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695948</profile>
+    <tmdbid>1695948</tmdbid>
+  </actor>
+  <actor>
+    <name>Rory Campbell</name>
+    <role>Opera Performer #3 Mefistofele (Tenor)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1048571</profile>
+    <tmdbid>1048571</tmdbid>
+  </actor>
+  <actor>
+    <name>Fabio Cardascia</name>
+    <role>Caterer</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695949</profile>
+    <tmdbid>1695949</tmdbid>
+  </actor>
+  <actor>
+    <name>Spencer Wilding</name>
+    <role>League of Shadows Warrior</role>
+    <thumb>https://image.tmdb.org/t/p/h632/uF8steIdtweWGf4IvoXWhrafIk6.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/25451</profile>
+    <tmdbid>25451</tmdbid>
+  </actor>
+  <actor>
+    <name>Mark Rhino Smith</name>
+    <role>League of Shadows Warrior</role>
+    <thumb>https://image.tmdb.org/t/p/h632/cp06Vtw9yNgexpQVoHsoMJkTRlL.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1214974</profile>
+    <tmdbid>1214974</tmdbid>
+  </actor>
+  <actor>
+    <name>Khan Bonfils</name>
+    <role>League of Shadows Warrior</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/986518</profile>
+    <tmdbid>986518</tmdbid>
+  </actor>
+  <actor>
+    <name>Dave Legeno</name>
+    <role>League of Shadows Warrior</role>
+    <thumb>https://image.tmdb.org/t/p/h632/rqTATsZ15cUVT9TrkeZ6qANwSey.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/60348</profile>
+    <tmdbid>60348</tmdbid>
+  </actor>
+  <actor>
+    <name>Ruben Halse</name>
+    <role>League of Shadows Warrior</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695954</profile>
+    <tmdbid>1695954</tmdbid>
+  </actor>
+  <actor>
+    <name>Rodney Ryan</name>
+    <role>League of Shadows Warrior</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2075105</profile>
+    <tmdbid>2075105</tmdbid>
+  </actor>
+  <actor>
+    <name>Dominic Burgess</name>
+    <role>Narrows Cop</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ncqFGuh7Og4G2qTyliJiJErsMKe.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1232679</profile>
+    <tmdbid>1232679</tmdbid>
+  </actor>
+  <actor>
+    <name>Nadia Cameron-Blakey</name>
+    <role>Additional Restaurant Guest #1</role>
+    <thumb>https://image.tmdb.org/t/p/h632/q2BCn2HILB7Sp5tFFEShqUA69wt.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1247020</profile>
+    <tmdbid>1247020</tmdbid>
+  </actor>
+  <actor>
+    <name>Mark Straker</name>
+    <role>Male Restaurant Guest #2</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695959</profile>
+    <tmdbid>1695959</tmdbid>
+  </actor>
+  <actor>
+    <name>T.J. Ramini</name>
+    <role>Crane Thug #1</role>
+    <thumb>https://image.tmdb.org/t/p/h632/zjsOsw88MbG8XuPx6c45biYoM4j.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1317397</profile>
+    <tmdbid>1317397</tmdbid>
+  </actor>
+  <actor>
+    <name>Kieran Hurley</name>
+    <role>Crane Thug #2</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1695960</profile>
+    <tmdbid>1695960</tmdbid>
+  </actor>
+  <actor>
+    <name>Emmanuel Idowu</name>
+    <role>Narrows Teenager #2</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1668</profile>
+    <tmdbid>1668</tmdbid>
+  </actor>
+  <actor>
+    <name>Jeff Tanner</name>
+    <role>Bridge Cop</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/937527</profile>
+    <tmdbid>937527</tmdbid>
+  </actor>
+  <actor>
+    <name>Jon Foo</name>
+    <role>League of Shadows Warrior (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/uC9O2dEIkf53aFWQ1p5gMKXIKFF.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/100586</profile>
+    <tmdbid>100586</tmdbid>
+  </actor>
+  <actor>
+    <name>Joey Ansah</name>
+    <role>League of Shadows Warrior (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/c45UKk6xo7Y3RMSTzjuTmqlklqh.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/29406</profile>
+    <tmdbid>29406</tmdbid>
+  </actor>
+  <producer>
+    <name>Lucinda Syson</name>
+    <role>Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Larry J. Franco</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ohtAUK0wFyRJa5a9TIM3BSQkoCG.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Charles Roven</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/4uJLoVstC1CBcArXFOe53N2fDr1.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Emma Thomas</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6GemtNCy856iLho6WRsFASxQTAp.jpg</thumb>
+  </producer>
+  <producer>
+    <name>John Papsidera</name>
+    <role>Casting</role>
+    <thumb>https://image.tmdb.org/t/p/h632/quM89TMS6BncoIh4NdlWugXVhuF.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Lorne Orleans</name>
+    <role>Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Michael Uslan</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/cXiiH0SSk5UHCvHOVAhHX7tNuls.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Benjamin Melniker</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/fAMHVZpbbBPlAw05ynopcRRVTYY.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Nigel Gostelow</name>
+    <role>Unit Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Elaine Grainger</name>
+    <role>Casting Associate</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jo Beckett</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Mark Mostyn</name>
+    <role>Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Julie Harkin</name>
+    <role>Casting Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Cheryl A. Tkach</name>
+    <role>Associate Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Piers Dunn</name>
+    <role>Unit Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Tom Crooke</name>
+    <role>Assistant Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Dennis Davidson</name>
+    <role>Publicist</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Joan Philo</name>
+    <role>Extras Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jennifer Campbell</name>
+    <role>Production Supervisor</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Rick Senat</name>
+    <role>Production Consultant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Mark Birmingham</name>
+    <role>Production Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Julian Mann</name>
+    <role>Head of Research</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Andrew Keilman</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Siobhan Barnett</name>
+    <role>Additional Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Abigail Barbier</name>
+    <role>ADR Voice Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Karen Turner</name>
+    <role>Payroll Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Becky Maxwell</name>
+    <role>Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Victoria Cadiou</name>
+    <role>Assistant Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Michael Elson</name>
+    <role>Head of Production</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jennifer Griffin</name>
+    <role>Key Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Katie Reynolds</name>
+    <role>Post Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Sam Arnopp</name>
+    <role>Location Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Enero</name>
+    <role>Extras Casting Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Winston Gallagher</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kevin Trehy</name>
+    <role>Production Executive</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Fiona Baldwin</name>
+    <role>Production Runner</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Sharon Lomasney</name>
+    <role>Production Secretary</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Wyatt Pow</name>
+    <role>Researcher</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Ericka N. Shane</name>
+    <role>Second Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=neY2xVmOfUM</trailer>
+  <languages>English, Urdu, Chinese</languages>
+  <dateadded>2021-03-12 16:18:06</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>HEVC</codec>
+        <aspect>2.4</aspect>
+        <width>3840</width>
+        <height>1600</height>
+        <durationinseconds>8403</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>DTSHD_MA</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>fra</language>
+      </subtitle>
+      <subtitle>
+        <language>spa</language>
+      </subtitle>
+      <subtitle>
+        <language/>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <edition>NONE</edition>
+  <original_filename>Batman Begins.mkv</original_filename>
+  <user_note/>
+</movie>

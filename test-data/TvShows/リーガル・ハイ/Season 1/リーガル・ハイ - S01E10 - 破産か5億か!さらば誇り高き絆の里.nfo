@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:23 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>破産か5億か!?さらば誇り高き絆の里</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>1</season>
+  <episode>10</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4337261</id>
+  <uniqueid default="true" type="tvdb">4337261</uniqueid>
+  <rating>0.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>南モンブラン市の老人たちの戦う姿勢を取り戻させた古美門（堺雅人）と黛（新垣結衣）。彼らと共に戦う決心をした古美門は、仙羽化学から慰謝料として5億円、さらに安全が保障されるまでの工場操業停止を求めることに。&#13;
+裁判では、ヘルムート38と呼ばれるクロロタスムハリオサプロピレンという有害物質が、実際に仙羽化学の工場から流出しているのかが争点に。古美門は汚染水が貯水されているプールの水質検査結果からクロロタスムハリオサプロピレンが検出されたことを立証する。しかし、仙羽化学サイドの三木長一郎（生瀬勝久）は、クロロタスムハリオサプロピレンが本当に人体に有害なのか、そしてそれは本当に仙羽化学の工場が発生源なのかという2点の根拠が稚拙であると対抗する。&#13;
+三木に痛いところを突かれた古美門。クロロタスムハリオサプロピレンが研究の進んでいない新物質である以上、それが人体に有害であることを科学的に立証することは非常に困難であることを認識しつつも、裏を返せば科学的な立証ができるのであれば裁判に勝つことができるとし、どんな手を使っても有害であることを認定させると息巻く。加賀蘭丸（田口淳之介）に仙羽化学のリサーチをさせた資料から、クロロタスムハリオサプロピレンが有害であることを立証できる可能性のある1人の人物に注目する…。</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4337261.jpg</thumb>
+  <mpaa/>
+  <premiered>2012-06-19</premiered>
+  <aired>2012-06-19</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <actor>
+    <name>Jinbo Satoshi</name>
+    <role>Takuro Ikebe</role>
+    <thumb/>
+    <profile/>
+  </actor>
+  <actor>
+    <name>Tomoko Tabata</name>
+    <role>Kana Yaginuma</role>
+    <thumb/>
+    <profile/>
+  </actor>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2794</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S01E10 - 破産か5億か!さらば誇り高き絆の里.mkv</original_filename>
+  <user_note/>
+</episodedetails>

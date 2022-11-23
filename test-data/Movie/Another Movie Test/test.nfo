@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<movie>
+  <title><![CDATA[TEST]]></title>
+  <originaltitle><![CDATA[TEST]]></originaltitle>
+  <sorttitle><![CDATA[TEST]]></sorttitle>
+  <studio>TEST</studio>
+  <year>2013</year>
+  <runtime>50</runtime>
+  <director></director>
+  <poster>test-poster.jpg</poster>
+  <thumb>test-thumb.jpg</thumb>
+  <fanart>test-fanart.jpg</fanart>
+  <actor>
+    <name>test</name>
+  </actor>
+  <tag>a</tag>
+  <tag>b</tag>
+  <tag>c</tag>
+  <tag>d</tag>
+  <genre>a</genre>
+  <genre>b</genre>
+  <genre>c</genre>
+  <genre>d</genre>
+  <num>test</num>
+  <premiered>2013-10-15</premiered>
+  <releasedate>2013-10-15</releasedate>
+  <release>2013-10-15</release>
+</movie>

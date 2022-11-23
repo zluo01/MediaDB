@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:22 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>太陽を返せ!マンション裁判仁義なき戦い</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>1</season>
+  <episode>4</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4324555</id>
+  <uniqueid default="true" type="tvdb">4324555</uniqueid>
+  <rating>0.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>昼寝中の古美門研介（堺雅人）に、黛真知子（新垣結衣）が持ち込んだのは、日照権を巡る訴訟。近くに建設中の高層マンションのために、自宅が日陰になるという主婦、桑田久美子（村井美樹）の訴えだ。相変わらず、黛が持ち込む案件に興味を示さない古美門。そんな時、久美子から町内会で弁護士を立てることになったと黛に断りの連絡が入った。&#13;
+&#13;
+翌日、黛が事務所に行くと、金になる仕事が入ったと古美門に連れ出される。向かった先は、建設会社。黛には聞き覚えのある会社名。それは、久美子が訴えようとしていた建設会社だった。会社の依頼は、まさしく久美子の町内会から訴えられた工事差し止め請求。町内会が選んだ弁護士が、この手の訴訟のプロで企業から多額の賠償金を勝ち取ることで有名な大貫善三（大和田伸也）だった。そのため、多少の費用はかかっても連勝中の古美門に声がかかったのだ。&#13;
+&#13;
+黛は久美子の話に親身になっていたため、依頼を引き受ける古美門に文句たらたら。一方、会社側から示談での解決を求められた古美門は、黛を引き連れて住民説明会へ赴く。早速、住民代表の大貫とぶつかり合う古美門。裁判で決着をつけようと言う大貫に、古美門はクライアント無視で応じてしまう。&#13;
+&#13;
+ところが、翌日すぐに大貫が古美門を訪ねてきて示談に応じると言い出す。信じられない黛。大貫の示談金、一世帯当たり500万円の提示に、古美門は５千円で応酬。古美門と大貫。大物弁護士の示談対決は本番に入る。</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4324555.jpg</thumb>
+  <mpaa/>
+  <premiered>2012-05-08</premiered>
+  <aired>2012-05-08</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <actor>
+    <name>Owada Shinya</name>
+    <role>Zenzo Onuki</role>
+    <thumb/>
+    <profile/>
+  </actor>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2794</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S01E04 - 太陽を返せ!マンション裁判仁義なき戦い.mkv</original_filename>
+  <user_note/>
+</episodedetails>

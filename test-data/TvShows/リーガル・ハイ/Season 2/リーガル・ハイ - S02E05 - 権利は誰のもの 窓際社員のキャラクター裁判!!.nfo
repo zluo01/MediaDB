@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:24 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>権利は誰のもの? 窓際社員のキャラクター裁判!!</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>2</season>
+  <episode>5</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4612421</id>
+  <uniqueid default="false" type="tmdb">968278</uniqueid>
+  <uniqueid default="true" type="tvdb">4612421</uniqueid>
+  <rating>0.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>今回、古美門研介（堺雅人）と黛真知子（新垣結衣）が扱うのは、著作権侵害問題。16年前、零細文具メーカーの『あじさい文具』は、倒産の危機にひんしていた。しかし当時、30歳の田向学（野村将希）が、何気なく落書きで書いた犬のキャラクター“おやじいぬ”が空前の大ヒットとなり、現在では社名も『AJISAIカンパニー』に変え、巨大なビルにオフィスを構えるほどに急成長を遂げた。&#13;
+&#13;
+　一方、古美門法律事務所には珍客が現れる。男は、長年勤めた会社を定年退職したが、現役のころは職場環境の改善に取り組み、人権を無視した職場を看過できないと古美門に訴える。てっきり、ブラック企業を訴えたいという依頼かと思った古美門は、帰ってきた黛をいつものように罵倒する。しかし、その男は黛の父親の素夫（國村隼）だった・・・。&#13;
+&#13;
+　会社が大きくなった現在でも、“おやじいぬ”の生みの親で、会社を復興させた功労者の田向は、社内の部署をたらい回しにされるなど、冷遇されていた。田向自身も、その温厚な性格から、会社からの処遇に反発したり、“おやじいぬ”開発の対価を求めるなどせず、淡々と職務を全うしていた。&#13;
+&#13;
+　そんな田向に金になりそうと目をつけた古美門は、黛には内緒で加賀蘭丸（田口淳之介）を田向に接触させる。蘭丸は、あらゆる手法で田向をたきつけ、会社を訴える決意をさせ、古美門法律事務所へ弁護依頼に来た。そして、案の定、会社側の弁護士は羽生晴樹（岡田将生）で…。</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4612421.jpg</thumb>
+  <mpaa/>
+  <premiered>2013-11-06</premiered>
+  <aired>2013-11-06</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2784</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S02E05 - 権利は誰のもの 窓際社員のキャラクター裁判!!.mkv</original_filename>
+  <user_note/>
+</episodedetails>

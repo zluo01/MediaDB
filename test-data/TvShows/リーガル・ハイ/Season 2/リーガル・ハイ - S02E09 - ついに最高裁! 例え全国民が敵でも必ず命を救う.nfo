@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:25 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>ついに最高裁! 例え全国民が敵でも必ず命を救う</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>2</season>
+  <episode>9</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4724101</id>
+  <uniqueid default="false" type="tmdb">969526</uniqueid>
+  <uniqueid default="true" type="tvdb">4724101</uniqueid>
+  <rating>0.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>古美門研介（堺雅人）と黛真知子（新垣結衣）は、上告を決めた安藤貴和（小雪）に面会。しかし、貴和は相変わらず殺人容疑については否定しない。また、地裁での判決前に面会に来た吉永慶子は、昔世話になった近所のおばさんと話す。それでも古美門は、最高裁では貴和の無罪を勝ち取ると言い放った。貴和が真実を何も話してくれないことを気にする黛に、古美門は打つ手をすべて打って無罪にすると、あくまで強気。だが、古美門のこだわりは、裁判の勝率を100％に戻すことの様子。&#13;
+&#13;
+　“打つ手”を選ばない古美門は、マスコミを招いて貴和のイメージを良くするような報道を依頼。しかし、大手マスコミには無視され、招いた記者たちにも金をばらまく始末。挙句、古美門は黛に、移籍先の『NEXUS』の羽生晴樹（岡田将生）と本田ジェーン（黒木華）から検事時代に担当していた貴和事件について、検察のねつ造情報を盗み取れと言い出す。しぶしぶ従おうとする黛だが、羽生たちから情報を得ることは出来なかった。&#13;
+&#13;
+　そんな状態で、古美門たちは公判初日を迎えてしまう。貴和への死刑判決を求めて裁判所前に群がる民衆を横目に入廷する古美門も、さすがに緊張の色は隠せない。傍聴には羽生も駆けつけていた。黛は、検察側に醍醐実検事（松平健）がいることが不安。醍醐が都合良く最高検へ異動になったのも、古美門にとどめを刺すためではないかと思えてしまう。古美門自身は、好都合だと強がるのだが…。</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4724101.jpg</thumb>
+  <mpaa/>
+  <premiered>2013-12-11</premiered>
+  <aired>2013-12-11</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2785</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S02E09 - ついに最高裁! 例え全国民が敵でも必ず命を救う.mkv</original_filename>
+  <user_note/>
+</episodedetails>

@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-13 17:37:45 - tinyMediaManager 4.2.5.1-->
+<movie>
+  <title>John Wick</title>
+  <originaltitle>John Wick</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>2014</year>
+  <ratings>
+    <rating default="false" max="10" name="themoviedb">
+      <value>7.4</value>
+      <votes>15208</votes>
+    </rating>
+    <rating default="true" max="10" name="imdb">
+      <value>7.4</value>
+      <votes>592340</votes>
+    </rating>
+  </ratings>
+  <userrating>0.0</userrating>
+  <top250>0</top250>
+  <set>
+    <name>John Wick Collection</name>
+    <overview/>
+  </set>
+  <plot>Ex-hitman John Wick comes out of retirement to track down the gangsters that took everything from him.</plot>
+  <outline>Ex-hitman John Wick comes out of retirement to track down the gangsters that took everything from him.</outline>
+  <tagline>Don't set him off.</tagline>
+  <runtime>101</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/nCzzQKGijVzfGFg42id7uDLOjY5.jpg</thumb>
+  <thumb aspect="banner">https://assets.fanart.tv/fanart/movies/245891/moviebanner/john-wick-587d2f847e813.jpg</thumb>
+  <thumb aspect="clearart">https://assets.fanart.tv/fanart/movies/245891/hdmovieclearart/john-wick-54cdff8eec9bf.png</thumb>
+  <thumb aspect="clearlogo">https://assets.fanart.tv/fanart/movies/245891/hdmovielogo/john-wick-547484e13591b.png</thumb>
+  <thumb aspect="discart">https://assets.fanart.tv/fanart/movies/245891/moviedisc/john-wick-54ce10412b933.png</thumb>
+  <thumb aspect="landscape">https://assets.fanart.tv/fanart/movies/245891/moviethumb/john-wick-58adb5efa30bf.jpg</thumb>
+  <thumb aspect="keyart">https://assets.fanart.tv/fanart/movies/245891/movieposter/john-wick-5cdace74b9884.jpg</thumb>
+  <thumb aspect="logo">https://assets.fanart.tv/fanart/movies/245891/hdmovielogo/john-wick-547484e13591b.png</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/7dzngS8pLkGJpyeskCFcjPO9qLF.jpg</thumb>
+  </fanart>
+  <mpaa>US:R / US:Rated R</mpaa>
+  <certification>US:R / US:Rated R</certification>
+  <id>tt2911666</id>
+  <tmdbid>245891</tmdbid>
+  <tmdbCollectionId>404609</tmdbCollectionId>
+  <uniqueid default="false" type="tmdb">245891</uniqueid>
+  <uniqueid default="false" type="tmdbSet">404609</uniqueid>
+  <uniqueid default="true" type="imdb">tt2911666</uniqueid>
+  <country>United States</country>
+  <status/>
+  <code/>
+  <premiered>2014-09-19</premiered>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <lastplayed/>
+  <genre>Action</genre>
+  <genre>Thriller</genre>
+  <studio>Summit Entertainment</studio>
+  <studio>87Eleven</studio>
+  <studio>DefyNite Films</studio>
+  <studio>MJW Films</studio>
+  <studio>Thunder Road</studio>
+  <credits>Derek Kolstad</credits>
+  <director>Chad Stahelski</director>
+  <tag>hitman</tag>
+  <tag>gangster</tag>
+  <tag>russian mafia</tag>
+  <tag>revenge</tag>
+  <tag>murder</tag>
+  <tag>dog</tag>
+  <tag>retired</tag>
+  <tag>widower</tag>
+  <actor>
+    <name>Keanu Reeves</name>
+    <role>John Wick</role>
+    <thumb>https://image.tmdb.org/t/p/h632/4D0PpNI0kmP58hgrwGC3wCjxhnm.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/6384</profile>
+    <tmdbid>6384</tmdbid>
+  </actor>
+  <actor>
+    <name>Michael Nyqvist</name>
+    <role>Viggo Tarasov</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ycMhmLinY7v3DABqYy0CL92BG27.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/6283</profile>
+    <tmdbid>6283</tmdbid>
+  </actor>
+  <actor>
+    <name>Alfie Allen</name>
+    <role>Iosef Tarasov</role>
+    <thumb>https://image.tmdb.org/t/p/h632/zmhO4Awjf7naHPXkbJWwjQpojwq.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/71586</profile>
+    <tmdbid>71586</tmdbid>
+  </actor>
+  <actor>
+    <name>Adrianne Palicki</name>
+    <role>Ms. Perkins</role>
+    <thumb>https://image.tmdb.org/t/p/h632/3qpWQ5d2XxvZuoZDsGgZUsOI60q.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/88995</profile>
+    <tmdbid>88995</tmdbid>
+  </actor>
+  <actor>
+    <name>Bridget Moynahan</name>
+    <role>Helen Wick</role>
+    <thumb>https://image.tmdb.org/t/p/h632/xOJVCPztMcEIfZPNnbvKy96czcd.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/18354</profile>
+    <tmdbid>18354</tmdbid>
+  </actor>
+  <actor>
+    <name>Dean Winters</name>
+    <role>Avi</role>
+    <thumb>https://image.tmdb.org/t/p/h632/4kwzxdILxtCfo33Z8EJQdlAc1e3.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/68763</profile>
+    <tmdbid>68763</tmdbid>
+  </actor>
+  <actor>
+    <name>Lance Reddick</name>
+    <role>Hotel Manager / Charon</role>
+    <thumb>https://image.tmdb.org/t/p/h632/22mVtEXZbpt0J7S0LhIhdkfRrZV.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/129101</profile>
+    <tmdbid>129101</tmdbid>
+  </actor>
+  <actor>
+    <name>Toby Leonard Moore</name>
+    <role>Victor</role>
+    <thumb>https://image.tmdb.org/t/p/h632/hR3vkEjSymdt23NYfcO2axUFMe1.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/187857</profile>
+    <tmdbid>187857</tmdbid>
+  </actor>
+  <actor>
+    <name>Ian McShane</name>
+    <role>Winston</role>
+    <thumb>https://image.tmdb.org/t/p/h632/q9qKbux5Jo76Sj8g3luxBt6rYtz.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/6972</profile>
+    <tmdbid>6972</tmdbid>
+  </actor>
+  <actor>
+    <name>John Leguizamo</name>
+    <role>Aurelio</role>
+    <thumb>https://image.tmdb.org/t/p/h632/2P0LTIKMUZn7BG1q9S9e5FZFZkn.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/5723</profile>
+    <tmdbid>5723</tmdbid>
+  </actor>
+  <actor>
+    <name>Willem Dafoe</name>
+    <role>Marcus</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ui8e4sgZAwMPi3hzEO53jyBJF9B.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/5293</profile>
+    <tmdbid>5293</tmdbid>
+  </actor>
+  <actor>
+    <name>Omer Barnea</name>
+    <role>Gregori</role>
+    <thumb>https://image.tmdb.org/t/p/h632/aHAxzvcDnxPoAT592ZIaLhA90tQ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/968977</profile>
+    <tmdbid>968977</tmdbid>
+  </actor>
+  <actor>
+    <name>Daniel Bernhardt</name>
+    <role>Kirill</role>
+    <thumb>https://image.tmdb.org/t/p/h632/b59qhg5VJOCypx9eMXrXHAjauLd.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/9452</profile>
+    <tmdbid>9452</tmdbid>
+  </actor>
+  <actor>
+    <name>Bridget Regan</name>
+    <role>Addy</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ri1kEBkWa9ShTYbV2iJAFa0V4VU.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1222298</profile>
+    <tmdbid>1222298</tmdbid>
+  </actor>
+  <actor>
+    <name>Keith Jardine</name>
+    <role>Kuzma</role>
+    <thumb>https://image.tmdb.org/t/p/h632/emN5dXAoqW9Naab4g3yOwxSfkvh.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/78890</profile>
+    <tmdbid>78890</tmdbid>
+  </actor>
+  <actor>
+    <name>Tait Fletcher</name>
+    <role>Nicholai</role>
+    <thumb>https://image.tmdb.org/t/p/h632/zAVsHT2GBLPaQ4RpTopnHvIrCbv.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1105706</profile>
+    <tmdbid>1105706</tmdbid>
+  </actor>
+  <actor>
+    <name>Kazy Tauginas</name>
+    <role>Ivan</role>
+    <thumb>https://image.tmdb.org/t/p/h632/xjyyAgBORgnsBzC4yq4v0hGCdlz.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1110069</profile>
+    <tmdbid>1110069</tmdbid>
+  </actor>
+  <actor>
+    <name>Thomas Sadoski</name>
+    <role>Jimmy</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ciqrqKHUfFGlMPyUE35YSKEvxuL.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1218218</profile>
+    <tmdbid>1218218</tmdbid>
+  </actor>
+  <actor>
+    <name>Randall Duk Kim</name>
+    <role>Continental Doctor</role>
+    <thumb>https://image.tmdb.org/t/p/h632/31T1gSUP67F2qPI3x6uLJn3Sat7.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/9462</profile>
+    <tmdbid>9462</tmdbid>
+  </actor>
+  <actor>
+    <name>David Patrick Kelly</name>
+    <role>Charlie</role>
+    <thumb>https://image.tmdb.org/t/p/h632/pTlRWsOxiTRiKk4SEEOsIwlCSUp.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1737</profile>
+    <tmdbid>1737</tmdbid>
+  </actor>
+  <actor>
+    <name>Clarke Peters</name>
+    <role>Harry</role>
+    <thumb>https://image.tmdb.org/t/p/h632/tYkdEioI3Q3WRBpL6GIxkvZiq4H.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/61011</profile>
+    <tmdbid>61011</tmdbid>
+  </actor>
+  <actor>
+    <name>Kevin Nash</name>
+    <role>Francis</role>
+    <thumb>https://image.tmdb.org/t/p/h632/oCiSxNqqFdglaDHR4olyFZhF7D4.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/135352</profile>
+    <tmdbid>135352</tmdbid>
+  </actor>
+  <actor>
+    <name>Gameela Wright</name>
+    <role>Delivery Woman</role>
+    <thumb>https://image.tmdb.org/t/p/h632/rNLXMPBaZ95E2wEbCvqewwZHKm1.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1359352</profile>
+    <tmdbid>1359352</tmdbid>
+  </actor>
+  <actor>
+    <name>Vladislav Koulikov</name>
+    <role>Pavel</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1503860</profile>
+    <tmdbid>1503860</tmdbid>
+  </actor>
+  <actor>
+    <name>Munro M. Bonnell</name>
+    <role>Priest</role>
+    <thumb>https://image.tmdb.org/t/p/h632/9u6aQOMQX83SYcFYUOb3Xnox10B.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1503861</profile>
+    <tmdbid>1503861</tmdbid>
+  </actor>
+  <actor>
+    <name>Patricia Squire</name>
+    <role>Elderly Woman</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1405915</profile>
+    <tmdbid>1405915</tmdbid>
+  </actor>
+  <actor>
+    <name>Vladimir Troitsky</name>
+    <role>Team Leader</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1503862</profile>
+    <tmdbid>1503862</tmdbid>
+  </actor>
+  <actor>
+    <name>Matt McColm</name>
+    <role>Club Goon (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/9SlVkQdWGURamicfGScV8BJNs2M.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/9466</profile>
+    <tmdbid>9466</tmdbid>
+  </actor>
+  <actor>
+    <name>Alexander Frekey</name>
+    <role>Alexander (uncredited)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1503859</profile>
+    <tmdbid>1503859</tmdbid>
+  </actor>
+  <actor>
+    <name>Scott Tixier</name>
+    <role>Violinist (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/mA9KgKypXOLROCbRDckopt1khfu.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1753271</profile>
+    <tmdbid>1753271</tmdbid>
+  </actor>
+  <actor>
+    <name>Carolyn Blair</name>
+    <role>Red Circle Club Goer (uncredited)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1584908</profile>
+    <tmdbid>1584908</tmdbid>
+  </actor>
+  <actor>
+    <name>Samantha Crawford</name>
+    <role>Red Circle Club Goer (uncredited)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1584909</profile>
+    <tmdbid>1584909</tmdbid>
+  </actor>
+  <actor>
+    <name>Nadia Kay</name>
+    <role>Hot Girl (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/awxQdDNeFacB5FOl7n7wQQQrZkF.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1417533</profile>
+    <tmdbid>1417533</tmdbid>
+  </actor>
+  <actor>
+    <name>Natalia Kiriya</name>
+    <role>Red Circle Model (uncredited)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1439560</profile>
+    <tmdbid>1439560</tmdbid>
+  </actor>
+  <actor>
+    <name>Tommy Bayiokos</name>
+    <role>Russian Sniper (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/81FT5dSauZgrArgtgXhOJyBVAoN.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1553053</profile>
+    <tmdbid>1553053</tmdbid>
+  </actor>
+  <actor>
+    <name>J. J. Perry</name>
+    <role>Bathroom Security (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/57assDPZceZ4x7YWrkPE5FqVn1f.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/131532</profile>
+    <tmdbid>131532</tmdbid>
+  </actor>
+  <actor>
+    <name>Dennis Keiffer</name>
+    <role>Club Goon (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/doIzWmzTC3dWlij9YBFNeJHZjBG.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1221121</profile>
+    <tmdbid>1221121</tmdbid>
+  </actor>
+  <actor>
+    <name>Alex Ziwak</name>
+    <role>Assassin (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/bNva151NdGEkeJffkyc3uJiLRDJ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1454322</profile>
+    <tmdbid>1454322</tmdbid>
+  </actor>
+  <actor>
+    <name>Erik Martin</name>
+    <role>Russian Thug (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/uff6YeJ5CgrMMUQOybKEisP2G0U.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1898632</profile>
+    <tmdbid>1898632</tmdbid>
+  </actor>
+  <producer>
+    <name>Suzanne Smith</name>
+    <role>Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Keanu Reeves</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/rRdru6REr9i3WIHv2mntpcgxnoY.jpg</thumb>
+  </producer>
+  <producer>
+    <name>David Leitch</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/qykhwWkXTAteD9yvsmItXh9LxCq.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Eva Longoria</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ywz9n9lVkxUklJKUHDQxENAVOek.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Basil Iwanyk</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/7ULVJcHinmbUkjGrjseCgAztcx4.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Mike Upton</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kevin Scott Frakes</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jared Underwood</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Stephen Hamel</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jessica Kelly</name>
+    <role>Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Mike Witherill</name>
+    <role>Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Nicholas Bernstein</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Tara Moross</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Andrew C. Robinson</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Raj Brinder Singh</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Darren Blumenthal</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Peter Lawson</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Mark Hagerman</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Holly S. Rymon</name>
+    <role>Unit Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Erica Lee</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Justin Rosini</name>
+    <role>Assistant Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Giuseppe Vincenti</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Sam X. Eyde</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Doug Monticciolo</name>
+    <role>Co-Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jamie Wing</name>
+    <role>Co-Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Noel Lohr</name>
+    <role>Co-Producer</role>
+    <thumb/>
+  </producer>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=G1ahaiEni3E</trailer>
+  <languages>Hungarian, English, Russian</languages>
+  <dateadded>2021-03-12 16:18:06</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>HEVC</codec>
+        <aspect>2.4</aspect>
+        <width>3840</width>
+        <height>1600</height>
+        <durationinseconds>6071</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>TrueHD/Atmos</codec>
+        <language>eng</language>
+        <channels>8</channels>
+      </audio>
+      <audio>
+        <codec>DTSHD_MA</codec>
+        <language>eng</language>
+        <channels>8</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>spa</language>
+      </subtitle>
+      <subtitle>
+        <language>fra</language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>BLURAY</source>
+  <edition>NONE</edition>
+  <original_filename>John Wick.mkv</original_filename>
+  <user_note/>
+</movie>

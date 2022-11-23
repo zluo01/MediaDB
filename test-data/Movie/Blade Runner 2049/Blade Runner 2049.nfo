@@ -1,0 +1,925 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-13 17:37:06 - tinyMediaManager 4.2.5.1-->
+<movie>
+  <title>Blade Runner 2049</title>
+  <originaltitle>Blade Runner 2049</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>2017</year>
+  <ratings>
+    <rating default="false" max="10" name="themoviedb">
+      <value>7.5</value>
+      <votes>10331</votes>
+    </rating>
+    <rating default="true" max="10" name="imdb">
+      <value>8.0</value>
+      <votes>523591</votes>
+    </rating>
+  </ratings>
+  <userrating>0.0</userrating>
+  <top250>0</top250>
+  <set>
+    <name>Blade Runner Collection</name>
+    <overview/>
+  </set>
+  <plot>Thirty years after the events of the first film, a new blade runner, LAPD Officer K, unearths a long-buried secret that has the potential to plunge what's left of society into chaos. K's discovery leads him on a quest to find Rick Deckard, a former LAPD blade runner who has been missing for 30 years.</plot>
+  <outline>Thirty years after the events of the first film, a new blade runner, LAPD Officer K, unearths a long-buried secret that has the potential to plunge what's left of society into chaos. K's discovery leads him on a quest to find Rick Deckard, a former LAPD blade runner who has been missing for 30 years.</outline>
+  <tagline>The key to the future is finally unearthed.</tagline>
+  <runtime>164</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/jsMVRjLwKWN3gaiGd9pJUrxezsp.jpg</thumb>
+  <thumb aspect="banner">https://assets.fanart.tv/fanart/movies/335984/moviebanner/blade-runner-2049-59bf1a951f692.jpg</thumb>
+  <thumb aspect="clearart">https://assets.fanart.tv/fanart/movies/335984/hdmovieclearart/blade-runner-2049-5a0dd61a81609.png</thumb>
+  <thumb aspect="clearlogo">https://assets.fanart.tv/fanart/movies/335984/hdmovielogo/blade-runner-2-5859f2afcff13.png</thumb>
+  <thumb aspect="discart">https://assets.fanart.tv/fanart/movies/335984/moviedisc/blade-runner-2049-59d03096c014a.png</thumb>
+  <thumb aspect="landscape">https://assets.fanart.tv/fanart/movies/335984/moviethumb/blade-runner-2049-591e4a13e2553.jpg</thumb>
+  <thumb aspect="keyart">https://assets.fanart.tv/fanart/movies/335984/movieposter/blade-runner-2049-59a8242fd7121.jpg</thumb>
+  <thumb aspect="logo">https://assets.fanart.tv/fanart/movies/335984/hdmovielogo/blade-runner-2-5859f2afcff13.png</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/ilRyazdMJwN05exqhwK4tMKBYZs.jpg</thumb>
+  </fanart>
+  <mpaa>US:R / US:Rated R</mpaa>
+  <certification>US:R / US:Rated R</certification>
+  <id>tt1856101</id>
+  <tmdbid>335984</tmdbid>
+  <tmdbCollectionId>422837</tmdbCollectionId>
+  <uniqueid default="false" type="tmdb">335984</uniqueid>
+  <uniqueid default="false" type="tmdbSet">422837</uniqueid>
+  <uniqueid default="true" type="imdb">tt1856101</uniqueid>
+  <country>Canada</country>
+  <country>Hungary</country>
+  <country>Mexico</country>
+  <country>Spain</country>
+  <country>United Kingdom</country>
+  <country>United States</country>
+  <status/>
+  <code/>
+  <premiered>2017-10-03</premiered>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <lastplayed/>
+  <genre>Science Fiction</genre>
+  <genre>Drama</genre>
+  <studio>Torridon Films</studio>
+  <studio>16:14 Entertainment</studio>
+  <studio>Scott Free Productions</studio>
+  <studio>Columbia Pictures</studio>
+  <studio>Alcon Entertainment</studio>
+  <studio>Thunderbird Entertainment</studio>
+  <studio>Warner Bros. Pictures</studio>
+  <credits>Philip K. Dick</credits>
+  <credits>Hampton Fancher</credits>
+  <credits>Michael Green</credits>
+  <director>Denis Villeneuve</director>
+  <tag>artificial intelligence</tag>
+  <tag>bounty hunter</tag>
+  <tag>future</tag>
+  <tag>dystopia</tag>
+  <tag>genetics</tag>
+  <tag>sequel</tag>
+  <tag>cyberpunk</tag>
+  <tag>los angeles, california</tag>
+  <tag>las vegas</tag>
+  <tag>tech noir</tag>
+  <actor>
+    <name>Ryan Gosling</name>
+    <role>K</role>
+    <thumb>https://image.tmdb.org/t/p/h632/lyUyVARQKhGxaxy0FbPJCQRpiaW.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/30614</profile>
+    <tmdbid>30614</tmdbid>
+  </actor>
+  <actor>
+    <name>Harrison Ford</name>
+    <role>Rick Deckard</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6MQgrJvdTPFvyErIgn0B2lTLVhr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3</profile>
+    <tmdbid>3</tmdbid>
+  </actor>
+  <actor>
+    <name>Ana de Armas</name>
+    <role>Joi</role>
+    <thumb>https://image.tmdb.org/t/p/h632/14uxt0jH28J9zn4vNQNTae3Bmr7.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/224513</profile>
+    <tmdbid>224513</tmdbid>
+  </actor>
+  <actor>
+    <name>Sylvia Hoeks</name>
+    <role>Luv</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wKC9LgqgJRCXuzs1kUKaK7Uicv.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/104632</profile>
+    <tmdbid>104632</tmdbid>
+  </actor>
+  <actor>
+    <name>Robin Wright</name>
+    <role>Lt. Joshi</role>
+    <thumb>https://image.tmdb.org/t/p/h632/oRDPUGExcq8kSwS4K6ndXR8BY9h.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/32</profile>
+    <tmdbid>32</tmdbid>
+  </actor>
+  <actor>
+    <name>Mackenzie Davis</name>
+    <role>Mariette</role>
+    <thumb>https://image.tmdb.org/t/p/h632/91tJMcnZoN8CIXaNFIIZ7bgzjAg.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1110405</profile>
+    <tmdbid>1110405</tmdbid>
+  </actor>
+  <actor>
+    <name>Jared Leto</name>
+    <role>Niander Wallace</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ca3x0OfIKbJppZh8S1Alx3GfUZO.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/7499</profile>
+    <tmdbid>7499</tmdbid>
+  </actor>
+  <actor>
+    <name>Carla Juri</name>
+    <role>Dr. Ana Stelline</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wr7xuXeGx5aKJiTqSRNH4SooNUt.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1013973</profile>
+    <tmdbid>1013973</tmdbid>
+  </actor>
+  <actor>
+    <name>Lennie James</name>
+    <role>Mister Cotton</role>
+    <thumb>https://image.tmdb.org/t/p/h632/hfZrdEkBHxYYbMoGHAaVomlgMi.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1120</profile>
+    <tmdbid>1120</tmdbid>
+  </actor>
+  <actor>
+    <name>Dave Bautista</name>
+    <role>Sapper Morton</role>
+    <thumb>https://image.tmdb.org/t/p/h632/uwPQIsUdI4lEsrtqPqEgqeIpRo9.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/543530</profile>
+    <tmdbid>543530</tmdbid>
+  </actor>
+  <actor>
+    <name>David Dastmalchian</name>
+    <role>Coco</role>
+    <thumb>https://image.tmdb.org/t/p/h632/3cdrnfthY40ZsIhq1FBEwGJq9mE.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/83854</profile>
+    <tmdbid>83854</tmdbid>
+  </actor>
+  <actor>
+    <name>Barkhad Abdi</name>
+    <role>Doc Badger</role>
+    <thumb>https://image.tmdb.org/t/p/h632/utfeg8GnGyW3aVNcRfhII9RCXB6.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1261694</profile>
+    <tmdbid>1261694</tmdbid>
+  </actor>
+  <actor>
+    <name>Hiam Abbass</name>
+    <role>Freysa</role>
+    <thumb>https://image.tmdb.org/t/p/h632/gW7HozyrgueANZOa5tISKlOIsxW.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/765</profile>
+    <tmdbid>765</tmdbid>
+  </actor>
+  <actor>
+    <name>Wood Harris</name>
+    <role>Nandez</role>
+    <thumb>https://image.tmdb.org/t/p/h632/9gvwUEu1fZTSTkykaCx2fSdSDWK.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/65829</profile>
+    <tmdbid>65829</tmdbid>
+  </actor>
+  <actor>
+    <name>Edward James Olmos</name>
+    <role>Gaff</role>
+    <thumb>https://image.tmdb.org/t/p/h632/mXnilUrQBIMLHSQkPjQk99mX70x.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/587</profile>
+    <tmdbid>587</tmdbid>
+  </actor>
+  <actor>
+    <name>Tómas Lemarquis</name>
+    <role>File Clerk</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ioANYaLznj91AcsSOfd25DwxVqo.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/18818</profile>
+    <tmdbid>18818</tmdbid>
+  </actor>
+  <actor>
+    <name>Sallie Harmsen</name>
+    <role>Replicant</role>
+    <thumb>https://image.tmdb.org/t/p/h632/acbAK0XXjEnwfxXl1jiHakhR80H.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/544096</profile>
+    <tmdbid>544096</tmdbid>
+  </actor>
+  <actor>
+    <name>Sean Young</name>
+    <role>Rachael</role>
+    <thumb>https://image.tmdb.org/t/p/h632/Ap2c6qruZtr2JJ1lbXwBG8HSqId.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/586</profile>
+    <tmdbid>586</tmdbid>
+  </actor>
+  <actor>
+    <name>Loren Peta</name>
+    <role>Rachael double</role>
+    <thumb>https://image.tmdb.org/t/p/h632/XuWNeNu7g3stBzPX6n2PjNBOr1.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1901526</profile>
+    <tmdbid>1901526</tmdbid>
+  </actor>
+  <actor>
+    <name>Mark Arnold</name>
+    <role>Interviewer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/dTfoxBUC6jpZry0ijlS8g4Y5cuS.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/119893</profile>
+    <tmdbid>119893</tmdbid>
+  </actor>
+  <actor>
+    <name>Krista Kosonen</name>
+    <role>Doxie #2</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6o55wwwRPX7nOEXTJoJSKeJkacu.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/72482</profile>
+    <tmdbid>72482</tmdbid>
+  </actor>
+  <actor>
+    <name>Elarica Johnson</name>
+    <role>Doxie #3</role>
+    <thumb>https://image.tmdb.org/t/p/h632/iiMfkwUSyUki9Q6YbfoVBOGSheq.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/89387</profile>
+    <tmdbid>89387</tmdbid>
+  </actor>
+  <actor>
+    <name>David Benson</name>
+    <role>Liberace Look-A-Like</role>
+    <thumb>https://image.tmdb.org/t/p/h632/5xA8oSRBfzBN9QAOC0MAI8Jqb0.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1380395</profile>
+    <tmdbid>1380395</tmdbid>
+  </actor>
+  <actor>
+    <name>Kingston Taylor</name>
+    <role>Boy with One Ear</role>
+    <thumb>https://image.tmdb.org/t/p/h632/pwivZzhZf1JCV49YBlkRycUGGTB.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1813834</profile>
+    <tmdbid>1813834</tmdbid>
+  </actor>
+  <actor>
+    <name>Ben Thompson</name>
+    <role>Elvis Look-A-Like</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1898019</profile>
+    <tmdbid>1898019</tmdbid>
+  </actor>
+  <actor>
+    <name>Ellie Wright</name>
+    <role>Little Ellie</role>
+    <thumb>https://image.tmdb.org/t/p/h632/xF7ww2FNyQGOOKQ1kdH4COkQEZ5.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1813833</profile>
+    <tmdbid>1813833</tmdbid>
+  </actor>
+  <actor>
+    <name>Suzie Kennedy</name>
+    <role>Marilyn Look-A-Like</role>
+    <thumb>https://image.tmdb.org/t/p/h632/qEm5LOUIvVYp5iTGALj76pxkcyr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1148965</profile>
+    <tmdbid>1148965</tmdbid>
+  </actor>
+  <actor>
+    <name>Stephen Triffitt</name>
+    <role>Sinatra Look-A-Like</role>
+    <thumb>https://image.tmdb.org/t/p/h632/eoiyH3cJ7wpa5ED9Dbpehl8poXg.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1898020</profile>
+    <tmdbid>1898020</tmdbid>
+  </actor>
+  <actor>
+    <name>Vilma Szécsi</name>
+    <role>Angry Old Lady</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6bQYnho9aP3WEdQQa4PaO0jxbKr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2146286</profile>
+    <tmdbid>2146286</tmdbid>
+  </actor>
+  <actor>
+    <name>Kincsö Sánta</name>
+    <role>Birthday Girl</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2146289</profile>
+    <tmdbid>2146289</tmdbid>
+  </actor>
+  <actor>
+    <name>André Lukács Molnár</name>
+    <role>Memory Child</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2146291</profile>
+    <tmdbid>2146291</tmdbid>
+  </actor>
+  <actor>
+    <name>István Göz</name>
+    <role>Scavenger #1</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/143576</profile>
+    <tmdbid>143576</tmdbid>
+  </actor>
+  <actor>
+    <name>Pál Nyári</name>
+    <role>Scavenger #2</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2146293</profile>
+    <tmdbid>2146293</tmdbid>
+  </actor>
+  <actor>
+    <name>Joshua Tersoo Allagh</name>
+    <role>Scavenger #3</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2146295</profile>
+    <tmdbid>2146295</tmdbid>
+  </actor>
+  <actor>
+    <name>Zoltán Béres</name>
+    <role>Scavenger #4</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2146296</profile>
+    <tmdbid>2146296</tmdbid>
+  </actor>
+  <actor>
+    <name>Konstantin Pál</name>
+    <role>Scavenger #5</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2146298</profile>
+    <tmdbid>2146298</tmdbid>
+  </actor>
+  <actor>
+    <name>Ferenc Györgyi</name>
+    <role>Scavenger #6</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/2146299</profile>
+    <tmdbid>2146299</tmdbid>
+  </actor>
+  <actor>
+    <name>Samuel Brown</name>
+    <role>Orphanage Boy</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1740747</profile>
+    <tmdbid>1740747</tmdbid>
+  </actor>
+  <actor>
+    <name>Mary Lukasiewicz</name>
+    <role>Hologram Joi (voice) (uncredited)</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/1706693</profile>
+    <tmdbid>1706693</tmdbid>
+  </actor>
+  <producer>
+    <name>Lucinda Syson</name>
+    <role>Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Ridley Scott</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/zABJmN9opmqD4orWl3KSdCaSo7Q.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Francine Maisler</name>
+    <role>Casting</role>
+    <thumb>https://image.tmdb.org/t/p/h632/5pOiu0SLr3XCB3a8SDwQ70KHINq.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Kathy Driscoll</name>
+    <role>Casting Associate</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Dana Belcastro</name>
+    <role>Co-Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/95hr3NqpagjE2vj83yhz3lTsGAv.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Bill Carraro</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/qt2ZxwwjbQe0kytalxbdLka6Vzn.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Veronika Varjasi</name>
+    <role>Extras Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Broderick Johnson</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/3RDQqTgI4RXk6kSwCgXrB3noXRu.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Andrew A. Kosove</name>
+    <role>Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Zsolt Csutak</name>
+    <role>Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>India Osborne</name>
+    <role>Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Caitlin McKenna-Wilkinson</name>
+    <role>ADR Voice Casting</role>
+    <thumb>https://image.tmdb.org/t/p/h632/cPfk4htR9X7gUnr1jYsKs0Y5qBq.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Bud Yorkin</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/m66f4nyjCb4Zeg4JUoYzpzt4zWL.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Gavin J. Behrman</name>
+    <role>Production Supervisor</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Cynthia Sikes</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/nZS8wr4pWpwx4QINfkqxa7bMhfH.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Steven P. Wegner</name>
+    <role>Co-Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Tim Gamble</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Anna Cassina</name>
+    <role>Unit Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Rudolf András</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Miklós Tóth</name>
+    <role>Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gábor Ujházy</name>
+    <role>Unit Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Carl Rogers</name>
+    <role>Co-Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Robin Citrin</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Emma Pill</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Pamela Harvey-White</name>
+    <role>Unit Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Félix Rosell</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Des Carey</name>
+    <role>Production Consultant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Donna Langston</name>
+    <role>Head of Production</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Nicolas Bonnell</name>
+    <role>Head of Production</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gergely Orbán</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Frank Giustra</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/alOHWwtgXhWfu2CnJMocWpcDU4l.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Zsolt Molnar</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Laurie Wright</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gábor Csépai</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Tish Johnson</name>
+    <role>Production Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gergö Balika</name>
+    <role>Head of Production</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jessica Pearce</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Demelza Cronin</name>
+    <role>Production Supervisor</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Natasha Vincent</name>
+    <role>Casting Associate</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Arni Hansson</name>
+    <role>Unit Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Teodora Ilie</name>
+    <role>Assistant Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Andrea Biklian</name>
+    <role>Production Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Zsolt Ferenc Maier</name>
+    <role>Extras Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>April Marie Mabry</name>
+    <role>Second Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Tibor Gadácsi</name>
+    <role>Extras Casting Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Maria Gerencser</name>
+    <role>Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jason Habelow</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jordi Roca Agut</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Nathalie Rodriguez Martinez</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Bill Twiston-Davies</name>
+    <role>Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Molly Rose</name>
+    <role>Casting Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kristi Lugo</name>
+    <role>Casting Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>David Bush</name>
+    <role>Casting Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Ravi Mahapatro</name>
+    <role>Line Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jessica Sharp</name>
+    <role>Line Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Russell Blanchard</name>
+    <role>Production Secretary</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Márton Vojnits</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Joe Petényi</name>
+    <role>Second Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Erika Tamás</name>
+    <role>First Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kolos Trimmel</name>
+    <role>Production Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Zsuzsanna Kurucz</name>
+    <role>Production Secretary</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gyorgy Dejtari</name>
+    <role>Second Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Grant Bensley</name>
+    <role>Head of Production</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Yale Badik</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Asa Greenberg</name>
+    <role>Co-Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Val Hill</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Ian McGloin</name>
+    <role>Co-Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Dániel Jakab</name>
+    <role>Assistant Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gergely Balazs</name>
+    <role>Assistant Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Árpád Görögh</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gergely Török</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Daniel Dallos</name>
+    <role>Unit Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Rita Maxim</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>István Papp</name>
+    <role>Assistant Location Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Chad Clark</name>
+    <role>Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Greg Highsmith</name>
+    <role>First Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Felicia Craggs</name>
+    <role>Payroll Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Péter Danó</name>
+    <role>Payroll Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Anna Lilli Garai</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Dylan Beck</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kitty Bich Thuy Ta</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gábor Bukai</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Mirjam Takács</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Ainara Sánchez de Toro</name>
+    <role>Production Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kinga Trimmel</name>
+    <role>Second Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kristof Trimmel</name>
+    <role>Second Assistant Accountant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Cécile Freyther</name>
+    <role>Human Resources</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Cathrine Mitchell</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Elliesse Cuniff</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kisholay Ray</name>
+    <role>Production Coordinator</role>
+    <thumb/>
+  </producer>
+  <trailer>plugin://plugin.video.hdtrailers_net/video/apple.com/http%3A%2F%2Fmovietrailers.apple.com%2Fmovies%2Fwb%2Fblade-runner-2049%2Fblade-runner-2049-trailer-4_h720p.mov</trailer>
+  <languages>English, Finnish, Hungarian, Japanese, Russian, Somali, Spanish</languages>
+  <dateadded>2021-03-12 16:18:06</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>HEVC</codec>
+        <aspect>2.4</aspect>
+        <width>3840</width>
+        <height>1600</height>
+        <durationinseconds>9807</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>TrueHD/Atmos</codec>
+        <language>eng</language>
+        <channels>8</channels>
+      </audio>
+      <audio>
+        <codec>DTSHD_MA</codec>
+        <language>eng</language>
+        <channels>8</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>ara</language>
+      </subtitle>
+      <subtitle>
+        <language>bul</language>
+      </subtitle>
+      <subtitle>
+        <language>zho</language>
+      </subtitle>
+      <subtitle>
+        <language>zho</language>
+      </subtitle>
+      <subtitle>
+        <language>zho</language>
+      </subtitle>
+      <subtitle>
+        <language>hrv</language>
+      </subtitle>
+      <subtitle>
+        <language>ces</language>
+      </subtitle>
+      <subtitle>
+        <language>ell</language>
+      </subtitle>
+      <subtitle>
+        <language>heb</language>
+      </subtitle>
+      <subtitle>
+        <language>hun</language>
+      </subtitle>
+      <subtitle>
+        <language>isl</language>
+      </subtitle>
+      <subtitle>
+        <language>ind</language>
+      </subtitle>
+      <subtitle>
+        <language>kor</language>
+      </subtitle>
+      <subtitle>
+        <language>msa</language>
+      </subtitle>
+      <subtitle>
+        <language>pol</language>
+      </subtitle>
+      <subtitle>
+        <language>por</language>
+      </subtitle>
+      <subtitle>
+        <language>por</language>
+      </subtitle>
+      <subtitle>
+        <language>ron</language>
+      </subtitle>
+      <subtitle>
+        <language>srp</language>
+      </subtitle>
+      <subtitle>
+        <language>slk</language>
+      </subtitle>
+      <subtitle>
+        <language>slv</language>
+      </subtitle>
+      <subtitle>
+        <language>spa</language>
+      </subtitle>
+      <subtitle>
+        <language>tha</language>
+      </subtitle>
+      <subtitle>
+        <language>tur</language>
+      </subtitle>
+      <subtitle>
+        <language>vie</language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <edition>NONE</edition>
+  <original_filename>Blade Runner 2049.mkv</original_filename>
+  <user_note/>
+</movie>

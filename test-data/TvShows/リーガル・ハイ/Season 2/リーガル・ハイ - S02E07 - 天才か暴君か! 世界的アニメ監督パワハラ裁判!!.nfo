@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:25 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>天才か暴君か!? 世界的アニメ監督パワハラ裁判!!</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>2</season>
+  <episode>7</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4711735</id>
+  <uniqueid default="false" type="tmdb">968893</uniqueid>
+  <uniqueid default="true" type="tvdb">4711735</uniqueid>
+  <rating>0.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>ついに古美門研介（堺雅人）と袂を分かった黛真知子（新垣結衣）は、かねてより誘われていた羽生晴樹（岡田将生）の事務所『NEXUS』に入る。黛は本田ジェーン（黒木華）や磯貝邦光（古舘寛治）にも快く迎えられた。&#13;
+　しかし、黛は自分が去ったあとの古美門法律事務所が少し心配。羽生から古美門が助手を探しているらしいと聞いた黛は、こっそりと様子を見に行く。しかし、すぐに加賀蘭丸（田口淳之介）に見つかってしまった。蘭丸も黛が抜けたことで古美門が困っていると言うのだが…。古美門が困っていたのは助手の選考方法。芸能事務所のオーディションまがいに美女を集め、誰を選ぶかに悩んでいただけ。黛は呆れて帰ってしまう。すると蘭丸は、古美門に黛が『NEXUS』で担当することになった案件を教える。&#13;
+&#13;
+　黛が代理人になったのは、アニメ制作会社で働いていた穂積孝（近藤公園）。穂積は、劣悪な環境と常軌を逸した労働時間、低賃金、そしてスタッフに非人道的な仕打ちを繰り返した、と代表であり監督の宇都宮仁平（伊東四朗）を訴えたのだ。きつい労働に堪えかねた穂積は、職場を飛び出して行方不明になり、現在も自宅療養中。黛は穂積への慰謝料と治療費を宇都宮に求める。しかし、宇都宮の代理人となったのは古美門。古美門は、黛の主張に異を唱え、当然のように請求を拒否した。&#13;
+&#13;
+　古美門は、この裁判のほかにも、『NEXUS』で黛が担当した案件に対立する側の弁護人としてことごとく顔を出して…。</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4711735.jpg</thumb>
+  <mpaa/>
+  <premiered>2013-11-20</premiered>
+  <aired>2013-11-20</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2784</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S02E07 - 天才か暴君か! 世界的アニメ監督パワハラ裁判!!.mkv</original_filename>
+  <user_note/>
+</episodedetails>

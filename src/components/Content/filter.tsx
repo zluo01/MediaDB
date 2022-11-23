@@ -66,7 +66,7 @@ function Filters({ folderData, open, close }: IFilerSection): JSX.Element {
           const data = folderData[v.toLowerCase()] as string[];
           const filter = filters[v.toLowerCase()] as string[];
           return (
-            <div key={v} style={{width: '100%'}}>
+            <div key={v} style={{ width: '100%' }}>
               <Stack
                 direction="row"
                 justifyContent="space-between"

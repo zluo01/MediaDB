@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-13 17:37:27 - tinyMediaManager 4.2.5.1-->
+<movie>
+  <title>Dune</title>
+  <originaltitle>Dune</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>2021</year>
+  <ratings>
+    <rating default="false" max="10" name="themoviedb">
+      <value>7.9</value>
+      <votes>5413</votes>
+    </rating>
+    <rating default="true" max="10" name="imdb">
+      <value>8.1</value>
+      <votes>439834</votes>
+    </rating>
+  </ratings>
+  <userrating>0.0</userrating>
+  <top250>0</top250>
+  <set>
+    <name>Dune Collection</name>
+    <overview>The two-part saga of Paul Atreides, and his rise to power on the deadly planet Arrakis</overview>
+  </set>
+  <plot>Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding, must travel to the most dangerous planet in the universe to ensure the future of his family and his people. As malevolent forces explode into conflict over the planet's exclusive supply of the most precious resource in existence-a commodity capable of unlocking humanity's greatest potential-only those who can conquer their fear will survive.</plot>
+  <outline>Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding, must travel to the most dangerous planet in the universe to ensure the future of his family and his people. As malevolent forces explode into conflict over the planet's exclusive supply of the most precious resource in existence-a commodity capable of unlocking humanity's greatest potential-only those who can conquer their fear will survive.</outline>
+  <tagline>Beyond fear, destiny awaits.</tagline>
+  <runtime>155</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/8hoD5BQuUV9dDecAbiyVIxLjzZ9.jpg</thumb>
+  <thumb aspect="banner">https://assets.fanart.tv/fanart/movies/438631/moviebanner/dune-6120c08db944e.jpg</thumb>
+  <thumb aspect="clearart">https://assets.fanart.tv/fanart/movies/438631/hdmovieclearart/dune-615b692674af2.png</thumb>
+  <thumb aspect="clearlogo">https://assets.fanart.tv/fanart/movies/438631/hdmovielogo/dune-5ea0a18f9ac16.png</thumb>
+  <thumb aspect="discart">https://assets.fanart.tv/fanart/movies/438631/moviedisc/dune-616fa8943ed82.png</thumb>
+  <thumb aspect="landscape">https://assets.fanart.tv/fanart/movies/438631/moviethumb/dune-5e901c493c678.jpg</thumb>
+  <thumb aspect="keyart">https://assets.fanart.tv/fanart/movies/438631/movieposter/dune-5e9020135d56a.jpg</thumb>
+  <thumb aspect="logo">https://assets.fanart.tv/fanart/movies/438631/hdmovielogo/dune-5ea0a18f9ac16.png</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/lzWHmYdfeFiMIY4JaMmtR7GEli3.jpg</thumb>
+  </fanart>
+  <mpaa>US:PG-13 / US:Rated PG-13</mpaa>
+  <certification>US:PG-13 / US:Rated PG-13</certification>
+  <id>tt1160419</id>
+  <tmdbid>438631</tmdbid>
+  <tmdbCollectionId>726871</tmdbCollectionId>
+  <uniqueid default="false" type="tmdb">438631</uniqueid>
+  <uniqueid default="false" type="tmdbSet">726871</uniqueid>
+  <uniqueid default="true" type="imdb">tt1160419</uniqueid>
+  <country>United States</country>
+  <status/>
+  <code/>
+  <premiered>2021-10-07</premiered>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <lastplayed/>
+  <genre>Science Fiction</genre>
+  <genre>Adventure</genre>
+  <studio>Legendary Pictures</studio>
+  <credits>Eric Roth</credits>
+  <credits>Frank Herbert</credits>
+  <credits>Denis Villeneuve</credits>
+  <credits>Jon Spaihts</credits>
+  <director>Denis Villeneuve</director>
+  <tag>prophecy</tag>
+  <tag>based on novel or book</tag>
+  <tag>emperor</tag>
+  <tag>dystopia</tag>
+  <tag>sand</tag>
+  <tag>spice</tag>
+  <tag>army</tag>
+  <tag>hallucinogen</tag>
+  <tag>epic</tag>
+  <tag>baron</tag>
+  <tag>remake</tag>
+  <tag>revenge</tag>
+  <tag>space</tag>
+  <tag>betrayal</tag>
+  <tag>treason</tag>
+  <tag>water shortage</tag>
+  <tag>creature</tag>
+  <tag>desert</tag>
+  <tag>knife fight</tag>
+  <tag>destiny</tag>
+  <tag>giant worm</tag>
+  <tag>space opera</tag>
+  <tag>sand dune</tag>
+  <tag>messiah</tag>
+  <tag>giant creature</tag>
+  <actor>
+    <name>Timothée Chalamet</name>
+    <role>Paul Atreides</role>
+    <thumb>https://image.tmdb.org/t/p/h632/8jNFfNmqHVqLHnGnxgu7y8xgRIa.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1190668</profile>
+    <tmdbid>1190668</tmdbid>
+  </actor>
+  <actor>
+    <name>Rebecca Ferguson</name>
+    <role>Lady Jessica Atreides</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6NRlV9oUipeak7r00V6k73Jb7we.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/933238</profile>
+    <tmdbid>933238</tmdbid>
+  </actor>
+  <actor>
+    <name>Oscar Isaac</name>
+    <role>Duke Leto Atreides</role>
+    <thumb>https://image.tmdb.org/t/p/h632/dW5U5yrIIPmMjRThR9KT2xH6nTz.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/25072</profile>
+    <tmdbid>25072</tmdbid>
+  </actor>
+  <actor>
+    <name>Josh Brolin</name>
+    <role>Gurney Halleck</role>
+    <thumb>https://image.tmdb.org/t/p/h632/sX2etBbIkxRaCsATyw5ZpOVMPTD.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/16851</profile>
+    <tmdbid>16851</tmdbid>
+  </actor>
+  <actor>
+    <name>Stellan Skarsgård</name>
+    <role>Baron Vladimir Harkonnen</role>
+    <thumb>https://image.tmdb.org/t/p/h632/x78BtYHElirO7Iw8bL4m8CnzRDc.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1640</profile>
+    <tmdbid>1640</tmdbid>
+  </actor>
+  <actor>
+    <name>Dave Bautista</name>
+    <role>Beast Rabban Harkonnen</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ymn6iQBJbQZN6BYI60YJDXVP4gF.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/543530</profile>
+    <tmdbid>543530</tmdbid>
+  </actor>
+  <actor>
+    <name>Sharon Duncan-Brewster</name>
+    <role>Dr. Liet Kynes</role>
+    <thumb>https://image.tmdb.org/t/p/h632/3UCihGvkuWQbdRBzYgVM52IFPeA.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/195666</profile>
+    <tmdbid>195666</tmdbid>
+  </actor>
+  <actor>
+    <name>Stephen McKinley Henderson</name>
+    <role>Thufir Hawat</role>
+    <thumb>https://image.tmdb.org/t/p/h632/utsApLREJWm13jyCLMkFwPYYU0M.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/196179</profile>
+    <tmdbid>196179</tmdbid>
+  </actor>
+  <actor>
+    <name>Zendaya</name>
+    <role>Chani</role>
+    <thumb>https://image.tmdb.org/t/p/h632/r3A7ev7QkjOGocVn3kQrJ0eOouk.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/505710</profile>
+    <tmdbid>505710</tmdbid>
+  </actor>
+  <actor>
+    <name>Chang Chen</name>
+    <role>Dr. Wellington Yueh</role>
+    <thumb>https://image.tmdb.org/t/p/h632/4BOQ5pJXdsArkMHvyVhrV8Ditnr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1622</profile>
+    <tmdbid>1622</tmdbid>
+  </actor>
+  <actor>
+    <name>Charlotte Rampling</name>
+    <role>Reverend Mother Gaius Helen Mohiam</role>
+    <thumb>https://image.tmdb.org/t/p/h632/5U35yScoao1hf6SibbMZcld2CJd.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/44079</profile>
+    <tmdbid>44079</tmdbid>
+  </actor>
+  <actor>
+    <name>Jason Momoa</name>
+    <role>Duncan Idaho</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6dEFBpZH8C8OijsynkSajQT99Pb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/117642</profile>
+    <tmdbid>117642</tmdbid>
+  </actor>
+  <actor>
+    <name>Javier Bardem</name>
+    <role>Stilgar</role>
+    <thumb>https://image.tmdb.org/t/p/h632/IShnFg6ijWhpbu29dFBd9PtqQg.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3810</profile>
+    <tmdbid>3810</tmdbid>
+  </actor>
+  <actor>
+    <name>David Dastmalchian</name>
+    <role>Piter de Vries</role>
+    <thumb>https://image.tmdb.org/t/p/h632/sF7yHISn8kuBy7T39gB5dMpObpk.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/83854</profile>
+    <tmdbid>83854</tmdbid>
+  </actor>
+  <actor>
+    <name>Babs Olusanmokun</name>
+    <role>Jamis</role>
+    <thumb>https://image.tmdb.org/t/p/h632/4OWjo1DNlWfiv82kNDNJZNoxqt0.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/205923</profile>
+    <tmdbid>205923</tmdbid>
+  </actor>
+  <actor>
+    <name>Golda Rosheuvel</name>
+    <role>Shadout Mapes</role>
+    <thumb>https://image.tmdb.org/t/p/h632/fkGpUhweuMBzN6d4h0QvkM7plH7.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1856875</profile>
+    <tmdbid>1856875</tmdbid>
+  </actor>
+  <actor>
+    <name>Roger Yuan</name>
+    <role>Lieutenant Lanville</role>
+    <thumb>https://image.tmdb.org/t/p/h632/A1iQKcfFvo1OXBkyuHYAgXB5ctb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2974</profile>
+    <tmdbid>2974</tmdbid>
+  </actor>
+  <actor>
+    <name>Benjamin Clémentine</name>
+    <role>Herald of the Change</role>
+    <thumb>https://image.tmdb.org/t/p/h632/johpHbzqrue6XDG63vapfugGbnn.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3185383</profile>
+    <tmdbid>3185383</tmdbid>
+  </actor>
+  <actor>
+    <name>Souad Faress</name>
+    <role>Bene Gesserit Sister</role>
+    <thumb>https://image.tmdb.org/t/p/h632/aEGdIch9eRzJcsAGbF7mAZPUiXt.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/261927</profile>
+    <tmdbid>261927</tmdbid>
+  </actor>
+  <actor>
+    <name>Seun Shote</name>
+    <role>Arrakeen Residency Gardener</role>
+    <thumb>https://image.tmdb.org/t/p/h632/33szNjKtUsTxlwV039Gec2PKQS2.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2411333</profile>
+    <tmdbid>2411333</tmdbid>
+  </actor>
+  <actor>
+    <name>Neil Bell</name>
+    <role>Sardaukar Bashar</role>
+    <thumb>https://image.tmdb.org/t/p/h632/pidZ4zM5KyGv35ErckTKYqReJDZ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/178629</profile>
+    <tmdbid>178629</tmdbid>
+  </actor>
+  <actor>
+    <name>Oliver Ryan</name>
+    <role>Hawat Specialist</role>
+    <thumb>https://image.tmdb.org/t/p/h632/S0YPiYOSikfqjR6HMuxoFDzh0f.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1638835</profile>
+    <tmdbid>1638835</tmdbid>
+  </actor>
+  <actor>
+    <name>Stephen Collins</name>
+    <role>Harkonnen Trooper</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wKI02sI9KHaPMBHjY0SKpLI6yen.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1929092</profile>
+    <tmdbid>1929092</tmdbid>
+  </actor>
+  <actor>
+    <name>Charlie Rawes</name>
+    <role>Harkonnen Trooper</role>
+    <thumb>https://image.tmdb.org/t/p/h632/nJFCNsOe2Oi0q1un6Fs0nxjH6z5.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1083177</profile>
+    <tmdbid>1083177</tmdbid>
+  </actor>
+  <actor>
+    <name>Richard Carter</name>
+    <role>Harkonnen Trooper</role>
+    <thumb>https://image.tmdb.org/t/p/h632/vwMG8213y9UiCDXBPIUwzhVxUcX.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3275311</profile>
+    <tmdbid>3275311</tmdbid>
+  </actor>
+  <actor>
+    <name>Benjamin Dilloway</name>
+    <role>Sardaukar Assassin</role>
+    <thumb>https://image.tmdb.org/t/p/h632/reXJcitDu5hsCO7Hlra2ZFzr6Nn.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1269682</profile>
+    <tmdbid>1269682</tmdbid>
+  </actor>
+  <actor>
+    <name>Elmi Rashid Elmi</name>
+    <role>Shamir</role>
+    <thumb>https://image.tmdb.org/t/p/h632/kMH7mX7rzVrrPuWL0qVeYExXVcx.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3063993</profile>
+    <tmdbid>3063993</tmdbid>
+  </actor>
+  <actor>
+    <name>Tachia Newall</name>
+    <role>Tanat</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ywvojfXK3uzw0IgVEVg3j00GPuy.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1466868</profile>
+    <tmdbid>1466868</tmdbid>
+  </actor>
+  <actor>
+    <name>Gloria Obianyo</name>
+    <role>Female Fremen</role>
+    <thumb>https://image.tmdb.org/t/p/h632/8vRsNhtxFzYsHQItIKwcMW9flts.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1982903</profile>
+    <tmdbid>1982903</tmdbid>
+  </actor>
+  <actor>
+    <name>Fehinti Balogun</name>
+    <role>Male Fremen</role>
+    <thumb>https://image.tmdb.org/t/p/h632/lgwljS8zU7KWRlXMdyow34O7kvJ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2160722</profile>
+    <tmdbid>2160722</tmdbid>
+  </actor>
+  <actor>
+    <name>Dora Kápolnai-Schvab</name>
+    <role>Baron Servant</role>
+    <thumb>https://image.tmdb.org/t/p/h632/rqmxqILAmCqIXCedRBtgh6NLaw2.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3314410</profile>
+    <tmdbid>3314410</tmdbid>
+  </actor>
+  <actor>
+    <name>Joelle Amery</name>
+    <role>Baron Servant</role>
+    <thumb>https://image.tmdb.org/t/p/h632/rqmxqILAmCqIXCedRBtgh6NLaw2.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3314411</profile>
+    <tmdbid>3314411</tmdbid>
+  </actor>
+  <actor>
+    <name>Jimmy Walker</name>
+    <role>Atreides Lieutenant</role>
+    <thumb>https://image.tmdb.org/t/p/h632/2YZA7E7aIf8EjyZ6PUIk67U2glW.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2158768</profile>
+    <tmdbid>2158768</tmdbid>
+  </actor>
+  <actor>
+    <name>Paul Bullion</name>
+    <role>Sardaukar Soldier</role>
+    <thumb>https://image.tmdb.org/t/p/h632/uR76mlAgEpmj0WNnzJ7jG337fZF.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1488465</profile>
+    <tmdbid>1488465</tmdbid>
+  </actor>
+  <actor>
+    <name>Milena Sidorova</name>
+    <role>Human Spider Proxy</role>
+    <thumb/>
+    <profile>https://www.themoviedb.org/person/3314417</profile>
+    <tmdbid>3314417</tmdbid>
+  </actor>
+  <actor>
+    <name>János Timkó</name>
+    <role>Harkonnen Guard</role>
+    <thumb>https://image.tmdb.org/t/p/h632/qHKNILSJE41Mtj2NUO6mdT29BeG.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2059373</profile>
+    <tmdbid>2059373</tmdbid>
+  </actor>
+  <actor>
+    <name>Jean Gilpin</name>
+    <role>Bene Gesserit Ancestor (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/8NRvEevVGpG0y5gSb7SvBMiUfur.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/59051</profile>
+    <tmdbid>59051</tmdbid>
+  </actor>
+  <actor>
+    <name>Marianne Faithfull</name>
+    <role>Bene Gesserit Ancestor (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/qJ1q0hbm0gf2xA64MRnFvdW2VYe.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/19995</profile>
+    <tmdbid>19995</tmdbid>
+  </actor>
+  <actor>
+    <name>Ellen Dubin</name>
+    <role>Bene Gesserit Ancestor (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6pskknCFA9ELimcXdR5LMJb1JJn.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/53934</profile>
+    <tmdbid>53934</tmdbid>
+  </actor>
+  <producer>
+    <name>Jina Jay</name>
+    <role>Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Francine Maisler</name>
+    <role>Casting</role>
+    <thumb>https://image.tmdb.org/t/p/h632/5pOiu0SLr3XCB3a8SDwQ70KHINq.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Joseph M. Caracciolo Jr.</name>
+    <role>Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kathy Driscoll</name>
+    <role>Casting Associate</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>John Harrison</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Richard P. Rubinstein</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Cale Boyter</name>
+    <role>Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Thomas Tull</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/5UG4FK7rsmhzJDYxpU28acqfxtu.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Herb Gains</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Mary Parent</name>
+    <role>Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Denis Villeneuve</name>
+    <role>Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/zdDx9Xs93UIrJFWYApYR28J8M6b.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Jon Spaihts</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/jzIwgRpEG2VXYHmIyk0vpb6S3TA.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Shelagh Conley</name>
+    <role>Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Miklós Tóth</name>
+    <role>Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jessica Derhammer</name>
+    <role>Production Supervisor</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Chris Carreras</name>
+    <role>Co-Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>James Grant</name>
+    <role>Unit Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gergö Balika</name>
+    <role>Head of Production</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Brian Herbert</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Byron Merritt</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kim Herbert</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Tanya Lapointe</name>
+    <role>Executive Producer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/fSIQqm9PqqyPexLDRU5WCwS76L6.jpg</thumb>
+  </producer>
+  <producer>
+    <name>Zsolt Ferenc Maier</name>
+    <role>Extras Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Molly Rose</name>
+    <role>Casting Associate</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Gergely Balazs</name>
+    <role>Assistant Production Manager</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Joshua Grode</name>
+    <role>Executive Producer</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Marton Dancz</name>
+    <role>Extras Casting</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Kaley Boerneke</name>
+    <role>Casting Assistant</role>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Vasco Xu</name>
+    <role>Associate Producer</role>
+    <thumb/>
+  </producer>
+  <trailer>plugin://plugin.video.hdtrailers_net/video/apple.com/https%3A%2F%2Fmovietrailers.apple.com%2Fmovies%2Fwb%2Fdune%2Fdune-final-trailer_h720p.mov</trailer>
+  <languages>Chinese, English</languages>
+  <dateadded>2021-11-01 20:56:16</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>HEVC</codec>
+        <aspect>1.78</aspect>
+        <width>3840</width>
+        <height>2160</height>
+        <durationinseconds>9324</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>EAC3/Atmos</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>spa</language>
+      </subtitle>
+      <subtitle>
+        <language>spa</language>
+      </subtitle>
+      <subtitle>
+        <language/>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>WEB_DL</source>
+  <edition>NONE</edition>
+  <original_filename>Dune.mkv</original_filename>
+  <user_note/>
+</movie>

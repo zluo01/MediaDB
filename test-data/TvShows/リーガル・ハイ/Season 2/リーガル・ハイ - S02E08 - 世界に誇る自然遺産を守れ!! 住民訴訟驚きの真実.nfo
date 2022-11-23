@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2022-01-11 01:39:25 - tinyMediaManager 4.2.5.1-->
+<episodedetails>
+  <title>世界に誇る自然遺産を守れ!! 住民訴訟驚きの真実</title>
+  <originaltitle/>
+  <showtitle>リーガル・ハイ</showtitle>
+  <season>2</season>
+  <episode>8</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>4711736</id>
+  <uniqueid default="false" type="tmdb">969184</uniqueid>
+  <uniqueid default="true" type="tvdb">4711736</uniqueid>
+  <rating>10.0</rating>
+  <userrating>0.0</userrating>
+  <votes>0</votes>
+  <plot>古美門研介（堺雅人）を訪ねて、黛真知子（新垣結衣）と羽生晴樹（岡田将生）が来る。黛と羽生は『NEXUS』で受けた案件の共同弁護を古美門に頼みに来たのだ。古美門は、即座に断るのだがすでに服部（里見浩太朗）は黛たちについて行くことになっているらしい。ひとり残されるのがイヤな古美門は、しぶしぶ同行することにした。&#13;
+&#13;
+『NEXUS』が受けたのは、奥蟹頭にある“おざおざの森”を世界財産に推奨する地元住民と反対派の訴訟。黛と羽生は、推奨派の赤松鈴子（角替和枝）たちの依頼だった。鈴子の案内で、反対派に会いに行く黛たち。反対派の代表は、赤松麻里奈（遠野なぎこ）。同姓の鈴子と麻里奈には、何か因縁がありそう。だが、それより先に波乱を起こしたのが古美門。なんと、古美門は麻里奈の代理人になっていたのだ。&#13;
+&#13;
+　とにもかくにも、地方の小さな簡易裁判所で双方の調停が始まる。早くも火花を散らそうとする古美門と、黛＆羽生たち。ところが、調停員たちと一緒に現れたのは別府敏子（広末涼子）だった。驚く古美門たち。別府本人によると、この地への異動が決まったばかりらしい。だが、性格は相変わらず。古美門どころか、黛たち『NEXUS』チームにも厳しい“別府ルール”が適用されてしまう。しかも、古美門たちには難解な奥蟹頭弁も、別府はしっかり理解している様子。さらに、別府の希望で、古美門たちは“おざおざの森”に現場検証に向かうことになって…。</plot>
+  <runtime>45</runtime>
+  <thumb>https://artworks.thetvdb.com/banners/episodes/258840/4711736.jpg</thumb>
+  <mpaa/>
+  <premiered>2013-11-27</premiered>
+  <aired>2013-11-27</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>Fuji TV</studio>
+  <trailer/>
+  <dateadded>2021-03-12 17:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1024</width>
+        <height>576</height>
+        <durationinseconds>2784</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language/>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>TV</source>
+  <original_filename>リーガル・ハイ - S02E08 - 世界に誇る自然遺産を守れ!! 住民訴訟驚きの真実.mkv</original_filename>
+  <user_note/>
+</episodedetails>
