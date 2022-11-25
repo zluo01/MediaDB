@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { buildDirectory, openFile } from '@/lib/os';
+import { buildDirectory, notify, openFile } from '@/lib/os';
 import { useAppSelector } from '@/lib/source';
 import { RootState } from '@/lib/source/store';
 import { updateFolderInfo } from '@/lib/storage';
@@ -250,9 +250,10 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     try {
       const info = await buildDirectory({ ...folderData });
       await updateFolderInfo(folderData.name, info, mutate);
-      setRefresh(false);
     } catch (e) {
-      console.error(e);
+      await notify(`Update Library Error: ${e}`);
+    } finally {
+      setRefresh(false);
     }
   }
 

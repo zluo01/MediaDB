@@ -8,14 +8,16 @@ use serde_json::{json, Value};
 use crate::types::{Media, MediaSource, MediaType};
 use crate::utilities;
 
-pub fn parser(app_dir: &PathBuf, name: &str, path: &str) -> Value {
+pub fn parser(app_dir: &PathBuf, name: &str, path: &str) -> Result<Value, String> {
     let start = Instant::now();
     let (major_media, secondary_media) = read_dir(path);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
     let duration = start.elapsed();
     println!("{:?}", duration);
-    create_thumbnails(app_dir, name, path, &posters);
-    return data;
+    if let Err(e) = create_thumbnails(app_dir, name, path, &posters) {
+        return Err(e);
+    }
+    Ok(data)
 }
 
 fn read_dir(path: &str) -> (Vec<Media>, Vec<Media>) {
@@ -171,7 +173,7 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
     }), posters)
 }
 
-fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
+fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) -> Result<(), String> {
     println!("Directory: {}, Name: {}, Path: {}", &app_dir.to_string_lossy(), name, path);
     let root_path = Path::new(path);
     let thumbnail_path = app_dir.join("thumbnails");
@@ -181,7 +183,7 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
     let create_dir_result = fs::create_dir_all(&folder_path);
     if let Err(e) = &create_dir_result {
         println!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e);
-        return;
+        return Err(format!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e));
     }
 
     for p in posters {
@@ -194,6 +196,8 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
         let copy_result = fs::copy(&source_path, &dest_path);
         if let Err(e) = &copy_result {
             println!("Fail to copy file from {} to {}. Raising error {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy(), e);
+            return Err(format!("Fail to copy file from {} to {}. Raising error {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy(), e));
         }
     }
+    Ok(())
 }

@@ -52,7 +52,7 @@ function DirectoryModal({
       await handleClose();
       await router.reload();
     } catch (e) {
-      await notify(`Import folders: ${e}`);
+      await notify(`Import Folders Error: ${e}`);
     } finally {
       setLoading(false);
     }
