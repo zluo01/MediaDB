@@ -4,7 +4,6 @@ import { IFolder } from '@/type';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
-import path from 'path';
 import React, { useState } from 'react';
 import { useSWRConfig } from 'swr';
 
@@ -38,8 +37,8 @@ function DirectoryModal({
 
   async function handleDirectory() {
     const dir = await getDirectory();
-    const subDir = dir.split(path.sep);
-    setFolder({ ...folder, name: subDir[subDir.length - 1], path: dir });
+    const name = dir.split('\\').pop().split('/').pop();
+    setFolder({ ...folder, name, path: dir });
   }
 
   async function handleSubmit(
