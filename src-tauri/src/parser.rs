@@ -172,6 +172,7 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
 }
 
 fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
+    println!("Directory: {}", &app_dir.to_string_lossy());
     let root_path = Path::new(path);
     let thumbnail_path = app_dir.as_path().join("thumbnails");
     let folder_path = thumbnail_path.join(name);
@@ -180,6 +181,9 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
         let file_name = format!("{:x}", md5::compute(p.as_os_str().to_str().unwrap().as_bytes()));
         let source_path = root_path.join(p);
         let dest_path = folder_path.join(file_name);
-        let _ = fs::copy(source_path, dest_path);
+        let copy_result = fs::copy(&source_path, dest_path);
+        if let Err(e) = &copy_result {
+            println!("Fail to copy file {}. Raising error {}", &source_path.to_string_lossy(), e);
+        }
     }
 }
