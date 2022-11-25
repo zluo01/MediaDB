@@ -177,6 +177,7 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
     let thumbnail_path = app_dir.as_path().join("thumbnails");
     let folder_path = thumbnail_path.join(name);
 
+    println!("Root Path: {}, Thumbnail Path: {}, FolderPath: {}", &root_path.to_string_lossy(), &thumbnail_path.to_string_lossy(), &folder_path.to_string_lossy());
     let create_dir_result = fs::create_dir_all(&folder_path);
     if let Err(e) = &create_dir_result {
         println!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e);
