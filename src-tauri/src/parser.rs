@@ -181,9 +181,9 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
         let file_name = format!("{:x}", md5::compute(p.as_os_str().to_str().unwrap().as_bytes()));
         let source_path = root_path.join(p);
         let dest_path = folder_path.join(file_name);
-        let copy_result = fs::copy(&source_path, dest_path);
+        let copy_result = fs::copy(&source_path, &dest_path);
         if let Err(e) = &copy_result {
-            println!("Fail to copy file {}. Raising error {}", &source_path.to_string_lossy(), e);
+            println!("Fail to copy file from {} to {}. Raising error {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy(), e);
         }
     }
 }
