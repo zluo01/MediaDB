@@ -3,17 +3,13 @@ use std::ffi::{OsString};
 use std::fs;
 use std::path::{Path, PathBuf};
 use crate::nfo_parser::parse_nfo;
-use std::time::{Instant};
 use serde_json::{json, Value};
 use crate::types::{Media, MediaSource, MediaType};
 use crate::utilities;
 
 pub fn parser(app_dir: &PathBuf, name: &str, path: &str) -> Result<Value, String> {
-    let start = Instant::now();
     let (major_media, secondary_media) = read_dir(path);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
-    let duration = start.elapsed();
-    println!("{:?}", duration);
     if let Err(e) = create_thumbnails(app_dir, name, path, &posters) {
         return Err(e);
     }
@@ -186,8 +182,8 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
     for p in posters {
         let source_path = root_path.join(p);
 
-        println!("Poster Path: {}", &p.to_string_lossy());
-        let file_name = format!("{:x}", md5::compute(p.as_os_str().to_str().unwrap().as_bytes()));
+        let file_path = p.as_os_str().to_str().unwrap();
+        let file_name = format!("{:x}", md5::compute(&file_path.replace("\\", "/").as_bytes()));
         let dest_path = folder_path.join(file_name);
 
         let copy_result = fs::copy(&source_path, &dest_path);

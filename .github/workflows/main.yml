@@ -20,10 +20,9 @@ jobs:
         with:
           node-version: 16
 
-      - name: install Rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+      - name: Install Rust (Stable)
+        run:
+          curl https://sh.rustup.rs -sSf | sh -s -- -y
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-20.04'
@@ -49,10 +48,9 @@ jobs:
         with:
           node-version: 16
 
-      - name: install Rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+      - name: Install Rust (Stable)
+        run:
+          curl https://sh.rustup.rs -sSf | sh -s -- -y
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-20.04'

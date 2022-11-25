@@ -8,7 +8,6 @@ function useAppDataPath() {
     let isMount = true;
     getAppDataPath().then(path => {
       if (isMount) {
-        console.log(path);
         setPath(path);
       }
     });
