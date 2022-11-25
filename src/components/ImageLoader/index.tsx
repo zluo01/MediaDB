@@ -30,6 +30,7 @@ const toBase64 = (str: string) =>
 function ImageLoader({ folder, src, ...props }: IImageLoaderPops): JSX.Element {
   function getCacheImagePath(src: string): string {
     const fileName = crypto.createHash('md5').update(src).digest('hex');
+    console.log(`${src} -> ${fileName}`);
     return convertFileSrc(
       path.join(folder.appDir, 'thumbnails', folder.name, fileName)
     );

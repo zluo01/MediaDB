@@ -174,28 +174,24 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
 }
 
 fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) -> Result<(), String> {
-    println!("Directory: {}, Name: {}, Path: {}", &app_dir.to_string_lossy(), name, path);
     let root_path = Path::new(path);
     let thumbnail_path = app_dir.join("thumbnails");
     let folder_path = thumbnail_path.join(name);
 
-    println!("Root Path: {}, Thumbnail Path: {}, FolderPath: {}", &root_path.to_string_lossy(), &thumbnail_path.to_string_lossy(), &folder_path.to_string_lossy());
     let create_dir_result = fs::create_dir_all(&folder_path);
     if let Err(e) = &create_dir_result {
-        println!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e);
         return Err(format!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e));
     }
 
     for p in posters {
         let source_path = root_path.join(p);
 
+        println!("Poster Path: {}", &p.to_string_lossy());
         let file_name = format!("{:x}", md5::compute(p.as_os_str().to_str().unwrap().as_bytes()));
         let dest_path = folder_path.join(file_name);
 
-        println!("Source: {}. Dest: {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy());
         let copy_result = fs::copy(&source_path, &dest_path);
         if let Err(e) = &copy_result {
-            println!("Fail to copy file from {} to {}. Raising error {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy(), e);
             return Err(format!("Fail to copy file from {} to {}. Raising error {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy(), e));
         }
     }
