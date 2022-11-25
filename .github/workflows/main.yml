@@ -35,6 +35,7 @@ jobs:
 
   publish-tauri:
     needs: [ build-tauri ]
+    if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:
