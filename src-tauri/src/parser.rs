@@ -176,11 +176,18 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
     let root_path = Path::new(path);
     let thumbnail_path = app_dir.as_path().join("thumbnails");
     let folder_path = thumbnail_path.join(name);
-    fs::create_dir_all(&folder_path).expect("Fail to create path.");
+
+    let create_dir_result = fs::create_dir_all(&folder_path);
+    if let Err(e) = &create_dir_result {
+        println!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e);
+        return;
+    }
+
     for p in posters {
         let file_name = format!("{:x}", md5::compute(p.as_os_str().to_str().unwrap().as_bytes()));
         let source_path = root_path.join(p);
         let dest_path = folder_path.join(file_name);
+        println!("Source: {}. Dest: {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy());
         let copy_result = fs::copy(&source_path, &dest_path);
         if let Err(e) = &copy_result {
             println!("Fail to copy file from {} to {}. Raising error {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy(), e);
