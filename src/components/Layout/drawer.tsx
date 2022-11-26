@@ -64,9 +64,9 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
       <Panel
         variant="permanent"
         sx={{
-          width: setting?.showSidePanelName ? 240 : 60,
+          width: setting?.showSidePanel ? 240 : 60,
           [`& .MuiDrawer-paper`]: {
-            width: setting?.showSidePanelName ? 240 : 60,
+            width: setting?.showSidePanel ? 240 : 60,
           },
         }}
       >
@@ -88,7 +88,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
                         }}
                       />
                     </ListItemIcon>
-                    {setting?.showSidePanelName && (
+                    {setting?.showSidePanel && (
                       <ListItemText primary={folder.name} />
                     )}
                   </ListItemButton>
@@ -102,7 +102,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
               <ListItemIcon>
                 <AddIcon sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
-              {setting?.showSidePanelName && (
+              {setting?.showSidePanel && (
                 <ListItemText primary={'Add Video'} />
               )}
             </ListItemButton>
@@ -117,7 +117,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
                   }}
                 />
               </ListItemIcon>
-              {setting?.showSidePanelName && (
+              {setting?.showSidePanel && (
                 <ListItemText primary={'Setting'} />
               )}
             </ListItemButton>

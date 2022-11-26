@@ -1,6 +1,7 @@
-import { setSetting } from '@/lib/queries';
+import { notify } from '@/lib/os';
+import { updateCardSize } from '@/lib/queries';
 import { DefaultSetting } from '@/lib/storage';
-import { ICardSize, ISetting } from '@/type';
+import { ISetting } from '@/type';
 import { Slider, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useSWRConfig } from 'swr';
@@ -37,24 +38,23 @@ function Footer({ setting, selected }: IFooter): JSX.Element {
 
   async function onChange(_event: any, value: number | number[]) {
     const ratio = (value as number) / 100;
-    const newSize: ICardSize = {
-      width: DefaultSetting.cardSize.width * ratio,
-      height: DefaultSetting.cardSize.height * ratio,
-    };
     try {
-      await setSetting(mutate, { ...setting, cardSize: newSize });
+      await updateCardSize(mutate, {
+        width: Math.round(DefaultSetting.cardSize.width * ratio),
+        height: Math.round(DefaultSetting.cardSize.height * ratio),
+      });
     } catch (e) {
-      console.error(e);
+      await notify(`Fail to change card size: ${e}`);
     }
   }
 
   return (
     <StyledFooter
       sx={{
-        width: setting.showSidePanelName
+        width: setting.showSidePanel
           ? 'calc(100% - 240px)'
           : 'calc(100% - 60px)',
-        left: setting.showSidePanelName ? 240 : 60,
+        left: setting.showSidePanel ? 240 : 60,
       }}
     >
       <Tooltip title={selected}>

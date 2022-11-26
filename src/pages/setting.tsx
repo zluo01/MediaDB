@@ -2,7 +2,7 @@ import { Loading } from '@/components/Content/styles';
 import Layout from '@/components/Layout';
 import FolderList from '@/components/Setting/FolderList';
 import { notify } from '@/lib/os';
-import { useGetSettingQuery, setSetting } from '@/lib/queries';
+import { useGetSettingQuery, hidePanel } from '@/lib/queries';
 import {
   Checkbox,
   Container,
@@ -38,11 +38,7 @@ function Setting(): JSX.Element {
 
   async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
     try {
-      const setting = {
-        ...data,
-        showSidePanelName: event.target.checked,
-      };
-      await setSetting(mutate, setting);
+      await hidePanel(mutate, event.target.checked);
     } catch (e) {
       await notify(`Check Box Error: ${e}`);
     }
@@ -63,7 +59,7 @@ function Setting(): JSX.Element {
             value="end"
             control={
               <Checkbox
-                checked={data.showSidePanelName}
+                checked={data.showSidePanel}
                 color="primary"
                 onChange={handleCheckBox}
               />

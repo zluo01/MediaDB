@@ -1,16 +1,17 @@
 import {
   addFolder,
+  changeCardSize,
   FOLDER_LIST,
   getFolder,
   getFolderInfo,
   getFolderList,
   getSetting,
+  hideSidePanel,
   removeFolderFromStorage,
   SETTING,
   updateFolderPathFromStorage,
-  updateSetting,
 } from '@/lib/storage';
-import { IFolder, IFolderInfo, ISetting } from '@/type';
+import { ICardSize, IFolder, IFolderInfo, ISetting } from '@/type';
 import useSWR from 'swr';
 import { ScopedMutator } from 'swr/dist/types';
 
@@ -84,8 +85,16 @@ export function useGetSettingQuery() {
   };
 }
 
-export async function setSetting(mutate: ScopedMutator, setting: ISetting) {
-  await updateSetting(setting);
+export async function hidePanel(mutate: ScopedMutator, show: boolean) {
+  await hideSidePanel(show);
+  await mutate(SETTING);
+}
+
+export async function updateCardSize(
+  mutate: ScopedMutator,
+  cardSize: ICardSize
+) {
+  await changeCardSize(cardSize);
   await mutate(SETTING);
 }
 

@@ -69,8 +69,7 @@ export interface ICardSize {
 }
 
 export interface ISetting {
-  showSidePanelName: boolean;
-  skippingDirectory: string[];
+  showSidePanel: boolean;
   cardSize: ICardSize;
 }
 

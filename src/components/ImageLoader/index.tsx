@@ -33,7 +33,6 @@ function ImageLoader({ folder, src, ...props }: IImageLoaderPops): JSX.Element {
       .createHash('md5')
       .update(src.replace('\\', '/')) // handle windows path
       .digest('hex');
-    console.log(`${src} -> ${fileName}`);
     return convertFileSrc(
       path.join(folder.appDir, 'thumbnails', folder.name, fileName)
     );

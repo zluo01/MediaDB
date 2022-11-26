@@ -1,5 +1,6 @@
-import { IFolder, IFolderInfo, ISetting } from '@/type';
+import { ICardSize, IFolder, IFolderInfo, ISetting } from '@/type';
 import { BaseDirectory, removeDir } from '@tauri-apps/api/fs';
+import { invoke } from '@tauri-apps/api/tauri';
 import localforage from 'localforage';
 import { ScopedMutator } from 'swr/dist/types';
 
@@ -9,10 +10,6 @@ export const SETTING = 'setting;';
 
 const dataStore = localforage.createInstance({
   name: 'data',
-});
-
-const settingStore = localforage.createInstance({
-  name: 'setting',
 });
 
 export async function getFolderList(): Promise<IFolder[]> {
@@ -78,8 +75,7 @@ export async function updateFolderList(folders: IFolder[]): Promise<void> {
 }
 
 export const DefaultSetting: ISetting = {
-  showSidePanelName: true,
-  skippingDirectory: [],
+  showSidePanel: true,
   cardSize: {
     width: 240,
     height: 360,
@@ -87,9 +83,13 @@ export const DefaultSetting: ISetting = {
 };
 
 export async function getSetting(): Promise<ISetting> {
-  return (await settingStore.getItem(SETTING)) || DefaultSetting;
+  return (await invoke('get_setting')) as ISetting;
 }
 
-export async function updateSetting(setting: ISetting): Promise<void> {
-  await settingStore.setItem(SETTING, setting);
+export async function hideSidePanel(show: boolean): Promise<void> {
+  await invoke('hide_side_panel', { hide: show ? 0 : 1 });
+}
+
+export async function changeCardSize(cardSize: ICardSize): Promise<void> {
+  await invoke('change_card_size', { ...cardSize });
 }
