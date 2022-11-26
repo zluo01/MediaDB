@@ -3,7 +3,7 @@ use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
 use roxmltree::{Node};
-use crate::types::{Media, MediaSource, MediaType};
+use crate::parser::types::{Media, MediaSource, MediaType};
 
 pub fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSource) -> Option<Media> {
     let nfo_path = Path::new(nfo_dir.as_os_str());

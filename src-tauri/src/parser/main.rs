@@ -1,13 +1,13 @@
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::ffi::{OsString};
+use std::ffi::OsString;
 use std::fs;
 use std::path::{Path, PathBuf};
-use crate::nfo_parser::parse_nfo;
 use serde_json::{json, Value};
-use crate::types::{Media, MediaSource, MediaType};
-use crate::utilities;
+use crate::parser::nfo_parser::parse_nfo;
+use crate::parser::types::{Media, MediaSource, MediaType};
+use crate::parser::utilities;
 
-pub fn parser(app_dir: &PathBuf, name: &str, path: &str) -> Result<Value, String> {
+pub fn parse(app_dir: &PathBuf, name: &str, path: &str) -> Result<Value, String> {
     let (major_media, secondary_media) = read_dir(path);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
     if let Err(e) = create_thumbnails(app_dir, name, path, &posters) {

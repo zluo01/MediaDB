@@ -8,14 +8,11 @@ extern crate core;
 use serde_json::Value;
 
 mod parser;
-mod nfo_parser;
-mod types;
-mod utilities;
 
 #[tauri::command]
 fn parser(app_handle: tauri::AppHandle, name: &str, path: &str) -> Result<Value, String> {
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
-    return parser::parser(&app_dir, name, path);
+    return parser::main::parse(&app_dir, name, path);
 }
 
 #[tauri::command]
