@@ -1,77 +1,37 @@
-import { ICardSize, IFolder, IFolderInfo, ISetting } from '@/type';
-import { BaseDirectory, removeDir } from '@tauri-apps/api/fs';
+import { ICardSize, IFolder, IFolderData, ISetting } from '@/type';
 import { invoke } from '@tauri-apps/api/tauri';
-import localforage from 'localforage';
-import { ScopedMutator } from 'swr/dist/types';
-
-export const FOLDER = 'folder';
-export const FOLDER_LIST = 'folderList';
-export const SETTING = 'setting;';
-
-const dataStore = localforage.createInstance({
-  name: 'data',
-});
 
 export async function getFolderList(): Promise<IFolder[]> {
-  return (await dataStore.getItem(FOLDER)) || [];
+  return (await invoke('get_folder_list')) || [];
 }
 
-export async function getFolder(index: number): Promise<IFolder> {
-  const folders = await getFolderList();
-  return folders[index] || ({} as IFolder);
+export async function getFolder(position: number): Promise<IFolder> {
+  return (await invoke('get_folder_info', { position })) || ({} as IFolder);
 }
 
-export async function getFolderInfo(name: string): Promise<IFolderInfo> {
-  return (await dataStore.getItem(name)) as IFolderInfo;
-}
-
-export async function addFolder(
-  folder: IFolder,
-  info: IFolderInfo
-): Promise<void> {
-  const folders = await getFolderList();
-  folders.push(folder);
-  await Promise.all([
-    dataStore.setItem(FOLDER, folders),
-    dataStore.setItem(folder.name, info),
-  ]);
+export async function getFolderInfo(position: number): Promise<IFolderData> {
+  return (await invoke('get_folder_data', { position })) as IFolderData;
 }
 
 export async function updateFolderPathFromStorage(
-  index: number,
-  path: string
+  folder: IFolder
 ): Promise<void> {
-  const folders = await getFolderList();
-  folders[index].path = path;
-  await dataStore.setItem(FOLDER, folders);
+  await invoke('update_folder_path', { ...folder });
 }
 
-export async function updateFolderInfo(
-  name: string,
-  info: IFolderInfo,
-  mutate: ScopedMutator
+export async function updateFolderSortType(
+  position: number,
+  sortType: string
 ): Promise<void> {
-  await dataStore.setItem(name, info);
-  await mutate([FOLDER, name]);
+  await invoke('update_sort_type', { position, sortType });
 }
 
 export async function removeFolderFromStorage(folder: IFolder): Promise<void> {
-  const folders = (await getFolderList()).filter(o => o.name !== folder.name);
-  await dataStore.setItem(FOLDER, folders);
-  await dataStore.removeItem(folder.name);
-  const folder_dir = folder.path.substring(folder.path.lastIndexOf('/') + 1);
-  try {
-    await removeDir(`thumbnails/${folder_dir}`, {
-      dir: BaseDirectory.App,
-      recursive: true,
-    });
-  } catch (e) {
-    console.error(e);
-  }
+  await invoke('delete_folder', { ...folder });
 }
 
 export async function updateFolderList(folders: IFolder[]): Promise<void> {
-  await dataStore.setItem(FOLDER, folders);
+  await invoke('reorder_folder', { folderList: folders.map(o => o.name) });
 }
 
 export const DefaultSetting: ISetting = {

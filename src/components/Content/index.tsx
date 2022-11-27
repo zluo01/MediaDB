@@ -1,8 +1,8 @@
 import Footer from '@/components/Footer';
 import { buildDirectory, notify, openFile } from '@/lib/os';
+import { revalidateFolderData, updateSortType } from '@/lib/queries';
 import { useAppSelector } from '@/lib/source';
 import { RootState } from '@/lib/source/store';
-import { updateFolderInfo } from '@/lib/storage';
 import {
   DEFAULT,
   IFolderData,
@@ -10,7 +10,6 @@ import {
   IMovieData,
   ISetting,
   MOVIE,
-  SORT,
   TITLE_ASC,
   TITLE_DSC,
   YEAR_ASC,
@@ -230,15 +229,8 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     setOpen(false);
   }
 
-  async function updateSortType(type: string) {
-    await updateFolderInfo(
-      folderData.name,
-      {
-        ...folderData,
-        sort: type as SORT,
-      },
-      mutate
-    );
+  async function update(type: string) {
+    await updateSortType(mutate, folderData.position, type);
     setOpen(false);
   }
 
@@ -248,8 +240,8 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     e.preventDefault();
     setRefresh(true);
     try {
-      const info = await buildDirectory({ ...folderData });
-      await updateFolderInfo(folderData.name, info, mutate);
+      await buildDirectory({ ...folderData }, true);
+      await revalidateFolderData(mutate, folderData.position);
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
     } finally {
@@ -320,10 +312,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList autoFocusItem={open} id="menu-list-grow">
                     {SORT_TYPES.filter(o => o !== folderData.sort).map(type => (
-                      <StyledMenuItem
-                        key={type}
-                        onClick={() => updateSortType(type)}
-                      >
+                      <StyledMenuItem key={type} onClick={() => update(type)}>
                         {type}
                       </StyledMenuItem>
                     ))}

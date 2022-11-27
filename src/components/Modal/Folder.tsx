@@ -40,7 +40,7 @@ function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
     e.preventDefault();
     setLoading(true);
     try {
-      await updateFolderPath(mutate, index, path);
+      await updateFolderPath(mutate, { ...folder, path });
       setLoading(false);
       setPath('');
       close();

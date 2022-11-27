@@ -13,25 +13,20 @@ pub const CREAT_TABLE_QUERY: &str =
     VALUES (0, 0, 240, 320);
     create table folder_data
     (
-        folder_name TEXT
+        folder_name TEXT                     not null
             constraint folder_name
                 primary key,
-        position    INTEGER,
-        data        TEXT
-    );
-    create table folder_status
-    (
-        folder_name TEXT    not null
-            primary key,
-        status      INTEGER not null,
-        message     TEXT    not null
+        position    INTEGER                  not null,
+        data        TEXT                     not null,
+        path        INTEGER                  not null,
+        sort_type   TEXT default 'Directory' not null
     );
     ";
 
 //language=sqlite
 pub const GET_SETTINGS: &str =
     "
-    SELECT hide_panel, card_width, card_height FROM  settings
+    SELECT hide_panel as hide, card_width as width, card_height as height FROM  settings
     ";
 
 //language=sqlite
@@ -44,4 +39,61 @@ pub const UPDATE_HIDE_PANEL: &str =
 pub const CHANGE_CARD_SIZE: &str =
     "
     UPDATE settings SET card_width = ?, card_height=? WHERE settings_id=0
+    ";
+
+//language=sqlite
+pub const INSERT_NEW_FOLDER_DATA: &str =
+    "
+    INSERT INTO folder_data (folder_name, position, data, path)
+    VALUES (?, (SELECT COUNT(folder_name) FROM folder_data), ?, ?);
+    ";
+
+//language=sqlite
+pub const GET_FOLDER_LIST: &str =
+    "
+    SELECT folder_name, path, position from folder_data ORDER BY position
+    ";
+
+//language=sqlite
+pub const GET_FOLDER_INFO: &str =
+    "
+    SELECT folder_name, path, position from folder_data WHERE position=?
+    ";
+
+//language=sqlite
+pub const GET_FOLDER_DATA: &str =
+    "
+    SELECT * from folder_data WHERE position=?
+    ";
+
+//language=sqlite
+pub const UPDATE_FOLDER_DATA: &str =
+    "
+     UPDATE folder_data SET data = ? WHERE folder_name=?
+    ";
+
+//language=sqlite
+pub const UPDATE_SORT_TYPE: &str =
+    "
+     UPDATE folder_data SET sort_type = ? WHERE position=?
+    ";
+
+//language=sqlite
+pub const UPDATE_FOLDER_PATH: &str =
+    "
+     UPDATE folder_data SET path = ? WHERE position=?
+    ";
+
+//language=sqlite
+pub const UPDATE_FOLDER_POSITION: &str =
+    "
+     UPDATE folder_data SET position = ? WHERE folder_name=?
+    ";
+
+
+//language=sqlite
+pub const DELETE_FOLDER: &str =
+    "
+     DELETE FROM folder_data WHERE folder_name=?;
+     UPDATE folder_data SET position = position -1 WHERE position > ?
     ";

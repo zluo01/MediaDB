@@ -1,4 +1,4 @@
-import { DEFAULT, IFolder, IFolderInfo } from '@/type';
+import { IFolder } from '@/type';
 import { open as openDialog } from '@tauri-apps/api/dialog';
 import {
   isPermissionGranted,
@@ -16,14 +16,11 @@ export async function openFile(path: string): Promise<void> {
   }
 }
 
-export async function getAppDataPath(): Promise<string> {
-  return await invoke('get_data_path');
-}
-
-export async function buildDirectory(folder: IFolder): Promise<IFolderInfo> {
-  const data = (await invoke('parser', { ...folder })) as IFolderInfo;
-  data.sort = DEFAULT;
-  return data;
+export async function buildDirectory(
+  folder: IFolder,
+  update?: boolean
+): Promise<void> {
+  await invoke('parser', { ...folder, update: update || false });
 }
 
 export async function getDirectory(): Promise<string> {

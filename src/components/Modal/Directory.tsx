@@ -1,5 +1,5 @@
 import { buildDirectory, getDirectory, notify } from '@/lib/os';
-import { insertFunction } from '@/lib/queries';
+import { revalidateFolderData } from '@/lib/queries';
 import { IFolder } from '@/type';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
@@ -29,16 +29,15 @@ function DirectoryModal({
   const router = useRouter();
   const { mutate } = useSWRConfig();
 
-  const [folder, setFolder] = useState<IFolder>({
-    path: '',
-    name: '',
-  });
+  const [name, setName] = useState('');
+  const [path, setPath] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleDirectory() {
     const dir = await getDirectory();
     const name = dir.split('\\').pop().split('/').pop();
-    setFolder({ ...folder, name, path: dir });
+    setName(name);
+    setPath(dir);
   }
 
   async function handleSubmit(
@@ -47,8 +46,8 @@ function DirectoryModal({
     e.preventDefault();
     setLoading(true);
     try {
-      const info = await buildDirectory(folder);
-      await insertFunction(mutate, folder, info);
+      await buildDirectory({ position: 0, name, path });
+      await revalidateFolderData(mutate, folderList.length);
       await handleClose();
       await router.reload();
     } catch (e) {
@@ -58,15 +57,7 @@ function DirectoryModal({
     }
   }
 
-  function reset() {
-    setFolder({
-      path: '',
-      name: '',
-    });
-  }
-
   async function handleClose() {
-    reset();
     close();
   }
 
@@ -76,7 +67,7 @@ function DirectoryModal({
     }
   }
 
-  const nameError = folderList?.map(o => o.name).includes(folder.name);
+  const nameError = folderList?.map(o => o.name).includes(name);
 
   return (
     <Dialog
@@ -93,9 +84,9 @@ function DirectoryModal({
           type="text"
           margin="dense"
           variant="standard"
-          value={folder.name}
-          onChange={e => setFolder({ ...folder, name: e.target.value })}
-          error={nameError || !folder.name}
+          value={name}
+          onChange={e => setName(e.target.value)}
+          error={nameError || !name}
           helperText={nameError && 'Name Already Exists'}
           disabled={loading}
           required
@@ -106,7 +97,7 @@ function DirectoryModal({
           label="Directory"
           margin="normal"
           variant="standard"
-          value={folder.path}
+          value={path}
           InputProps={{
             endAdornment: (
               <MoreButton onClick={handleDirectory}>
@@ -114,7 +105,7 @@ function DirectoryModal({
               </MoreButton>
             ),
           }}
-          onChange={e => setFolder({ ...folder, path: e.target.value })}
+          onChange={e => setPath(e.target.value)}
           disabled={loading}
           autoFocus
           required
@@ -127,7 +118,7 @@ function DirectoryModal({
         </DialogButton>
         <DialogButton
           onClick={handleSubmit}
-          disabled={!folder.path || nameError || loading}
+          disabled={!path || nameError || loading}
         >
           {loading ? 'loading...' : 'Add'}
         </DialogButton>

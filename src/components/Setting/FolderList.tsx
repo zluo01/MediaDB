@@ -74,11 +74,11 @@ function FolderList(): JSX.Element {
         <Droppable droppableId="droppable">
           {provided => (
             <List ref={provided.innerRef} {...provided.droppableProps}>
-              {folderList?.map((folder, index) => (
+              {folderList?.map(folder => (
                 <Draggable
                   key={folder.name}
                   draggableId={folder.name}
-                  index={index}
+                  index={folder.position}
                 >
                   {provided => (
                     <div
@@ -100,7 +100,7 @@ function FolderList(): JSX.Element {
                             size={'large'}
                             edge="end"
                             aria-label="edit"
-                            onClick={() => setFolderIndex(index)}
+                            onClick={() => setFolderIndex(folder.position)}
                           >
                             <EditIcon />
                           </IconButton>

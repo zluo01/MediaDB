@@ -73,13 +73,13 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
         <Toolbar />
         <Box sx={{ overflow: 'hidden' }} component={'div'}>
           <List>
-            {folderList?.map((folder, index) => {
-              const isCurr = index === currFolderIndex;
+            {folderList?.map(folder => {
+              const isCurr = folder.position === currFolderIndex;
               return (
-                <Tooltip key={index} title={folder.name}>
+                <Tooltip key={folder.position} title={folder.name}>
                   <ListItemButton
                     disabled={isCurr}
-                    onClick={() => router.push(`/?id=${index}`)}
+                    onClick={() => router.push(`/?id=${folder.position}`)}
                   >
                     <ListItemIcon>
                       <FolderIcon
@@ -102,9 +102,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
               <ListItemIcon>
                 <AddIcon sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
-              {setting?.showSidePanel && (
-                <ListItemText primary={'Add Video'} />
-              )}
+              {setting?.showSidePanel && <ListItemText primary={'Add Video'} />}
             </ListItemButton>
             <ListItemButton
               onClick={() => router.push(`/setting`)}
@@ -117,9 +115,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
                   }}
                 />
               </ListItemIcon>
-              {setting?.showSidePanel && (
-                <ListItemText primary={'Setting'} />
-              )}
+              {setting?.showSidePanel && <ListItemText primary={'Setting'} />}
             </ListItemButton>
           </FunctionList>
         </Box>

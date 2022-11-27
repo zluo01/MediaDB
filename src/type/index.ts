@@ -76,6 +76,7 @@ export interface ISetting {
 export interface IFolder {
   name: string;
   path: string;
+  position: number;
   appDir?: string;
 }
 

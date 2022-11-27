@@ -1,22 +1,24 @@
 import {
-  addFolder,
   changeCardSize,
-  FOLDER_LIST,
   getFolder,
   getFolderInfo,
   getFolderList,
   getSetting,
   hideSidePanel,
   removeFolderFromStorage,
-  SETTING,
   updateFolderPathFromStorage,
+  updateFolderSortType,
 } from '@/lib/storage';
-import { ICardSize, IFolder, IFolderInfo, ISetting } from '@/type';
+import { ICardSize, IFolder, IFolderData, ISetting } from '@/type';
 import useSWR from 'swr';
 import { ScopedMutator } from 'swr/dist/types';
 
+const FOLDER = 'folder';
+const FOLDER_LIST = 'folderList';
+const SETTING = 'setting;';
+
 const FOLDER_KEY = (index: number) => `folder/${index}`;
-const FOLDER_DETAIL_KEY = (name: string) => `folder/info/${name}`;
+const FOLDER_DETAIL_KEY = (index: number) => `folder/info/${index}`;
 
 export function useGetFolderListQuery() {
   const { data, error, mutate } = useSWR<IFolder[]>(FOLDER_LIST, getFolderList);
@@ -40,10 +42,10 @@ export function useGetFolderQuery(route: number) {
   };
 }
 
-export function useGetFolderInfoQuery(name?: string) {
-  const { data, error, mutate } = useSWR<IFolderInfo>(
-    name ? FOLDER_DETAIL_KEY(name) : null,
-    () => getFolderInfo(name)
+export function useGetFolderDataQuery(route: number) {
+  const { data, error, mutate } = useSWR<IFolderData>(
+    FOLDER_DETAIL_KEY(route),
+    () => getFolderInfo(route)
   );
 
   return {
@@ -53,27 +55,35 @@ export function useGetFolderInfoQuery(name?: string) {
   };
 }
 
-export async function insertFunction(
+export async function updateSortType(
   mutate: ScopedMutator,
-  folder: IFolder,
-  info: IFolderInfo
-) {
-  await addFolder(folder, info);
-  await mutations(mutate, FOLDER_LIST, FOLDER_DETAIL_KEY(folder.name));
+  position: number,
+  sortType: string
+): Promise<void> {
+  await updateFolderSortType(position, sortType);
+  await mutations(mutate, FOLDER, FOLDER_DETAIL_KEY(position));
 }
 
-export async function updateFolderPath(
+export async function revalidateFolderData(
   mutate: ScopedMutator,
-  index: number,
-  path: string
+  position: number
 ) {
-  await updateFolderPathFromStorage(index, path);
-  await mutations(mutate, FOLDER_LIST, FOLDER_KEY(index));
+  await mutations(mutate, FOLDER_LIST, FOLDER_DETAIL_KEY(position));
+}
+
+export async function updateFolderPath(mutate: ScopedMutator, folder: IFolder) {
+  await updateFolderPathFromStorage(folder);
+  await mutations(
+    mutate,
+    FOLDER_LIST,
+    FOLDER_KEY(folder.position),
+    FOLDER_DETAIL_KEY(folder.position)
+  );
 }
 
 export async function removeFolder(mutate: ScopedMutator, folder: IFolder) {
   await removeFolderFromStorage(folder);
-  await mutations(mutate, FOLDER_LIST, FOLDER_DETAIL_KEY(folder.name));
+  await mutations(mutate, FOLDER_LIST);
 }
 
 export function useGetSettingQuery() {
