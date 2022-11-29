@@ -5,21 +5,19 @@ use std::path::Path;
 use roxmltree::{Node};
 use crate::parser::types::{Media, MediaSource, MediaType};
 
-pub fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSource) -> Option<Media> {
+pub fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSource) -> Result<Media, String> {
     let nfo_path = Path::new(nfo_dir.as_os_str());
     let file_path = root_path.join(nfo_path);
     let content_result = fs::read_to_string(file_path);
     if let Err(e) = &content_result {
-        println!("Error when reading file to string {}. Raising error {}", nfo_dir.to_string_lossy(), e);
-        return None;
+        return Err(format!("Error when reading file to string {}. Raising error {}", nfo_dir.to_string_lossy(), e));
     }
     let content = content_result.unwrap();
 
     let parsing_result = roxmltree::Document::parse(content.as_str());
 
     if let Err(e) = &parsing_result {
-        println!("Error when parsing nfo file {}. Raising error {}", nfo_dir.to_string_lossy(), e);
-        return None;
+        return Err(format!("Error when parsing nfo file {}. Raising error {}", nfo_dir.to_string_lossy(), e));
     }
 
     let doc = parsing_result.unwrap();
@@ -29,8 +27,7 @@ pub fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSourc
         .collect::<Vec<Node>>();
 
     if nfo_types.is_empty() {
-        println!("NFO file does not have any valid tag for parsing. {}", nfo_dir.to_string_lossy());
-        return None;
+        return Err(format!("NFO file does not have any valid tag for parsing. {}", nfo_dir.to_string_lossy()));
     }
 
     let nfo_node = nfo_types.first().unwrap();
@@ -44,7 +41,7 @@ pub fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSourc
         "episodedetails" => parse_episode_nfo(&mut media, nfo_node),
         &_ => panic!("Get unknown type {} for parsing", nfo_type)
     }
-    Some(media)
+    Ok(media)
 }
 
 fn is_valid_source(o: &Node) -> bool {

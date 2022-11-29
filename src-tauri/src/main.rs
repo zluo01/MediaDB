@@ -14,8 +14,7 @@ mod db;
 
 #[tauri::command]
 async fn parser<R: Runtime>(app_handle: tauri::AppHandle<R>, name: &str, path: &str, update: bool) -> Result<(), String> {
-    let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
-    let value = parser::main::parse(&app_dir, name, path)?;
+    let value = parser::main::parse(&app_handle, name, path)?;
     if update {
         if let Err(e) = db::main::update_folder_data(&app_handle, name, &value).await {
             return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
@@ -103,8 +102,7 @@ async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>, name: S
     }
 
     // refetch data and update data for new path
-    let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
-    let value = parser::main::parse(&app_dir, &name, &path)?;
+    let value = parser::main::parse(&app_handle, &name, &path)?;
     if let Err(e) = db::main::update_folder_data(&app_handle, &name, &value).await {
         return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
     }

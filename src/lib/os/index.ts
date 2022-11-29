@@ -12,7 +12,7 @@ export async function openFile(path: string): Promise<void> {
   try {
     await open(path);
   } catch (e) {
-    await notify(e);
+    await notify(`${e}. Path: ${path}`);
   }
 }
 

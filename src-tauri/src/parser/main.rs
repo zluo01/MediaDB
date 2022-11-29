@@ -3,20 +3,22 @@ use std::ffi::OsString;
 use std::fs;
 use std::path::{Path, PathBuf};
 use serde_json::{json, Value};
+use tauri::api::notification::Notification;
 use crate::parser::nfo_parser::parse_nfo;
 use crate::parser::types::{Media, MediaSource, MediaType};
 use crate::parser::utilities;
 
-pub fn parse(app_dir: &PathBuf, name: &str, path: &str) -> Result<Value, String> {
-    let (major_media, secondary_media) = read_dir(path);
+pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str) -> Result<Value, String> {
+    let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
+    let (major_media, secondary_media) = read_dir(app_handle, path);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
-    if let Err(e) = create_thumbnails(app_dir, name, path, &posters) {
+    if let Err(e) = create_thumbnails(&app_dir, name, path, &posters) {
         return Err(e);
     }
     Ok(data)
 }
 
-fn read_dir(path: &str) -> (Vec<Media>, Vec<Media>) {
+fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str) -> (Vec<Media>, Vec<Media>) {
     let root_path = Path::new(path);
     let mut queue = VecDeque::from([OsString::from(path)]);
 
@@ -63,7 +65,7 @@ fn read_dir(path: &str) -> (Vec<Media>, Vec<Media>) {
             }
         }
 
-        let media = handle_media_path(&nfo_files, root_path, &media_source);
+        let media = handle_media_path(app_handle, &nfo_files, root_path, &media_source);
         for m in media {
             match m.media_type() {
                 MediaType::Movie | MediaType::TvShow => {
@@ -79,16 +81,25 @@ fn read_dir(path: &str) -> (Vec<Media>, Vec<Media>) {
     (major_media, secondary_media)
 }
 
-fn handle_media_path(nfo_files: &Vec<OsString>,
-                     root_path: &Path,
-                     media_source: &MediaSource) -> Vec<Media> {
+fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
+                                        nfo_files: &Vec<OsString>,
+                                        root_path: &Path,
+                                        media_source: &MediaSource) -> Vec<Media> {
+    let identifier = &app_handle.config().tauri.bundle.identifier;
     if !nfo_files.is_empty() {
-        let media = nfo_files
-            .iter()
-            .map(|o| parse_nfo(root_path, o, &media_source))
-            .filter(|o| o.is_some())
-            .map(|o| o.unwrap())
-            .collect::<Vec<Media>>();
+        let mut media: Vec<Media> = vec![];
+        for nfo_file in nfo_files {
+            let parsing_result = parse_nfo(root_path, nfo_file, &media_source);
+            if let Err(e) = parsing_result {
+                Notification::new(identifier)
+                    .title("MediaDB: Encounter Error when parsing nfo file.")
+                    .body(e)
+                    .show()
+                    .expect("Fail to send notification.");
+                continue;
+            }
+            media.push(parsing_result.unwrap())
+        }
         return media;
     }
     vec![]
