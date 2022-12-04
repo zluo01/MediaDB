@@ -73,7 +73,7 @@ function SkipFolderModal({
           Cancel
         </DialogButton>
         <DialogButton onClick={handleSubmit} disabled={nameError || loading}>
-          {loading ? 'loading...' : 'Change'}
+          {loading ? 'loading...' : 'Add'}
         </DialogButton>
       </ActionButtonGroups>
     </Dialog>
