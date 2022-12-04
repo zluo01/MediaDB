@@ -4,7 +4,7 @@ use std::result::Result;
 use serde_json::{json, Value};
 use tauri::Runtime;
 use crate::db::{queries};
-use crate::db::types::{Folder, FolderData, Setting};
+use crate::db::types::{Folder, FolderData, Setting, SkipFolders};
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
@@ -45,6 +45,14 @@ pub async fn get_settings<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<Value
     Ok(settings.to_json())
 }
 
+pub async fn get_skip_folders<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<Vec<String>, sqlx::Error> {
+    let db_url = get_database_path(&app);
+    let pool = SqlitePool::connect(&db_url).await?;
+    let skip_folders = sqlx::query_as::<_, SkipFolders>(queries::GET_SKIP_FOLDERS).fetch_one(&pool).await?;
+    pool.close().await;
+    Ok(skip_folders.get_skip_folder_list())
+}
+
 pub async fn update_hide_side_panel<R: Runtime>(app: &tauri::AppHandle<R>, hide_panel: &i32) -> Result<(), sqlx::Error> {
     let db_url = get_database_path(&app);
     let pool = SqlitePool::connect(&db_url).await?;
@@ -62,6 +70,17 @@ pub async fn change_card_size<R: Runtime>(app: &tauri::AppHandle<R>, width: &i32
     let _ = sqlx::query(queries::CHANGE_CARD_SIZE)
         .bind(width)
         .bind(height)
+        .execute(&pool)
+        .await?;
+    pool.close().await;
+    Ok(())
+}
+
+pub async fn update_skip_folders<R: Runtime>(app: &tauri::AppHandle<R>, skip_folders: &str) -> Result<(), sqlx::Error> {
+    let db_url = get_database_path(&app);
+    let pool = SqlitePool::connect(&db_url).await?;
+    let _ = sqlx::query(queries::UPDATE_SKIP_FOLDERS)
+        .bind(skip_folders)
         .execute(&pool)
         .await?;
     pool.close().await;

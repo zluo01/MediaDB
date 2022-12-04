@@ -1,5 +1,6 @@
 import {
   changeCardSize,
+  changeSkipFolders,
   getFolder,
   getFolderInfo,
   getFolderList,
@@ -105,6 +106,14 @@ export async function updateCardSize(
   cardSize: ICardSize
 ) {
   await changeCardSize(cardSize);
+  await mutate(SETTING);
+}
+
+export async function updateSkipFolders(
+  mutate: ScopedMutator,
+  skipFolders: string
+) {
+  await changeSkipFolders(skipFolders);
   await mutate(SETTING);
 }
 

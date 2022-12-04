@@ -8,9 +8,9 @@ use crate::parser::nfo_parser::parse_nfo;
 use crate::parser::types::{Media, MediaSource, MediaType};
 use crate::parser::utilities;
 
-pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str) -> Result<Value, String> {
+pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Result<Value, String> {
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
-    let (major_media, secondary_media) = read_dir(app_handle, path);
+    let (major_media, secondary_media) = read_dir(app_handle, path, skip_paths);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
     if let Err(e) = create_thumbnails(&app_dir, name, path, &posters) {
         return Err(e);
@@ -18,7 +18,7 @@ pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, pa
     Ok(data)
 }
 
-fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str) -> (Vec<Media>, Vec<Media>) {
+fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str, skip_paths: &Vec<String>) -> (Vec<Media>, Vec<Media>) {
     let root_path = Path::new(path);
     let mut queue = VecDeque::from([OsString::from(path)]);
 
@@ -34,9 +34,13 @@ fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str) -> 
             let entry = entry.unwrap();
             let path = entry.path();
 
-            let file_name = path.file_name().unwrap();
+            let file_name = path.file_name().unwrap().to_str().unwrap();
             // check for hidden file
-            if file_name.to_str().unwrap().as_bytes().starts_with(&[b'.']) {
+            if file_name.as_bytes().starts_with(&[b'.']) {
+                continue;
+            }
+
+            if skip_paths.contains(&file_name.to_string()) {
                 continue;
             }
 
@@ -54,7 +58,7 @@ fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str) -> 
             let ext = extension.unwrap().to_str().unwrap();
             match ext {
                 "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
-                "jpg" | "png" => if file_name.to_str().unwrap().contains("poster") {
+                "jpg" | "png" => if file_name.contains("poster") {
                     media_source.add_poster(relative_path.unwrap().into_os_string())
                 },
                 "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" =>

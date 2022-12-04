@@ -40,6 +40,7 @@ export const DefaultSetting: ISetting = {
     width: 240,
     height: 360,
   },
+  skipFolders: [],
 };
 
 export async function getSetting(): Promise<ISetting> {
@@ -52,4 +53,8 @@ export async function hideSidePanel(show: boolean): Promise<void> {
 
 export async function changeCardSize(cardSize: ICardSize): Promise<void> {
   await invoke('change_card_size', { ...cardSize });
+}
+
+export async function changeSkipFolders(skipFolders: string): Promise<void> {
+  await invoke('update_skip_folders', { skipFolders });
 }

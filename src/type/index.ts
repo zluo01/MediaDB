@@ -71,6 +71,7 @@ export interface ICardSize {
 export interface ISetting {
   showSidePanel: boolean;
   cardSize: ICardSize;
+  skipFolders: string[];
 }
 
 export interface IFolder {

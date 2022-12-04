@@ -14,7 +14,11 @@ mod db;
 
 #[tauri::command]
 async fn parser<R: Runtime>(app_handle: tauri::AppHandle<R>, name: &str, path: &str, update: bool) -> Result<(), String> {
-    let value = parser::main::parse(&app_handle, name, path)?;
+    let skip_folders_result = db::main::get_skip_folders(&app_handle).await;
+    if let Err(e) = skip_folders_result {
+        return Err(format!("Fail to get skip folders. Raising Error: {:?}", e.into_database_error()));
+    }
+    let value = parser::main::parse(&app_handle, name, path, &skip_folders_result.unwrap())?;
     if update {
         if let Err(e) = db::main::update_folder_data(&app_handle, name, &value).await {
             return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
@@ -55,6 +59,14 @@ async fn hide_side_panel<R: Runtime>(app_handle: tauri::AppHandle<R>, hide: i32)
 async fn change_card_size<R: Runtime>(app_handle: tauri::AppHandle<R>, width: i32, height: i32) -> Result<(), String> {
     if let Err(e) = db::main::change_card_size(&app_handle, &width, &height).await {
         return Err(format!("Fail to get setting. Raising Error: {:?}", e.into_database_error()));
+    }
+    Ok(())
+}
+
+#[tauri::command]
+async fn update_skip_folders<R: Runtime>(app_handle: tauri::AppHandle<R>, skip_folders: &str) -> Result<(), String> {
+    if let Err(e) = db::main::update_skip_folders(&app_handle, skip_folders).await {
+        return Err(format!("Fail to update skip folders. Raising Error: {:?}", e.into_database_error()));
     }
     Ok(())
 }
@@ -102,7 +114,11 @@ async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>, name: S
     }
 
     // refetch data and update data for new path
-    let value = parser::main::parse(&app_handle, &name, &path)?;
+    let skip_folders_result = db::main::get_skip_folders(&app_handle).await;
+    if let Err(e) = skip_folders_result {
+        return Err(format!("Fail to get skip folders. Raising Error: {:?}", e.into_database_error()));
+    }
+    let value = parser::main::parse(&app_handle, &name, &path, &skip_folders_result.unwrap())?;
     if let Err(e) = db::main::update_folder_data(&app_handle, &name, &value).await {
         return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
     }
@@ -140,6 +156,7 @@ fn main() {
             get_setting,
             hide_side_panel,
             change_card_size,
+            update_skip_folders,
             get_folder_list,
             get_folder_info,
             get_folder_data,

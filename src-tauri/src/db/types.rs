@@ -4,21 +4,43 @@ use serde_json::{json, Value};
 #[derive(sqlx::FromRow)]
 #[derive(Serialize, Deserialize)]
 pub struct Setting {
-    hide: i32,
-    width: i32,
-    height: i32,
+    hide_panel: i32,
+    card_width: i32,
+    card_height: i32,
+    skip_folders: String,
 }
 
 impl Setting {
     pub fn to_json(&self) -> Value {
         let card_size = json!({
-            "width" : self.width,
-            "height": self.height
+            "width" : self.card_width,
+            "height": self.card_height
         });
+
         json!({
-            "showSidePanel": self.hide == 0,
-            "cardSize": card_size
+            "showSidePanel": self.hide_panel == 0,
+            "cardSize": card_size,
+            "skipFolders": self.to_skip_folder_list()
         })
+    }
+
+    fn to_skip_folder_list(&self) -> Vec<String> {
+        if self.skip_folders.is_empty() {
+            return vec![];
+        }
+        return self.skip_folders.split(",").map(|v| v.trim().to_string()).collect();
+    }
+}
+
+#[derive(sqlx::FromRow)]
+#[derive(Serialize, Deserialize)]
+pub struct SkipFolders {
+    skip_folders: String,
+}
+
+impl SkipFolders {
+    pub fn get_skip_folder_list(&self) -> Vec<String> {
+        return self.skip_folders.split(",").map(|v| v.trim().to_string()).collect();
     }
 }
 

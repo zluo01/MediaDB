@@ -7,7 +7,8 @@ pub const CREAT_TABLE_QUERY: &str =
             primary key,
         hide_panel  INTEGER not null,
         card_width  INTEGER not null,
-        card_height INTEGER not null
+        card_height INTEGER not null,
+        skip_folders TEXT default '' not null
     );
     INSERT INTO settings (settings_id, hide_panel, card_width, card_height)
     VALUES (0, 0, 240, 320);
@@ -26,7 +27,13 @@ pub const CREAT_TABLE_QUERY: &str =
 //language=sqlite
 pub const GET_SETTINGS: &str =
     "
-    SELECT hide_panel as hide, card_width as width, card_height as height FROM  settings
+    SELECT * FROM  settings
+    ";
+
+//language=sqlite
+pub const GET_SKIP_FOLDERS: &str =
+    "
+    SELECT skip_folders FROM settings
     ";
 
 //language=sqlite
@@ -39,6 +46,12 @@ pub const UPDATE_HIDE_PANEL: &str =
 pub const CHANGE_CARD_SIZE: &str =
     "
     UPDATE settings SET card_width = ?, card_height=? WHERE settings_id=0
+    ";
+
+//language=sqlite
+pub const UPDATE_SKIP_FOLDERS: &str =
+    "
+    UPDATE settings SET skip_folders = ? WHERE settings_id=0
     ";
 
 //language=sqlite
