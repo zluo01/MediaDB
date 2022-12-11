@@ -1,6 +1,9 @@
 import Footer from '@/components/Footer';
-import { buildDirectory, notify, openFile } from '@/lib/os';
-import { revalidateFolderData, updateSortType } from '@/lib/queries';
+import { notify, openFile } from '@/lib/os';
+import {
+  useCreateLibraryTrigger,
+  useUpdateSortTypeTrigger,
+} from '@/lib/queries';
 import { useAppSelector } from '@/lib/source';
 import { RootState } from '@/lib/source/store';
 import {
@@ -35,7 +38,6 @@ import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import path from 'path';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSWRConfig } from 'swr';
 
 import MediaGrid from './content';
 import {
@@ -109,7 +111,13 @@ function ScrollTop(props: IScrollProps) {
 function Content({ setting, folderData }: IContentProps): JSX.Element {
   const anchorRef = useRef<HTMLButtonElement>(null);
 
-  const { mutate } = useSWRConfig();
+  const { trigger: sortTypeTrigger } = useUpdateSortTypeTrigger(
+    folderData.position
+  );
+
+  const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
+    folderData.position
+  );
 
   const { tags, genres, actors, studios } = useAppSelector(
     (state: RootState) => state.filter
@@ -230,7 +238,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
   }
 
   async function update(type: string) {
-    await updateSortType(mutate, folderData.position, type);
+    await sortTypeTrigger(type);
     setOpen(false);
   }
 
@@ -240,8 +248,10 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     e.preventDefault();
     setRefresh(true);
     try {
-      await buildDirectory({ ...folderData }, true);
-      await revalidateFolderData(mutate, folderData.position);
+      await createLibraryTrigger({
+        folder: { ...folderData },
+        update: true,
+      });
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
     } finally {

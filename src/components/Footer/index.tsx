@@ -1,10 +1,9 @@
 import { notify } from '@/lib/os';
-import { updateCardSize } from '@/lib/queries';
+import { useChangeCardSizeTrigger } from '@/lib/queries';
 import { DefaultSetting } from '@/lib/storage';
 import { ISetting } from '@/type';
 import { Slider, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useSWRConfig } from 'swr';
 
 const StyledFooter = styled('div')(({ theme }) => ({
   position: 'fixed',
@@ -29,7 +28,7 @@ interface IFooter {
 }
 
 function Footer({ setting, selected }: IFooter): JSX.Element {
-  const { mutate } = useSWRConfig();
+  const { trigger } = useChangeCardSizeTrigger();
 
   function computeValue(): number {
     const ratio = setting.cardSize.width / DefaultSetting.cardSize.width;
@@ -39,7 +38,7 @@ function Footer({ setting, selected }: IFooter): JSX.Element {
   async function onChange(_event: any, value: number | number[]) {
     const ratio = (value as number) / 100;
     try {
-      await updateCardSize(mutate, {
+      await trigger({
         width: Math.round(DefaultSetting.cardSize.width * ratio),
         height: Math.round(DefaultSetting.cardSize.height * ratio),
       });

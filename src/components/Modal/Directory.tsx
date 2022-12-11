@@ -1,11 +1,10 @@
-import { buildDirectory, getDirectory, notify } from '@/lib/os';
-import { revalidateFolderData } from '@/lib/queries';
+import { getDirectory, notify } from '@/lib/os';
+import { useCreateLibraryTrigger } from '@/lib/queries';
 import { IFolder } from '@/type';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { useSWRConfig } from 'swr';
 
 import {
   ActionButtonGroups,
@@ -27,7 +26,9 @@ function DirectoryModal({
   folderList,
 }: IDirectoryModal): JSX.Element {
   const router = useRouter();
-  const { mutate } = useSWRConfig();
+  const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
+    folderList.length
+  );
 
   const [name, setName] = useState('');
   const [path, setPath] = useState('');
@@ -46,8 +47,9 @@ function DirectoryModal({
     e.preventDefault();
     setLoading(true);
     try {
-      await buildDirectory({ position: 0, name, path });
-      await revalidateFolderData(mutate, folderList.length);
+      await createLibraryTrigger({
+        folder: { position: 0, name, path },
+      });
       await handleClose();
       await router.reload();
     } catch (e) {

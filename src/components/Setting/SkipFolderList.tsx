@@ -1,5 +1,5 @@
 import { notify } from '@/lib/os';
-import { updateSkipFolders } from '@/lib/queries';
+import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FolderIcon from '@mui/icons-material/Folder';
 import {
@@ -11,19 +11,17 @@ import {
   ListItemText,
 } from '@mui/material';
 import React from 'react';
-import { useSWRConfig } from 'swr';
 
 interface ISkipFolderListProps {
   skipFolders: string[];
 }
 
 function SkipFolderList({ skipFolders }: ISkipFolderListProps): JSX.Element {
-  const { mutate } = useSWRConfig();
+  const { trigger } = useUpdateSkipFoldersTrigger();
 
   async function handleRemove(folder: string) {
     try {
-      const newSkipFolders = skipFolders.filter(o => o !== folder).join(',');
-      await updateSkipFolders(mutate, newSkipFolders);
+      await trigger(skipFolders.filter(o => o !== folder).join(','));
     } catch (e) {
       await notify(`Update Folder Error: ${e}`);
     }

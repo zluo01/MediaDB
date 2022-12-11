@@ -1,9 +1,8 @@
 import { getDirectory, notify } from '@/lib/os';
-import { updateFolderPath, useGetFolderQuery } from '@/lib/queries';
+import { useGetFolderQuery, useUpdateFolderPathTrigger } from '@/lib/queries';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useSWRConfig } from 'swr';
 
 import {
   ActionButtonGroups,
@@ -20,8 +19,8 @@ interface IFolderNameEdit {
 }
 
 function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
-  const { mutate } = useSWRConfig();
   const { data: folder } = useGetFolderQuery(index);
+  const { trigger } = useUpdateFolderPathTrigger(folder?.position);
 
   const [path, setPath] = useState(folder?.path || '');
   const [loading, setLoading] = useState(false);
@@ -40,7 +39,7 @@ function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
     e.preventDefault();
     setLoading(true);
     try {
-      await updateFolderPath(mutate, { ...folder, path });
+      await trigger({ ...folder, path });
       setLoading(false);
       setPath('');
       close();

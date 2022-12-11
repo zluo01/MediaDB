@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import FolderList from '@/components/Setting/FolderList';
 import SkipFolderList from '@/components/Setting/SkipFolderList';
 import { notify } from '@/lib/os';
-import { useGetSettingQuery, hidePanel } from '@/lib/queries';
+import { useGetSettingQuery, useHidePanelTrigger } from '@/lib/queries';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Checkbox,
@@ -17,7 +17,6 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { useSWRConfig } from 'swr';
 
 const SettingDivider = styled(Divider)(({ theme }) => ({
   backgroundColor: theme.palette.text.secondary,
@@ -36,7 +35,7 @@ const SkipFolderModal = dynamic(() => import('@/components/Modal/SkipFolder'), {
 });
 
 function Setting(): JSX.Element {
-  const { mutate } = useSWRConfig();
+  const { trigger } = useHidePanelTrigger();
   const { data: setting } = useGetSettingQuery();
 
   const [openModal, setOpenModal] = useState(false);
@@ -51,7 +50,7 @@ function Setting(): JSX.Element {
 
   async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
     try {
-      await hidePanel(mutate, event.target.checked);
+      await trigger(event.target.checked);
     } catch (e) {
       await notify(`Check Box Error: ${e}`);
     }

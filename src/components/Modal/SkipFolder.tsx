@@ -1,8 +1,7 @@
 import { notify } from '@/lib/os';
-import { updateSkipFolders } from '@/lib/queries';
+import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import { Dialog, TextField } from '@mui/material';
 import React, { useState } from 'react';
-import { useSWRConfig } from 'swr';
 
 import {
   ActionButtonGroups,
@@ -22,7 +21,7 @@ function SkipFolderModal({
   close,
   skipFolders,
 }: ISkipFolderModal): JSX.Element {
-  const { mutate } = useSWRConfig();
+  const { trigger } = useUpdateSkipFoldersTrigger();
 
   const [folder, setFolder] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,7 +32,7 @@ function SkipFolderModal({
     e.preventDefault();
     setLoading(true);
     try {
-      await updateSkipFolders(mutate, [...skipFolders, folder].join(','));
+      await trigger([...skipFolders, folder].join(','));
       setLoading(false);
       close();
     } catch (e) {
