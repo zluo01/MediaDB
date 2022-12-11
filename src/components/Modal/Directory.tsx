@@ -1,9 +1,16 @@
 import { getDirectory, notify } from '@/lib/os';
 import { useCreateLibraryTrigger } from '@/lib/queries';
+import { useAppDispatch, useAppSelector } from '@/lib/source';
+import {
+  closeDirectoryModal,
+  updateDirectoryData,
+  updateName,
+  updatePath,
+} from '@/lib/source/slice/directoryModalSlice';
+import { RootState } from '@/lib/source/store';
 import { IFolder } from '@/type';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import {
@@ -15,30 +22,31 @@ import {
 } from './styles';
 
 interface IDirectoryModal {
-  open: boolean;
-  close: () => void;
   folderList: IFolder[];
 }
 
-function DirectoryModal({
-  open,
-  close,
-  folderList,
-}: IDirectoryModal): JSX.Element {
-  const router = useRouter();
+function DirectoryModal({ folderList }: IDirectoryModal): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const { name, path, open } = useAppSelector(
+    (state: RootState) => state.directoryModal
+  );
+
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
     folderList.length
   );
 
-  const [name, setName] = useState('');
-  const [path, setPath] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleDirectory() {
-    const dir = await getDirectory();
-    const name = dir.split('\\').pop().split('/').pop();
-    setName(name);
-    setPath(dir);
+    const path = await getDirectory();
+    const name = path.split('\\').pop().split('/').pop();
+    dispatch(
+      updateDirectoryData({
+        name,
+        path,
+      })
+    );
   }
 
   async function handleSubmit(
@@ -50,17 +58,15 @@ function DirectoryModal({
       await createLibraryTrigger({
         folder: { position: 0, name, path },
       });
-      await handleClose();
-      await router.reload();
+      setLoading(false);
+      await close();
     } catch (e) {
       await notify(`Import Folders Error: ${e}`);
-    } finally {
-      setLoading(false);
     }
   }
 
-  async function handleClose() {
-    close();
+  function close() {
+    dispatch(closeDirectoryModal());
   }
 
   async function onClose() {
@@ -87,7 +93,7 @@ function DirectoryModal({
           margin="dense"
           variant="standard"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={e => dispatch(updateName(e.target.value))}
           error={nameError || !name}
           helperText={nameError && 'Name Already Exists'}
           disabled={loading}
@@ -107,7 +113,7 @@ function DirectoryModal({
               </MoreButton>
             ),
           }}
-          onChange={e => setPath(e.target.value)}
+          onChange={e => dispatch(updatePath(e.target.value))}
           disabled={loading}
           autoFocus
           required
@@ -115,7 +121,7 @@ function DirectoryModal({
         />
       </ModalContent>
       <ActionButtonGroups>
-        <DialogButton onClick={handleClose} disabled={loading}>
+        <DialogButton onClick={close} disabled={loading}>
           Cancel
         </DialogButton>
         <DialogButton

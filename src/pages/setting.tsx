@@ -4,6 +4,8 @@ import FolderList from '@/components/Setting/FolderList';
 import SkipFolderList from '@/components/Setting/SkipFolderList';
 import { notify } from '@/lib/os';
 import { useGetSettingQuery, useHidePanelTrigger } from '@/lib/queries';
+import { useAppDispatch } from '@/lib/source';
+import { openSkipFolderModal } from '@/lib/source/slice/skipFolderModalSlice';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Checkbox,
@@ -16,7 +18,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
+import React from 'react';
 
 const SettingDivider = styled(Divider)(({ theme }) => ({
   backgroundColor: theme.palette.text.secondary,
@@ -35,17 +37,13 @@ const SkipFolderModal = dynamic(() => import('@/components/Modal/SkipFolder'), {
 });
 
 function Setting(): JSX.Element {
+  const dispatch = useAppDispatch();
+
   const { trigger } = useHidePanelTrigger();
   const { data: setting } = useGetSettingQuery();
 
-  const [openModal, setOpenModal] = useState(false);
-
   function handleOpen() {
-    setOpenModal(true);
-  }
-
-  function handleClose() {
-    setOpenModal(false);
+    dispatch(openSkipFolderModal());
   }
 
   async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
@@ -96,11 +94,7 @@ function Setting(): JSX.Element {
           </IconButton>
         </Stack>
         <SkipFolderList skipFolders={setting.skipFolders} />
-        <SkipFolderModal
-          open={openModal}
-          close={handleClose}
-          skipFolders={setting.skipFolders}
-        />
+        <SkipFolderModal skipFolders={setting.skipFolders} />
       </Container>
     );
   }

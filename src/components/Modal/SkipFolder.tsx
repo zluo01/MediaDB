@@ -1,5 +1,11 @@
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
+import { useAppDispatch, useAppSelector } from '@/lib/source';
+import {
+  closeSkipFolderModal,
+  updateSkipFolderName,
+} from '@/lib/source/slice/skipFolderModalSlice';
+import { RootState } from '@/lib/source/store';
 import { Dialog, TextField } from '@mui/material';
 import React, { useState } from 'react';
 
@@ -11,20 +17,22 @@ import {
 } from './styles';
 
 interface ISkipFolderModal {
-  open: boolean;
-  close: () => void;
   skipFolders: string[];
 }
 
-function SkipFolderModal({
-  open,
-  close,
-  skipFolders,
-}: ISkipFolderModal): JSX.Element {
+function SkipFolderModal({ skipFolders }: ISkipFolderModal): JSX.Element {
   const { trigger } = useUpdateSkipFoldersTrigger();
 
-  const [folder, setFolder] = useState('');
+  const dispatch = useAppDispatch();
+  const { name, open } = useAppSelector(
+    (state: RootState) => state.skipFolderModal
+  );
+
   const [loading, setLoading] = useState(false);
+
+  function close() {
+    dispatch(closeSkipFolderModal());
+  }
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -32,7 +40,7 @@ function SkipFolderModal({
     e.preventDefault();
     setLoading(true);
     try {
-      await trigger([...skipFolders, folder].join(','));
+      await trigger([...skipFolders, name].join(','));
       setLoading(false);
       close();
     } catch (e) {
@@ -40,7 +48,7 @@ function SkipFolderModal({
     }
   }
 
-  const nameError = skipFolders.includes(folder);
+  const nameError = skipFolders.includes(name);
 
   return (
     <Dialog
@@ -57,10 +65,10 @@ function SkipFolderModal({
           type="text"
           margin="normal"
           variant="standard"
-          value={folder}
-          onChange={e => setFolder(e.target.value)}
+          value={name}
+          onChange={e => dispatch(updateSkipFolderName(e.target.value))}
           disabled={loading}
-          error={nameError || !folder}
+          error={nameError || !name}
           helperText={nameError && 'Name Already Exists'}
           autoFocus
           fullWidth

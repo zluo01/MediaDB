@@ -1,5 +1,7 @@
 import { notify } from '@/lib/os';
 import { useGetFolderListQuery, useRemoveFolderTrigger } from '@/lib/queries';
+import { useAppDispatch } from '@/lib/source';
+import { openEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
 import { updateFolderList } from '@/lib/storage';
 import { IFolder } from '@/type';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,6 +27,8 @@ import {
 const EditFolderModal = dynamic(() => import('@/components/Modal/Folder'));
 
 function FolderList(): JSX.Element {
+  const dispatch = useAppDispatch();
+
   const { data: folderList, mutate: revalidateFolderList } =
     useGetFolderListQuery();
   const { trigger } = useRemoveFolderTrigger();
@@ -67,6 +71,11 @@ function FolderList(): JSX.Element {
     }
   }
 
+  function openModal(id: number) {
+    setFolderIndex(id);
+    dispatch(openEditFolderModal());
+  }
+
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -99,7 +108,7 @@ function FolderList(): JSX.Element {
                             size={'large'}
                             edge="end"
                             aria-label="edit"
-                            onClick={() => setFolderIndex(folder.position)}
+                            onClick={() => openModal(folder.position)}
                           >
                             <EditIcon />
                           </IconButton>
@@ -122,11 +131,7 @@ function FolderList(): JSX.Element {
           )}
         </Droppable>
       </DragDropContext>
-      <EditFolderModal
-        open={folderIndex >= 0}
-        close={() => setFolderIndex(-1)}
-        index={folderIndex}
-      />
+      <EditFolderModal index={folderIndex} />
     </>
   );
 }

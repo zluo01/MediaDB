@@ -1,4 +1,6 @@
 import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
+import { useAppDispatch } from '@/lib/source';
+import { openDirectoryModal } from '@/lib/source/slice/directoryModalSlice';
 import AddIcon from '@mui/icons-material/Add';
 import FolderIcon from '@mui/icons-material/Folder';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -16,7 +18,7 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React from 'react';
 
 const DirectoryModal = dynamic(() => import('@/components/Modal/Directory'), {
   ssr: false,
@@ -43,20 +45,15 @@ interface ISidePanel {
 
 function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const isSettingPage = router.asPath === '/setting';
 
   const { data: setting } = useGetSettingQuery();
   const { data: folderList } = useGetFolderListQuery();
 
-  const [openModal, setOpenModal] = useState(false);
-
   function handleOpen() {
-    setOpenModal(true);
-  }
-
-  function handleClose() {
-    setOpenModal(false);
+    dispatch(openDirectoryModal());
   }
 
   return (
@@ -120,11 +117,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
           </FunctionList>
         </Box>
       </Panel>
-      <DirectoryModal
-        open={openModal}
-        close={handleClose}
-        folderList={folderList}
-      />
+      <DirectoryModal folderList={folderList} />
     </>
   );
 }

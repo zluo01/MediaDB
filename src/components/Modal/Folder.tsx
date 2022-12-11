@@ -1,5 +1,8 @@
 import { getDirectory, notify } from '@/lib/os';
 import { useGetFolderQuery, useUpdateFolderPathTrigger } from '@/lib/queries';
+import { useAppDispatch, useAppSelector } from '@/lib/source';
+import { closeEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
+import { RootState } from '@/lib/source/store';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Dialog, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -13,12 +16,14 @@ import {
 } from './styles';
 
 interface IFolderNameEdit {
-  open: boolean;
-  close: () => void;
   index: number;
 }
 
-function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
+function EditFolderModal({ index }: IFolderNameEdit): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const { open } = useAppSelector((state: RootState) => state.editFolderModal);
+
   const { data: folder } = useGetFolderQuery(index);
   const { trigger } = useUpdateFolderPathTrigger(folder?.position);
 
@@ -28,6 +33,10 @@ function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
   useEffect(() => {
     setPath(folder?.path);
   }, [folder?.path]);
+
+  function close() {
+    dispatch(closeEditFolderModal());
+  }
 
   async function handleDirectory() {
     setPath(await getDirectory());
@@ -99,4 +108,4 @@ function FolderEditModal({ open, close, index }: IFolderNameEdit): JSX.Element {
   );
 }
 
-export default FolderEditModal;
+export default EditFolderModal;
