@@ -33,7 +33,7 @@ function DirectoryModal({ folderList }: IDirectoryModal): JSX.Element {
   );
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
-    folderList.length
+    folderList?.length
   );
 
   const [loading, setLoading] = useState(false);
