@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
+import { version } from 'package.json';
 import React from 'react';
 
 const SettingDivider = styled(Divider)(({ theme }) => ({
@@ -30,6 +31,10 @@ const SettingTitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
   marginTop: 6,
   marginBottom: 6,
+}));
+
+const Version = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
 }));
 
 const SkipFolderModal = dynamic(() => import('@/components/Modal/SkipFolder'), {
@@ -82,6 +87,7 @@ function Setting(): JSX.Element {
           direction="row"
           justifyContent="space-between"
           alignItems="center"
+          sx={{ pr: 2 }}
         >
           <SettingTitle variant="body1">Skipped Folders</SettingTitle>
           <IconButton
@@ -95,6 +101,15 @@ function Setting(): JSX.Element {
         </Stack>
         <SkipFolderList skipFolders={setting.skipFolders} />
         <SkipFolderModal skipFolders={setting.skipFolders} />
+        <SettingDivider />
+        <Version
+          variant={'body2'}
+          display={'block'}
+          align={'right'}
+          gutterBottom
+        >
+          {`v${version}`}
+        </Version>
       </Container>
     );
   }
