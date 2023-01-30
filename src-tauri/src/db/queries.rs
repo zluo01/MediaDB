@@ -1,7 +1,7 @@
 //language=sqlite
 pub const CREAT_TABLE_QUERY: &str =
     "
-    create table settings
+    create table if not exists settings
     (
         settings_id INTEGER not null
             primary key,
@@ -12,7 +12,7 @@ pub const CREAT_TABLE_QUERY: &str =
     );
     INSERT INTO settings (settings_id, hide_panel, card_width, card_height)
     VALUES (0, 0, 240, 320);
-    create table folder_data
+    create table if not exists folder_data
     (
         folder_name TEXT                     not null
             constraint folder_name
