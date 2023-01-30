@@ -11,7 +11,7 @@ pub const CREAT_TABLE_QUERY: &str =
         skip_folders TEXT default '' not null
     );
     INSERT INTO settings (settings_id, hide_panel, card_width, card_height)
-    VALUES (0, 0, 240, 320);
+    VALUES (0, 0, 240, 320) ON CONFLICT (settings_id) DO NOTHING ;
     create table if not exists folder_data
     (
         folder_name TEXT                     not null
