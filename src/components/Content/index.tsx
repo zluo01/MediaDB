@@ -18,10 +18,12 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import SortIcon from '@mui/icons-material/Sort';
+import {
+  FilterList,
+  KeyboardArrowUp,
+  Refresh,
+  Sort,
+} from '@mui/icons-material';
 import {
   Backdrop,
   CircularProgress,
@@ -286,7 +288,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
         <Divider />
         <ActionButton
           size={'small'}
-          startIcon={<FilterListIcon />}
+          startIcon={<FilterList />}
           disabled={disabled}
           onClick={() => setOpenFilter(prevState => !prevState)}
         >
@@ -294,7 +296,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
         </ActionButton>
         <ActionButton
           size={'small'}
-          startIcon={<SortIcon />}
+          startIcon={<Sort />}
           ref={anchorRef}
           disabled={disabled}
           aria-controls={open ? 'menu-list-grow' : undefined}
@@ -334,7 +336,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
         </StyledPopper>
         <RefreshButton
           size={'small'}
-          startIcon={<RefreshIcon />}
+          startIcon={<Refresh />}
           onClick={updateLibrary}
           disabled={disabled}
         >
@@ -354,7 +356,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
       />
       <ScrollTop>
         <StyledFab size="small" aria-label="scroll back to top">
-          <KeyboardArrowUpIcon />
+          <KeyboardArrowUp />
         </StyledFab>
       </ScrollTop>
       <FilterSection

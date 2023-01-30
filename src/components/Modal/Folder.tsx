@@ -3,7 +3,7 @@ import { useGetFolderQuery, useUpdateFolderPathTrigger } from '@/lib/queries';
 import { useAppDispatch, useAppSelector } from '@/lib/source';
 import { closeEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
 import { RootState } from '@/lib/source/store';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { MoreHoriz } from '@mui/icons-material';
 import { Dialog, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
@@ -85,7 +85,7 @@ function EditFolderModal({ index }: IFolderNameEdit): JSX.Element {
           InputProps={{
             endAdornment: (
               <MoreButton onClick={handleDirectory}>
-                <MoreHorizIcon />
+                <MoreHoriz />
               </MoreButton>
             ),
           }}

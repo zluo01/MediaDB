@@ -1,9 +1,7 @@
 import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
 import { useAppDispatch } from '@/lib/source';
 import { openDirectoryModal } from '@/lib/source/slice/directoryModalSlice';
-import AddIcon from '@mui/icons-material/Add';
-import FolderIcon from '@mui/icons-material/Folder';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { Add, Folder, Settings } from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -79,7 +77,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
                     onClick={() => router.push(`/?id=${folder.position}`)}
                   >
                     <ListItemIcon>
-                      <FolderIcon
+                      <Folder
                         style={{
                           fill: isCurr ? '#21e18c' : '#6f7a83',
                         }}
@@ -97,7 +95,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
             <Divider />
             <ListItemButton onClick={handleOpen}>
               <ListItemIcon>
-                <AddIcon sx={{ fill: '#6f7a83' }} />
+                <Add sx={{ fill: '#6f7a83' }} />
               </ListItemIcon>
               {setting?.showSidePanel && <ListItemText primary={'Add Video'} />}
             </ListItemButton>
@@ -106,7 +104,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
               disabled={isSettingPage}
             >
               <ListItemIcon>
-                <SettingsIcon
+                <Settings
                   style={{
                     fill: isSettingPage ? '#21e18c' : '#6f7a83',
                   }}

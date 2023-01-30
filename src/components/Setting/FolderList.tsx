@@ -4,9 +4,7 @@ import { useAppDispatch } from '@/lib/source';
 import { openEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
 import { updateFolderList } from '@/lib/storage';
 import { IFolder } from '@/type';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import FolderIcon from '@mui/icons-material/Folder';
+import { Delete, Edit, Folder } from '@mui/icons-material';
 import {
   IconButton,
   List,
@@ -97,7 +95,7 @@ function FolderList(): JSX.Element {
                     >
                       <ListItem>
                         <ListItemIcon>
-                          <FolderIcon />
+                          <Folder />
                         </ListItemIcon>
                         <ListItemText
                           primary={folder.name}
@@ -110,7 +108,7 @@ function FolderList(): JSX.Element {
                             aria-label="edit"
                             onClick={() => openModal(folder.position)}
                           >
-                            <EditIcon />
+                            <Edit />
                           </IconButton>
                           <IconButton
                             size={'large'}
@@ -118,7 +116,7 @@ function FolderList(): JSX.Element {
                             aria-label="delete"
                             onClick={() => handleRemove(folder)}
                           >
-                            <DeleteIcon />
+                            <Delete />
                           </IconButton>
                         </ListItemSecondaryAction>
                       </ListItem>

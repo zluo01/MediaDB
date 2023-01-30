@@ -9,7 +9,7 @@ import {
 } from '@/lib/source/slice/directoryModalSlice';
 import { RootState } from '@/lib/source/store';
 import { IFolder } from '@/type';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { MoreHoriz } from '@mui/icons-material';
 import { Dialog, TextField } from '@mui/material';
 import React, { useState } from 'react';
 
@@ -109,7 +109,7 @@ function DirectoryModal({ folderList }: IDirectoryModal): JSX.Element {
           InputProps={{
             endAdornment: (
               <MoreButton onClick={handleDirectory}>
-                <MoreHorizIcon />
+                <MoreHoriz />
               </MoreButton>
             ),
           }}

@@ -1,7 +1,6 @@
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FolderIcon from '@mui/icons-material/Folder';
+import { Delete, Folder } from '@mui/icons-material';
 import {
   IconButton,
   List,
@@ -32,7 +31,7 @@ function SkipFolderList({ skipFolders }: ISkipFolderListProps): JSX.Element {
       {skipFolders.map((folder, index) => (
         <ListItem key={index}>
           <ListItemIcon>
-            <FolderIcon />
+            <Folder />
           </ListItemIcon>
           <ListItemText primary={folder} />
           <ListItemSecondaryAction>
@@ -42,7 +41,7 @@ function SkipFolderList({ skipFolders }: ISkipFolderListProps): JSX.Element {
               aria-label="delete"
               onClick={() => handleRemove(folder)}
             >
-              <DeleteIcon />
+              <Delete />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>

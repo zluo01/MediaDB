@@ -6,7 +6,7 @@ import { notify } from '@/lib/os';
 import { useGetSettingQuery, useHidePanelTrigger } from '@/lib/queries';
 import { useAppDispatch } from '@/lib/source';
 import { openSkipFolderModal } from '@/lib/source/slice/skipFolderModalSlice';
-import AddIcon from '@mui/icons-material/Add';
+import { Add } from '@mui/icons-material';
 import {
   Checkbox,
   Container,
@@ -96,7 +96,7 @@ function Setting(): JSX.Element {
             aria-label="add"
             onClick={handleOpen}
           >
-            <AddIcon />
+            <Add />
           </IconButton>
         </Stack>
         <SkipFolderList skipFolders={setting.skipFolders} />

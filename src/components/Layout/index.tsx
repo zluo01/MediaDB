@@ -1,8 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/lib/source';
 import { search } from '@/lib/source/slice/controlSlice';
 import { RootState } from '@/lib/source/store';
-import CancelIcon from '@mui/icons-material/Cancel';
-import SearchIcon from '@mui/icons-material/Search';
+import { Cancel, Search as SearchIcon } from '@mui/icons-material';
 import {
   AppBar,
   Box,
@@ -141,7 +140,7 @@ function Layout({
                     onMouseDown={handleMouseDownSearch}
                     disabled={!searchContent}
                   >
-                    <CancelIcon />
+                    <Cancel />
                   </IconButton>
                 </InputAdornment>
               }
