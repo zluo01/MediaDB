@@ -110,7 +110,36 @@ function ScrollTop(props: IScrollProps) {
   );
 }
 
+function useContainerWidth(ref) {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    function getWidth() {
+      setWidth(ref.current.offsetWidth);
+    }
+
+    function handleResize() {
+      getWidth();
+    }
+
+    if (ref.current) {
+      getWidth();
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [ref]);
+
+  return width;
+}
+
 function Content({ setting, folderData }: IContentProps): JSX.Element {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const width = useContainerWidth(gridRef);
+
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const { trigger: sortTypeTrigger } = useUpdateSortTypeTrigger(
@@ -142,6 +171,10 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
 
   useEffect(() => {
     async function handleKeyPress(ev: KeyboardEvent) {
+      const columnNumber = Math.floor(width / setting.cardSize.width);
+      const c = current % columnNumber;
+      const r = Math.floor(current / columnNumber);
+      let index;
       switch (ev.key) {
         case 'ArrowLeft':
           setCurrent(prevState =>
@@ -150,6 +183,22 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
           break;
         case 'ArrowRight':
           setCurrent(prevState => (prevState + 1) % data.length);
+          break;
+        case 'ArrowUp':
+          ev.preventDefault();
+          index = (r - 1) * columnNumber + c;
+          if (index < 0) {
+            return;
+          }
+          setCurrent(index);
+          break;
+        case 'ArrowDown':
+          ev.preventDefault();
+          index = (r + 1) * columnNumber + c;
+          if (index > data.length - 1) {
+            return;
+          }
+          setCurrent(index);
           break;
         case 'Enter':
           if (
@@ -173,7 +222,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [current, data, folderData]);
+  }, [current, data, folderData, setting.cardSize, width]);
 
   function handleToggle() {
     setOpen(prevOpen => !prevOpen);
@@ -272,6 +321,8 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
     );
   }
 
+  console.log(Math.floor(width / setting.cardSize.width));
+
   const disabled = search !== '';
 
   return (
@@ -349,6 +400,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
         data={data}
         current={current}
         select={setCurrent}
+        ref={gridRef}
       />
       <Footer
         setting={setting}

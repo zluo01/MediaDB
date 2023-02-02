@@ -5,7 +5,7 @@ import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { lighten, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import path from 'path';
-import React, { useState } from 'react';
+import React, { ForwardedRef, useState } from 'react';
 
 import { CardInfo } from './styles';
 
@@ -21,13 +21,10 @@ interface ICardProps {
   select: (index: number) => void;
 }
 
-function MediaGrid({
-  folder,
-  data,
-  size,
-  current,
-  select,
-}: ICardProps): JSX.Element {
+function MediaGrid(
+  { folder, data, size, current, select }: ICardProps,
+  ref: ForwardedRef<HTMLDivElement>
+): JSX.Element {
   const cInfo = 60;
 
   const theme = useTheme();
@@ -53,6 +50,7 @@ function MediaGrid({
       sx={{
         gridTemplateColumns: `repeat(auto-fill, minmax(${width}px, 1fr))`,
       }}
+      ref={ref}
     >
       {data.map((media, index) => {
         const elevation = current === index ? 5 : 0;
@@ -113,4 +111,4 @@ function MediaGrid({
   );
 }
 
-export default MediaGrid;
+export default React.forwardRef(MediaGrid);
