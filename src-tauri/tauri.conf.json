@@ -18,15 +18,9 @@
       "notification": {
         "all": true
       },
-      "fs": {
-        "scope": [
-          "*"
-        ],
-        "removeDir": true
-      },
       "protocol": {
         "assetScope": [
-          "*"
+          "$APPDATA/thumbnails/**"
         ],
         "asset": true
       },

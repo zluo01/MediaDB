@@ -16,7 +16,7 @@ tauri-build = { version = "1.2.1", features = [] }
 [dependencies]
 serde_json = "1.0.91"
 serde = { version = "1.0.152", features = ["derive"] }
-tauri = { version = "1.2.4", features = ["dialog-open", "fs-remove-dir", "notification-all", "protocol-asset", "shell-open"] }
+tauri = { version = "1.2.4", features = ["dialog-open", "notification-all", "protocol-asset", "shell-open"] }
 roxmltree = "0.18.0"
 md5 = "0.7.0"
 sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "sqlite"] }
