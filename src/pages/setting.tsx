@@ -5,6 +5,7 @@ import SkipFolderList from '@/components/Setting/SkipFolderList';
 import { notify } from '@/lib/os';
 import { useGetSettingQuery, useHidePanelTrigger } from '@/lib/queries';
 import { useAppDispatch } from '@/lib/source';
+import { openDirectoryModal } from '@/lib/source/slice/directoryModalSlice';
 import { openSkipFolderModal } from '@/lib/source/slice/skipFolderModalSlice';
 import { Add } from '@mui/icons-material';
 import {
@@ -51,6 +52,10 @@ function Setting(): JSX.Element {
     dispatch(openSkipFolderModal());
   }
 
+  function handleOpenDirectoryModal() {
+    dispatch(openDirectoryModal());
+  }
+
   async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
     try {
       await trigger(event.target.checked);
@@ -81,7 +86,22 @@ function Setting(): JSX.Element {
           label="Show Slide Panel Button Name."
           labelPlacement="end"
         />
-        <SettingTitle variant="body1">Imported Folders</SettingTitle>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ pr: 2 }}
+        >
+          <SettingTitle variant="body1">Imported Folders</SettingTitle>
+          <IconButton
+            size={'large'}
+            edge="end"
+            aria-label="add"
+            onClick={handleOpenDirectoryModal}
+          >
+            <Add />
+          </IconButton>
+        </Stack>
         <FolderList />
         <Stack
           direction="row"

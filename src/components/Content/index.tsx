@@ -115,7 +115,7 @@ function useContainerWidth(ref) {
 
   useEffect(() => {
     function getWidth() {
-      setWidth(ref.current.offsetWidth);
+      setWidth(ref.current.clientWidth);
     }
 
     function handleResize() {
@@ -171,7 +171,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
 
   useEffect(() => {
     async function handleKeyPress(ev: KeyboardEvent) {
-      const columnNumber = Math.floor(width / setting.cardSize.width);
+      const columnNumber = Math.floor(width / (setting.cardSize.width + 10));
       const c = current % columnNumber;
       const r = Math.floor(current / columnNumber);
       let index;
@@ -320,8 +320,6 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
       </Backdrop>
     );
   }
-
-  console.log(Math.floor(width / setting.cardSize.width));
 
   const disabled = search !== '';
 

@@ -16,7 +16,7 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { Fragment } from 'react';
 
 const DirectoryModal = dynamic(() => import('@/components/Modal/Directory'), {
   ssr: false,
@@ -55,7 +55,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
   }
 
   return (
-    <>
+    <Fragment>
       <Panel
         variant="permanent"
         sx={{
@@ -116,7 +116,7 @@ function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
         </Box>
       </Panel>
       <DirectoryModal folderList={folderList} />
-    </>
+    </Fragment>
   );
 }
 

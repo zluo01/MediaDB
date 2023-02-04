@@ -14,7 +14,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -75,7 +75,7 @@ function FolderList(): JSX.Element {
   }
 
   return (
-    <>
+    <Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {provided => (
@@ -130,7 +130,7 @@ function FolderList(): JSX.Element {
         </Droppable>
       </DragDropContext>
       <EditFolderModal index={folderIndex} />
-    </>
+    </Fragment>
   );
 }
 
