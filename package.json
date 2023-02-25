@@ -22,7 +22,7 @@
     "@mui/icons-material": "5.11.9",
     "@mui/material": "5.11.10",
     "@next/font": "^13.1.6",
-    "@reduxjs/toolkit": "1.9.2",
+    "@reduxjs/toolkit": "1.9.3",
     "@tauri-apps/api": "1.2.0",
     "next": "13.1.6",
     "react": "18.2.0",
