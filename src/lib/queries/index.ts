@@ -11,7 +11,7 @@ import {
   updateFolderPathFromStorage,
   updateFolderSortType,
 } from '@/lib/storage';
-import { IFolder, IFolderData, ISetting } from '@/type';
+import { ICardSize, IFolder, IFolderData, ISetting } from '@/type';
 import useSWR, { useSWRConfig } from 'swr';
 import useSWRMutation from 'swr/mutation';
 
@@ -36,32 +36,46 @@ export function useGetFolderDataQuery(route: number) {
 }
 
 export function useUpdateSortTypeTrigger(position: number) {
-  return useSWRMutation(FOLDER_DETAIL_KEY(position), async (_url, { arg }) => {
-    await updateFolderSortType(position, arg);
-  });
+  return useSWRMutation(
+    FOLDER_DETAIL_KEY(position),
+    async (_url, opts: { arg: string }) => {
+      await updateFolderSortType(position, opts.arg);
+    }
+  );
+}
+
+interface ICreateLibraryProps {
+  folder: IFolder;
+  update?: boolean;
 }
 
 export function useCreateLibraryTrigger(position: number) {
   const { mutate } = useSWRConfig();
-  return useSWRMutation(FOLDER_DETAIL_KEY(position), async (_url, { arg }) => {
-    const { folder, update } = arg;
-    await buildDirectory(folder, update);
-    await mutate(FOLDER_LIST);
-  });
+  return useSWRMutation(
+    FOLDER_DETAIL_KEY(position),
+    async (_url, opts: { arg: ICreateLibraryProps }) => {
+      const { folder, update } = opts.arg;
+      await buildDirectory(folder, update);
+      await mutate(FOLDER_LIST);
+    }
+  );
 }
 
 export function useUpdateFolderPathTrigger(position: number) {
   const { mutate } = useSWRConfig();
-  return useSWRMutation(FOLDER_DETAIL_KEY(position), async (_url, { arg }) => {
-    await updateFolderPathFromStorage(arg);
-    await mutate(FOLDER_LIST);
-    await mutate(FOLDER_KEY(position));
-  });
+  return useSWRMutation(
+    FOLDER_DETAIL_KEY(position),
+    async (_url, opts: { arg: IFolder }) => {
+      await updateFolderPathFromStorage(opts.arg);
+      await mutate(FOLDER_LIST);
+      await mutate(FOLDER_KEY(position));
+    }
+  );
 }
 
 export function useRemoveFolderTrigger() {
-  return useSWRMutation(FOLDER_LIST, async (_url, { arg }) => {
-    await removeFolderFromStorage(arg);
+  return useSWRMutation(FOLDER_LIST, async (_url, opts: { arg: IFolder }) => {
+    await removeFolderFromStorage(opts.arg);
   });
 }
 
@@ -72,20 +86,20 @@ export function useGetSettingQuery() {
 export function useHidePanelTrigger() {
   return useSWRMutation(
     SETTING,
-    async (_url, { arg }) => await hideSidePanel(arg)
+    async (_url, opts: { arg: boolean }) => await hideSidePanel(opts.arg)
   );
 }
 
 export function useChangeCardSizeTrigger() {
   return useSWRMutation(
     SETTING,
-    async (_url, { arg }) => await changeCardSize(arg)
+    async (_url, opts: { arg: ICardSize }) => await changeCardSize(opts.arg)
   );
 }
 
 export function useUpdateSkipFoldersTrigger() {
   return useSWRMutation(
     SETTING,
-    async (_url, { arg }) => await changeSkipFolders(arg)
+    async (_url, opts: { arg: string }) => await changeSkipFolders(opts.arg)
   );
 }
