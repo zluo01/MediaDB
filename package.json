@@ -5,7 +5,7 @@
   "description": "manager for movie and tv shows",
   "scripts": {
     "next-dev": "next dev -p 1420",
-    "next-build": "next build && next export",
+    "next-build": "next build",
     "tauri": "tauri",
     "lint": "next lint",
     "build": "tauri build",
@@ -21,7 +21,6 @@
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.11.16",
     "@mui/material": "5.13.6",
-    "@next/font": "13.4.7",
     "@reduxjs/toolkit": "1.9.5",
     "@tauri-apps/api": "1.4.0",
     "next": "13.4.7",
