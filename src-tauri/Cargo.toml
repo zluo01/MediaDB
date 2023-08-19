@@ -20,7 +20,7 @@ tauri = { version = "1.4.1", features = ["dialog-open", "notification-all", "pro
 roxmltree = "0.18.0"
 md5 = "0.7.0"
 sqlx = { version = "0.7", features = ["runtime-tokio-native-tls", "sqlite"] }
-tokio = { version = "1.31.0", features = ["full"] }
+tokio = { version = "1.32.0", features = ["full"] }
 
 [features]
 # by default Tauri runs in production mode
