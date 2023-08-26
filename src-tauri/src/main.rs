@@ -6,6 +6,7 @@ windows_subsystem = "windows"
 extern crate core;
 
 use std::fs;
+use log::error;
 use serde_json::Value;
 use tauri::{Manager, Runtime};
 
@@ -41,6 +42,7 @@ fn get_data_path<R: Runtime>(app_handle: tauri::AppHandle<R>) -> String {
 async fn get_setting<R: Runtime>(app_handle: tauri::AppHandle<R>) -> Result<Value, String> {
     let setting_result = db::main::get_settings(&app_handle).await;
     if let Err(e) = setting_result {
+        error!("{:?}", e.into_database_error());
         return Err(format!("Fail to get setting. Raising Error: {:?}", e.into_database_error()));
     }
     let setting = setting_result.unwrap();
