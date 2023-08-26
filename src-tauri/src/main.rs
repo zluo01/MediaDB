@@ -5,9 +5,8 @@ windows_subsystem = "windows"
 
 extern crate core;
 
-use std::fs;
-use serde_json::Value;
 use tauri::{Manager, Runtime};
+use tauri_plugin_log::{LogTarget};
 
 mod parser;
 mod db;
@@ -151,6 +150,11 @@ async fn delete_folder<R: Runtime>(app_handle: tauri::AppHandle<R>, name: &str, 
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_log::Builder::default().targets([
+            LogTarget::LogDir,
+            LogTarget::Stdout,
+            LogTarget::Webview,
+        ]))
         .invoke_handler(tauri::generate_handler![
             parser,get_data_path,
             get_setting,
