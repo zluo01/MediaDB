@@ -18,7 +18,7 @@ export async function openFile(path: string): Promise<void> {
 
 export async function buildDirectory(
   folder: IFolder,
-  update?: boolean
+  update?: boolean,
 ): Promise<void> {
   await invoke('parser', { ...folder, update: update || false });
 }

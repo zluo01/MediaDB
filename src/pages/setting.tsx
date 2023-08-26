@@ -20,7 +20,7 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { version } from 'package.json';
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 const SettingDivider = styled(Divider)(({ theme }) => ({
   backgroundColor: theme.palette.text.secondary,
@@ -42,7 +42,7 @@ const SkipFolderModal = dynamic(() => import('@/components/Modal/SkipFolder'), {
   ssr: false,
 });
 
-function Setting(): JSX.Element {
+function Setting(): ReactElement {
   const dispatch = useAppDispatch();
 
   const { trigger } = useHidePanelTrigger();
@@ -64,7 +64,7 @@ function Setting(): JSX.Element {
     }
   }
 
-  function Content(): JSX.Element {
+  function Content(): ReactElement {
     if (!setting) {
       return <Loading />;
     }

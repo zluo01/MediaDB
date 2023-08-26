@@ -6,12 +6,13 @@ import { RootState } from '@/lib/source/store';
 import { IFolderData } from '@/type';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { ReactElement } from 'react';
 
 const Content = dynamic(() => import('@/components/Content'), {
   ssr: false,
 });
 
-function Home(): JSX.Element {
+function Home(): ReactElement {
   const router = useRouter();
   const { search } = useAppSelector((state: RootState) => state.control);
 
@@ -27,14 +28,14 @@ function Home(): JSX.Element {
       return {
         ...folderData,
         data: folderData.data.filter(o =>
-          o.title.toLowerCase().includes(search.toLowerCase())
+          o.title.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
     return folderData;
   }
 
-  function Contents(): JSX.Element {
+  function Contents(): ReactElement {
     if (isGetSettingLoading || isGetFolderDataLoading) {
       return <Loading />;
     }

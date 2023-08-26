@@ -39,7 +39,7 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import path from 'path';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 
 import MediaGrid from './content';
 import {
@@ -136,22 +136,22 @@ function useContainerWidth(ref) {
   return width;
 }
 
-function Content({ setting, folderData }: IContentProps): JSX.Element {
+function Content({ setting, folderData }: IContentProps): ReactElement {
   const gridRef = useRef<HTMLDivElement>(null);
   const width = useContainerWidth(gridRef);
 
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const { trigger: sortTypeTrigger } = useUpdateSortTypeTrigger(
-    folderData.position
+    folderData.position,
   );
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
-    folderData.position
+    folderData.position,
   );
 
   const { tags, genres, actors, studios } = useAppSelector(
-    (state: RootState) => state.filter
+    (state: RootState) => state.filter,
   );
   const search = useAppSelector((state: RootState) => state.control.search);
 
@@ -174,11 +174,11 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
       const columnNumber = Math.floor(width / (setting.cardSize.width + 10));
       const c = current % columnNumber;
       const r = Math.floor(current / columnNumber);
-      let index;
+      let index: number;
       switch (ev.key) {
         case 'ArrowLeft':
           setCurrent(prevState =>
-            prevState - 1 < 0 ? data.length - 1 : prevState - 1
+            prevState - 1 < 0 ? data.length - 1 : prevState - 1,
           );
           break;
         case 'ArrowRight':
@@ -209,7 +209,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
             const filePath = path.join(
               folderData.path,
               media.relativePath,
-              media.file
+              media.file,
             );
             await openFile(filePath);
           }
@@ -252,25 +252,25 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
         break;
       case TITLE_ASC:
         media.sort((a: IMediaData, b: IMediaData) =>
-          a.title > b.title ? 1 : -1
+          a.title > b.title ? 1 : -1,
         );
         break;
       case TITLE_DSC:
         media.sort((a: IMediaData, b: IMediaData) =>
-          a.title < b.title ? 1 : -1
+          a.title < b.title ? 1 : -1,
         );
         break;
       case YEAR_DSC:
         if (media[0].type === MOVIE) {
           media.sort((a: IMediaData, b: IMediaData) =>
-            (a as IMovieData).year < (b as IMovieData).year ? 1 : -1
+            (a as IMovieData).year < (b as IMovieData).year ? 1 : -1,
           );
         }
         break;
       case YEAR_ASC:
         if (media[0].type === MOVIE) {
           media.sort((a: IMediaData, b: IMediaData) =>
-            (a as IMovieData).year > (b as IMovieData).year ? 1 : -1
+            (a as IMovieData).year > (b as IMovieData).year ? 1 : -1,
           );
         }
         break;
@@ -294,7 +294,7 @@ function Content({ setting, folderData }: IContentProps): JSX.Element {
   }
 
   async function updateLibrary(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
     setRefresh(true);

@@ -3,6 +3,7 @@ import { convertFileSrc } from '@tauri-apps/api/tauri';
 import crypto from 'crypto';
 import Image, { ImageProps } from 'next/image';
 import path from 'path';
+import { ReactElement } from 'react';
 
 interface IImageLoaderPops extends ImageProps {
   folder: IFolder;
@@ -27,14 +28,18 @@ const toBase64 = (str: string) =>
     ? Buffer.from(str).toString('base64')
     : window.btoa(str);
 
-function ImageLoader({ folder, src, ...props }: IImageLoaderPops): JSX.Element {
+function ImageLoader({
+  folder,
+  src,
+  ...props
+}: IImageLoaderPops): ReactElement {
   function getCacheImagePath(src: string): string {
     const fileName = crypto
       .createHash('md5')
       .update(src.replace('\\', '/')) // handle windows path
       .digest('hex');
     return convertFileSrc(
-      path.join(folder.appDir, 'thumbnails', folder.name, fileName)
+      path.join(folder.appDir, 'thumbnails', folder.name, fileName),
     );
   }
 
@@ -44,7 +49,7 @@ function ImageLoader({ folder, src, ...props }: IImageLoaderPops): JSX.Element {
       src={getCacheImagePath(src as string)}
       placeholder={'blur'}
       blurDataURL={`data:image/svg+xml;base64,${toBase64(
-        shimmer(props.width as number, props.height as number)
+        shimmer(props.width as number, props.height as number),
       )}`}
       {...props}
     />

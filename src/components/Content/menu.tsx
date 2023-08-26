@@ -4,7 +4,7 @@ import { IEpisode, IFolder, ITVShowData } from '@/type';
 import { AppBar, Box, Button, Tab, Tabs, Tooltip } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import path from 'path';
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 const Section = styled('div')(() => ({
   height: '38.2vh',
@@ -76,7 +76,7 @@ interface ITVShowCardMenuProps {
 export default function TVShowCardMenu({
   folder,
   data,
-}: ITVShowCardMenuProps): JSX.Element {
+}: ITVShowCardMenuProps): ReactElement {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 
@@ -129,7 +129,7 @@ export default function TVShowCardMenu({
                 folder={folder}
                 src={path.join(
                   data.relativePath,
-                  data.posters[key] || data.posters['main']
+                  data.posters[key] || data.posters['main'],
                 )}
                 alt={data.title}
                 width={220}

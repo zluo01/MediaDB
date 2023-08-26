@@ -7,7 +7,7 @@ import {
 } from '@/lib/source/slice/skipFolderModalSlice';
 import { RootState } from '@/lib/source/store';
 import { Dialog, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   ActionButtonGroups,
@@ -20,12 +20,12 @@ interface ISkipFolderModal {
   skipFolders: string[];
 }
 
-function SkipFolderModal({ skipFolders }: ISkipFolderModal): JSX.Element {
+function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
   const { trigger } = useUpdateSkipFoldersTrigger();
 
   const dispatch = useAppDispatch();
   const { name, open } = useAppSelector(
-    (state: RootState) => state.skipFolderModal
+    (state: RootState) => state.skipFolderModal,
   );
 
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): JSX.Element {
   }
 
   async function handleSubmit(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
     setLoading(true);

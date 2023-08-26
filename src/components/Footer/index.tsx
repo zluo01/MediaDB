@@ -4,6 +4,7 @@ import { DefaultSetting } from '@/lib/storage';
 import { ISetting } from '@/type';
 import { Slider, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { ReactElement } from 'react';
 
 const StyledFooter = styled('div')(({ theme }) => ({
   position: 'fixed',
@@ -27,7 +28,7 @@ interface IFooter {
   selected: string;
 }
 
-function Footer({ setting, selected }: IFooter): JSX.Element {
+function Footer({ setting, selected }: IFooter): ReactElement {
   const { trigger } = useChangeCardSizeTrigger();
 
   function computeValue(): number {

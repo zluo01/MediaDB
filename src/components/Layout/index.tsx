@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
-import React, { ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import Drawer from './drawer';
 
@@ -85,16 +85,16 @@ function Layout({
   children,
   currFolderIndex,
   disableSearch,
-}: ILayoutProps): JSX.Element {
+}: ILayoutProps): ReactElement {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
   const searchContent = useAppSelector(
-    (state: RootState) => state.control.search
+    (state: RootState) => state.control.search,
   );
 
   function handleSearch(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     dispatch(search(e.target.value));
   }

@@ -4,7 +4,7 @@ import { RootState } from '@/lib/source/store';
 import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
 import { Button, Chip, Drawer, Stack, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import React from 'react';
+import { ReactElement } from 'react';
 
 const FilterPanel = styled(Drawer)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
@@ -35,7 +35,7 @@ interface IFilerSection {
 
 const FILTER_TAGS = [GENRE, ACTOR, STUDIO, TAG];
 
-function Filters({ folderData, open, close }: IFilerSection): JSX.Element {
+function Filters({ folderData, open, close }: IFilerSection): ReactElement {
   const theme = useTheme();
 
   const dispatch = useAppDispatch();
@@ -46,7 +46,7 @@ function Filters({ folderData, open, close }: IFilerSection): JSX.Element {
       updateFilter({
         tag,
         name,
-      })
+      }),
     );
   }
 

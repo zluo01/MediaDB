@@ -9,13 +9,13 @@ import {
   ListItemSecondaryAction,
   ListItemText,
 } from '@mui/material';
-import React from 'react';
+import { ReactElement } from 'react';
 
 interface ISkipFolderListProps {
   skipFolders: string[];
 }
 
-function SkipFolderList({ skipFolders }: ISkipFolderListProps): JSX.Element {
+function SkipFolderList({ skipFolders }: ISkipFolderListProps): ReactElement {
   const { trigger } = useUpdateSkipFoldersTrigger();
 
   async function handleRemove(folder: string) {

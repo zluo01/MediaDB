@@ -16,7 +16,7 @@ import {
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { Fragment } from 'react';
+import React, { Fragment, ReactElement } from 'react';
 
 const DirectoryModal = dynamic(() => import('@/components/Modal/Directory'), {
   ssr: false,
@@ -41,7 +41,7 @@ interface ISidePanel {
   currFolderIndex?: number;
 }
 
-function SidePanel({ currFolderIndex }: ISidePanel): JSX.Element {
+function SidePanel({ currFolderIndex }: ISidePanel): ReactElement {
   const router = useRouter();
   const dispatch = useAppDispatch();
 

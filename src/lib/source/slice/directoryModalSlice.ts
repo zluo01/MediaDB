@@ -18,7 +18,7 @@ export const directoryModalSlice = createSlice({
     },
     updateDirectoryData: (
       state,
-      action: PayloadAction<{ name: string; path: string }>
+      action: PayloadAction<{ name: string; path: string }>,
     ) => {
       state.name = action.payload.name;
       state.path = action.payload.path;

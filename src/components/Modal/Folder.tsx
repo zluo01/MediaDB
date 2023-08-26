@@ -5,7 +5,7 @@ import { closeEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
 import { RootState } from '@/lib/source/store';
 import { MoreHoriz } from '@mui/icons-material';
 import { Dialog, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import {
   ActionButtonGroups,
@@ -19,7 +19,7 @@ interface IFolderNameEdit {
   index: number;
 }
 
-function EditFolderModal({ index }: IFolderNameEdit): JSX.Element {
+function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   const dispatch = useAppDispatch();
 
   const { open } = useAppSelector((state: RootState) => state.editFolderModal);
@@ -43,7 +43,7 @@ function EditFolderModal({ index }: IFolderNameEdit): JSX.Element {
   }
 
   async function handleSubmit(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
     setLoading(true);

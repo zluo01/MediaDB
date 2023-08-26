@@ -9,7 +9,7 @@ use crate::db::types::{Folder, FolderData, Setting, SkipFolders};
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
         let app_dir = app.path_resolver().app_data_dir().unwrap();
-        fs::create_dir_all(app_dir).expect("Fail to create App directory.");
+        fs::create_dir_all(&app_dir).expect(&*format!("Fail to create App directory {:?}.", app_dir));
 
         let db_url = get_database_path(&app);
         if !Sqlite::database_exists(&db_url).await.unwrap_or(false) {

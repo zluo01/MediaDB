@@ -14,14 +14,14 @@ export async function getFolderInfo(position: number): Promise<IFolderData> {
 }
 
 export async function updateFolderPathFromStorage(
-  folder: IFolder
+  folder: IFolder,
 ): Promise<void> {
   await invoke('update_folder_path', { ...folder });
 }
 
 export async function updateFolderSortType(
   position: number,
-  sortType: string
+  sortType: string,
 ): Promise<void> {
   await invoke('update_sort_type', { position, sortType });
 }

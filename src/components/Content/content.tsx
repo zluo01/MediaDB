@@ -5,7 +5,7 @@ import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { lighten, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import path from 'path';
-import React, { ForwardedRef, useState } from 'react';
+import React, { ForwardedRef, ReactElement, useState } from 'react';
 
 import { CardInfo } from './styles';
 
@@ -23,8 +23,8 @@ interface ICardProps {
 
 function MediaGrid(
   { folder, data, size, current, select }: ICardProps,
-  ref: ForwardedRef<HTMLDivElement>
-): JSX.Element {
+  ref: ForwardedRef<HTMLDivElement>,
+): ReactElement {
   const cInfo = 60;
 
   const theme = useTheme();
@@ -69,7 +69,7 @@ function MediaGrid(
             boxShadow={theme.shadows[elevation]}
             bgcolor={lighten(
               theme.palette.background.default,
-              elevation * 0.025
+              elevation * 0.025,
             )}
           >
             <Image

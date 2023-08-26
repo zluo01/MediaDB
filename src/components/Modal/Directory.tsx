@@ -11,7 +11,7 @@ import { RootState } from '@/lib/source/store';
 import { IFolder } from '@/type';
 import { MoreHoriz } from '@mui/icons-material';
 import { Dialog, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   ActionButtonGroups,
@@ -25,15 +25,15 @@ interface IDirectoryModal {
   folderList: IFolder[];
 }
 
-function DirectoryModal({ folderList }: IDirectoryModal): JSX.Element {
+function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
   const dispatch = useAppDispatch();
 
   const { name, path, open } = useAppSelector(
-    (state: RootState) => state.directoryModal
+    (state: RootState) => state.directoryModal,
   );
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
-    folderList?.length
+    folderList?.length,
   );
 
   const [loading, setLoading] = useState(false);
@@ -45,12 +45,12 @@ function DirectoryModal({ folderList }: IDirectoryModal): JSX.Element {
       updateDirectoryData({
         name,
         path,
-      })
+      }),
     );
   }
 
   async function handleSubmit(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
     setLoading(true);
@@ -59,7 +59,7 @@ function DirectoryModal({ folderList }: IDirectoryModal): JSX.Element {
         folder: { position: 0, name, path },
       });
       setLoading(false);
-      await close();
+      close();
     } catch (e) {
       await notify(`Import Folders Error: ${e}`);
     }

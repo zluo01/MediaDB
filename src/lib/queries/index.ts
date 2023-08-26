@@ -31,7 +31,7 @@ export function useGetFolderQuery(route: number) {
 
 export function useGetFolderDataQuery(route: number) {
   return useSWR<IFolderData>(FOLDER_DETAIL_KEY(route), () =>
-    getFolderInfo(route)
+    getFolderInfo(route),
   );
 }
 
@@ -40,7 +40,7 @@ export function useUpdateSortTypeTrigger(position: number) {
     FOLDER_DETAIL_KEY(position),
     async (_url, opts: { arg: string }) => {
       await updateFolderSortType(position, opts.arg);
-    }
+    },
   );
 }
 
@@ -57,7 +57,7 @@ export function useCreateLibraryTrigger(position: number) {
       const { folder, update } = opts.arg;
       await buildDirectory(folder, update);
       await mutate(FOLDER_LIST);
-    }
+    },
   );
 }
 
@@ -69,7 +69,7 @@ export function useUpdateFolderPathTrigger(position: number) {
       await updateFolderPathFromStorage(opts.arg);
       await mutate(FOLDER_LIST);
       await mutate(FOLDER_KEY(position));
-    }
+    },
   );
 }
 
@@ -86,20 +86,20 @@ export function useGetSettingQuery() {
 export function useHidePanelTrigger() {
   return useSWRMutation(
     SETTING,
-    async (_url, opts: { arg: boolean }) => await hideSidePanel(opts.arg)
+    async (_url, opts: { arg: boolean }) => await hideSidePanel(opts.arg),
   );
 }
 
 export function useChangeCardSizeTrigger() {
   return useSWRMutation(
     SETTING,
-    async (_url, opts: { arg: ICardSize }) => await changeCardSize(opts.arg)
+    async (_url, opts: { arg: ICardSize }) => await changeCardSize(opts.arg),
   );
 }
 
 export function useUpdateSkipFoldersTrigger() {
   return useSWRMutation(
     SETTING,
-    async (_url, opts: { arg: string }) => await changeSkipFolders(opts.arg)
+    async (_url, opts: { arg: string }) => await changeSkipFolders(opts.arg),
   );
 }

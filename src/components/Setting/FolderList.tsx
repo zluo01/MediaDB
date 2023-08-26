@@ -14,7 +14,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import dynamic from 'next/dynamic';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, ReactElement, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -24,7 +24,7 @@ import {
 
 const EditFolderModal = dynamic(() => import('@/components/Modal/Folder'));
 
-function FolderList(): JSX.Element {
+function FolderList(): ReactElement {
   const dispatch = useAppDispatch();
 
   const { data: folderList, mutate: revalidateFolderList } =
