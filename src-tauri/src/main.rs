@@ -8,7 +8,6 @@ extern crate core;
 use std::fs;
 use serde_json::Value;
 use tauri::{Manager, Runtime};
-use tauri_plugin_log::{LogTarget};
 
 mod parser;
 mod db;
@@ -152,11 +151,7 @@ async fn delete_folder<R: Runtime>(app_handle: tauri::AppHandle<R>, name: &str, 
 
 fn main() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_log::Builder::default().targets([
-            LogTarget::LogDir,
-            LogTarget::Stdout,
-            LogTarget::Webview,
-        ]))
+        .plugin(tauri_plugin_log::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             parser,get_data_path,
             get_setting,
@@ -172,7 +167,9 @@ fn main() {
             delete_folder
         ])
         .setup(|app| {
-            db::main::initialize(&app.app_handle()).expect("Fail to initialize database");
+            if let Err(e) = db::main::initialize(&app.app_handle()) {
+                panic!("Fail to initialize database. Error: {:?}", e)
+            }
             Ok(())
         })
         .run(tauri::generate_context!())

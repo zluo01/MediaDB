@@ -1,6 +1,7 @@
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use std::fs;
 use std::result::Result;
+use log::error;
 use serde_json::{json, Value};
 use tauri::Runtime;
 use crate::db::{queries};
@@ -9,16 +10,24 @@ use crate::db::types::{Folder, FolderData, Setting, SkipFolders};
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
         let app_dir = app.path_resolver().app_data_dir().unwrap();
-        fs::create_dir_all(&app_dir).expect(&*format!("Fail to create App directory {:?}.", app_dir));
+        let create_dir_result = fs::create_dir_all(&app_dir);
+        if let Err(e) = create_dir_result {
+            let err_msg = format!("Fail to create App directory {:?}. Error: {:?}", app_dir, e);
+            error!("{:?}", err_msg);
+            return Err(err_msg);
+        }
 
         let db_url = get_database_path(&app);
         if !Sqlite::database_exists(&db_url).await.unwrap_or(false) {
-            Sqlite::create_database(&db_url)
-                .await
-                .expect(&*format!("Fail to create db at {}", &db_url));
-            match create_tables(&db_url).await {
-                Ok(_) => println!("Database created Successfully"),
-                Err(e) => panic!("{:?}", e),
+            if let Err(e) = Sqlite::create_database(&db_url).await {
+                let err_msg = format!("Fail to create db at {:?}. Error: {:?}", &db_url, e);
+                error!("{:?}", err_msg);
+                return Err(err_msg);
+            }
+            if let Err(e) = create_tables(&db_url).await {
+                let err_msg = format!("Fail to create tables. Error: {:?}", e.into_database_error());
+                error!("{:?}", err_msg);
+                return Err(err_msg);
             }
         }
         Ok(())
