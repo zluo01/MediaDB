@@ -1,7 +1,7 @@
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use std::fs;
 use std::result::Result;
-use log::error;
+use log::{debug, error};
 use serde_json::{json, Value};
 use tauri::Runtime;
 use crate::db::{queries};
@@ -10,6 +10,8 @@ use crate::db::types::{Folder, FolderData, Setting, SkipFolders};
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
         let app_dir = app.path_resolver().app_data_dir().unwrap();
+        debug!("App Directory: {:?}", &app_dir);
+
         let create_dir_result = fs::create_dir_all(&app_dir);
         if let Err(e) = create_dir_result {
             let err_msg = format!("Fail to create App directory {:?}. Error: {:?}", app_dir, e);
@@ -18,6 +20,7 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
         }
 
         let db_url = get_database_path(&app);
+        debug!("Database URL: {:?}", &db_url);
         if !Sqlite::database_exists(&db_url).await.unwrap_or(false) {
             if let Err(e) = Sqlite::create_database(&db_url).await {
                 let err_msg = format!("Fail to create db at {:?}. Error: {:?}", &db_url, e);
