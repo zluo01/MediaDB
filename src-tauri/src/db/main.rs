@@ -51,7 +51,6 @@ fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
 
 pub async fn get_settings<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<Value, sqlx::Error> {
     let db_url = get_database_path(&app);
-    debug!("{:?}",&db_url);
     let pool = SqlitePool::connect(&db_url).await?;
     let settings = sqlx::query_as::<_, Setting>(queries::GET_SETTINGS).fetch_one(&pool).await?;
     pool.close().await;

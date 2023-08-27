@@ -28,3 +28,4 @@ tsconfig.tsbuildinfo
 out
 .directory
 **.hidden
+test-data

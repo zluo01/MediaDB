@@ -2,15 +2,17 @@ import { ICardSize, IFolder, IFolderData, ISetting } from '@/type';
 import { invoke } from '@tauri-apps/api/tauri';
 
 export async function getFolderList(): Promise<IFolder[]> {
-  return (await invoke('get_folder_list')) || [];
+  return (await invoke<IFolder[]>('get_folder_list')) || [];
 }
 
 export async function getFolder(position: number): Promise<IFolder> {
-  return (await invoke('get_folder_info', { position })) || ({} as IFolder);
+  return (
+    (await invoke<IFolder>('get_folder_info', { position })) || ({} as IFolder)
+  );
 }
 
 export async function getFolderInfo(position: number): Promise<IFolderData> {
-  return (await invoke('get_folder_data', { position })) as IFolderData;
+  return await invoke<IFolderData>('get_folder_data', { position });
 }
 
 export async function updateFolderPathFromStorage(
@@ -44,7 +46,7 @@ export const DefaultSetting: ISetting = {
 };
 
 export async function getSetting(): Promise<ISetting> {
-  return (await invoke('get_setting')) as ISetting;
+  return await invoke<ISetting>('get_setting');
 }
 
 export async function hideSidePanel(show: boolean): Promise<void> {
