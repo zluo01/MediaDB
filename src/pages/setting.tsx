@@ -3,7 +3,11 @@ import Layout from '@/components/Layout';
 import FolderList from '@/components/Setting/FolderList';
 import SkipFolderList from '@/components/Setting/SkipFolderList';
 import { notify } from '@/lib/os';
-import { useGetSettingQuery, useHidePanelTrigger } from '@/lib/queries';
+import {
+  useGetSettingQuery,
+  useGetVersionQuery,
+  useHidePanelTrigger,
+} from '@/lib/queries';
 import { useAppDispatch } from '@/lib/source';
 import { openDirectoryModal } from '@/lib/source/slice/directoryModalSlice';
 import { openSkipFolderModal } from '@/lib/source/slice/skipFolderModalSlice';
@@ -19,7 +23,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
-import { version } from 'package.json';
 import React, { ReactElement } from 'react';
 
 const SettingDivider = styled(Divider)(({ theme }) => ({
@@ -47,6 +50,7 @@ function Setting(): ReactElement {
 
   const { trigger } = useHidePanelTrigger();
   const { data: setting } = useGetSettingQuery();
+  const { data: version } = useGetVersionQuery();
 
   function handleOpen() {
     dispatch(openSkipFolderModal());

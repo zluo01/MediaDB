@@ -12,7 +12,9 @@ import {
   updateFolderSortType,
 } from '@/lib/storage';
 import { ICardSize, IFolder, IFolderData, ISetting } from '@/type';
+import { getVersion } from '@tauri-apps/api/app';
 import useSWR, { useSWRConfig } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import useSWRMutation from 'swr/mutation';
 
 const FOLDER_LIST = 'folderList';
@@ -102,4 +104,8 @@ export function useUpdateSkipFoldersTrigger() {
     SETTING,
     async (_url, opts: { arg: string }) => await changeSkipFolders(opts.arg),
   );
+}
+
+export function useGetVersionQuery() {
+  return useSWRImmutable<string>('VERSION', getVersion);
 }
