@@ -28,7 +28,7 @@
     "react-beautiful-dnd": "13.1.1",
     "react-dom": "18.2.0",
     "react-redux": "8.1.2",
-    "swr": "2.2.2"
+    "swr": "2.2.4"
   },
   "devDependencies": {
     "@tauri-apps/cli": "1.4.0",
