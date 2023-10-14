@@ -19,7 +19,7 @@ tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", br
 roxmltree = "0.18.1"
 md5 = "0.7.0"
 sqlx = { version = "0.7", features = ["runtime-tokio-native-tls", "sqlite"] }
-tokio = { version = "1.32.0", features = ["full"] }
+tokio = { version = "1.33.0", features = ["full"] }
 log = "0.4"
 
 [features]
