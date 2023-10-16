@@ -1,4 +1,4 @@
-use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
+use sqlx::{migrate::MigrateDatabase, Pool, Sqlite, SqlitePool};
 use std::fs;
 use std::result::Result;
 use log::{debug, error};
@@ -44,167 +44,128 @@ async fn create_tables(db_url: &str) -> Result<(), sqlx::Error> {
     Ok(())
 }
 
-fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
+pub fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
     let app_dir = app.path_resolver().app_data_dir().unwrap();
     return format!("sqlite://{}/sqlite.db", app_dir.display()).to_string();
 }
 
-pub async fn get_settings<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<Value, sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
-    let settings = sqlx::query_as::<_, Setting>(queries::GET_SETTINGS).fetch_one(&pool).await?;
-    pool.close().await;
+pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
+    let pool = SqlitePool::connect(db_path).await?;
+    Ok(pool)
+}
+
+pub async fn get_settings(pool: &Pool<Sqlite>) -> Result<Value, sqlx::Error> {
+    let settings = sqlx::query_as::<_, Setting>(queries::GET_SETTINGS).fetch_one(pool).await?;
     Ok(settings.to_json())
 }
 
-pub async fn get_skip_folders<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<Vec<String>, sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
-    let skip_folders = sqlx::query_as::<_, SkipFolders>(queries::GET_SKIP_FOLDERS).fetch_one(&pool).await?;
-    pool.close().await;
+pub async fn get_skip_folders(pool: &Pool<Sqlite>) -> Result<Vec<String>, sqlx::Error> {
+    let skip_folders = sqlx::query_as::<_, SkipFolders>(queries::GET_SKIP_FOLDERS).fetch_one(pool).await?;
     Ok(skip_folders.get_skip_folder_list())
 }
 
-pub async fn update_hide_side_panel<R: Runtime>(app: &tauri::AppHandle<R>, hide_panel: &i32) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn update_hide_side_panel(pool: &Pool<Sqlite>, hide_panel: &i32) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_HIDE_PANEL)
         .bind(hide_panel)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
-pub async fn change_card_size<R: Runtime>(app: &tauri::AppHandle<R>, width: &i32, height: &i32) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn change_card_size(pool: &Pool<Sqlite>, width: &i32, height: &i32) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::CHANGE_CARD_SIZE)
         .bind(width)
         .bind(height)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
-pub async fn update_skip_folders<R: Runtime>(app: &tauri::AppHandle<R>, skip_folders: &str) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn update_skip_folders(pool: &Pool<Sqlite>, skip_folders: &str) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_SKIP_FOLDERS)
         .bind(skip_folders)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
-pub async fn insert_folder_data<R: Runtime>(app: &tauri::AppHandle<R>, folder_name: &str, data: &Value, path: &str) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn insert_folder_data(pool: &Pool<Sqlite>, folder_name: &str, data: &Value, path: &str) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::INSERT_NEW_FOLDER_DATA)
         .bind(folder_name)
         .bind(format!("{}", data))
         .bind(path)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
-pub async fn get_folder_list<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<Value, sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn get_folder_list(pool: &Pool<Sqlite>) -> Result<Value, sqlx::Error> {
     let folder_list = sqlx::query_as::<_, Folder>(queries::GET_FOLDER_LIST)
-        .fetch_all(&pool)
+        .fetch_all(pool)
         .await?;
-    pool.close().await;
     Ok(json!(folder_list))
 }
 
-pub async fn get_folder_info<R: Runtime>(app: &tauri::AppHandle<R>, position: &i32) -> Result<Value, sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn get_folder_info(pool: &Pool<Sqlite>, position: &i32) -> Result<Value, sqlx::Error> {
     let folder_info = sqlx::query_as::<_, Folder>(queries::GET_FOLDER_INFO)
         .bind(position)
-        .fetch_one(&pool)
+        .fetch_one(pool)
         .await?;
-    pool.close().await;
     Ok(json!(folder_info))
 }
 
-pub async fn get_folder_data<R: Runtime>(app: &tauri::AppHandle<R>, position: &i32) -> Result<Value, sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn get_folder_data<R: Runtime>(app: &tauri::AppHandle<R>, pool: &Pool<Sqlite>, position: &i32) -> Result<Value, sqlx::Error> {
     let folder_data = sqlx::query_as::<_, FolderData>(queries::GET_FOLDER_DATA)
         .bind(position)
-        .fetch_one(&pool)
+        .fetch_one(pool)
         .await?;
-    pool.close().await;
-
     let app_dir = app.path_resolver().app_data_dir().unwrap();
     Ok(folder_data.to_json(app_dir.to_str().unwrap().to_string()))
 }
 
-pub async fn update_folder_data<R: Runtime>(app: &tauri::AppHandle<R>, folder_name: &str, data: &Value) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn update_folder_data(pool: &Pool<Sqlite>, folder_name: &str, data: &Value) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_FOLDER_DATA)
         .bind(format!("{}", data))
         .bind(folder_name)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
-pub async fn update_sort_type<R: Runtime>(app: &tauri::AppHandle<R>, position: &i32, sort_type: &String) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn update_sort_type(pool: &Pool<Sqlite>, position: &i32, sort_type: &String) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_SORT_TYPE)
         .bind(sort_type)
         .bind(position)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
-pub async fn update_folder_path<R: Runtime>(app: &tauri::AppHandle<R>, position: &i32, path: &String) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn update_folder_path(pool: &Pool<Sqlite>, position: &i32, path: &String) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_FOLDER_PATH)
         .bind(path)
         .bind(position)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
-pub async fn reorder_folder<R: Runtime>(app: &tauri::AppHandle<R>, folder_name: &[&str]) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn reorder_folder(pool: &Pool<Sqlite>, folder_name: &[&str]) -> Result<(), sqlx::Error> {
     for i in 0..folder_name.len() {
         let _ = sqlx::query(queries::UPDATE_FOLDER_POSITION)
             .bind(i as i32)
             .bind(folder_name[i])
-            .execute(&pool)
+            .execute(pool)
             .await?;
     }
-    pool.close().await;
     Ok(())
 }
 
-pub async fn delete_folder<R: Runtime>(app: &tauri::AppHandle<R>, name: &str, position: &i32) -> Result<(), sqlx::Error> {
-    let db_url = get_database_path(&app);
-    let pool = SqlitePool::connect(&db_url).await?;
+pub async fn delete_folder(pool: &Pool<Sqlite>, name: &str, position: &i32) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::DELETE_FOLDER)
         .bind(name)
         .bind(position)
-        .execute(&pool)
+        .execute(pool)
         .await?;
-    pool.close().await;
-    pool.close().await;
     Ok(())
 }
