@@ -1,6 +1,6 @@
 [package]
 name = "mediadb"
-version = "0.4.5"
+version = "0.4.6"
 description = "manager for movie and tv shows"
 authors = ["zluo01"]
 license = ""

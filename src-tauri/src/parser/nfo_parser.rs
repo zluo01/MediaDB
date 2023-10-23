@@ -1,13 +1,13 @@
 use std::collections::VecDeque;
 use std::ffi::OsString;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use roxmltree::{Node};
 use crate::parser::types::{Media, MediaSource, MediaType};
 
-pub(crate) fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSource) -> Result<Media, String> {
-    let nfo_path = Path::new(nfo_dir.as_os_str());
-    let file_path = root_path.join(nfo_path);
+pub(crate) fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSource) -> Result<Option<Media>, String> {
+    let nfo_path = PathBuf::from(nfo_dir);
+    let file_path = root_path.join(&nfo_path);
     let content_result = fs::read_to_string(file_path);
     if let Err(e) = &content_result {
         return Err(format!("Error when reading file to string {}. Raising error {}", nfo_dir.to_string_lossy(), e));
@@ -41,7 +41,12 @@ pub(crate) fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &Med
         "episodedetails" => parse_episode_nfo(&mut media, nfo_node),
         &_ => panic!("Get unknown type {} for parsing", nfo_type)
     }
-    Ok(media)
+
+    // TODO: filter out bdmv until find a better way solve it.
+    if media.file().to_lowercase().contains("bdmv") {
+        return Ok(None);
+    }
+    Ok(Some(media))
 }
 
 fn is_valid_source(o: &Node) -> bool {
@@ -111,9 +116,7 @@ fn parse_tvshow_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) 
 
     // parsing tags
     let mut queue = VecDeque::from([*root]);
-    while !queue.is_empty() {
-        let curr_node = queue.pop_front().unwrap();
-
+    while let Some(curr_node) = queue.pop_front() {
         let tag_name = curr_node.tag_name().name();
         let text = curr_node.text();
         match tag_name {

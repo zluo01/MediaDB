@@ -29,47 +29,51 @@ fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str, ski
     let mut major_media = Vec::new();
     let mut secondary_media = Vec::new();
 
-    while !queue.is_empty() {
+    while let Some(curr_dir) = queue.pop_front() {
+        let entries = match fs::read_dir(&curr_dir) {
+            Ok(entries) => entries,
+            Err(e) => {
+                error!("Failed to read directory {:?}: {}", curr_dir, e);
+                continue;
+            }
+        };
+
         let mut nfo_files = Vec::new();
         let mut media_source = MediaSource::default();
 
-        let curr_dir = queue.pop_front();
-        for entry in fs::read_dir(curr_dir.unwrap()).unwrap() {
-            let entry = entry.unwrap();
-            let path = entry.path();
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
 
-            let file_name = path.file_name().unwrap().to_str().unwrap();
-            // check for hidden file
-            if file_name.as_bytes().starts_with(&[b'.']) {
-                continue;
-            }
+                let file_name = path.file_name().unwrap().to_str().unwrap();
+                // check for hidden file or skip paths
+                if file_name.starts_with('.') || skip_paths.contains(&file_name.to_string()) {
+                    continue;
+                }
 
-            if skip_paths.contains(&file_name.to_string()) {
-                continue;
-            }
+                if path.is_dir() {
+                    queue.push_back(path.into_os_string());
+                    continue;
+                }
 
-            if path.is_dir() {
-                queue.push_back(path.into_os_string());
-                continue;
-            }
-
-            let relative_path = utilities::get_relative_path(path.as_path(), root_path);
-            let extension = path.extension();
-            if extension.is_none() {
-                println!("File does not have proper extension. {}", &path.display());
-                continue;
-            }
-            let ext = extension.unwrap().to_str().unwrap();
-            match ext {
-                "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
-                "jpg" | "png" => if file_name.contains("poster") {
-                    media_source.add_poster(relative_path.unwrap().into_os_string())
-                },
-                "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" =>
-                    media_source.add_media(relative_path.unwrap().into_os_string()),
-                "cbr" | "cbz" | "cbt" | "cb7" =>
-                    media_source.add_comic(relative_path.unwrap().into_os_string()),
-                _ => {}
+                let relative_path = utilities::get_relative_path(path.as_path(), root_path);
+                let extension = path.extension();
+                if extension.is_none() {
+                    error!("File does not have proper extension. {:?}", &path);
+                    continue;
+                }
+                let ext = extension.unwrap().to_str().unwrap();
+                match ext {
+                    "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
+                    "jpg" | "png" => if file_name.contains("poster") {
+                        media_source.add_poster(relative_path.unwrap().into_os_string())
+                    },
+                    "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" =>
+                        media_source.add_media(relative_path.unwrap().into_os_string()),
+                    "cbr" | "cbz" | "cbt" | "cb7" =>
+                        media_source.add_comic(relative_path.unwrap().into_os_string()),
+                    _ => {}
+                }
             }
         }
 
@@ -108,6 +112,7 @@ fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
                 }
             }
         })
+        .flat_map(|v| v)
         .collect();
 }
 
