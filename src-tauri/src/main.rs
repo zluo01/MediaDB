@@ -17,6 +17,7 @@ use tauri::{
     Runtime,
     State,
 };
+use tauri_plugin_log::LogTarget;
 use crate::db::main::{create_pool, get_database_path};
 
 mod parser;
@@ -201,7 +202,7 @@ async fn delete_folder<R: Runtime>(app_handle: tauri::AppHandle<R>,
 
 fn main() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_log::Builder::default().build())
+        .plugin(tauri_plugin_log::Builder::default().targets([LogTarget::LogDir, LogTarget::Stdout]).build())
         .invoke_handler(tauri::generate_handler![
             parser,
             get_data_path,
