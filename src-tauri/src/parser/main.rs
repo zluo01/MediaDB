@@ -1,20 +1,24 @@
-use std::collections::{HashMap, HashSet, VecDeque};
-use std::ffi::OsString;
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::{
+    collections::{HashMap, HashSet, VecDeque},
+    ffi::OsString,
+    fs,
+    path::{Path, PathBuf},
+};
+use log::error;
+use rayon::prelude::*;
 use serde_json::{json, Value};
 use tauri::api::notification::Notification;
-use crate::parser::nfo_parser::parse_nfo;
-use crate::parser::types::{Media, MediaSource, MediaType};
-use crate::parser::utilities;
+use crate::{
+    parser::nfo_parser::parse_nfo,
+    parser::types::{Media, MediaSource, MediaType},
+    parser::utilities,
+};
 
-pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Result<Value, String> {
+pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Result<Value, ()> {
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
     let (major_media, secondary_media) = read_dir(app_handle, path, skip_paths);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
-    if let Err(e) = create_thumbnails(&app_dir, name, path, &posters) {
-        return Err(e);
-    }
+    create_thumbnails(&app_dir, name, path, &posters);
     Ok(data)
 }
 
@@ -90,23 +94,21 @@ fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
                                         root_path: &Path,
                                         media_source: &MediaSource) -> Vec<Media> {
     let identifier = &app_handle.config().tauri.bundle.identifier;
-    if !nfo_files.is_empty() {
-        let mut media: Vec<Media> = vec![];
-        for nfo_file in nfo_files {
-            let parsing_result = parse_nfo(root_path, nfo_file, &media_source);
-            if let Err(e) = parsing_result {
-                Notification::new(identifier)
-                    .title("MediaDB: Encounter Error when parsing nfo file.")
-                    .body(e)
-                    .show()
-                    .expect("Fail to send notification.");
-                continue;
+    return nfo_files.into_par_iter()
+        .filter_map(|nfo_file| {
+            match parse_nfo(root_path, nfo_file, &media_source) {
+                Ok(media) => Some(media),
+                Err(e) => {
+                    Notification::new(identifier)
+                        .title("MediaDB: Encounter Error when parsing nfo file.")
+                        .body(e)
+                        .show()
+                        .expect("Fail to send notification.");
+                    None
+                }
             }
-            media.push(parsing_result.unwrap())
-        }
-        return media;
-    }
-    vec![]
+        })
+        .collect();
 }
 
 fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Value, HashSet<PathBuf>) {
@@ -164,15 +166,12 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
     }
 
     let data = major_media.iter()
-        .map(|o| {
-            match o.media_type() {
-                MediaType::Movie => o.movie_json(),
-                MediaType::TvShow => o.tvshow_json(seasons_map.get(o.relative_path())),
-                _ => panic!("Unexpected media type: {:?}", o.media_type())
-            }
+        .map(|o| match o.media_type() {
+            MediaType::Movie => o.movie_json(),
+            MediaType::TvShow => o.tvshow_json(seasons_map.get(o.relative_path())),
+            _ => panic!("Unexpected media type: {:?}", o.media_type())
         })
-        .filter(|o| o.is_some())
-        .map(|o| o.unwrap())
+        .filter_map(|o| o)
         .collect::<Vec<Value>>();
 
     (json!({
@@ -184,27 +183,27 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
     }), posters)
 }
 
-fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) -> Result<(), String> {
+fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
     let root_path = Path::new(path);
     let thumbnail_path = app_dir.join("thumbnails");
     let folder_path = thumbnail_path.join(name);
 
-    let create_dir_result = fs::create_dir_all(&folder_path);
-    if let Err(e) = &create_dir_result {
-        return Err(format!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e));
+    if let Err(e) = fs::create_dir_all(&folder_path) {
+        error!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e);
+        return;
     }
 
-    for p in posters {
-        let source_path = root_path.join(p);
+    posters.into_par_iter()
+        .for_each(|poster_path| {
+            let source_path = root_path.join(poster_path);
 
-        let file_path = p.as_os_str().to_str().unwrap();
-        let file_name = format!("{:x}", md5::compute(&file_path.replace("\\", "/").as_bytes()));
-        let dest_path = folder_path.join(file_name);
+            let file_path = poster_path.to_string_lossy();
+            let file_name = format!("{:x}", md5::compute(&file_path.replace("\\", "/").as_bytes()));
+            let dest_path = folder_path.join(&file_name);
 
-        let copy_result = fs::copy(&source_path, &dest_path);
-        if let Err(e) = &copy_result {
-            return Err(format!("Fail to copy file from {} to {}. Raising error {}", &source_path.to_string_lossy(), &dest_path.to_string_lossy(), e));
-        }
-    }
-    Ok(())
+            if let Err(e) = fs::copy(&source_path, &dest_path) {
+                error!("Fail to copy file from {:?} to {:?}. Raising error {}", &source_path, &dest_path, e);
+                return;
+            }
+        });
 }

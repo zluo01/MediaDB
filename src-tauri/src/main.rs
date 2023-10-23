@@ -8,6 +8,7 @@ extern crate core;
 use std::collections::HashMap;
 use std::fs;
 use std::sync::Arc;
+use log::error;
 use serde_json::Value;
 use sqlx::{Pool, Sqlite};
 use tauri::{
@@ -28,21 +29,24 @@ async fn parser<R: Runtime>(app_handle: tauri::AppHandle<R>,
                             database_state: State<'_, DatabaseConnectionState>,
                             name: &str,
                             path: &str,
-                            update: bool) -> Result<(), String> {
+                            update: bool) -> Result<(), ()> {
     let mut instances = database_state.0.lock().await;
     let pool = instances.get_mut(&0).expect("Cannot find database instance.");
     let skip_folders_result = db::main::get_skip_folders(pool).await;
     if let Err(e) = skip_folders_result {
-        return Err(format!("Fail to get skip folders. Raising Error: {:?}", e.into_database_error()));
+        error!("Fail to get skip folders. Raising Error: {:?}", e.into_database_error());
+        return Err(());
     }
     let value = parser::main::parse(&app_handle, name, path, &skip_folders_result.unwrap())?;
     if update {
         if let Err(e) = db::main::update_folder_data(pool, name, &value).await {
-            return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
+            error!("Fail to update folder data. Raising Error: {:?}", e.into_database_error());
+            return Err(());
         }
     } else {
         if let Err(e) = db::main::insert_folder_data(pool, name, &value, path).await {
-            return Err(format!("Fail to add data to database. Raising Error: {:?}", e.into_database_error()));
+            error!("Fail to add data to database. Raising Error: {:?}", e.into_database_error());
+            return Err(());
         }
     }
     Ok(())
@@ -157,7 +161,7 @@ async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>,
     if let Err(e) = skip_folders_result {
         return Err(format!("Fail to get skip folders. Raising Error: {:?}", e.into_database_error()));
     }
-    let value = parser::main::parse(&app_handle, &name, &path, &skip_folders_result.unwrap())?;
+    let value = parser::main::parse(&app_handle, &name, &path, &skip_folders_result.unwrap()).unwrap();
     if let Err(e) = db::main::update_folder_data(pool, &name, &value).await {
         return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
     }

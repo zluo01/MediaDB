@@ -5,7 +5,7 @@ use std::path::Path;
 use roxmltree::{Node};
 use crate::parser::types::{Media, MediaSource, MediaType};
 
-pub fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSource) -> Result<Media, String> {
+pub(crate) fn parse_nfo(root_path: &Path, nfo_dir: &OsString, media_source: &MediaSource) -> Result<Media, String> {
     let nfo_path = Path::new(nfo_dir.as_os_str());
     let file_path = root_path.join(nfo_path);
     let content_result = fs::read_to_string(file_path);
