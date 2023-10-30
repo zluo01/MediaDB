@@ -6,7 +6,6 @@ use std::{
 };
 
 use image::ImageFormat;
-use image::imageops::FilterType;
 use log::error;
 use rayon::prelude::*;
 use serde_json::{json, Value};
@@ -229,10 +228,7 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
                 return;
             }
 
-            if let Err(e) = img
-                .unwrap()
-                .resize_exact(480, 640, FilterType::Nearest)
-                .save_with_format(&dest_path, ImageFormat::WebP) {
+            if let Err(e) = img.unwrap().save_with_format(&dest_path, ImageFormat::WebP) {
                 error!("Fail to copy file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
                 return;
             }

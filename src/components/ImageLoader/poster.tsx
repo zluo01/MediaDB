@@ -16,7 +16,8 @@ function Poster({ folder, src, ...props }: IImageLoaderPops): ReactElement {
       blurDataURL={BLUR_IMG}
       style={{
         width: '100%',
-        height: 'auto',
+        height: '100%',
+        objectFit: 'cover',
       }}
       {...props}
     />
