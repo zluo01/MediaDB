@@ -1,6 +1,5 @@
 import { buildDirectory } from '@/lib/os';
 import {
-  changeCardSize,
   changeSkipFolders,
   getFolder,
   getFolderInfo,
@@ -11,7 +10,7 @@ import {
   updateFolderPathFromStorage,
   updateFolderSortType,
 } from '@/lib/storage';
-import { ICardSize, IFolder, IFolderData, ISetting } from '@/type';
+import { IFolder, IFolderData, ISetting } from '@/type';
 import { getVersion } from '@tauri-apps/api/app';
 import useSWR, { useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -89,13 +88,6 @@ export function useHidePanelTrigger() {
   return useSWRMutation(
     SETTING,
     async (_url, opts: { arg: boolean }) => await hideSidePanel(opts.arg),
-  );
-}
-
-export function useChangeCardSizeTrigger() {
-  return useSWRMutation(
-    SETTING,
-    async (_url, opts: { arg: ICardSize }) => await changeCardSize(opts.arg),
   );
 }
 

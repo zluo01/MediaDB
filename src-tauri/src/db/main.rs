@@ -72,15 +72,6 @@ pub async fn update_hide_side_panel(pool: &Pool<Sqlite>, hide_panel: &i32) -> Re
     Ok(())
 }
 
-pub async fn change_card_size(pool: &Pool<Sqlite>, width: &i32, height: &i32) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query(queries::CHANGE_CARD_SIZE)
-        .bind(width)
-        .bind(height)
-        .execute(pool)
-        .await?;
-    Ok(())
-}
-
 pub async fn update_skip_folders(pool: &Pool<Sqlite>, skip_folders: &str) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_SKIP_FOLDERS)
         .bind(skip_folders)

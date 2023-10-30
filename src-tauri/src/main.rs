@@ -82,16 +82,6 @@ async fn hide_side_panel(database_state: State<'_, DatabaseConnectionState>, hid
 }
 
 #[tauri::command]
-async fn change_card_size(database_state: State<'_, DatabaseConnectionState>, width: i32, height: i32) -> Result<(), String> {
-    let mut instances = database_state.0.lock().await;
-    let pool = instances.get_mut(&0).expect("Cannot find database instance.");
-    if let Err(e) = db::main::change_card_size(pool, &width, &height).await {
-        return Err(format!("Fail to get setting. Raising Error: {:?}", e.into_database_error()));
-    }
-    Ok(())
-}
-
-#[tauri::command]
 async fn update_skip_folders(database_state: State<'_, DatabaseConnectionState>, skip_folders: &str) -> Result<(), String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances.get_mut(&0).expect("Cannot find database instance.");
@@ -208,7 +198,6 @@ fn main() {
             get_data_path,
             get_setting,
             hide_side_panel,
-            change_card_size,
             update_skip_folders,
             get_folder_list,
             get_folder_info,

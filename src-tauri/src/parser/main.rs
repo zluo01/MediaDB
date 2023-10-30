@@ -4,10 +4,14 @@ use std::{
     fs,
     path::{Path, PathBuf},
 };
+
+use image::ImageFormat;
+use image::imageops::FilterType;
 use log::error;
 use rayon::prelude::*;
 use serde_json::{json, Value};
 use tauri::api::notification::Notification;
+
 use crate::{
     parser::nfo_parser::parse_nfo,
     parser::types::{Media, MediaSource, MediaType},
@@ -203,11 +207,33 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
             let source_path = root_path.join(poster_path);
 
             let file_path = poster_path.to_string_lossy();
-            let file_name = format!("{:x}", md5::compute(&file_path.replace("\\", "/").as_bytes()));
-            let dest_path = folder_path.join(&file_name);
+            let dest_path = folder_path.join(&file_path.replace("\\", "/")
+                .replace(".jpg", "")
+                .replace(".png", "")
+                .replace(".jpeg", "")
+                .replace(".bmp", "")
+                .replace(".gif", "")
+                .replace(".webp", "")
+            );
 
-            if let Err(e) = fs::copy(&source_path, &dest_path) {
-                error!("Fail to copy file from {:?} to {:?}. Raising error {}", &source_path, &dest_path, e);
+            let parent_path = &dest_path.as_path().parent().unwrap();
+
+            if let Err(e) = fs::create_dir_all(&parent_path) {
+                error!("Fail to create directory {:?}. Raising error {}", parent_path, e);
+                return;
+            }
+
+            let img = image::open(&source_path);
+            if let Err(e) = img {
+                error!("Fail to read image file {:?}. Raising error {}", source_path, e);
+                return;
+            }
+
+            if let Err(e) = img
+                .unwrap()
+                .resize_exact(480, 640, FilterType::Nearest)
+                .save_with_format(&dest_path, ImageFormat::WebP) {
+                error!("Fail to copy file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
                 return;
             }
         });

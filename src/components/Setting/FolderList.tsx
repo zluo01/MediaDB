@@ -4,17 +4,12 @@ import { useAppDispatch } from '@/lib/source';
 import { openEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
 import { updateFolderList } from '@/lib/storage';
 import { IFolder } from '@/type';
-import { Delete, Edit, Folder } from '@mui/icons-material';
 import {
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-} from '@mui/material';
-import dynamic from 'next/dynamic';
-import React, { Fragment, ReactElement, useState } from 'react';
+  FolderIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from '@heroicons/react/24/solid';
+import React, { Fragment, lazy, ReactElement, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -22,7 +17,7 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 
-const EditFolderModal = dynamic(() => import('@/components/Modal/Folder'));
+const EditFolderModal = lazy(() => import('@/components/Modal/Folder'));
 
 function FolderList(): ReactElement {
   const dispatch = useAppDispatch();
@@ -79,7 +74,11 @@ function FolderList(): ReactElement {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {provided => (
-            <List ref={provided.innerRef} {...provided.droppableProps}>
+            <ul
+              className="w-full"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
               {folderList?.map(folder => (
                 <Draggable
                   key={folder.name}
@@ -93,39 +92,43 @@ function FolderList(): ReactElement {
                       {...provided.dragHandleProps}
                       style={{ ...provided.draggableProps.style }}
                     >
-                      <ListItem>
-                        <ListItemIcon>
-                          <Folder />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={folder.name}
-                          secondary={folder.path}
-                        />
-                        <ListItemSecondaryAction>
-                          <IconButton
-                            size={'large'}
-                            edge="end"
-                            aria-label="edit"
+                      <li className="flex w-[100%] flex-row items-center justify-between px-2">
+                        <div className="flex grow flex-row items-center text-secondary">
+                          <FolderIcon className="mr-2 h-8 w-8" />
+                          <div className="flex flex-col items-start justify-around ">
+                            <span className="truncate text-primary">
+                              {folder.name}
+                            </span>
+                            <span className="truncate text-sm">
+                              {folder.path}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex flex-row flex-nowrap items-center justify-end">
+                          <button
                             onClick={() => openModal(folder.position)}
+                            type="button"
+                            className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
                           >
-                            <Edit />
-                          </IconButton>
-                          <IconButton
-                            size={'large'}
-                            edge="end"
-                            aria-label="delete"
+                            <PencilSquareIcon className="h-6 w-6" />
+                            <span className="sr-only">Add new folder</span>
+                          </button>
+                          <button
                             onClick={() => handleRemove(folder)}
+                            type="button"
+                            className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
                           >
-                            <Delete />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
+                            <TrashIcon className="h-6 w-6" />
+                            <span className="sr-only">Add new folder</span>
+                          </button>
+                        </div>
+                      </li>
                     </div>
                   )}
                 </Draggable>
               ))}
               {provided.placeholder}
-            </List>
+            </ul>
           )}
         </Droppable>
       </DragDropContext>

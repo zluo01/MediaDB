@@ -63,14 +63,8 @@ export interface IEpisode {
 
 export type IMediaData = IMovieData | ITVShowData;
 
-export interface ICardSize {
-  width: number;
-  height: number;
-}
-
 export interface ISetting {
   showSidePanel: boolean;
-  cardSize: ICardSize;
   skipFolders: string[];
 }
 

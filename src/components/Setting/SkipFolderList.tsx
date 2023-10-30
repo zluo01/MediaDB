@@ -1,15 +1,7 @@
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
-import { Delete, Folder } from '@mui/icons-material';
-import {
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-} from '@mui/material';
-import { ReactElement } from 'react';
+import { FolderIcon, TrashIcon } from '@heroicons/react/24/solid';
+import React, { ReactElement } from 'react';
 
 interface ISkipFolderListProps {
   skipFolders: string[];
@@ -27,26 +19,27 @@ function SkipFolderList({ skipFolders }: ISkipFolderListProps): ReactElement {
   }
 
   return (
-    <List>
+    <ul className="w-full">
       {skipFolders.map((folder, index) => (
-        <ListItem key={index}>
-          <ListItemIcon>
-            <Folder />
-          </ListItemIcon>
-          <ListItemText primary={folder} />
-          <ListItemSecondaryAction>
-            <IconButton
-              size={'large'}
-              edge="end"
-              aria-label="delete"
-              onClick={() => handleRemove(folder)}
-            >
-              <Delete />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
+        <li
+          className="flex flex-row items-center px-2 text-secondary"
+          key={index}
+        >
+          <FolderIcon className="mr-2 h-8 w-8" />
+          <span className="flex grow items-center text-base text-primary">
+            {folder}
+          </span>
+          <button
+            onClick={() => handleRemove(folder)}
+            type="button"
+            className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
+          >
+            <TrashIcon className="h-6 w-6" />
+            <span className="sr-only">Delete filter folder</span>
+          </button>
+        </li>
       ))}
-    </List>
+    </ul>
   );
 }
 

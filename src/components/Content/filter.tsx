@@ -1,31 +1,11 @@
 import { useAppDispatch, useAppSelector } from '@/lib/source';
-import { reset, updateFilter } from '@/lib/source/slice/filderReducer';
+import { reset, updateFilter } from '@/lib/source/slice/filterReducer';
 import { RootState } from '@/lib/source/store';
+import classNames from '@/lib/utils';
 import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
-import { Button, Chip, Drawer, Stack, Typography } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { Dialog, Transition } from '@headlessui/react';
 import { ReactElement } from 'react';
-
-const FilterPanel = styled(Drawer)(({ theme }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-
-  '& .MuiDrawer-paper': {
-    width: '19vw',
-    borderRadius: 20,
-    background: theme.palette.background.default,
-  },
-}));
-
-const ChipContainer = styled('div')(() => ({
-  display: 'flex',
-  flexFlow: 'row wrap',
-}));
-
-const FilterChip = styled(Chip)(({ theme }) => ({
-  color: theme.palette.action.selected,
-  borderColor: theme.palette.action.selected,
-  margin: theme.spacing(0.5),
-}));
+import { Fragment } from 'react';
 
 interface IFilerSection {
   folderData: IFolderInfo;
@@ -36,8 +16,6 @@ interface IFilerSection {
 const FILTER_TAGS = [GENRE, ACTOR, STUDIO, TAG];
 
 function Filters({ folderData, open, close }: IFilerSection): ReactElement {
-  const theme = useTheme();
-
   const dispatch = useAppDispatch();
   const filters = useAppSelector((state: RootState) => state.filter);
 
@@ -55,56 +33,76 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
   }
 
   return (
-    <FilterPanel anchor={'right'} open={open} onClose={close} elevation={0}>
-      <Stack
-        direction="column"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        p={2}
-      >
-        {FILTER_TAGS.map(v => {
-          const data = folderData[v.toLowerCase()] as string[];
-          const filter = filters[v.toLowerCase()] as string[];
-          return (
-            <div key={v} style={{ width: '100%' }}>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                py={0.5}
+    <Transition.Root show={open} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={close}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-in-out duration-500"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in-out duration-500"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-secondary/75 transition-opacity" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+              <Transition.Child
+                as={Fragment}
+                enter="transform transition ease-in-out duration-500"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
               >
-                <Typography
-                  variant="h5"
-                  component="h3"
-                  color={theme.palette.text.secondary}
-                >
-                  {v}
-                </Typography>
-                <Button
-                  variant="text"
-                  disabled={filter.length === 0}
-                  style={{ color: theme.palette.text.secondary }}
-                  onClick={() => clear(v as FILTER)}
-                >
-                  Clear
-                </Button>
-              </Stack>
-              <ChipContainer>
-                {data.sort().map((value, index) => (
-                  <FilterChip
-                    key={index}
-                    label={value}
-                    clickable
-                    onClick={() => update(v as FILTER, value)}
-                    variant={filter.includes(value) ? 'filled' : 'outlined'}
-                  />
-                ))}
-              </ChipContainer>
+                <Dialog.Panel className="pointer-events-auto relative w-screen max-w-md">
+                  <div className="flex h-full flex-col items-start justify-between overflow-y-scroll rounded-lg bg-default py-6 shadow-xl">
+                    {FILTER_TAGS.map(v => {
+                      const data = folderData[v.toLowerCase()] as string[];
+                      const filter = filters[v.toLowerCase()] as string[];
+                      return (
+                        <div key={v} className="w-full px-4">
+                          <div className="flex flex-row items-center justify-between">
+                            <span className="text-2xl text-secondary">{v}</span>
+                            <button
+                              className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
+                              disabled={filter.length === 0}
+                              onClick={() => clear(v as FILTER)}
+                            >
+                              Clear
+                            </button>
+                          </div>
+                          <div className="flex flex-row flex-wrap gap-y-2 py-2">
+                            {data.sort().map((value, index) => (
+                              <span
+                                key={index}
+                                className={classNames(
+                                  filter.includes(value)
+                                    ? 'bg-selected text-hover'
+                                    : 'bg-default border-selected border-[1px] text-selected',
+                                  'mr-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-sm font-medium cursor-pointer hover:bg-hover hover:text-selected',
+                                )}
+                                onClick={() => update(v as FILTER, value)}
+                              >
+                                {value}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
             </div>
-          );
-        })}
-      </Stack>
-    </FilterPanel>
+          </div>
+        </div>
+      </Dialog>
+    </Transition.Root>
   );
 }
 
