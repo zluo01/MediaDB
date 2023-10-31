@@ -130,41 +130,42 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
     }
   }, [current]);
 
-  useEffect(() => {
-    async function handleKeyPress(ev: KeyboardEvent) {
-      const c = current % column;
-      const r = Math.floor(current / column);
-      let index: number;
-      switch (ev.key) {
-        case 'ArrowLeft':
-          setCurrent(prevState =>
-            prevState - 1 < 0 ? data.length - 1 : prevState - 1,
-          );
-          break;
-        case 'ArrowRight':
-          setCurrent(prevState => (prevState + 1) % data.length);
-          break;
-        case 'ArrowUp':
-          ev.preventDefault();
-          index = (r - 1) * column + c;
-          if (index < 0) {
-            return;
-          }
-          setCurrent(index);
-          break;
-        case 'ArrowDown':
-          ev.preventDefault();
-          index = (r + 1) * column + c;
-          if (index > data.length - 1) {
-            return;
-          }
-          setCurrent(index);
-          break;
-        case 'Enter':
-          if (
-            data[current].type === MOVIE
-            // || data[currIndex].type === COMIC
-          ) {
+  async function handleKeyPress(ev: KeyboardEvent) {
+    // when menu is opened, do not listen to key change
+    if (open) {
+      return;
+    }
+    const c = current % column;
+    const r = Math.floor(current / column);
+    let index: number;
+    switch (ev.key) {
+      case 'ArrowLeft':
+        setCurrent(prevState =>
+          prevState - 1 < 0 ? data.length - 1 : prevState - 1,
+        );
+        break;
+      case 'ArrowRight':
+        setCurrent(prevState => (prevState + 1) % data.length);
+        break;
+      case 'ArrowUp':
+        ev.preventDefault();
+        index = (r - 1) * column + c;
+        if (index < 0) {
+          return;
+        }
+        setCurrent(index);
+        break;
+      case 'ArrowDown':
+        ev.preventDefault();
+        index = (r + 1) * column + c;
+        if (index > data.length - 1) {
+          return;
+        }
+        setCurrent(index);
+        break;
+      case 'Enter':
+        switch (data[current].type) {
+          case MOVIE:
             const media = data[current] as IMovieData;
             const filePath = path.join(
               folderData.path,
@@ -172,17 +173,22 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
               media.file,
             );
             await openFile(filePath);
-          }
-          break;
-      }
+            break;
+          case TV_SERIES:
+            setOpen(true);
+            break;
+        }
+        break;
     }
+  }
 
+  useEffect(() => {
     document.addEventListener('keydown', handleKeyPress);
 
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [current, data, folderData, column]);
+  }, [current, data, folderData, column, open]);
 
   useEffect(() => {
     const content = current < 0 ? `Total ${data.length}` : data[current]?.title;
