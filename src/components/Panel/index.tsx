@@ -23,7 +23,7 @@ function SidePanel(): ReactElement {
   }
 
   const showText = setting?.showSidePanel
-    ? '2xl:text-lg text-primary pl-2 max-w-[10vw] truncate xl:text-base'
+    ? 'text-lg text-primary pl-2 max-w-[10vw] truncate'
     : 'hidden';
   return (
     <Fragment>
@@ -53,7 +53,7 @@ function SidePanel(): ReactElement {
                   <FolderIcon
                     className={classNames(
                       isCurr ? 'text-[#21e18c]' : 'text-[#6f7a83]',
-                      '2xl:h-8 2xl:w-8 xl:h-5 xl:w-5',
+                      'h-8 w-8',
                     )}
                   />
                   <span className={showText}>{folder.name}</span>
@@ -68,7 +68,7 @@ function SidePanel(): ReactElement {
               )}
               onClick={handleOpen}
             >
-              <PlusIcon className="text-[#6f7a83] xl:h-5 xl:w-5 2xl:h-8 2xl:w-8" />
+              <PlusIcon className="h-8 w-8 text-[#6f7a83]" />
               <span className={showText}>Add Video</span>
             </div>
             <div
@@ -83,7 +83,7 @@ function SidePanel(): ReactElement {
               <Cog6ToothIcon
                 className={classNames(
                   isSettingPage ? 'text-[#21e18c]' : 'text-[#6f7a83]',
-                  '2xl:h-8 2xl:w-8 xl:h-5 xl:w-5',
+                  'h-8 w-8',
                 )}
               />
               <span className={showText}>Setting</span>

@@ -31,6 +31,28 @@ interface ICardProps {
   folderData: IFolderData;
 }
 
+function useGetColumnSize() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setWidth(window.innerWidth);
+    });
+    return () => {
+      window.removeEventListener('resize', () => {
+        setWidth(window.innerWidth);
+      });
+    };
+  }, []);
+
+  if (width < 2560) {
+    return 6;
+  } else if (width < 3840) {
+    return 8;
+  }
+  return 12;
+}
+
 function filterData(
   folderData: IFolderData,
   tags: string[],
@@ -88,6 +110,8 @@ function filterData(
 }
 
 function MediaGrid({ folderData }: ICardProps): ReactElement {
+  const column = useGetColumnSize();
+
   const dispatch = useAppDispatch();
 
   const { tags, genres, actors, studios } = useAppSelector(
@@ -108,9 +132,8 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
 
   useEffect(() => {
     async function handleKeyPress(ev: KeyboardEvent) {
-      const columnNumber = 8;
-      const c = current % columnNumber;
-      const r = Math.floor(current / columnNumber);
+      const c = current % column;
+      const r = Math.floor(current / column);
       let index: number;
       switch (ev.key) {
         case 'ArrowLeft':
@@ -123,7 +146,7 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
           break;
         case 'ArrowUp':
           ev.preventDefault();
-          index = (r - 1) * columnNumber + c;
+          index = (r - 1) * column + c;
           if (index < 0) {
             return;
           }
@@ -131,7 +154,7 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
           break;
         case 'ArrowDown':
           ev.preventDefault();
-          index = (r + 1) * columnNumber + c;
+          index = (r + 1) * column + c;
           if (index > data.length - 1) {
             return;
           }
@@ -159,7 +182,7 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [current, data, folderData]);
+  }, [current, data, folderData, column]);
 
   useEffect(() => {
     const content = current < 0 ? `Total ${data.length}` : data[current]?.title;
@@ -186,7 +209,7 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
 
   return (
     <Fragment>
-      <div className="grid auto-rows-max grid-cols-8">
+      <div className="grid auto-rows-max sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
         {data.map((media, index) => (
           <Media
             key={index}
