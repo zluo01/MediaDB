@@ -222,6 +222,14 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
                 return;
             }
 
+            // skip gif
+            if file_path.ends_with(".gif") {
+                if let Err(e) = fs::copy(&source_path, &dest_path) {
+                    error!("Fail to copy file from {:?} to {:?}. Raising error {}", &source_path, &dest_path, e);
+                    return;
+                }
+            }
+
             let img = image::open(&source_path);
             if let Err(e) = img {
                 error!("Fail to read image file {:?}. Raising error {}", source_path, e);
@@ -229,7 +237,7 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
             }
 
             if let Err(e) = img.unwrap().save_with_format(&dest_path, ImageFormat::WebP) {
-                error!("Fail to copy file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
+                error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
                 return;
             }
         });
