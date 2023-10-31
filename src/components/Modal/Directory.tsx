@@ -15,7 +15,7 @@ import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
 import React, { Fragment, ReactElement, useState } from 'react';
 
 interface IDirectoryModal {
-  folderList: IFolder[];
+  folderList?: IFolder[];
 }
 
 function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
@@ -26,14 +26,14 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
   );
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
-    folderList?.length,
+    folderList?.length || 0,
   );
 
   const [loading, setLoading] = useState(false);
 
   async function handleDirectory() {
     const path = await getDirectory();
-    const name = path.split('\\').pop().split('/').pop();
+    const name = path.split('\\')!.pop()!.split('/').pop() as string;
     dispatch(
       updateDirectoryData({
         name,

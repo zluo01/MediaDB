@@ -46,7 +46,7 @@ function FolderList(): ReactElement {
 
   async function onDragEnd(result: DropResult) {
     // dropped outside the list
-    if (!result.destination) {
+    if (!folderList || !result.destination) {
       return;
     }
 

@@ -6,21 +6,25 @@ import { RootState } from "@/lib/source/store";
 import { IFolderData } from "@/type";
 
 import { useSearchParams } from "next/navigation";
-import { ReactElement } from "react";
-import Content from "@/components/Content";
+import React, { ReactElement, useState } from "react";
 import Loading from "@/components/Loading";
+import Toolbar from "@/components/Content/toolbar";
+import Content from "@/components/Content/content";
+import Footer from "@/components/Footer";
 
 function Home(): ReactElement {
-  const searchParams = useSearchParams();
-  const { search } = useAppSelector((state: RootState) => state.control);
+  const search = useAppSelector((state: RootState) => state.control.search);
 
-  const route = parseInt(searchParams.get("id")) || 0;
+  const searchParams = useSearchParams();
+  const route = parseInt(searchParams.get("id") || "0");
+
+  const [refresh, setRefresh] = useState(false);
 
   const { data: folderData, isLoading: isGetFolderDataLoading } =
     useGetFolderDataQuery(route);
 
-  function getDisplayData(): IFolderData {
-    if (search) {
+  function getDisplayData(): IFolderData | undefined {
+    if (search && folderData) {
       return {
         ...folderData,
         data: folderData.data.filter(o =>
@@ -31,19 +35,31 @@ function Home(): ReactElement {
     return folderData;
   }
 
+  const displayData = getDisplayData();
+
   function Contents(): ReactElement {
-    if (isGetFolderDataLoading) {
+    if (isGetFolderDataLoading || refresh) {
       return <Loading />;
     }
-    if (!folderData) {
+    if (!displayData) {
       return <div />;
     }
-    return <Content folderData={getDisplayData()} />;
+    return (
+      <Content folderData={displayData} />
+    );
   }
 
   return (
     <div className="h-full w-full overflow-auto bg-default">
-      <Contents />
+      <div className="flex flex-col p-8">
+        <Toolbar
+          folderData={displayData}
+          updateRefresh={setRefresh}
+          disabled={search !== "" || !displayData || refresh}
+        />
+        <Contents />
+      </div>
+      <Footer />
     </div>
   );
 }

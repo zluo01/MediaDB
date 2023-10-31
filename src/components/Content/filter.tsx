@@ -4,11 +4,12 @@ import { RootState } from '@/lib/source/store';
 import classNames from '@/lib/utils';
 import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
+import get from 'lodash/get';
 import { ReactElement } from 'react';
 import { Fragment } from 'react';
 
 interface IFilerSection {
-  folderData: IFolderInfo;
+  folderData?: IFolderInfo;
   open: boolean;
   close: VoidFunction;
 }
@@ -61,40 +62,44 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
               >
                 <Dialog.Panel className="pointer-events-auto relative w-screen max-w-md">
                   <div className="flex h-full flex-col items-start justify-between overflow-y-scroll rounded-lg bg-default py-6 shadow-xl">
-                    {FILTER_TAGS.map(v => {
-                      const data = folderData[v.toLowerCase()] as string[];
-                      const filter = filters[v.toLowerCase()] as string[];
-                      return (
-                        <div key={v} className="w-full px-4">
-                          <div className="flex flex-row items-center justify-between">
-                            <span className="text-2xl text-secondary">{v}</span>
-                            <button
-                              className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
-                              disabled={filter.length === 0}
-                              onClick={() => clear(v as FILTER)}
-                            >
-                              Clear
-                            </button>
-                          </div>
-                          <div className="flex flex-row flex-wrap gap-y-2 py-2">
-                            {data.sort().map((value, index) => (
-                              <span
-                                key={index}
-                                className={classNames(
-                                  filter.includes(value)
-                                    ? 'bg-selected text-hover'
-                                    : 'bg-default border-selected border-[1px] text-selected',
-                                  'mr-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-sm font-medium cursor-pointer hover:bg-hover hover:text-selected',
-                                )}
-                                onClick={() => update(v as FILTER, value)}
-                              >
-                                {value}
+                    {folderData &&
+                      FILTER_TAGS.map(v => {
+                        const key = v.toLowerCase();
+                        const data = get(folderData, key) as string[];
+                        const filter = get(filters, key) as string[];
+                        return (
+                          <div key={v} className="w-full px-4">
+                            <div className="flex flex-row items-center justify-between">
+                              <span className="text-2xl text-secondary">
+                                {v}
                               </span>
-                            ))}
+                              <button
+                                className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
+                                disabled={filter.length === 0}
+                                onClick={() => clear(v as FILTER)}
+                              >
+                                Clear
+                              </button>
+                            </div>
+                            <div className="flex flex-row flex-wrap gap-y-2 py-2">
+                              {data.sort().map((value, index) => (
+                                <span
+                                  key={index}
+                                  className={classNames(
+                                    filter.includes(value)
+                                      ? 'bg-selected text-hover'
+                                      : 'bg-default border-selected border-[1px] text-selected',
+                                    'mr-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-sm font-medium cursor-pointer hover:bg-hover hover:text-selected',
+                                  )}
+                                  onClick={() => update(v as FILTER, value)}
+                                >
+                                  {value}
+                                </span>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

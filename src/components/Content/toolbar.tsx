@@ -24,13 +24,13 @@ const FilterSection = lazy(() => import('./filter'));
 const SORT_TYPES = [DEFAULT, TITLE_ASC, TITLE_DSC, YEAR_ASC, YEAR_DSC];
 
 interface ISortingMenuProps {
-  folderData: IFolderData;
+  folderData?: IFolderData;
   disabled: boolean;
 }
 
 function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
   const { trigger: sortTypeTrigger } = useUpdateSortTypeTrigger(
-    folderData.position,
+    folderData?.position || 0,
   );
 
   async function update(type: string) {
@@ -45,7 +45,7 @@ function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
           className="inline-flex items-center rounded-md bg-transparent px-3.5 py-1 text-center text-base font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
         >
           <Bars3BottomLeftIcon className="mr-2 h-3.5 w-3.5" />
-          {folderData.sort}
+          {folderData?.sort}
         </Menu.Button>
       </div>
       <Transition
@@ -59,16 +59,17 @@ function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
       >
         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-secondary text-selected shadow-lg ring-1 ring-black/5 focus:outline-none">
           <div className="p-1 ">
-            {SORT_TYPES.filter(o => o !== folderData.sort).map(type => (
-              <Menu.Item key={type}>
-                <button
-                  className="group flex w-full items-center rounded-md p-2 text-sm hover:bg-selected hover:text-hover"
-                  onClick={() => update(type)}
-                >
-                  {type}
-                </button>
-              </Menu.Item>
-            ))}
+            {folderData &&
+              SORT_TYPES.filter(o => o !== folderData.sort).map(type => (
+                <Menu.Item key={type}>
+                  <button
+                    className="group flex w-full items-center rounded-md p-2 text-sm hover:bg-selected hover:text-hover"
+                    onClick={() => update(type)}
+                  >
+                    {type}
+                  </button>
+                </Menu.Item>
+              ))}
           </div>
         </Menu.Items>
       </Transition>
@@ -77,7 +78,7 @@ function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
 }
 
 interface IToolbarProps {
-  folderData: IFolderData;
+  folderData?: IFolderData;
   disabled: boolean;
   updateRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -86,12 +87,15 @@ function Toolbar({ folderData, updateRefresh, disabled }: IToolbarProps) {
   const [open, setOpen] = useState(false);
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
-    folderData.position,
+    folderData?.position || 0,
   );
 
   async function updateLibrary(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
+    if (!folderData) {
+      return;
+    }
     e.preventDefault();
     updateRefresh(true);
     try {

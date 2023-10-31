@@ -17,13 +17,15 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   const { open } = useAppSelector((state: RootState) => state.editFolderModal);
 
   const { data: folder } = useGetFolderQuery(index);
-  const { trigger } = useUpdateFolderPathTrigger(folder?.position);
+  const { trigger } = useUpdateFolderPathTrigger(folder?.position || 0);
 
   const [path, setPath] = useState(folder?.path || '');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setPath(folder?.path);
+    if (folder?.path) {
+      setPath(folder?.path);
+    }
   }, [folder?.path]);
 
   function close() {
@@ -37,6 +39,9 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   async function handleSubmit(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
+    if (!folder) {
+      return;
+    }
     e.preventDefault();
     setLoading(true);
     try {

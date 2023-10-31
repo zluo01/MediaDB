@@ -8,7 +8,7 @@ export const BLUR_IMG =
 export function getCacheImagePath(folder: IFolder, src: string): string {
   return convertFileSrc(
     path.join(
-      folder.appDir,
+      folder.appDir as string,
       'thumbnails',
       folder.name,
       src

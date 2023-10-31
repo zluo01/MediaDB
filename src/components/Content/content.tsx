@@ -109,7 +109,7 @@ function filterData(
   return media;
 }
 
-function MediaGrid({ folderData }: ICardProps): ReactElement {
+function Content({ folderData }: ICardProps): ReactElement {
   const column = useGetColumnSize();
 
   const dispatch = useAppDispatch();
@@ -233,4 +233,4 @@ function MediaGrid({ folderData }: ICardProps): ReactElement {
   );
 }
 
-export default MediaGrid;
+export default Content;

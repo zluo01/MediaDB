@@ -2,8 +2,8 @@ import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
 import { useAppDispatch } from '@/lib/source';
 import { openDirectoryModal } from '@/lib/source/slice/directoryModalSlice';
 import classNames from '@/lib/utils';
-import { FolderIcon, PlusIcon, Cog6ToothIcon } from '@heroicons/react/24/solid';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { Cog6ToothIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { Fragment, lazy, ReactElement } from 'react';
 
 const DirectoryModal = lazy(() => import('@/components/Modal/Directory'));
@@ -13,7 +13,7 @@ function SidePanel(): ReactElement {
   const dispatch = useAppDispatch();
 
   const isSettingPage = usePathname().includes('/setting');
-  const currFolderIndex = parseInt(useSearchParams().get('id')) || 0;
+  const currFolderIndex = parseInt(useSearchParams().get('id') || '0');
 
   const { data: setting } = useGetSettingQuery();
   const { data: folderList } = useGetFolderListQuery();
