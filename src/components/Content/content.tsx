@@ -215,7 +215,7 @@ function Content({ folderData }: ICardProps): ReactElement {
 
   return (
     <Fragment>
-      <div className="grid auto-rows-max sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
+      <div className="grid auto-rows-fr sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
         {data.map((media, index) => (
           <Media
             key={index}
