@@ -11,14 +11,10 @@ function Poster({ folder, src, ...props }: IImageLoaderPops): ReactElement {
   return (
     // eslint-disable-next-line jsx-a11y/alt-text
     <Image
+      className="h-full w-full object-cover"
       src={getCacheImagePath(folder, src as string)}
       placeholder={'blur'}
       blurDataURL={BLUR_IMG}
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-      }}
       {...props}
     />
   );

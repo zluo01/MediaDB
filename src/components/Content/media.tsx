@@ -47,8 +47,8 @@ function Media({
       onClick={select}
       onDoubleClick={() => handleOpen(media)}
       className={classNames(
-        current ? 'bg-white/10 shadow-lg rounded-md' : '',
-        'flex w-full flex-col items-center justify-center p-2',
+        current ? 'bg-white/20 shadow-lg rounded-md' : '',
+        'flex w-full flex-col items-center justify-center p-2 hover:scale-105 hover:transition-all hover:rounded-xl',
       )}
     >
       <Poster

@@ -130,59 +130,59 @@ function Content({ folderData }: ICardProps): ReactElement {
     }
   }, [current]);
 
-  async function handleKeyPress(ev: KeyboardEvent) {
-    // when menu is opened, do not listen to key change
-    if (open) {
-      return;
-    }
-    const c = current % column;
-    const r = Math.floor(current / column);
-    let index: number;
-    switch (ev.key) {
-      case 'ArrowLeft':
-        setCurrent(prevState =>
-          prevState - 1 < 0 ? data.length - 1 : prevState - 1,
-        );
-        break;
-      case 'ArrowRight':
-        setCurrent(prevState => (prevState + 1) % data.length);
-        break;
-      case 'ArrowUp':
-        ev.preventDefault();
-        index = (r - 1) * column + c;
-        if (index < 0) {
-          return;
-        }
-        setCurrent(index);
-        break;
-      case 'ArrowDown':
-        ev.preventDefault();
-        index = (r + 1) * column + c;
-        if (index > data.length - 1) {
-          return;
-        }
-        setCurrent(index);
-        break;
-      case 'Enter':
-        switch (data[current].type) {
-          case MOVIE:
-            const media = data[current] as IMovieData;
-            const filePath = path.join(
-              folderData.path,
-              media.relativePath,
-              media.file,
-            );
-            await openFile(filePath);
-            break;
-          case TV_SERIES:
-            setOpen(true);
-            break;
-        }
-        break;
-    }
-  }
-
   useEffect(() => {
+    async function handleKeyPress(ev: KeyboardEvent) {
+      // when menu is opened, do not listen to key change
+      if (open) {
+        return;
+      }
+      const c = current % column;
+      const r = Math.floor(current / column);
+      let index: number;
+      switch (ev.key) {
+        case 'ArrowLeft':
+          setCurrent(prevState =>
+            prevState - 1 < 0 ? data.length - 1 : prevState - 1,
+          );
+          break;
+        case 'ArrowRight':
+          setCurrent(prevState => (prevState + 1) % data.length);
+          break;
+        case 'ArrowUp':
+          ev.preventDefault();
+          index = (r - 1) * column + c;
+          if (index < 0) {
+            return;
+          }
+          setCurrent(index);
+          break;
+        case 'ArrowDown':
+          ev.preventDefault();
+          index = (r + 1) * column + c;
+          if (index > data.length - 1) {
+            return;
+          }
+          setCurrent(index);
+          break;
+        case 'Enter':
+          switch (data[current].type) {
+            case MOVIE:
+              const media = data[current] as IMovieData;
+              const filePath = path.join(
+                folderData.path,
+                media.relativePath,
+                media.file,
+              );
+              await openFile(filePath);
+              break;
+            case TV_SERIES:
+              setOpen(true);
+              break;
+          }
+          break;
+      }
+    }
+
     document.addEventListener('keydown', handleKeyPress);
 
     return () => {
