@@ -15,12 +15,26 @@ export type SORT =
   | typeof YEAR_ASC
   | typeof YEAR_DSC;
 
-interface ITags {
-  tags: string[];
-  genres: string[];
-  actors: string[];
-  studios: string[];
+export const TAG = 'tags';
+export const GENRE = 'genres';
+export const ACTOR = 'actors';
+export const STUDIO = 'studios';
+
+export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;
+
+export interface ITags {
+  [TAG]: string[];
+  [GENRE]: string[];
+  [ACTOR]: string[];
+  [STUDIO]: string[];
 }
+
+export const EMPTY_FILTERS: ITags = {
+  [TAG]: [],
+  [GENRE]: [],
+  [ACTOR]: [],
+  [STUDIO]: [],
+};
 
 export interface IFolderInfo extends ITags {
   sort: SORT;
@@ -90,13 +104,6 @@ export interface IFilterProps {
   tag: FILTER;
   name: string;
 }
-
-export const TAG = 'Tags';
-export const GENRE = 'Genres';
-export const ACTOR = 'Actors';
-export const STUDIO = 'Studios';
-
-export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;
 
 export enum CoverType {
   POSTER,

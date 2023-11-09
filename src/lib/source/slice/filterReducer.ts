@@ -1,63 +1,28 @@
-import {
-  ACTOR,
-  FILTER,
-  GENRE,
-  IFilterProps,
-  IFilterState,
-  STUDIO,
-  TAG,
-} from '@/type';
+import { EMPTY_FILTERS, FILTER, IFilterProps, ITags } from '@/type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState: IFilterState = {
-  tags: [],
-  genres: [],
-  actors: [],
-  studios: [],
-};
-
-function getFilterSets(value: string[], name: string): string[] {
-  if (value.includes(name)) {
-    return value.filter(o => o !== name);
-  }
-  return [...value, name];
-}
+const initialState: ITags = EMPTY_FILTERS;
 
 export const filterSlice = createSlice({
-  name: 'control',
+  name: 'filter',
   initialState,
   reducers: {
     reset: (state, action: PayloadAction<FILTER>) => {
-      switch (action.payload) {
-        case TAG:
-          state.tags = [];
-          break;
-        case GENRE:
-          state.genres = [];
-          break;
-        case ACTOR:
-          state.actors = [];
-          break;
-        case STUDIO:
-          state.studios = [];
-          break;
-      }
+      return { ...state, [action.payload]: [] };
     },
     updateFilter: (state, action: PayloadAction<IFilterProps>) => {
-      switch (action.payload.tag) {
-        case TAG:
-          state.tags = getFilterSets(state.tags, action.payload.name);
-          break;
-        case GENRE:
-          state.genres = getFilterSets(state.genres, action.payload.name);
-          break;
-        case ACTOR:
-          state.actors = getFilterSets(state.actors, action.payload.name);
-          break;
-        case STUDIO:
-          state.studios = getFilterSets(state.studios, action.payload.name);
-          break;
+      const { tag, name } = action.payload;
+      const filterValue = state[action.payload.tag];
+      if (filterValue.includes(name)) {
+        return {
+          ...state,
+          [tag]: filterValue.filter(o => o !== name),
+        };
       }
+      return {
+        ...state,
+        [tag]: [...state[tag], name],
+      };
     },
   },
 });

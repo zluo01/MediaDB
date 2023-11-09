@@ -4,8 +4,7 @@ import { RootState } from '@/lib/source/store';
 import classNames from '@/lib/utils';
 import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
-import get from 'lodash/get';
-import { ReactElement, Fragment } from 'react';
+import { Fragment, ReactElement } from 'react';
 
 interface IFilerSection {
   folderData?: IFolderInfo;
@@ -13,7 +12,7 @@ interface IFilerSection {
   close: VoidFunction;
 }
 
-const FILTER_TAGS = [GENRE, ACTOR, STUDIO, TAG];
+const FILTER_TAGS: FILTER[] = [GENRE, ACTOR, STUDIO, TAG];
 
 function Filters({ folderData, open, close }: IFilerSection): ReactElement {
   const dispatch = useAppDispatch();
@@ -63,9 +62,8 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
                   <div className="flex h-full flex-col items-start justify-between overflow-y-scroll rounded-lg bg-default py-6 shadow-xl">
                     {folderData &&
                       FILTER_TAGS.map(v => {
-                        const key = v.toLowerCase();
-                        const data = get(folderData, key) as string[];
-                        const filter = get(filters, key) as string[];
+                        const data = folderData[v];
+                        const filter = filters[v];
                         return (
                           <div key={v} className="w-full px-4">
                             <div className="flex flex-row items-center justify-between">
@@ -75,7 +73,7 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
                               <button
                                 className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
                                 disabled={filter.length === 0}
-                                onClick={() => clear(v as FILTER)}
+                                onClick={() => clear(v)}
                               >
                                 Clear
                               </button>
@@ -90,7 +88,7 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
                                       : 'bg-default border-selected border-[1px] text-selected',
                                     'mr-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-sm font-medium cursor-pointer hover:bg-hover hover:text-selected',
                                   )}
-                                  onClick={() => update(v as FILTER, value)}
+                                  onClick={() => update(v, value)}
                                 >
                                   {value}
                                 </span>

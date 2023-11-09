@@ -5,6 +5,8 @@ import { update } from '@/lib/source/slice/footerSlice';
 import { RootState } from '@/lib/source/store';
 import {
   DEFAULT,
+  FILTER,
+  IFilterState,
   IFolderData,
   IMediaData,
   IMovieData,
@@ -16,6 +18,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
+import forEach from 'lodash/forEach';
 import join from 'lodash/join';
 import {
   Fragment,
@@ -56,27 +59,14 @@ function useGetColumnSize() {
 
 function filterData(
   folderData: IFolderData,
-  tags: string[],
-  genres: string[],
-  actors: string[],
-  studios: string[],
+  filters: IFilterState,
 ): IMediaData[] {
   let media = [...folderData.data];
 
-  tags.forEach(t => {
-    media = media.filter(o => o.tags.includes(t));
-  });
-
-  genres.forEach(g => {
-    media = media.filter(o => o.genres.includes(g));
-  });
-
-  actors.forEach(a => {
-    media = media.filter(o => o.actors.includes(a));
-  });
-
-  studios.forEach(a => {
-    media = media.filter(o => o.studios.includes(a));
+  forEach(filters, (value, tag) => {
+    value.forEach(
+      v => (media = media.filter(o => o[tag as FILTER].includes(v))),
+    );
   });
 
   switch (folderData.sort) {
@@ -115,14 +105,12 @@ function Content({ folderData }: ICardProps): ReactElement {
 
   const dispatch = useAppDispatch();
 
-  const { tags, genres, actors, studios } = useAppSelector(
-    (state: RootState) => state.filter,
-  );
+  const filters = useAppSelector((state: RootState) => state.filter);
 
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(-1);
 
-  const data = filterData(folderData, tags, genres, actors, studios);
+  const data = filterData(folderData, filters);
 
   useEffect(() => {
     const anchor = document.getElementById(`c${current}`);
