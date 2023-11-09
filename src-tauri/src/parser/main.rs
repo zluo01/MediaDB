@@ -5,7 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use image::ImageFormat;
+use image::{DynamicImage, ImageFormat};
 use log::error;
 use rayon::prelude::*;
 use serde_json::{json, Value};
@@ -193,11 +193,20 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
 
 fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
     let root_path = Path::new(path);
+    let cover_path = app_dir.join("covers");
     let thumbnail_path = app_dir.join("thumbnails");
-    let folder_path = thumbnail_path.join(name);
 
-    if let Err(e) = fs::create_dir_all(&folder_path) {
-        error!("Fail to create directory {}. Raising error {}", &folder_path.to_string_lossy(), e);
+
+    let cover_folder_path = cover_path.join(name);
+    let thumbnail_folder_path = thumbnail_path.join(name);
+
+    if let Err(e) = fs::create_dir_all(&cover_folder_path) {
+        error!("Fail to create cover directory {}. Raising error {}", &cover_folder_path.to_string_lossy(), e);
+        return;
+    }
+
+    if let Err(e) = fs::create_dir_all(&thumbnail_folder_path) {
+        error!("Fail to create thumbnail directory {}. Raising error {}", &thumbnail_folder_path.to_string_lossy(), e);
         return;
     }
 
@@ -205,30 +214,18 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
         .for_each(|poster_path| {
             let source_path = root_path.join(poster_path);
 
-            let file_path = poster_path.to_string_lossy();
-            let dest_path = folder_path.join(&file_path.replace("\\", "/")
+            let file_path = poster_path
+                .to_string_lossy()
+                .replace("\\", "/")
                 .replace(".jpg", "")
                 .replace(".png", "")
                 .replace(".jpeg", "")
                 .replace(".bmp", "")
                 .replace(".gif", "")
-                .replace(".webp", "")
-            );
+                .replace(".webp", "");
 
-            let parent_path = &dest_path.as_path().parent().unwrap();
-
-            if let Err(e) = fs::create_dir_all(&parent_path) {
-                error!("Fail to create directory {:?}. Raising error {}", parent_path, e);
-                return;
-            }
-
-            // skip gif
-            if file_path.ends_with(".gif") {
-                if let Err(e) = fs::copy(&source_path, &dest_path) {
-                    error!("Fail to copy file from {:?} to {:?}. Raising error {}", &source_path, &dest_path, e);
-                    return;
-                }
-            }
+            let cover_dest_path = cover_folder_path.join(&file_path);
+            let thumbnail_dest_path = thumbnail_folder_path.join(&file_path);
 
             let img = image::open(&source_path);
             if let Err(e) = img {
@@ -236,9 +233,42 @@ fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSe
                 return;
             }
 
-            if let Err(e) = img.unwrap().save_with_format(&dest_path, ImageFormat::WebP) {
-                error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
-                return;
-            }
+            let img_content = img.unwrap();
+
+            save_cover(&source_path, &cover_dest_path, file_path, &img_content);
+            save_thumbnail(&source_path, &thumbnail_dest_path, &img_content);
         });
+}
+
+fn save_cover(source_path: &PathBuf, dest_path: &PathBuf, file_path: String, img: &DynamicImage) {
+    let parent_path = dest_path.as_path().parent().unwrap();
+    if let Err(e) = fs::create_dir_all(&parent_path) {
+        error!("Fail to create directory {:?}. Raising error {}", parent_path, e);
+        return;
+    }
+
+    // skip gif
+    if file_path.ends_with(".gif") {
+        if let Err(e) = fs::copy(&source_path, &dest_path) {
+            error!("Fail to copy file from {:?} to {:?}. Raising error {}", &source_path, &dest_path, e);
+            return;
+        }
+    }
+
+    if let Err(e) = img.save_with_format(&dest_path, ImageFormat::WebP) {
+        error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
+        return;
+    }
+}
+
+fn save_thumbnail(source_path: &PathBuf, dest_path: &PathBuf, img: &DynamicImage) {
+    let parent_path = dest_path.as_path().parent().unwrap();
+    if let Err(e) = fs::create_dir_all(&parent_path) {
+        error!("Fail to create directory {:?}. Raising error {}", parent_path, e);
+        return;
+    }
+
+    if let Err(e) = img.thumbnail(60, 80).save_with_format(&dest_path, ImageFormat::WebP) {
+        error!("Fail to save thumbnail from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
+    }
 }

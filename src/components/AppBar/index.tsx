@@ -2,11 +2,12 @@ import { useAppDispatch, useAppSelector } from '@/lib/source';
 import { search } from '@/lib/source/slice/controlSlice';
 import { RootState } from '@/lib/source/store';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { useRouter, usePathname } from 'next/navigation';
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function AppBar() {
-  const router = useRouter();
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const searchContent = useAppSelector(
@@ -23,7 +24,7 @@ function AppBar() {
     <div className="fixed z-10 flex h-[5vh] min-h-[64px] w-full flex-row items-center justify-between bg-primary px-[1vw]">
       <span
         className="cursor-pointer text-4xl font-medium text-primary"
-        onClick={() => router.push('/')}
+        onClick={() => navigate('/')}
       >
         MediaDB
       </span>
@@ -39,7 +40,7 @@ function AppBar() {
           placeholder="Search..."
           value={searchContent}
           onChange={handleSearch}
-          disabled={usePathname().includes('setting')}
+          disabled={location.pathname.includes('setting')}
         />
       </div>
     </div>

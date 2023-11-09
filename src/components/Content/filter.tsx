@@ -5,8 +5,7 @@ import classNames from '@/lib/utils';
 import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
 import get from 'lodash/get';
-import { ReactElement } from 'react';
-import { Fragment } from 'react';
+import { ReactElement, Fragment } from 'react';
 
 interface IFilerSection {
   folderData?: IFolderInfo;

@@ -9,7 +9,7 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/solid';
-import React, { Fragment, lazy, ReactElement, useState } from 'react';
+import { Fragment, lazy, ReactElement, Suspense, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -132,7 +132,9 @@ function FolderList(): ReactElement {
           )}
         </Droppable>
       </DragDropContext>
-      <EditFolderModal index={folderIndex} />
+      <Suspense>
+        <EditFolderModal index={folderIndex} />
+      </Suspense>
     </Fragment>
   );
 }

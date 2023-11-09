@@ -17,7 +17,7 @@ import {
   Bars3BottomLeftIcon,
   FunnelIcon,
 } from '@heroicons/react/24/solid';
-import React, { Fragment, lazy, useState } from 'react';
+import React, { Fragment, lazy, Suspense, useState } from 'react';
 
 const FilterSection = lazy(() => import('./filter'));
 
@@ -134,11 +134,13 @@ function Toolbar({ folderData, updateRefresh, disabled }: IToolbarProps) {
           Refresh
         </button>
       </div>
-      <FilterSection
-        folderData={folderData}
-        open={open}
-        close={() => setOpen(false)}
-      />
+      <Suspense>
+        <FilterSection
+          folderData={folderData}
+          open={open}
+          close={() => setOpen(false)}
+        />
+      </Suspense>
     </Fragment>
   );
 }

@@ -1,9 +1,9 @@
 {
   "build": {
-    "beforeDevCommand": "npm run next-dev",
-    "beforeBuildCommand": "npm run next-build",
+    "beforeDevCommand": "npm run vite-dev",
+    "beforeBuildCommand": "npm run vite-build",
     "devPath": "http://localhost:1420",
-    "distDir": "../out",
+    "distDir": "../dist",
     "withGlobalTauri": false
   },
   "package": {
@@ -20,6 +20,7 @@
       },
       "protocol": {
         "assetScope": [
+          "$APPDATA/covers/**",
           "$APPDATA/thumbnails/**"
         ],
         "asset": true

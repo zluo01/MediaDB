@@ -2,10 +2,9 @@ import Cover from '@/components/ImageLoader/cover';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
 import { IEpisode, IFolder, ITVShowData } from '@/type';
-import { Dialog, Transition } from '@headlessui/react';
-import { Tab } from '@headlessui/react';
-import path from 'path';
-import React, { Fragment, ReactElement } from 'react';
+import { Dialog, Transition, Tab } from '@headlessui/react';
+import join from 'lodash/join';
+import { Fragment, ReactElement } from 'react';
 
 interface ITVShowCardMenuProps {
   folder: IFolder;
@@ -21,7 +20,7 @@ export default function TVShowCardMenu({
   close,
 }: ITVShowCardMenuProps): ReactElement {
   async function openEpisodeFile(media: IEpisode) {
-    const filePath = path.join(folder.path, media.relativePath, media.file);
+    const filePath = join([folder.path, media.relativePath, media.file], '/');
     await openFile(filePath);
   }
 
@@ -82,9 +81,12 @@ export default function TVShowCardMenu({
                             <div className="flex h-full w-[38.2vw] items-center justify-center p-6">
                               <Cover
                                 folder={folder}
-                                src={path.join(
-                                  data.relativePath,
-                                  data.posters[key] || data.posters['main'],
+                                src={join(
+                                  [
+                                    data.relativePath,
+                                    data.posters[key] || data.posters.main,
+                                  ],
+                                  '/',
                                 )}
                                 alt={data.title}
                                 width={220}

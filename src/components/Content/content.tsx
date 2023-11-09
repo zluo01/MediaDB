@@ -16,11 +16,12 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
-import path from 'path';
-import React, {
+import join from 'lodash/join';
+import {
   Fragment,
   lazy,
   ReactElement,
+  Suspense,
   useEffect,
   useState,
 } from 'react';
@@ -167,11 +168,12 @@ function Content({ folderData }: ICardProps): ReactElement {
         case 'Enter':
           switch (data[current].type) {
             case MOVIE:
+              // eslint-disable-next-line no-case-declarations
               const media = data[current] as IMovieData;
-              const filePath = path.join(
-                folderData.path,
-                media.relativePath,
-                media.file,
+              // eslint-disable-next-line no-case-declarations
+              const filePath = join(
+                [folderData.path, media.relativePath, media.file],
+                '/',
               );
               await openFile(filePath);
               break;
@@ -202,12 +204,14 @@ function Content({ folderData }: ICardProps): ReactElement {
     const type = data[current]?.type;
     if (type === TV_SERIES) {
       return (
-        <Menu
-          folder={folderData}
-          data={data[current] as ITVShowData}
-          open={open}
-          close={() => setOpen(false)}
-        />
+        <Suspense>
+          <Menu
+            folder={folderData}
+            data={data[current] as ITVShowData}
+            open={open}
+            close={() => setOpen(false)}
+          />
+        </Suspense>
       );
     }
     return <div />;

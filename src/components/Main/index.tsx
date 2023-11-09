@@ -1,21 +1,20 @@
-"use client";
 
+import Content from "@/components/Content/content";
+import Toolbar from "@/components/Content/toolbar";
+import Footer from "@/components/Footer";
+import Loading from "@/components/Loading";
 import { useGetFolderDataQuery } from "@/lib/queries";
-import { useAppSelector } from "@/lib/source";
+import { useAppSelector } from '@/lib/source';
 import { RootState } from "@/lib/source/store";
 import { IFolderData } from "@/type";
+import {  useSearchParams } from 'react-router-dom';
+import { ReactElement, useState } from "react";
 
-import { useSearchParams } from "next/navigation";
-import React, { ReactElement, useState } from "react";
-import Loading from "@/components/Loading";
-import Toolbar from "@/components/Content/toolbar";
-import Content from "@/components/Content/content";
-import Footer from "@/components/Footer";
 
 function Home(): ReactElement {
   const search = useAppSelector((state: RootState) => state.control.search);
+  const [searchParams] = useSearchParams();
 
-  const searchParams = useSearchParams();
   const route = parseInt(searchParams.get("id") || "0");
 
   const [refresh, setRefresh] = useState(false);

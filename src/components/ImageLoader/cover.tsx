@@ -1,25 +1,29 @@
-import { BLUR_IMG, getCacheImagePath } from '@/components/ImageLoader/common';
+import { getCacheImagePath } from '@/components/ImageLoader/common';
 import { IFolder } from '@/type';
-import Image, { ImageProps } from 'next/image';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 
-interface IImageLoaderPops extends ImageProps {
+interface IImageLoaderPops {
   folder: IFolder;
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
 }
 
 function Cover({ folder, src, ...props }: IImageLoaderPops): ReactElement {
+  const imgPath = getCacheImagePath(folder, src as string);
+  const [imgSrc, setImgSrc] = useState(imgPath + '-thumbnail' || src);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      setImgSrc(src);
+    };
+  }, [src]);
+
   return (
-    // eslint-disable-next-line jsx-a11y/alt-text
-    <Image
-      src={getCacheImagePath(folder, src as string)}
-      placeholder={'blur'}
-      blurDataURL={BLUR_IMG}
-      style={{
-        width: 'auto',
-        height: '100%',
-      }}
-      {...props}
-    />
+    <img className="h-full w-auto" src={imgSrc} {...props} alt={props.alt} />
   );
 }
 

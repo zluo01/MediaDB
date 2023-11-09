@@ -3,17 +3,19 @@ import { useAppDispatch } from '@/lib/source';
 import { openDirectoryModal } from '@/lib/source/slice/directoryModalSlice';
 import classNames from '@/lib/utils';
 import { Cog6ToothIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { Fragment, lazy, ReactElement } from 'react';
+import { Fragment, lazy, ReactElement, Suspense } from 'react';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 
 const DirectoryModal = lazy(() => import('@/components/Modal/Directory'));
 
 function SidePanel(): ReactElement {
-  const router = useRouter();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
-  const isSettingPage = usePathname().includes('/setting');
-  const currFolderIndex = parseInt(useSearchParams().get('id') || '0');
+  const isSettingPage = location.pathname.includes('/setting');
+  const currFolderIndex = parseInt(searchParams.get('id') || '0');
 
   const { data: setting } = useGetSettingQuery();
   const { data: folderList } = useGetFolderListQuery();
@@ -48,7 +50,7 @@ function SidePanel(): ReactElement {
                   )}
                   key={folder.position}
                   title={folder.name}
-                  onClick={() => router.push(`/?id=${folder.position}`)}
+                  onClick={() => navigate(`/?id=${folder.position}`)}
                 >
                   <FolderIcon
                     className={classNames(
@@ -78,7 +80,7 @@ function SidePanel(): ReactElement {
                   : 'pointer-events-auto',
                 'flex w-full cursor-pointer flex-row flex-nowrap items-center px-4  py-2 hover:bg-hover',
               )}
-              onClick={() => router.push(`/setting`)}
+              onClick={() => navigate(`/setting`)}
             >
               <Cog6ToothIcon
                 className={classNames(
@@ -91,7 +93,9 @@ function SidePanel(): ReactElement {
           </div>
         </div>
       </div>
-      <DirectoryModal folderList={folderList} />
+      <Suspense>
+        <DirectoryModal folderList={folderList} />
+      </Suspense>
     </Fragment>
   );
 }

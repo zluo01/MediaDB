@@ -1,7 +1,7 @@
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import { FolderIcon, TrashIcon } from '@heroicons/react/24/solid';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 interface ISkipFolderListProps {
   skipFolders: string[];

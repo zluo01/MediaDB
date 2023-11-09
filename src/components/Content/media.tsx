@@ -2,8 +2,7 @@ import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
 import { IFolder, IMediaData, IMovieData, MOVIE } from '@/type';
-import path from 'path';
-import React, { memo } from 'react';
+import join from 'lodash/join';
 
 interface IMediaProps {
   index: number;
@@ -26,7 +25,9 @@ function Media({
     switch (media.type) {
       // case 'comic':
       case 'movie':
-        await openFile(path.join(folder.path, media.relativePath, media.file));
+        await openFile(
+          join([folder.path, media.relativePath, media.file], '/'),
+        );
         break;
       case 'tvshow':
         openMenu();
@@ -48,12 +49,12 @@ function Media({
       onDoubleClick={() => handleOpen(media)}
       className={classNames(
         current ? 'bg-white/20 shadow-lg rounded-md' : '',
-        'flex w-full flex-col items-center justify-center p-2 hover:scale-105 hover:transition-all hover:rounded-xl',
+        'flex w-full flex-col items-center justify-center p-2 hover:scale-105 hover:transition-all hover:rounded-xl cursor-pointer',
       )}
     >
       <Poster
         folder={folder}
-        src={path.join(media.relativePath, media.posters['main'])}
+        src={join([media.relativePath, media.posters.main], '/')}
         alt={media.title}
         width={240}
         height={320}
@@ -74,10 +75,4 @@ function Media({
   );
 }
 
-export default memo(
-  Media,
-  (prevProps, nextProps) =>
-    prevProps.index == nextProps.index &&
-    prevProps.current == nextProps.current &&
-    prevProps.media === nextProps.media,
-);
+export default Media;
