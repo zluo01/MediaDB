@@ -6,6 +6,7 @@ use std::{
 };
 
 use image::{DynamicImage, ImageFormat};
+use image::imageops::FilterType;
 use log::error;
 use rayon::prelude::*;
 use serde_json::{json, Value};
@@ -21,7 +22,7 @@ pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, pa
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
     let (major_media, secondary_media) = read_dir(app_handle, path, skip_paths);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
-    create_thumbnails(&app_dir, name, path, &posters);
+    handle_images(&app_dir, name, path, &posters);
     Ok(data)
 }
 
@@ -191,7 +192,7 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
     }), posters)
 }
 
-fn create_thumbnails(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
+fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
     let root_path = Path::new(path);
     let cover_path = app_dir.join("covers");
     let thumbnail_path = app_dir.join("thumbnails");
@@ -255,7 +256,7 @@ fn save_cover(source_path: &PathBuf, dest_path: &PathBuf, file_path: String, img
         }
     }
 
-    if let Err(e) = img.save_with_format(&dest_path, ImageFormat::WebP) {
+    if let Err(e) = img.resize(320, 640, FilterType::Lanczos3).save_with_format(&dest_path, ImageFormat::WebP) {
         error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
         return;
     }

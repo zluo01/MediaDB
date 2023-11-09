@@ -1,8 +1,9 @@
-import Cover from '@/components/ImageLoader/cover';
+import { getCacheImagePath } from '@/components/ImageLoader/common';
+import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
-import { IEpisode, IFolder, ITVShowData } from '@/type';
-import { Dialog, Transition, Tab } from '@headlessui/react';
+import { CoverType, IEpisode, IFolder, ITVShowData } from '@/type';
+import { Dialog, Tab, Transition } from '@headlessui/react';
 import join from 'lodash/join';
 import { Fragment, ReactElement } from 'react';
 
@@ -73,41 +74,48 @@ export default function TVShowCardMenu({
                         ))}
                       </Tab.List>
                       <Tab.Panels className="h-[90%] w-full bg-default">
-                        {season_keys.map((key, index) => (
-                          <Tab.Panel
-                            key={index}
-                            className="flex h-full w-full flex-row flex-nowrap justify-around"
-                          >
-                            <div className="flex h-full w-[38.2vw] items-center justify-center p-6">
-                              <Cover
-                                folder={folder}
-                                src={join(
-                                  [
-                                    data.relativePath,
-                                    data.posters[key] || data.posters.main,
-                                  ],
-                                  '/',
-                                )}
-                                alt={data.title}
-                                width={220}
-                                height={320}
-                              />
-                            </div>
-                            <div className="grid h-full w-[61.8vw] auto-cols-min auto-rows-min grid-cols-10 p-6">
-                              {data.seasons[key].map((o, i) => (
-                                <button
-                                  key={i}
-                                  type="button"
-                                  title={o.title}
-                                  onClick={() => openEpisodeFile(o)}
-                                  className="mb-2 mr-2 rounded-lg border border-selected px-5 py-2.5 text-center text-sm font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0"
-                                >
-                                  {o.episode}
-                                </button>
-                              ))}
-                            </div>
-                          </Tab.Panel>
-                        ))}
+                        {season_keys.map((key, index) => {
+                          const { thumbnail, cover } = getCacheImagePath(
+                            folder,
+                            join(
+                              [
+                                data.relativePath,
+                                data.posters[key] || data.posters.main,
+                              ],
+                              '/',
+                            ),
+                          );
+                          return (
+                            <Tab.Panel
+                              key={index}
+                              className="flex h-full w-full flex-row flex-nowrap justify-around"
+                            >
+                              <div className="flex h-full w-[38.2vw] items-center justify-center p-6">
+                                <Poster
+                                  thumbnail={thumbnail}
+                                  cover={cover}
+                                  alt={data.title}
+                                  width={220}
+                                  height={320}
+                                  t={CoverType.COVER}
+                                />
+                              </div>
+                              <div className="grid h-full w-[61.8vw] auto-cols-min auto-rows-min grid-cols-10 p-6">
+                                {data.seasons[key].map((o, i) => (
+                                  <button
+                                    key={i}
+                                    type="button"
+                                    title={o.title}
+                                    onClick={() => openEpisodeFile(o)}
+                                    className="mb-2 mr-2 rounded-lg border border-selected px-5 py-2.5 text-center text-sm font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0"
+                                  >
+                                    {o.episode}
+                                  </button>
+                                ))}
+                              </div>
+                            </Tab.Panel>
+                          );
+                        })}
                       </Tab.Panels>
                     </Tab.Group>
                   </div>

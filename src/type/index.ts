@@ -97,3 +97,17 @@ export const ACTOR = 'Actors';
 export const STUDIO = 'Studios';
 
 export type FILTER = typeof TAG | typeof GENRE | typeof ACTOR | typeof STUDIO;
+
+export enum CoverType {
+  POSTER,
+  COVER,
+}
+
+export interface IImageLoaderPops {
+  thumbnail: string;
+  cover: string;
+  alt: string;
+  width: number;
+  height: number;
+  t: CoverType;
+}

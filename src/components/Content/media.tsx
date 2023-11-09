@@ -1,7 +1,8 @@
+import { getCacheImagePath } from '@/components/ImageLoader/common';
 import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
-import { IFolder, IMediaData, IMovieData, MOVIE } from '@/type';
+import { CoverType, IFolder, IMediaData, IMovieData, MOVIE } from '@/type';
 import join from 'lodash/join';
 
 interface IMediaProps {
@@ -42,6 +43,11 @@ function Media({
     return 'opacity-0';
   }
 
+  const { thumbnail, cover } = getCacheImagePath(
+    folder,
+    join([media.relativePath, media.posters.main], '/'),
+  );
+
   return (
     <div
       id={`c${index}`}
@@ -53,11 +59,12 @@ function Media({
       )}
     >
       <Poster
-        folder={folder}
-        src={join([media.relativePath, media.posters.main], '/')}
+        thumbnail={thumbnail}
+        cover={cover}
         alt={media.title}
         width={240}
         height={320}
+        t={CoverType.POSTER}
       />
       <div className="flex w-full flex-col pt-1">
         <span title={media.title} className="truncate text-base text-primary">

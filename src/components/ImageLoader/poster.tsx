@@ -1,33 +1,32 @@
-import { getCacheImagePath } from '@/components/ImageLoader/common';
-import { IFolder } from '@/type';
-import { ReactElement, useEffect, useState } from 'react';
+import { CoverType, IImageLoaderPops } from '@/type';
+import { effect, useSignal } from '@preact/signals-react';
+import { ReactElement } from 'react';
 
-interface IImageLoaderPops {
-  folder: IFolder;
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-}
+function Poster({
+  thumbnail,
+  cover,
+  t,
+  ...props
+}: IImageLoaderPops): ReactElement {
+  const imgSrc = useSignal(thumbnail);
 
-function Poster({ folder, src, ...props }: IImageLoaderPops): ReactElement {
-  const { thumbnail, cover } = getCacheImagePath(folder, src as string);
-  const [imgSrc, setImgSrc] = useState(thumbnail);
-
-  useEffect(() => {
+  effect(() => {
     const img = new Image();
     img.src = cover;
     img.onload = () => {
-      setImgSrc(cover);
+      imgSrc.value = cover;
     };
-  }, [src]);
+  });
 
   return (
     <img
-      className="h-full w-full object-cover"
-      src={imgSrc}
+      className={
+        t === CoverType.POSTER ? 'h-full w-full object-cover' : 'h-full w-auto'
+      }
+      src={imgSrc.value}
       {...props}
       alt={props.alt}
+      loading="lazy"
     />
   );
 }

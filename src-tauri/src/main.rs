@@ -187,6 +187,10 @@ async fn delete_folder<R: Runtime>(app_handle: tauri::AppHandle<R>,
     if let Err(e) = fs::remove_dir_all(&thumbnail_folder) {
         return Err(format!("Fail to delete thumbnails at directory: {}. Raising Error: {}", thumbnail_folder.display(), e));
     }
+    let covers_folder = app_dir.join("covers").join(name);
+    if let Err(e) = fs::remove_dir_all(&covers_folder) {
+        return Err(format!("Fail to delete covers at directory: {}. Raising Error: {}", thumbnail_folder.display(), e));
+    }
     Ok(())
 }
 
