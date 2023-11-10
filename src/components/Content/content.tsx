@@ -1,7 +1,5 @@
 import Media from '@/components/Content/media';
 import { openFile } from '@/lib/os';
-import { useAppDispatch } from '@/lib/source';
-import { update } from '@/lib/source/slice/footerSlice';
 import {
   DEFAULT,
   FILTER,
@@ -17,7 +15,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
-import { computed, Signal, effect, signal } from '@preact/signals-react';
+import { computed, effect, Signal, signal } from '@preact/signals-react';
 import forEach from 'lodash/forEach';
 import join from 'lodash/join';
 import {
@@ -56,12 +54,11 @@ function useGetColumnSize() {
 interface IContentProps {
   folderData: IFolderData;
   filters: Signal<ITags>;
+  footer: Signal<string>;
 }
 
-function Content({ folderData, filters }: IContentProps): ReactElement {
+function Content({ folderData, filters, footer }: IContentProps): ReactElement {
   const column = useGetColumnSize();
-
-  const dispatch = useAppDispatch();
 
   const menuStatus = signal(false);
 
@@ -105,6 +102,10 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
         break;
     }
     return media;
+  });
+
+  effect(() => {
+    footer.value = `Total ${data.value.length}`;
   });
 
   effect(() => {
@@ -178,15 +179,7 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
     };
   }, [current, data, folderData, column, open]);
 
-  useEffect(() => {
-    const content =
-      current.value < 0
-        ? `Total ${data.value.length}`
-        : data.value[current.value]?.title;
-    dispatch(update(content));
-  }, [data, current, dispatch]);
-
-  function TVMenu() {
+  const menu = computed(() => {
     if (current.value < 0) {
       return <div />;
     }
@@ -203,7 +196,7 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
       );
     }
     return <div />;
-  }
+  });
 
   return (
     <Fragment>
@@ -215,11 +208,12 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
             media={media}
             current={current}
             folder={folderData}
-            openMenu={() => (menuStatus.value = true)}
+            footer={footer}
+            menu={menuStatus}
           />
         ))}
       </div>
-      <TVMenu />
+      {menu}
     </Fragment>
   );
 }

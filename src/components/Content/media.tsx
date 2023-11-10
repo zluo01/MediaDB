@@ -3,7 +3,7 @@ import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
 import { CoverType, IFolder, IMediaData, IMovieData, MOVIE } from '@/type';
-import { computed, Signal } from '@preact/signals-react';
+import { batch, computed, Signal } from '@preact/signals-react';
 import join from 'lodash/join';
 
 interface IMediaProps {
@@ -11,10 +11,11 @@ interface IMediaProps {
   current: Signal<number>;
   media: IMediaData;
   folder: IFolder;
-  openMenu: VoidFunction;
+  footer: Signal<string>;
+  menu: Signal<boolean>;
 }
 
-function Media({ index, current, media, folder, openMenu }: IMediaProps) {
+function Media({ index, current, media, folder, footer, menu }: IMediaProps) {
   const isCurrent = computed(() => current.value === index);
 
   async function handleOpen(media: IMediaData) {
@@ -26,7 +27,7 @@ function Media({ index, current, media, folder, openMenu }: IMediaProps) {
         );
         break;
       case 'tvshow':
-        openMenu();
+        menu.value = true;
         break;
     }
   }
@@ -38,6 +39,13 @@ function Media({ index, current, media, folder, openMenu }: IMediaProps) {
     return 'opacity-0';
   }
 
+  function select() {
+    batch(() => {
+      current.value = index;
+      footer.value = media.title;
+    });
+  }
+
   const { thumbnail, cover } = getCacheImagePath(
     folder,
     join([media.relativePath, media.posters.main], '/'),
@@ -46,7 +54,7 @@ function Media({ index, current, media, folder, openMenu }: IMediaProps) {
   return (
     <div
       id={`c${index}`}
-      onClick={() => (current.value = index)}
+      onClick={select}
       onDoubleClick={() => handleOpen(media)}
       className={classNames(
         isCurrent.value ? 'bg-white/20 shadow-lg rounded-md' : '',

@@ -1,3 +1,4 @@
+import { refresh } from '@/lib/controls';
 import { notify } from '@/lib/os';
 import {
   useCreateLibraryTrigger,
@@ -82,16 +83,10 @@ function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
 interface IToolbarProps {
   folderData?: IFolderData;
   disabled: boolean;
-  updateRefresh: React.Dispatch<React.SetStateAction<boolean>>;
   filters: Signal<ITags>;
 }
 
-function Toolbar({
-  folderData,
-  updateRefresh,
-  disabled,
-  filters,
-}: IToolbarProps) {
+function Toolbar({ folderData, disabled, filters }: IToolbarProps) {
   const open = signal(false);
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
@@ -105,7 +100,7 @@ function Toolbar({
       return;
     }
     e.preventDefault();
-    updateRefresh(true);
+    refresh.value = true;
     try {
       await createLibraryTrigger({
         folder: { ...folderData },
@@ -114,7 +109,7 @@ function Toolbar({
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
     } finally {
-      updateRefresh(false);
+      refresh.value = false;
     }
   }
 

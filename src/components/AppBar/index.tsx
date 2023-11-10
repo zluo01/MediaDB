@@ -1,23 +1,16 @@
-import { useAppDispatch, useAppSelector } from '@/lib/source';
-import { search } from '@/lib/source/slice/controlSlice';
-import { RootState } from '@/lib/source/store';
+import { searchContext } from '@/lib/controls';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function AppBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
-
-  const searchContent = useAppSelector(
-    (state: RootState) => state.control.search,
-  );
 
   function handleSearch(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
-    dispatch(search(e.target.value));
+    searchContext.value = e.target.value;
   }
 
   return (
@@ -38,7 +31,7 @@ function AppBar() {
           id="search-navbar"
           className="block w-full rounded-lg bg-white/20 p-2 pl-10 text-base text-primary hover:bg-white/30 focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
           placeholder="Search..."
-          value={searchContent}
+          value={searchContext.value}
           onChange={handleSearch}
           disabled={location.pathname.includes('setting')}
         />

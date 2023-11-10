@@ -1,76 +1,76 @@
 import { modalStatus } from '@/lib/controls';
 import { getDirectory, notify } from '@/lib/os';
 import { useCreateLibraryTrigger } from '@/lib/queries';
-import { useAppDispatch, useAppSelector } from '@/lib/source';
-import {
-  updateDirectoryData,
-  updateName,
-  updatePath,
-} from '@/lib/source/slice/directoryModalSlice';
-import { RootState } from '@/lib/source/store';
 import classNames from '@/lib/utils';
 import { IFolder, ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
-import { computed } from '@preact/signals-react';
-import React, { Fragment, ReactElement, useState } from 'react';
+import { batch, computed, useSignal } from '@preact/signals-react';
+import React, { Fragment, ReactElement } from 'react';
 
 interface IDirectoryModal {
   folderList?: IFolder[];
 }
 
 function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
-  const dispatch = useAppDispatch();
+  const folderName = useSignal('');
+  const folderPath = useSignal('');
+  const loading = useSignal(false);
 
   const open = computed(() => modalStatus.value === ModalType.DIRECTORY);
-  const { name, path } = useAppSelector(
-    (state: RootState) => state.directoryModal,
+  const error = computed(
+    () =>
+      folderName.value &&
+      folderList?.map(o => o.name).includes(folderName.value),
   );
+  const disabled = computed(
+    () => !folderPath.value || error.value || loading.value,
+  );
+  const buttonText = computed(() => (loading.value ? 'loading...' : 'Add'));
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
     folderList?.length || 0,
   );
 
-  const [loading, setLoading] = useState(false);
-
   async function handleDirectory() {
     const path = await getDirectory();
     const name = path.split('\\')!.pop()!.split('/').pop() as string;
-    dispatch(
-      updateDirectoryData({
-        name,
-        path,
-      }),
-    );
+    batch(() => {
+      folderName.value = name;
+      folderPath.value = path;
+    });
   }
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
-    setLoading(true);
+    loading.value = true;
     try {
       await createLibraryTrigger({
-        folder: { position: 0, name, path },
+        folder: { position: 0, name: folderName.value, path: folderPath.value },
       });
-      setLoading(false);
       close();
     } catch (e) {
       await notify(`Import Folders Error: ${e}`);
+    } finally {
+      loading.value = false;
     }
   }
 
   function close() {
-    modalStatus.value = ModalType.NONE;
+    batch(() => {
+      folderName.value = '';
+      folderPath.value = '';
+      modalStatus.value = ModalType.NONE;
+    });
   }
 
   async function onClose() {
-    if (!loading) {
+    if (!loading.value) {
       close();
     }
   }
-
-  const nameError = name !== '' && folderList?.map(o => o.name).includes(name);
 
   return (
     <Transition appear show={open.value} as={Fragment}>
@@ -115,19 +115,19 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
                     </label>
                     <input
                       className={classNames(
-                        nameError ? 'border-red-500' : '',
+                        error.value ? 'border-red-500' : '',
                         'block w-full appearance-none text-primary border-b-2 border-[#1a2634] bg-default px-2 py-3 leading-tight focus:outline-none',
                       )}
                       id="grid-folder-name"
                       type="text"
-                      value={name}
-                      onChange={e => dispatch(updateName(e.target.value))}
-                      disabled={loading}
+                      value={folderName.value}
+                      onChange={e => (folderName.value = e.target.value)}
+                      disabled={loading.value}
                       required
                     />
                     <p
                       className={classNames(
-                        nameError ? 'inline-block' : 'hidden',
+                        error.value ? 'inline-block' : 'hidden',
                         'text-xs italic text-red-500',
                       )}
                     >
@@ -146,9 +146,9 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
                         className="flex grow appearance-none border-b-2 border-[#1a2634] bg-default p-2 leading-tight text-primary focus:outline-none"
                         id="grid-directory-name"
                         type="text"
-                        disabled={loading}
-                        onChange={e => dispatch(updatePath(e.target.value))}
-                        value={path}
+                        value={folderPath.value}
+                        onChange={e => (folderPath.value = e.target.value)}
+                        disabled={loading.value}
                         autoFocus
                         required
                       />
@@ -166,10 +166,10 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
                   <button
                     type="button"
                     className="inline-flex cursor-pointer justify-center rounded-md border border-selected bg-default px-4 py-2 text-sm font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:text-hover"
-                    disabled={!path || nameError || loading}
+                    disabled={disabled.value}
                     onClick={handleSubmit}
                   >
-                    {loading ? 'loading...' : 'Add'}
+                    {buttonText}
                   </button>
                 </div>
               </Dialog.Panel>

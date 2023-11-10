@@ -1,47 +1,48 @@
 import { modalStatus } from '@/lib/controls';
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
-import { useAppDispatch, useAppSelector } from '@/lib/source';
-import { updateSkipFolderName } from '@/lib/source/slice/skipFolderModalSlice';
-import { RootState } from '@/lib/source/store';
 import classNames from '@/lib/utils';
 import { ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
-import { computed } from '@preact/signals-react';
-import React, { Fragment, ReactElement, useState } from 'react';
+import { batch, computed, useSignal } from '@preact/signals-react';
+import React, { Fragment, ReactElement } from 'react';
 
 interface ISkipFolderModal {
   skipFolders: string[];
 }
 
 function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
+  const folderName = useSignal('');
+  const loading = useSignal(false);
+  const open = computed(() => modalStatus.value === ModalType.SKIP_FOLDER);
+  const error = computed(
+    () => folderName.value && skipFolders.includes(folderName.value),
+  );
+
   const { trigger } = useUpdateSkipFoldersTrigger();
 
-  const dispatch = useAppDispatch();
-  const { name } = useAppSelector((state: RootState) => state.skipFolderModal);
-
-  const [loading, setLoading] = useState(false);
-
   function close() {
-    modalStatus.value = ModalType.NONE;
+    batch(() => {
+      folderName.value = '';
+      modalStatus.value = ModalType.NONE;
+    });
   }
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
-    setLoading(true);
+    loading.value = true;
     try {
-      await trigger([...skipFolders, name].join(','));
-      setLoading(false);
+      await trigger([...skipFolders, folderName.value].join(','));
       close();
     } catch (e) {
       await notify(`Edit Folder Name Error: ${e}`);
+    } finally {
+      loading.value = false;
     }
   }
 
-  const open = computed(() => modalStatus.value === ModalType.SKIP_FOLDER);
-  const nameError = !name && skipFolders.includes(name);
   return (
     <Transition appear show={open.value} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={close}>
@@ -85,22 +86,20 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
                     </label>
                     <input
                       className={classNames(
-                        nameError ? 'border-red-500' : '',
+                        error.value ? 'border-red-500' : '',
                         'block w-full appearance-none text-primary border-b-2 border-[#1a2634] bg-default px-2 py-3 leading-tight focus:outline-none',
                       )}
                       id="grid-folder-name"
                       type="text"
-                      value={name}
-                      onChange={e =>
-                        dispatch(updateSkipFolderName(e.target.value))
-                      }
-                      disabled={loading}
+                      value={folderName.value}
+                      onChange={e => (folderName.value = e.target.value)}
+                      disabled={loading.value}
                       autoFocus
                       required
                     />
                     <p
                       className={classNames(
-                        nameError ? 'inline-block' : 'hidden',
+                        error.value ? 'inline-block' : 'hidden',
                         'text-xs italic text-red-500',
                       )}
                     >
@@ -111,11 +110,11 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
                 <div className="flex w-full justify-end bg-default p-4">
                   <button
                     type="button"
-                    className="inline-flex w-20 cursor-pointer justify-center rounded-md border border-selected bg-default px-4 py-2 text-sm font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:text-hover"
+                    className="inline-flex w-20 cursor-pointer justify-center rounded-md border border-selected bg-default px-4 py-2 text-sm font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:text-hover disabled:opacity-30"
                     onClick={handleSubmit}
-                    disabled={nameError || loading}
+                    disabled={error.value || loading.value}
                   >
-                    {loading ? 'loading...' : 'Add'}
+                    {loading.value ? 'loading...' : 'Add'}
                   </button>
                 </div>
               </Dialog.Panel>
