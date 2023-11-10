@@ -1,7 +1,7 @@
+import { modalStatus } from '@/lib/controls';
 import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
-import { useAppDispatch } from '@/lib/source';
-import { openDirectoryModal } from '@/lib/source/slice/directoryModalSlice';
 import classNames from '@/lib/utils';
+import { ModalType } from '@/type';
 import { Cog6ToothIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { Fragment, lazy, ReactElement, Suspense } from 'react';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
@@ -12,7 +12,6 @@ function SidePanel(): ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
 
   const isSettingPage = location.pathname.includes('/setting');
   const currFolderIndex = parseInt(searchParams.get('id') || '0');
@@ -21,7 +20,7 @@ function SidePanel(): ReactElement {
   const { data: folderList } = useGetFolderListQuery();
 
   function handleOpen() {
-    dispatch(openDirectoryModal());
+    modalStatus.value = ModalType.DIRECTORY;
   }
 
   const showText = setting?.showSidePanel

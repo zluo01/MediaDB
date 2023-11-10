@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
-  open: false,
   name: '',
   path: '',
 };
@@ -23,19 +22,10 @@ export const directoryModalSlice = createSlice({
       state.name = action.payload.name;
       state.path = action.payload.path;
     },
-    openDirectoryModal: state => {
-      state.open = true;
-    },
-    closeDirectoryModal: () => initialState,
   },
 });
 
-export const {
-  updateName,
-  updatePath,
-  updateDirectoryData,
-  openDirectoryModal,
-  closeDirectoryModal,
-} = directoryModalSlice.actions;
+export const { updateName, updatePath, updateDirectoryData } =
+  directoryModalSlice.actions;
 
 export default directoryModalSlice.reducer;

@@ -1,17 +1,18 @@
+import { modalStatus } from '@/lib/controls';
 import { getDirectory, notify } from '@/lib/os';
 import { useCreateLibraryTrigger } from '@/lib/queries';
 import { useAppDispatch, useAppSelector } from '@/lib/source';
 import {
-  closeDirectoryModal,
   updateDirectoryData,
   updateName,
   updatePath,
 } from '@/lib/source/slice/directoryModalSlice';
 import { RootState } from '@/lib/source/store';
 import classNames from '@/lib/utils';
-import { IFolder } from '@/type';
+import { IFolder, ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
+import { computed } from '@preact/signals-react';
 import React, { Fragment, ReactElement, useState } from 'react';
 
 interface IDirectoryModal {
@@ -21,7 +22,8 @@ interface IDirectoryModal {
 function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
   const dispatch = useAppDispatch();
 
-  const { name, path, open } = useAppSelector(
+  const open = computed(() => modalStatus.value === ModalType.DIRECTORY);
+  const { name, path } = useAppSelector(
     (state: RootState) => state.directoryModal,
   );
 
@@ -59,7 +61,7 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
   }
 
   function close() {
-    dispatch(closeDirectoryModal());
+    modalStatus.value = ModalType.NONE;
   }
 
   async function onClose() {
@@ -71,7 +73,7 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
   const nameError = name !== '' && folderList?.map(o => o.name).includes(name);
 
   return (
-    <Transition appear show={open} as={Fragment}>
+    <Transition appear show={open.value} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
         <Transition.Child
           as={Fragment}

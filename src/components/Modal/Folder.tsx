@@ -1,10 +1,10 @@
+import { modalStatus } from '@/lib/controls';
 import { getDirectory, notify } from '@/lib/os';
 import { useGetFolderQuery, useUpdateFolderPathTrigger } from '@/lib/queries';
-import { useAppDispatch, useAppSelector } from '@/lib/source';
-import { closeEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
-import { RootState } from '@/lib/source/store';
+import { ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
+import { computed } from '@preact/signals-react';
 import React, { Fragment, ReactElement, useEffect, useState } from 'react';
 
 interface IFolderNameEdit {
@@ -12,9 +12,7 @@ interface IFolderNameEdit {
 }
 
 function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
-  const dispatch = useAppDispatch();
-
-  const { open } = useAppSelector((state: RootState) => state.editFolderModal);
+  const open = computed(() => modalStatus.value === ModalType.EDIT_FOLDER);
 
   const { data: folder } = useGetFolderQuery(index);
   const { trigger } = useUpdateFolderPathTrigger(folder?.position || 0);
@@ -29,7 +27,7 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   }, [folder?.path]);
 
   function close() {
-    dispatch(closeEditFolderModal());
+    modalStatus.value = ModalType.NONE;
   }
 
   async function handleDirectory() {
@@ -55,7 +53,7 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   }
 
   return (
-    <Transition appear show={open} as={Fragment}>
+    <Transition appear show={open.value} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={close}>
         <Transition.Child
           as={Fragment}
@@ -85,7 +83,7 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
                   as="h3"
                   className="px-3 py-5 text-2xl font-medium leading-6 text-primary"
                 >
-                  Add Directory
+                  Edit Directory
                 </Dialog.Title>
                 <div className="flex flex-col items-center justify-around bg-default p-4">
                   <div className="mb-3 w-full">

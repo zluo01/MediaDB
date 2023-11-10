@@ -1,9 +1,8 @@
+import { modalStatus } from '@/lib/controls';
 import { notify } from '@/lib/os';
 import { useGetFolderListQuery, useRemoveFolderTrigger } from '@/lib/queries';
-import { useAppDispatch } from '@/lib/source';
-import { openEditFolderModal } from '@/lib/source/slice/editFolderModalSlice';
 import { updateFolderList } from '@/lib/storage';
-import { IFolder } from '@/type';
+import { IFolder, ModalType } from '@/type';
 import {
   FolderIcon,
   PencilSquareIcon,
@@ -20,8 +19,6 @@ import {
 const EditFolderModal = lazy(() => import('@/components/Modal/Folder'));
 
 function FolderList(): ReactElement {
-  const dispatch = useAppDispatch();
-
   const { data: folderList, mutate: revalidateFolderList } =
     useGetFolderListQuery();
   const { trigger } = useRemoveFolderTrigger();
@@ -66,7 +63,7 @@ function FolderList(): ReactElement {
 
   function openModal(id: number) {
     setFolderIndex(id);
-    dispatch(openEditFolderModal());
+    modalStatus.value = ModalType.EDIT_FOLDER;
   }
 
   return (

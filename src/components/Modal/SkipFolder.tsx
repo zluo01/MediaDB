@@ -1,13 +1,13 @@
+import { modalStatus } from '@/lib/controls';
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import { useAppDispatch, useAppSelector } from '@/lib/source';
-import {
-  closeSkipFolderModal,
-  updateSkipFolderName,
-} from '@/lib/source/slice/skipFolderModalSlice';
+import { updateSkipFolderName } from '@/lib/source/slice/skipFolderModalSlice';
 import { RootState } from '@/lib/source/store';
 import classNames from '@/lib/utils';
+import { ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
+import { computed } from '@preact/signals-react';
 import React, { Fragment, ReactElement, useState } from 'react';
 
 interface ISkipFolderModal {
@@ -18,14 +18,12 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
   const { trigger } = useUpdateSkipFoldersTrigger();
 
   const dispatch = useAppDispatch();
-  const { name, open } = useAppSelector(
-    (state: RootState) => state.skipFolderModal,
-  );
+  const { name } = useAppSelector((state: RootState) => state.skipFolderModal);
 
   const [loading, setLoading] = useState(false);
 
   function close() {
-    dispatch(closeSkipFolderModal());
+    modalStatus.value = ModalType.NONE;
   }
 
   async function handleSubmit(
@@ -42,9 +40,10 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
     }
   }
 
+  const open = computed(() => modalStatus.value === ModalType.SKIP_FOLDER);
   const nameError = !name && skipFolders.includes(name);
   return (
-    <Transition appear show={open} as={Fragment}>
+    <Transition appear show={open.value} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={close}>
         <Transition.Child
           as={Fragment}

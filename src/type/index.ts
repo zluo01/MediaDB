@@ -93,16 +93,11 @@ export interface IControlState {
   search: string;
 }
 
-export interface IFilterState {
-  tags: string[];
-  genres: string[];
-  actors: string[];
-  studios: string[];
-}
-
-export interface IFilterProps {
-  tag: FILTER;
-  name: string;
+export enum ModalType {
+  NONE,
+  DIRECTORY,
+  EDIT_FOLDER,
+  SKIP_FOLDER,
 }
 
 export enum CoverType {
