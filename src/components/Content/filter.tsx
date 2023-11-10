@@ -1,24 +1,18 @@
 import classNames from '@/lib/utils';
 import { ACTOR, FILTER, GENRE, IFolderInfo, ITags, STUDIO, TAG } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
-import { Signal } from '@preact/signals-core';
+import { Signal } from '@preact/signals-react';
 import { Fragment, ReactElement } from 'react';
 
 interface IFilerSection {
   folderData?: IFolderInfo;
-  open: boolean;
-  close: VoidFunction;
+  open: Signal<boolean>;
   filters: Signal<ITags>;
 }
 
 const FILTER_TAGS: FILTER[] = [GENRE, ACTOR, STUDIO, TAG];
 
-function Filters({
-  folderData,
-  open,
-  close,
-  filters,
-}: IFilerSection): ReactElement {
+function Filters({ folderData, open, filters }: IFilerSection): ReactElement {
   function update(tag: FILTER, name: string) {
     const filterValue = filters.value[tag];
     if (filterValue.includes(name)) {
@@ -39,8 +33,12 @@ function Filters({
   }
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={close}>
+    <Transition.Root show={open.value} as={Fragment}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        onClose={() => (open.value = false)}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -74,7 +72,7 @@ function Filters({
                         return (
                           <div key={v} className="w-full px-4">
                             <div className="flex flex-row items-center justify-between">
-                              <span className="text-2xl text-secondary">
+                              <span className="text-2xl capitalize text-secondary">
                                 {v}
                               </span>
                               <button

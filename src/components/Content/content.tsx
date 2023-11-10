@@ -17,8 +17,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
-import { computed, Signal } from '@preact/signals-core';
-import { signal } from '@preact/signals-react';
+import { computed, Signal, effect, signal } from '@preact/signals-react';
 import forEach from 'lodash/forEach';
 import join from 'lodash/join';
 import {
@@ -31,11 +30,6 @@ import {
 } from 'react';
 
 const Menu = lazy(() => import('./menu'));
-
-interface ICardProps {
-  folderData: IFolderData;
-  filters: Signal<ITags>;
-}
 
 function useGetColumnSize() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -59,12 +53,17 @@ function useGetColumnSize() {
   return 12;
 }
 
-function Content({ folderData, filters }: ICardProps): ReactElement {
+interface IContentProps {
+  folderData: IFolderData;
+  filters: Signal<ITags>;
+}
+
+function Content({ folderData, filters }: IContentProps): ReactElement {
   const column = useGetColumnSize();
 
   const dispatch = useAppDispatch();
 
-  const [open, setOpen] = useState(false);
+  const menuStatus = signal(false);
 
   const current = signal(-1);
 
@@ -108,17 +107,21 @@ function Content({ folderData, filters }: ICardProps): ReactElement {
     return media;
   });
 
-  useEffect(() => {
-    const anchor = document.getElementById(`c${current}`);
+  effect(() => {
+    const v = current.value;
+    if (v < 0) {
+      return;
+    }
+    const anchor = document.getElementById(`c${v}`);
     if (anchor) {
       anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [current]);
+  });
 
   useEffect(() => {
     async function handleKeyPress(ev: KeyboardEvent) {
       // when menu is opened, do not listen to key change
-      if (open) {
+      if (menuStatus.value) {
         return;
       }
       const c = current.value % column;
@@ -161,7 +164,7 @@ function Content({ folderData, filters }: ICardProps): ReactElement {
               await openFile(filePath);
               break;
             case TV_SERIES:
-              setOpen(true);
+              menuStatus.value = true;
               break;
           }
           break;
@@ -194,8 +197,7 @@ function Content({ folderData, filters }: ICardProps): ReactElement {
           <Menu
             folder={folderData}
             data={data.value[current.value] as ITVShowData}
-            open={open}
-            close={() => setOpen(false)}
+            status={menuStatus}
           />
         </Suspense>
       );
@@ -213,7 +215,7 @@ function Content({ folderData, filters }: ICardProps): ReactElement {
             media={media}
             current={current}
             folder={folderData}
-            openMenu={() => setOpen(true)}
+            openMenu={() => (menuStatus.value = true)}
           />
         ))}
       </div>

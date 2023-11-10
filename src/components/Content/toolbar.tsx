@@ -18,8 +18,8 @@ import {
   Bars3BottomLeftIcon,
   FunnelIcon,
 } from '@heroicons/react/24/solid';
-import { Signal } from '@preact/signals-core';
-import React, { Fragment, lazy, Suspense, useState } from 'react';
+import { signal, Signal } from '@preact/signals-react';
+import React, { Fragment, lazy, Suspense } from 'react';
 
 const FilterSection = lazy(() => import('./filter'));
 
@@ -92,7 +92,7 @@ function Toolbar({
   disabled,
   filters,
 }: IToolbarProps) {
-  const [open, setOpen] = useState(false);
+  const open = signal(false);
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
     folderData?.position || 0,
@@ -126,7 +126,7 @@ function Toolbar({
           type="button"
           className="inline-flex items-center rounded-md bg-transparent px-3.5 py-1 text-center text-base font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
           disabled={disabled}
-          onClick={() => setOpen(true)}
+          onClick={() => (open.value = true)}
         >
           <FunnelIcon className="mr-2 h-3.5 w-3.5" />
           Filter
@@ -143,12 +143,7 @@ function Toolbar({
         </button>
       </div>
       <Suspense>
-        <FilterSection
-          folderData={folderData}
-          open={open}
-          close={() => setOpen(false)}
-          filters={filters}
-        />
+        <FilterSection folderData={folderData} open={open} filters={filters} />
       </Suspense>
     </Fragment>
   );

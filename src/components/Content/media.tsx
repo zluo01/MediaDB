@@ -3,7 +3,7 @@ import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
 import { CoverType, IFolder, IMediaData, IMovieData, MOVIE } from '@/type';
-import { computed, Signal } from '@preact/signals-core';
+import { computed, Signal } from '@preact/signals-react';
 import join from 'lodash/join';
 
 interface IMediaProps {
