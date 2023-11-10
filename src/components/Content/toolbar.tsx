@@ -6,6 +6,7 @@ import {
 import {
   DEFAULT,
   IFolderData,
+  ITags,
   TITLE_ASC,
   TITLE_DSC,
   YEAR_ASC,
@@ -17,6 +18,7 @@ import {
   Bars3BottomLeftIcon,
   FunnelIcon,
 } from '@heroicons/react/24/solid';
+import { Signal } from '@preact/signals-core';
 import React, { Fragment, lazy, Suspense, useState } from 'react';
 
 const FilterSection = lazy(() => import('./filter'));
@@ -81,9 +83,15 @@ interface IToolbarProps {
   folderData?: IFolderData;
   disabled: boolean;
   updateRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  filters: Signal<ITags>;
 }
 
-function Toolbar({ folderData, updateRefresh, disabled }: IToolbarProps) {
+function Toolbar({
+  folderData,
+  updateRefresh,
+  disabled,
+  filters,
+}: IToolbarProps) {
   const [open, setOpen] = useState(false);
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
@@ -139,6 +147,7 @@ function Toolbar({ folderData, updateRefresh, disabled }: IToolbarProps) {
           folderData={folderData}
           open={open}
           close={() => setOpen(false)}
+          filters={filters}
         />
       </Suspense>
     </Fragment>

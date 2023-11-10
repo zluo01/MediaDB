@@ -1,15 +1,14 @@
 import Media from '@/components/Content/media';
 import { openFile } from '@/lib/os';
-import { useAppDispatch, useAppSelector } from '@/lib/source';
+import { useAppDispatch } from '@/lib/source';
 import { update } from '@/lib/source/slice/footerSlice';
-import { RootState } from '@/lib/source/store';
 import {
   DEFAULT,
   FILTER,
-  IFilterState,
   IFolderData,
   IMediaData,
   IMovieData,
+  ITags,
   ITVShowData,
   MOVIE,
   TITLE_ASC,
@@ -18,6 +17,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
+import { computed, Signal } from '@preact/signals-core';
 import { signal } from '@preact/signals-react';
 import forEach from 'lodash/forEach';
 import join from 'lodash/join';
@@ -34,6 +34,7 @@ const Menu = lazy(() => import('./menu'));
 
 interface ICardProps {
   folderData: IFolderData;
+  filters: Signal<ITags>;
 }
 
 function useGetColumnSize() {
@@ -58,61 +59,54 @@ function useGetColumnSize() {
   return 12;
 }
 
-function filterData(
-  folderData: IFolderData,
-  filters: IFilterState,
-): IMediaData[] {
-  let media = [...folderData.data];
-
-  forEach(filters, (value, tag) => {
-    value.forEach(
-      v => (media = media.filter(o => o[tag as FILTER].includes(v))),
-    );
-  });
-
-  switch (folderData.sort) {
-    case DEFAULT:
-      break;
-    case TITLE_ASC:
-      media.sort((a: IMediaData, b: IMediaData) =>
-        a.title > b.title ? 1 : -1,
-      );
-      break;
-    case TITLE_DSC:
-      media.sort((a: IMediaData, b: IMediaData) =>
-        a.title < b.title ? 1 : -1,
-      );
-      break;
-    case YEAR_DSC:
-      if (media[0].type === MOVIE) {
-        media.sort((a: IMediaData, b: IMediaData) =>
-          (a as IMovieData).year < (b as IMovieData).year ? 1 : -1,
-        );
-      }
-      break;
-    case YEAR_ASC:
-      if (media[0].type === MOVIE) {
-        media.sort((a: IMediaData, b: IMediaData) =>
-          (a as IMovieData).year > (b as IMovieData).year ? 1 : -1,
-        );
-      }
-      break;
-  }
-  return media;
-}
-
-function Content({ folderData }: ICardProps): ReactElement {
+function Content({ folderData, filters }: ICardProps): ReactElement {
   const column = useGetColumnSize();
 
   const dispatch = useAppDispatch();
-
-  const filters = useAppSelector((state: RootState) => state.filter);
 
   const [open, setOpen] = useState(false);
 
   const current = signal(-1);
 
-  const data = filterData(folderData, filters);
+  const data = computed(() => {
+    let media = [...folderData.data];
+
+    forEach(filters.value, (value, tag) => {
+      value.forEach(
+        v => (media = media.filter(o => o[tag as FILTER].includes(v))),
+      );
+    });
+
+    switch (folderData.sort) {
+      case DEFAULT:
+        break;
+      case TITLE_ASC:
+        media.sort((a: IMediaData, b: IMediaData) =>
+          a.title > b.title ? 1 : -1,
+        );
+        break;
+      case TITLE_DSC:
+        media.sort((a: IMediaData, b: IMediaData) =>
+          a.title < b.title ? 1 : -1,
+        );
+        break;
+      case YEAR_DSC:
+        if (media[0].type === MOVIE) {
+          media.sort((a: IMediaData, b: IMediaData) =>
+            (a as IMovieData).year < (b as IMovieData).year ? 1 : -1,
+          );
+        }
+        break;
+      case YEAR_ASC:
+        if (media[0].type === MOVIE) {
+          media.sort((a: IMediaData, b: IMediaData) =>
+            (a as IMovieData).year > (b as IMovieData).year ? 1 : -1,
+          );
+        }
+        break;
+    }
+    return media;
+  });
 
   useEffect(() => {
     const anchor = document.getElementById(`c${current}`);
@@ -133,10 +127,10 @@ function Content({ folderData }: ICardProps): ReactElement {
       switch (ev.key) {
         case 'ArrowLeft':
           current.value =
-            current.value - 1 < 0 ? data.length - 1 : current.value - 1;
+            current.value - 1 < 0 ? data.value.length - 1 : current.value - 1;
           break;
         case 'ArrowRight':
-          current.value = (current.value + 1) % data.length;
+          current.value = (current.value + 1) % data.value.length;
           break;
         case 'ArrowUp':
           ev.preventDefault();
@@ -149,16 +143,16 @@ function Content({ folderData }: ICardProps): ReactElement {
         case 'ArrowDown':
           ev.preventDefault();
           index = (r + 1) * column + c;
-          if (index > data.length - 1) {
+          if (index > data.value.length - 1) {
             return;
           }
           current.value = index;
           break;
         case 'Enter':
-          switch (data[current.value].type) {
+          switch (data.value[current.value].type) {
             case MOVIE:
               // eslint-disable-next-line no-case-declarations
-              const media = data[current.value] as IMovieData;
+              const media = data.value[current.value] as IMovieData;
               // eslint-disable-next-line no-case-declarations
               const filePath = join(
                 [folderData.path, media.relativePath, media.file],
@@ -183,7 +177,9 @@ function Content({ folderData }: ICardProps): ReactElement {
 
   useEffect(() => {
     const content =
-      current.value < 0 ? `Total ${data.length}` : data[current.value]?.title;
+      current.value < 0
+        ? `Total ${data.value.length}`
+        : data.value[current.value]?.title;
     dispatch(update(content));
   }, [data, current, dispatch]);
 
@@ -191,13 +187,13 @@ function Content({ folderData }: ICardProps): ReactElement {
     if (current.value < 0) {
       return <div />;
     }
-    const type = data[current.value]?.type;
+    const type = data.value[current.value]?.type;
     if (type === TV_SERIES) {
       return (
         <Suspense>
           <Menu
             folder={folderData}
-            data={data[current.value] as ITVShowData}
+            data={data.value[current.value] as ITVShowData}
             open={open}
             close={() => setOpen(false)}
           />
@@ -210,7 +206,7 @@ function Content({ folderData }: ICardProps): ReactElement {
   return (
     <Fragment>
       <div className="grid auto-rows-fr sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
-        {data.map((media, index) => (
+        {data.value.map((media, index) => (
           <Media
             key={index}
             index={index}

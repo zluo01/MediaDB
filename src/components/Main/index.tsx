@@ -5,7 +5,9 @@ import Loading from '@/components/Loading';
 import { useGetFolderDataQuery } from '@/lib/queries';
 import { useAppSelector } from '@/lib/source';
 import { RootState } from '@/lib/source/store';
-import { IFolderData } from '@/type';
+import { EMPTY_FILTERS, IFolderData, ITags } from '@/type';
+import { Signal } from '@preact/signals-core';
+import { signal } from '@preact/signals-react';
 import { ReactElement, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -19,6 +21,8 @@ function Home(): ReactElement {
 
   const { data: folderData, isLoading: isGetFolderDataLoading } =
     useGetFolderDataQuery(route);
+
+  const filters: Signal<ITags> = signal(EMPTY_FILTERS);
 
   function getDisplayData(): IFolderData | undefined {
     if (search && folderData) {
@@ -41,7 +45,7 @@ function Home(): ReactElement {
     if (!displayData) {
       return <div />;
     }
-    return <Content folderData={displayData} />;
+    return <Content folderData={displayData} filters={filters} />;
   }
 
   return (
@@ -51,6 +55,7 @@ function Home(): ReactElement {
           folderData={displayData}
           updateRefresh={setRefresh}
           disabled={search !== '' || !displayData || refresh}
+          filters={filters}
         />
         <Contents />
       </div>

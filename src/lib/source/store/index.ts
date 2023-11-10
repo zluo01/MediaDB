@@ -1,14 +1,12 @@
 import controlReducer from '@/lib/source/slice/controlSlice';
 import directoryModalReducer from '@/lib/source/slice/directoryModalSlice';
 import editFolderModalReducer from '@/lib/source/slice/editFolderModalSlice';
-import filterReducer from '@/lib/source/slice/filterReducer';
 import footerReducer from '@/lib/source/slice/footerSlice';
 import skipFolderModalReducer from '@/lib/source/slice/skipFolderModalSlice';
 import { configureStore } from '@reduxjs/toolkit';
 
 export const store = configureStore({
   reducer: {
-    filter: filterReducer,
     footer: footerReducer,
     control: controlReducer,
     directoryModal: directoryModalReducer,

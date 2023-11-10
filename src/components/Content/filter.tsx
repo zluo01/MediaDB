@@ -1,34 +1,41 @@
-import { useAppDispatch, useAppSelector } from '@/lib/source';
-import { reset, updateFilter } from '@/lib/source/slice/filterReducer';
-import { RootState } from '@/lib/source/store';
 import classNames from '@/lib/utils';
-import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
+import { ACTOR, FILTER, GENRE, IFolderInfo, ITags, STUDIO, TAG } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
+import { Signal } from '@preact/signals-core';
 import { Fragment, ReactElement } from 'react';
 
 interface IFilerSection {
   folderData?: IFolderInfo;
   open: boolean;
   close: VoidFunction;
+  filters: Signal<ITags>;
 }
 
 const FILTER_TAGS: FILTER[] = [GENRE, ACTOR, STUDIO, TAG];
 
-function Filters({ folderData, open, close }: IFilerSection): ReactElement {
-  const dispatch = useAppDispatch();
-  const filters = useAppSelector((state: RootState) => state.filter);
-
+function Filters({
+  folderData,
+  open,
+  close,
+  filters,
+}: IFilerSection): ReactElement {
   function update(tag: FILTER, name: string) {
-    dispatch(
-      updateFilter({
-        tag,
-        name,
-      }),
-    );
+    const filterValue = filters.value[tag];
+    if (filterValue.includes(name)) {
+      filters.value = {
+        ...filters.value,
+        [tag]: filterValue.filter(o => o !== name),
+      };
+    } else {
+      filters.value = {
+        ...filters.value,
+        [tag]: [...filters.value[tag], name],
+      };
+    }
   }
 
   function clear(tag: FILTER) {
-    dispatch(reset(tag));
+    filters.value = { ...filters.value, [tag]: [] };
   }
 
   return (
@@ -63,7 +70,7 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
                     {folderData &&
                       FILTER_TAGS.map(v => {
                         const data = folderData[v];
-                        const filter = filters[v];
+                        const filter = filters.value[v];
                         return (
                           <div key={v} className="w-full px-4">
                             <div className="flex flex-row items-center justify-between">
