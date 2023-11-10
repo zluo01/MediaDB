@@ -18,6 +18,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
+import { signal } from '@preact/signals-react';
 import forEach from 'lodash/forEach';
 import join from 'lodash/join';
 import {
@@ -108,7 +109,8 @@ function Content({ folderData }: ICardProps): ReactElement {
   const filters = useAppSelector((state: RootState) => state.filter);
 
   const [open, setOpen] = useState(false);
-  const [current, setCurrent] = useState(-1);
+
+  const current = signal(-1);
 
   const data = filterData(folderData, filters);
 
@@ -125,17 +127,16 @@ function Content({ folderData }: ICardProps): ReactElement {
       if (open) {
         return;
       }
-      const c = current % column;
-      const r = Math.floor(current / column);
+      const c = current.value % column;
+      const r = Math.floor(current.value / column);
       let index: number;
       switch (ev.key) {
         case 'ArrowLeft':
-          setCurrent(prevState =>
-            prevState - 1 < 0 ? data.length - 1 : prevState - 1,
-          );
+          current.value =
+            current.value - 1 < 0 ? data.length - 1 : current.value - 1;
           break;
         case 'ArrowRight':
-          setCurrent(prevState => (prevState + 1) % data.length);
+          current.value = (current.value + 1) % data.length;
           break;
         case 'ArrowUp':
           ev.preventDefault();
@@ -143,7 +144,7 @@ function Content({ folderData }: ICardProps): ReactElement {
           if (index < 0) {
             return;
           }
-          setCurrent(index);
+          current.value = index;
           break;
         case 'ArrowDown':
           ev.preventDefault();
@@ -151,13 +152,13 @@ function Content({ folderData }: ICardProps): ReactElement {
           if (index > data.length - 1) {
             return;
           }
-          setCurrent(index);
+          current.value = index;
           break;
         case 'Enter':
-          switch (data[current].type) {
+          switch (data[current.value].type) {
             case MOVIE:
               // eslint-disable-next-line no-case-declarations
-              const media = data[current] as IMovieData;
+              const media = data[current.value] as IMovieData;
               // eslint-disable-next-line no-case-declarations
               const filePath = join(
                 [folderData.path, media.relativePath, media.file],
@@ -181,21 +182,22 @@ function Content({ folderData }: ICardProps): ReactElement {
   }, [current, data, folderData, column, open]);
 
   useEffect(() => {
-    const content = current < 0 ? `Total ${data.length}` : data[current]?.title;
+    const content =
+      current.value < 0 ? `Total ${data.length}` : data[current.value]?.title;
     dispatch(update(content));
   }, [data, current, dispatch]);
 
   function TVMenu() {
-    if (current < 0) {
+    if (current.value < 0) {
       return <div />;
     }
-    const type = data[current]?.type;
+    const type = data[current.value]?.type;
     if (type === TV_SERIES) {
       return (
         <Suspense>
           <Menu
             folder={folderData}
-            data={data[current] as ITVShowData}
+            data={data[current.value] as ITVShowData}
             open={open}
             close={() => setOpen(false)}
           />
@@ -213,9 +215,8 @@ function Content({ folderData }: ICardProps): ReactElement {
             key={index}
             index={index}
             media={media}
-            current={current === index}
+            current={current}
             folder={folderData}
-            select={() => setCurrent(index)}
             openMenu={() => setOpen(true)}
           />
         ))}

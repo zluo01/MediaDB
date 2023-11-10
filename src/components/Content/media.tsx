@@ -3,25 +3,20 @@ import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
 import { CoverType, IFolder, IMediaData, IMovieData, MOVIE } from '@/type';
+import { computed, Signal } from '@preact/signals-core';
 import join from 'lodash/join';
 
 interface IMediaProps {
   index: number;
-  current: boolean;
+  current: Signal<number>;
   media: IMediaData;
   folder: IFolder;
-  select: VoidFunction;
   openMenu: VoidFunction;
 }
 
-function Media({
-  index,
-  current,
-  media,
-  folder,
-  select,
-  openMenu,
-}: IMediaProps) {
+function Media({ index, current, media, folder, openMenu }: IMediaProps) {
+  const isCurrent = computed(() => current.value === index);
+
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
       // case 'comic':
@@ -51,10 +46,10 @@ function Media({
   return (
     <div
       id={`c${index}`}
-      onClick={select}
+      onClick={() => (current.value = index)}
       onDoubleClick={() => handleOpen(media)}
       className={classNames(
-        current ? 'bg-white/20 shadow-lg rounded-md' : '',
+        isCurrent.value ? 'bg-white/20 shadow-lg rounded-md' : '',
         'flex w-full flex-col items-center justify-center p-2 hover:scale-105 hover:transition-all hover:rounded-xl cursor-pointer',
       )}
     >
