@@ -107,7 +107,7 @@ fn parse_movie_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) {
     // handle movie file
     if media.file().is_empty() && !media_source.media().is_empty() {
         let file_path = Path::new(media_source.media().first().as_ref().unwrap().as_os_str());
-        media.set_file(file_path.file_name().unwrap().to_str().unwrap().to_string());
+        media.set_file(String::from(file_path.file_name().unwrap().to_string_lossy()));
     }
 }
 

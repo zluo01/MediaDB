@@ -2,7 +2,15 @@ import { getCacheImagePath } from '@/components/ImageLoader/common';
 import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
-import { CoverType, IFolder, IMediaData, IMovieData, MOVIE } from '@/type';
+import {
+  COMIC,
+  CoverType,
+  IFolder,
+  IMediaData,
+  IMovieData,
+  MOVIE,
+  TV_SERIES,
+} from '@/type';
 import { batch, computed, Signal } from '@preact/signals-react';
 import join from 'lodash/join';
 
@@ -20,13 +28,13 @@ function Media({ index, current, media, folder, footer, menu }: IMediaProps) {
 
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
-      // case 'comic':
-      case 'movie':
+      case COMIC:
+      case MOVIE:
         await openFile(
           join([folder.path, media.relativePath, media.file], '/'),
         );
         break;
-      case 'tvshow':
+      case TV_SERIES:
         menu.value = true;
         break;
     }

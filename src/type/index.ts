@@ -75,7 +75,15 @@ export interface IEpisode {
   relativePath: string;
 }
 
-export type IMediaData = IMovieData | ITVShowData;
+export interface IComicData extends ITags {
+  type: typeof COMIC;
+  file: string;
+  title: string;
+  posters: Record<string, string>;
+  relativePath: string;
+}
+
+export type IMediaData = IMovieData | ITVShowData | IComicData;
 
 export interface ISetting {
   showSidePanel: boolean;

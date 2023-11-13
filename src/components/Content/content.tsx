@@ -1,6 +1,7 @@
 import Media from '@/components/Content/media';
 import { openFile } from '@/lib/os';
 import {
+  COMIC,
   DEFAULT,
   FILTER,
   IFolderData,
@@ -154,6 +155,7 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
           break;
         case 'Enter':
           switch (data.value[current.value].type) {
+            case COMIC:
             case MOVIE:
               // eslint-disable-next-line no-case-declarations
               const media = data.value[current.value] as IMovieData;

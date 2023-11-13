@@ -256,4 +256,17 @@ impl Media {
         }
         poster_map
     }
+
+    pub fn comic_json(&self) -> Option<Value> {
+        if let MediaType::Comic = self.media_type {
+            return Some(json!({
+                "type": "comic",
+                "relativePath": self.relative_path().to_str().unwrap(),
+                "title": self.title,
+                "file": self.file,
+                "posters": self.construct_poster_map(),
+            }));
+        }
+        panic!("Expect a comic, but get {:?}", self.media_type)
+    }
 }

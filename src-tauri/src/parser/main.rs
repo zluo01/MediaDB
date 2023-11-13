@@ -17,6 +17,7 @@ use crate::{
     parser::types::{Media, MediaSource, MediaType},
     parser::utilities,
 };
+use crate::parser::comic_parser::parse_comics;
 
 pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Result<Value, ()> {
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
@@ -84,7 +85,7 @@ fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str, ski
         let media = handle_media_path(app_handle, &nfo_files, root_path, &media_source);
         for m in media {
             match m.media_type() {
-                MediaType::Movie | MediaType::TvShow => {
+                MediaType::Movie | MediaType::TvShow | MediaType::Comic => {
                     major_media.push(m);
                 }
                 MediaType::Episode => {
@@ -101,7 +102,12 @@ fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
                                         nfo_files: &Vec<OsString>,
                                         root_path: &Path,
                                         media_source: &MediaSource) -> Vec<Media> {
+    let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
     let identifier = &app_handle.config().tauri.bundle.identifier;
+    let comic_media: Vec<Media> = parse_comics(identifier,
+                                               &app_dir,
+                                               root_path,
+                                               media_source.comic());
     return nfo_files.into_par_iter()
         .filter_map(|nfo_file| {
             match parse_nfo(root_path, nfo_file, &media_source) {
@@ -117,6 +123,7 @@ fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
             }
         })
         .flat_map(|v| v)
+        .chain(comic_media)
         .collect();
 }
 
@@ -146,12 +153,16 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
             studios.extend(m.studios());
         }
 
+
         if !m.posters().is_empty() {
-            posters.extend(m.posters()
-                .iter()
-                .map(|o| Path::new(m.relative_path()).join(o))
-                .collect::<Vec<PathBuf>>()
-            );
+            match m.media_type() {
+                MediaType::Movie | MediaType::TvShow => posters.extend(m.posters()
+                    .iter()
+                    .map(|o| Path::new(m.relative_path()).join(o))
+                    .collect::<Vec<PathBuf>>()
+                ),
+                MediaType::Comic | _ => {}
+            }
         }
     }
 
@@ -174,10 +185,11 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
         }
     }
 
-    let data = major_media.iter()
+    let data = major_media.into_par_iter()
         .map(|o| match o.media_type() {
             MediaType::Movie => o.movie_json(),
             MediaType::TvShow => o.tvshow_json(seasons_map.get(o.relative_path())),
+            MediaType::Comic => o.comic_json(),
             _ => panic!("Unexpected media type: {:?}", o.media_type())
         })
         .filter_map(|o| o)
@@ -256,7 +268,7 @@ fn save_cover(source_path: &PathBuf, dest_path: &PathBuf, file_path: String, img
         }
     }
 
-    if let Err(e) = img.resize(320, 640, FilterType::Lanczos3).save_with_format(&dest_path, ImageFormat::WebP) {
+    if let Err(e) = img.resize(320, 480, FilterType::Lanczos3).save_with_format(&dest_path, ImageFormat::WebP) {
         error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
         return;
     }
@@ -269,7 +281,7 @@ fn save_thumbnail(source_path: &PathBuf, dest_path: &PathBuf, img: &DynamicImage
         return;
     }
 
-    if let Err(e) = img.thumbnail(60, 80).save_with_format(&dest_path, ImageFormat::WebP) {
+    if let Err(e) = img.thumbnail(40, 60).save_with_format(&dest_path, ImageFormat::WebP) {
         error!("Fail to save thumbnail from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
     }
 }
