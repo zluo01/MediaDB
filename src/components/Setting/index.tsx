@@ -31,7 +31,7 @@ function Setting(): ReactElement {
     return <Loading />;
   }
   return (
-    <div className="mx-auto h-full w-full max-w-xl py-5">
+    <div className="mx-auto h-full w-full max-w-2xl py-5">
       <span className="text-5xl font-medium text-primary">Setting</span>
       <hr className="mt-3 w-full border-[#505962]" />
       <div className="flex items-center p-2">

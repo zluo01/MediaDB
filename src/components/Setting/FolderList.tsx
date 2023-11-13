@@ -89,9 +89,9 @@ function FolderList(): ReactElement {
                       {...provided.dragHandleProps}
                       style={{ ...provided.draggableProps.style }}
                     >
-                      <li className="flex w-[100%] flex-row items-center justify-between px-2">
+                      <li className="flex w-[100%] flex-row items-center justify-between p-2">
                         <div className="flex grow flex-row items-center text-secondary">
-                          <FolderIcon className="mr-2 h-8 w-8" />
+                          <FolderIcon className="mr-2 h-10 w-10" />
                           <div className="flex flex-col items-start justify-around ">
                             <span className="truncate text-primary">
                               {folder.name}

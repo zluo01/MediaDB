@@ -22,7 +22,7 @@ function SkipFolderList({ skipFolders }: ISkipFolderListProps): ReactElement {
     <ul className="w-full">
       {skipFolders.map((folder, index) => (
         <li
-          className="flex flex-row items-center px-2 text-secondary"
+          className="flex flex-row items-center p-2 text-secondary"
           key={index}
         >
           <FolderIcon className="mr-2 h-8 w-8" />
