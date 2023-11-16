@@ -5,14 +5,15 @@ windows_subsystem = "windows"
 
 extern crate core;
 
-use std::fs;
 use std::collections::HashMap;
+use std::fs;
 use std::sync::Arc;
 
 use log::{error, LevelFilter};
 use serde_json::{json, Value};
 use sqlx::{Pool, Sqlite};
 use tauri::{
+    api::notification::Notification,
     async_runtime::Mutex,
     Manager,
     Runtime,
@@ -36,10 +37,16 @@ async fn parser<R: Runtime>(app_handle: tauri::AppHandle<R>,
     let name = String::from(name);
     let path = String::from(path);
     tauri::async_runtime::spawn(async move {
+        let identifier = &app_handle.config().tauri.bundle.identifier;
+
         let db_path = get_database_path(&app_handle);
         let pool_creation = create_pool(&db_path).await;
         if let Err(e) = pool_creation {
-            error!("Fail to create database pool from path {}. Error: {:?}", db_path, e);
+            Notification::new(identifier)
+                .title("MediaDB: Encounter Error when parsing comic file.")
+                .body(format!("Fail to create database pool from path {}. Error: {:?}", db_path, e))
+                .show()
+                .expect("Fail to send notification.");
             return;
         }
         let pool = pool_creation.unwrap();
@@ -80,10 +87,15 @@ async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>,
     let name = String::from(name);
     let path = String::from(path);
     tauri::async_runtime::spawn(async move {
+        let identifier = &app_handle.config().tauri.bundle.identifier;
         let db_path = get_database_path(&app_handle);
         let pool_creation = create_pool(&db_path).await;
         if let Err(e) = pool_creation {
-            error!("Fail to create database pool from path {}. Error: {:?}", db_path, e);
+            Notification::new(identifier)
+                .title("MediaDB: Encounter Error when parsing comic file.")
+                .body(format!("Fail to create database pool from path {}. Error: {:?}", db_path, e))
+                .show()
+                .expect("Fail to send notification.");
             return;
         }
         let pool = pool_creation.unwrap();
