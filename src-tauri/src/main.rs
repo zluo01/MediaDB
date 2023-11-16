@@ -43,7 +43,7 @@ async fn parser<R: Runtime>(app_handle: tauri::AppHandle<R>,
         let pool_creation = create_pool(&db_path).await;
         if let Err(e) = pool_creation {
             Notification::new(identifier)
-                .title("MediaDB: Encounter Error when parsing comic file.")
+                .title("MediaDB: Encounter Error when initialize database pool.")
                 .body(format!("Fail to create database pool from path {}. Error: {:?}", db_path, e))
                 .show()
                 .expect("Fail to send notification.");
@@ -92,7 +92,7 @@ async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>,
         let pool_creation = create_pool(&db_path).await;
         if let Err(e) = pool_creation {
             Notification::new(identifier)
-                .title("MediaDB: Encounter Error when parsing comic file.")
+                .title("MediaDB: Encounter Error when initialize database pool.")
                 .body(format!("Fail to create database pool from path {}. Error: {:?}", db_path, e))
                 .show()
                 .expect("Fail to send notification.");
