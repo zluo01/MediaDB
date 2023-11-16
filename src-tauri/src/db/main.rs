@@ -1,10 +1,12 @@
-use sqlx::{migrate::MigrateDatabase, Pool, Sqlite, SqlitePool};
 use std::fs;
 use std::result::Result;
+
 use log::{debug, error};
 use serde_json::{json, Value};
+use sqlx::{migrate::MigrateDatabase, Pool, Sqlite, SqlitePool};
 use tauri::Runtime;
-use crate::db::{queries};
+
+use crate::db::queries;
 use crate::db::types::{Folder, FolderData, Position, Setting, SkipFolders};
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
@@ -177,4 +179,11 @@ pub async fn get_folder_position(pool: &Pool<Sqlite>, name: &str, path: &str) ->
         .fetch_one(pool)
         .await?;
     Ok(position.position())
+}
+
+pub async fn recover(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
+    let _ = sqlx::query(queries::RECOVER)
+        .execute(pool)
+        .await?;
+    Ok(())
 }

@@ -4,7 +4,7 @@ import Toolbar from '@/components/Content/toolbar';
 import Loading from '@/components/Loading';
 import { searchContext } from '@/lib/controls';
 import { useGetFolderDataQuery } from '@/lib/queries';
-import { EMPTY_FILTERS, ITags } from '@/type';
+import { EMPTY_FILTERS, FolderStatus, ITags } from '@/type';
 import { computed, Signal, signal } from '@preact/signals-react';
 import { ReactElement } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -20,7 +20,11 @@ function Home(): ReactElement {
   const footer = signal('');
 
   const displayData = computed(() => {
-    if (searchContext.value && folderData) {
+    if (
+      searchContext.value &&
+      folderData &&
+      folderData.status !== FolderStatus.ERROR
+    ) {
       return {
         ...folderData,
         data: folderData.data.filter(o =>
@@ -39,6 +43,14 @@ function Home(): ReactElement {
     if (isLoading) {
       return <Loading />;
     }
+    if (displayData.value?.status === FolderStatus.ERROR) {
+      return (
+        <div className="inset-0 flex h-full flex-col items-center justify-center space-y-1.5 text-xl text-white">
+          <p>Encounter Error When Building Directory.</p>
+          <p>Refresh to Retry.</p>
+        </div>
+      );
+    }
     if (!displayData.value) {
       return <div />;
     }
@@ -53,7 +65,7 @@ function Home(): ReactElement {
 
   return (
     <div className="h-full w-full overflow-auto bg-default">
-      <div className="flex flex-col p-8">
+      <div className="flex h-full flex-col p-8">
         <Toolbar
           folderData={displayData.value}
           disabled={disabled.value}

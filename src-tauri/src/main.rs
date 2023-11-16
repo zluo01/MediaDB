@@ -294,8 +294,14 @@ fn main() {
                 if let Err(e) = creation_result {
                     panic!("Fail to create database pool from path {}. Error: {:?}", db_path, e)
                 }
+
+                let pool = creation_result.unwrap();
+                if let Err(e) = db::main::recover(&pool).await {
+                    panic!("Fail to recover folder status. Error: {:?}", e)
+                }
+
                 let db_state: State<DatabaseConnectionState> = app_handle.state::<DatabaseConnectionState>();
-                db_state.0.lock().await.insert(0u8, creation_result.unwrap());
+                db_state.0.lock().await.insert(0u8, pool);
             });
 
             Ok(())

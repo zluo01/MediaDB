@@ -115,3 +115,9 @@ pub const GET_FOLDER_POSITION: &str =
     "
      SELECT position from folder_data WHERE folder_name=? AND path=?
     ";
+
+//language=sqlite
+pub const RECOVER: &str =
+    "
+     UPDATE folder_data SET status =2 WHERE status=1
+    ";
