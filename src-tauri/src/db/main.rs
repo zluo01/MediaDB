@@ -5,7 +5,7 @@ use log::{debug, error};
 use serde_json::{json, Value};
 use tauri::Runtime;
 use crate::db::{queries};
-use crate::db::types::{Folder, FolderData, Setting, SkipFolders};
+use crate::db::types::{Folder, FolderData, Position, Setting, SkipFolders};
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
@@ -159,4 +159,22 @@ pub async fn delete_folder(pool: &Pool<Sqlite>, name: &str, position: &i32) -> R
         .execute(pool)
         .await?;
     Ok(())
+}
+
+pub async fn update_folder_status(pool: &Pool<Sqlite>, status: &i32, position: &i32) -> Result<(), sqlx::Error> {
+    let _ = sqlx::query(queries::UPDATE_FOLDER_STATUS)
+        .bind(status)
+        .bind(position)
+        .execute(pool)
+        .await?;
+    Ok(())
+}
+
+pub async fn get_folder_position(pool: &Pool<Sqlite>, name: &str, path: &str) -> Result<i32, sqlx::Error> {
+    let position = sqlx::query_as::<_, Position>(queries::GET_FOLDER_POSITION)
+        .bind(name)
+        .bind(path)
+        .fetch_one(pool)
+        .await?;
+    Ok(position.position())
 }

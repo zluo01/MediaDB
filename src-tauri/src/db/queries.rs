@@ -6,8 +6,6 @@ pub const CREAT_TABLE_QUERY: &str =
         settings_id INTEGER not null
             primary key,
         hide_panel  INTEGER not null,
-        card_width  INTEGER not null,
-        card_height INTEGER not null,
         skip_folders TEXT default '' not null
     );
     INSERT INTO settings (settings_id, hide_panel)
@@ -20,7 +18,8 @@ pub const CREAT_TABLE_QUERY: &str =
         position    INTEGER                  not null,
         data        TEXT                     not null,
         path        INTEGER                  not null,
-        sort_type   TEXT default 'Directory' not null
+        sort_type   TEXT default 'Directory' not null,
+        status      INTEGER default 0        not null
     );
     ";
 
@@ -103,4 +102,16 @@ pub const DELETE_FOLDER: &str =
     "
      DELETE FROM folder_data WHERE folder_name=?;
      UPDATE folder_data SET position = position -1 WHERE position > ?
+    ";
+
+//language=sqlite
+pub const UPDATE_FOLDER_STATUS: &str =
+    "
+     UPDATE folder_data SET status = ? WHERE position = ?
+    ";
+
+//language=sqlite
+pub const GET_FOLDER_POSITION: &str =
+    "
+     SELECT position from folder_data WHERE folder_name=? AND path=?
     ";

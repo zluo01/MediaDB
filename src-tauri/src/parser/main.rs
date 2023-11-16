@@ -19,12 +19,12 @@ use crate::{
 };
 use crate::parser::comic_parser::parse_comics;
 
-pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Result<Value, ()> {
+pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Value {
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
     let (major_media, secondary_media) = read_dir(app_handle, path, skip_paths);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
     handle_images(&app_dir, name, path, &posters);
-    Ok(data)
+    data
 }
 
 fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str, skip_paths: &Vec<String>) -> (Vec<Media>, Vec<Media>) {
@@ -270,7 +270,6 @@ fn save_cover(source_path: &PathBuf, dest_path: &PathBuf, file_path: String, img
 
     if let Err(e) = img.resize(320, 480, FilterType::Lanczos3).save_with_format(&dest_path, ImageFormat::WebP) {
         error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
-        return;
     }
 }
 

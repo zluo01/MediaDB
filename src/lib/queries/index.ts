@@ -10,7 +10,7 @@ import {
   updateFolderPathFromStorage,
   updateFolderSortType,
 } from '@/lib/storage';
-import { IFolder, IFolderData, ISetting } from '@/type';
+import { FolderStatus, IFolder, IFolderData, ISetting } from '@/type';
 import { getVersion } from '@tauri-apps/api/app';
 import useSWR, { useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -31,9 +31,20 @@ export function useGetFolderQuery(route: number) {
 }
 
 export function useGetFolderDataQuery(route: number) {
-  return useSWR<IFolderData>(FOLDER_DETAIL_KEY(route), () =>
-    getFolderInfo(route),
+  const { data, isLoading } = useSWR<IFolderData>(
+    FOLDER_DETAIL_KEY(route),
+    () => getFolderInfo(route),
   );
+
+  if (isLoading || data?.status === FolderStatus.LOADING) {
+    return {
+      isLoading: true,
+    };
+  }
+  return {
+    data,
+    isLoading: false,
+  };
 }
 
 export function useUpdateSortTypeTrigger(position: number) {

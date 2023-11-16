@@ -41,14 +41,9 @@ export interface IFolderInfo extends ITags {
   data: IMediaData[];
 }
 
-export interface IFolderData extends IFolder, IFolderInfo {}
-
-// export interface IComicData extends ITags {
-//   type: typeof COMIC;
-//   file: string;
-//   title: string;
-//   posters: Map<string, string>;
-// }
+export interface IFolderData extends IFolder, IFolderInfo {
+  status: FolderStatus;
+}
 
 export interface IMovieData extends ITags {
   type: typeof MOVIE;
@@ -97,8 +92,10 @@ export interface IFolder {
   appDir?: string;
 }
 
-export interface IControlState {
-  search: string;
+export enum FolderStatus {
+  NONE,
+  LOADING,
+  ERROR,
 }
 
 export enum ModalType {

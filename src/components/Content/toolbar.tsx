@@ -1,4 +1,3 @@
-import { refresh } from '@/lib/controls';
 import { notify } from '@/lib/os';
 import {
   useCreateLibraryTrigger,
@@ -100,7 +99,6 @@ function Toolbar({ folderData, disabled, filters }: IToolbarProps) {
       return;
     }
     e.preventDefault();
-    refresh.value = true;
     try {
       await createLibraryTrigger({
         folder: { ...folderData },
@@ -108,8 +106,6 @@ function Toolbar({ folderData, disabled, filters }: IToolbarProps) {
       });
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
-    } finally {
-      refresh.value = false;
     }
   }
 

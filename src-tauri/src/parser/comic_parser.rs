@@ -16,6 +16,10 @@ pub(crate) fn parse_comics(identifier: &String,
                            app_dir: &PathBuf,
                            root_path: &Path,
                            comic_files: &Vec<OsString>) -> Vec<Media> {
+    if comic_files.is_empty() {
+        return Vec::new();
+    }
+
     let cover_path = app_dir.join("covers");
     let thumbnail_path = app_dir.join("thumbnails");
 

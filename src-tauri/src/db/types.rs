@@ -5,21 +5,13 @@ use serde_json::{json, Value};
 #[derive(Serialize, Deserialize)]
 pub struct Setting {
     hide_panel: i32,
-    card_width: i32,
-    card_height: i32,
     skip_folders: String,
 }
 
 impl Setting {
     pub fn to_json(&self) -> Value {
-        let card_size = json!({
-            "width" : self.card_width,
-            "height": self.card_height
-        });
-
         json!({
             "showSidePanel": self.hide_panel == 0,
-            "cardSize": card_size,
             "skipFolders": self.to_skip_folder_list()
         })
     }
@@ -46,6 +38,18 @@ impl SkipFolders {
 
 #[derive(sqlx::FromRow)]
 #[derive(Serialize, Deserialize)]
+pub struct Position {
+    position: i32,
+}
+
+impl Position {
+    pub fn position(&self) -> i32 {
+        self.position
+    }
+}
+
+#[derive(sqlx::FromRow)]
+#[derive(Serialize, Deserialize)]
 pub struct Folder {
     #[serde(rename = "name")]
     folder_name: String,
@@ -53,7 +57,7 @@ pub struct Folder {
     position: i32,
 }
 
-#[derive(sqlx::FromRow)]
+#[derive(sqlx::FromRow, Debug)]
 #[derive(Serialize, Deserialize)]
 pub struct FolderData {
     folder_name: String,
@@ -61,6 +65,7 @@ pub struct FolderData {
     sort_type: String,
     path: String,
     position: i32,
+    status: u8,
 }
 
 impl FolderData {
@@ -74,6 +79,7 @@ impl FolderData {
                 m.insert(String::from("path"), Value::String(self.path.to_string()));
                 m.insert(String::from("appDir"), Value::String(app_dir));
                 m.insert(String::from("position"), Value::from(self.position));
+                m.insert(String::from("status"), Value::from(self.status));
                 Value::Object(m)
             }
             v => v,

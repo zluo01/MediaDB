@@ -2,7 +2,7 @@ import Content from '@/components/Content/content';
 import Footer from '@/components/Content/footer';
 import Toolbar from '@/components/Content/toolbar';
 import Loading from '@/components/Loading';
-import { refresh, searchContext } from '@/lib/controls';
+import { searchContext } from '@/lib/controls';
 import { useGetFolderDataQuery } from '@/lib/queries';
 import { EMPTY_FILTERS, ITags } from '@/type';
 import { computed, Signal, signal } from '@preact/signals-react';
@@ -14,8 +14,7 @@ function Home(): ReactElement {
 
   const route = parseInt(searchParams.get('id') || '0');
 
-  const { data: folderData, isLoading: isGetFolderDataLoading } =
-    useGetFolderDataQuery(route);
+  const { data: folderData, isLoading } = useGetFolderDataQuery(route);
 
   const filters: Signal<ITags> = signal(EMPTY_FILTERS);
   const footer = signal('');
@@ -33,11 +32,11 @@ function Home(): ReactElement {
   });
 
   const disabled = computed(
-    () => searchContext.value !== '' || !displayData.value || refresh.value,
+    () => searchContext.value !== '' || !displayData.value || isLoading,
   );
 
   const content = computed(() => {
-    if (isGetFolderDataLoading || refresh.value) {
+    if (isLoading) {
       return <Loading />;
     }
     if (!displayData.value) {
