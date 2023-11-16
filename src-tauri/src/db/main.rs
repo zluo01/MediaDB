@@ -134,7 +134,7 @@ pub async fn update_sort_type(pool: &Pool<Sqlite>, position: &i32, sort_type: &S
     Ok(())
 }
 
-pub async fn update_folder_path(pool: &Pool<Sqlite>, position: &i32, path: &String) -> Result<(), sqlx::Error> {
+pub async fn update_folder_path(pool: &Pool<Sqlite>, position: &i32, path: &str) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_FOLDER_PATH)
         .bind(path)
         .bind(position)

@@ -5,10 +5,9 @@ windows_subsystem = "windows"
 
 extern crate core;
 
-use std::{fs, thread};
+use std::fs;
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::Duration;
 
 use log::{error, LevelFilter};
 use serde_json::{json, Value};
@@ -68,18 +67,63 @@ async fn parser<R: Runtime>(app_handle: tauri::AppHandle<R>,
         }
 
         // handling actual parsing
-        if let Err(e) = handle_parsing(&app_handle, &pool, name, path, folder_position).await {
-            error!("Error on parsing: {}", e);
-
-            // make status to error
-            if let Err(e) = db::main::update_folder_status(&pool, &2, &folder_position).await {
-                error!("Fail to change folder status to error. Raising Error: {:?}", e.into_database_error());
-            }
-            let _ = app_handle.emit_all("parsing", get_folder_detail_cache_key(folder_position))
-                .expect("Fail to send message to refresh status on error.");
-        }
+        process_parsing(&app_handle, &pool, name, path, folder_position).await;
     });
     Ok(())
+}
+
+#[tauri::command]
+async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>,
+                                        name: String,
+                                        position: i32,
+                                        path: String) -> Result<(), String> {
+    let name = String::from(name);
+    let path = String::from(path);
+    tauri::async_runtime::spawn(async move {
+        let db_path = get_database_path(&app_handle);
+        let pool_creation = create_pool(&db_path).await;
+        if let Err(e) = pool_creation {
+            error!("Fail to create database pool from path {}. Error: {:?}", db_path, e);
+            return;
+        }
+        let pool = pool_creation.unwrap();
+
+        let path = path.as_str();
+        let name = name.as_str();
+
+        // update path
+        if let Err(e) = db::main::update_folder_path(&pool, &position, &path).await {
+            error!("Fail to update folder path. Raising Error: {:?}", e.into_database_error());
+            return;
+        }
+
+        // refetch data and update data for new path
+        process_parsing(&app_handle, &pool, name, path, position).await;
+    });
+    Ok(())
+}
+
+async fn process_parsing<R: Runtime>(app_handle: &tauri::AppHandle<R>,
+                                     pool: &Pool<Sqlite>,
+                                     name: &str,
+                                     path: &str,
+                                     position: i32) {
+    if let Err(e) = handle_parsing(&app_handle, &pool, name, path, position).await {
+        error!("Error on parsing: {}", e);
+
+        // make status to error
+        if let Err(e) = db::main::update_folder_status(&pool, &2, &position).await {
+            error!("Fail to change folder status to error. Raising Error: {:?}", e.into_database_error());
+        }
+        let _ = app_handle.emit_all("parsing", get_folder_detail_cache_key(position))
+            .expect("Fail to send message to refresh status on error.");
+    } else {
+        if let Err(e) = db::main::update_folder_status(&pool, &0, &position).await {
+            error!("Fail to change folder status to done. Raising Error: {:?}", e.into_database_error());
+        }
+        let _ = app_handle.emit_all("parsing", get_folder_detail_cache_key(position))
+            .expect("Fail to send message to refresh status on finish.");
+    }
 }
 
 async fn handle_parsing<R: Runtime>(app_handle: &tauri::AppHandle<R>,
@@ -99,20 +143,11 @@ async fn handle_parsing<R: Runtime>(app_handle: &tauri::AppHandle<R>,
     }
     let skip_folders = skip_folders_result.unwrap();
 
-    thread::sleep(Duration::from_secs(30));
-
     let value = parser::main::parse(&app_handle, name, path, &skip_folders);
 
     if let Err(e) = db::main::update_folder_data(&pool, name, &value).await {
         return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
     }
-
-    if let Err(e) = db::main::update_folder_status(&pool, &0, &position).await {
-        return Err(format!("Fail to change folder status to done. Raising Error: {:?}", e.into_database_error()));
-    }
-    let _ = app_handle.emit_all("parsing", get_folder_detail_cache_key(position))
-        .expect("Fail to send message to refresh status on finish.");
-
     Ok(())
 }
 
@@ -197,31 +232,6 @@ async fn update_sort_type(database_state: State<'_, DatabaseConnectionState>, po
     let pool = instances.get_mut(&0).expect("Cannot find database instance.");
     if let Err(e) = db::main::update_sort_type(pool, &position, &sort_type).await {
         return Err(format!("Fail to update sort type. Raising Error: {:?}", e.into_database_error()));
-    }
-    Ok(())
-}
-
-#[tauri::command]
-async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>,
-                                        database_state: State<'_, DatabaseConnectionState>,
-                                        name: String,
-                                        position: i32,
-                                        path: String) -> Result<(), String> {
-    let mut instances = database_state.0.lock().await;
-    let pool = instances.get_mut(&0).expect("Cannot find database instance.");
-    // update path
-    if let Err(e) = db::main::update_folder_path(pool, &position, &path).await {
-        return Err(format!("Fail to update folder path. Raising Error: {:?}", e.into_database_error()));
-    }
-
-    // refetch data and update data for new path
-    let skip_folders_result = db::main::get_skip_folders(pool).await;
-    if let Err(e) = skip_folders_result {
-        return Err(format!("Fail to get skip folders. Raising Error: {:?}", e.into_database_error()));
-    }
-    let value = parser::main::parse(&app_handle, &name, &path, &skip_folders_result.unwrap());
-    if let Err(e) = db::main::update_folder_data(pool, &name, &value).await {
-        return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
     }
     Ok(())
 }
