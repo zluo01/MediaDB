@@ -135,6 +135,13 @@ async fn process_parsing<R: Runtime>(app_handle: &tauri::AppHandle<R>,
         }
         let _ = app_handle.emit_all("parsing", get_folder_detail_cache_key(position))
             .expect("Fail to send message to refresh status on finish.");
+
+        let identifier = &app_handle.config().tauri.bundle.identifier;
+        Notification::new(identifier)
+            .title("MediaDB")
+            .body(format!("Building direcotry {} is finished.", name))
+            .show()
+            .expect("Fail to send notification.");
     }
 }
 
