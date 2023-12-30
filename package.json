@@ -28,7 +28,7 @@
     "swr": "2.2.4"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "1.5.7",
+    "@tauri-apps/cli": "1.5.9",
     "@trivago/prettier-plugin-sort-imports": "4.3.0",
     "@types/lodash": "4.14.202",
     "@types/node": "20.10.5",
