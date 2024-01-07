@@ -11,20 +11,30 @@ import {
   MOVIE,
   TV_SERIES,
 } from '@/type';
-import { batch, computed, Signal } from '@preact/signals-react';
+import { Signal } from '@preact/signals-react';
 import join from 'lodash/join';
+import { memo } from 'react';
 
 interface IMediaProps {
   index: number;
-  current: Signal<number>;
+  current: number;
   media: IMediaData;
   folder: IFolder;
   footer: Signal<string>;
-  menu: Signal<boolean>;
+  select: VoidFunction;
+  openMenu: VoidFunction;
 }
 
-function Media({ index, current, media, folder, footer, menu }: IMediaProps) {
-  const isCurrent = computed(() => current.value === index);
+function Media({
+  index,
+  current,
+  media,
+  select,
+  folder,
+  footer,
+  openMenu,
+}: IMediaProps) {
+  const isCurrent = current === index;
 
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
@@ -35,7 +45,7 @@ function Media({ index, current, media, folder, footer, menu }: IMediaProps) {
         );
         break;
       case TV_SERIES:
-        menu.value = true;
+        openMenu();
         break;
     }
   }
@@ -47,11 +57,9 @@ function Media({ index, current, media, folder, footer, menu }: IMediaProps) {
     return 'opacity-0';
   }
 
-  function select() {
-    batch(() => {
-      current.value = index;
-      footer.value = media.title;
-    });
+  function onSelect() {
+    select();
+    footer.value = media.title;
   }
 
   const { thumbnail, cover } = getCacheImagePath(
@@ -62,10 +70,10 @@ function Media({ index, current, media, folder, footer, menu }: IMediaProps) {
   return (
     <div
       id={`c${index}`}
-      onClick={select}
+      onClick={onSelect}
       onDoubleClick={() => handleOpen(media)}
       className={classNames(
-        isCurrent.value ? 'bg-white/20 shadow-lg rounded-md' : '',
+        isCurrent ? 'bg-white/20 shadow-lg rounded-md' : '',
         'flex w-full flex-col items-center justify-center p-2 hover:scale-105 hover:transition-all hover:rounded-xl cursor-pointer',
       )}
     >
@@ -93,4 +101,4 @@ function Media({ index, current, media, folder, footer, menu }: IMediaProps) {
   );
 }
 
-export default Media;
+export default memo(Media);

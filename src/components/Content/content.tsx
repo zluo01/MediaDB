@@ -16,7 +16,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
-import { computed, effect, Signal, signal } from '@preact/signals-react';
+import { computed, effect, Signal } from '@preact/signals-react';
 import forEach from 'lodash/forEach';
 import join from 'lodash/join';
 import {
@@ -61,9 +61,8 @@ interface IContentProps {
 function Content({ folderData, filters, footer }: IContentProps): ReactElement {
   const column = useGetColumnSize();
 
-  const menuStatus = signal(false);
-
-  const current = signal(-1);
+  const [menuStatus, setMenuStatus] = useState(false);
+  const [current, setCurrent] = useState(-1);
 
   const data = computed(() => {
     let media = [...folderData.data];
@@ -109,33 +108,31 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
     footer.value = `Total ${data.value.length}`;
   });
 
-  effect(() => {
-    const v = current.value;
-    if (v < 0) {
+  useEffect(() => {
+    if (current < 0) {
       return;
     }
-    const anchor = document.getElementById(`c${v}`);
+    const anchor = document.getElementById(`c${current}`);
     if (anchor) {
       anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  });
+  }, [current]);
 
   useEffect(() => {
     async function handleKeyPress(ev: KeyboardEvent) {
       // when menu is opened, do not listen to key change
-      if (menuStatus.value) {
+      if (menuStatus) {
         return;
       }
-      const c = current.value % column;
-      const r = Math.floor(current.value / column);
+      const c = current % column;
+      const r = Math.floor(current / column);
       let index: number;
       switch (ev.key) {
         case 'ArrowLeft':
-          current.value =
-            current.value - 1 < 0 ? data.value.length - 1 : current.value - 1;
+          setCurrent(prev => (prev - 1 < 0 ? data.value.length - 1 : prev - 1));
           break;
         case 'ArrowRight':
-          current.value = (current.value + 1) % data.value.length;
+          setCurrent(prev => (prev + 1) % data.value.length);
           break;
         case 'ArrowUp':
           ev.preventDefault();
@@ -143,7 +140,7 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
           if (index < 0) {
             return;
           }
-          current.value = index;
+          setCurrent(index);
           break;
         case 'ArrowDown':
           ev.preventDefault();
@@ -151,14 +148,14 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
           if (index > data.value.length - 1) {
             return;
           }
-          current.value = index;
+          setCurrent(index);
           break;
         case 'Enter':
-          switch (data.value[current.value].type) {
+          switch (data.value[current].type) {
             case COMIC:
             case MOVIE:
               // eslint-disable-next-line no-case-declarations
-              const media = data.value[current.value] as IMovieData;
+              const media = data.value[current] as IMovieData;
               // eslint-disable-next-line no-case-declarations
               const filePath = join(
                 [folderData.path, media.relativePath, media.file],
@@ -167,7 +164,7 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
               await openFile(filePath);
               break;
             case TV_SERIES:
-              menuStatus.value = true;
+              setMenuStatus(true);
               break;
           }
           break;
@@ -182,17 +179,18 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
   }, [current, data, folderData, column, open]);
 
   const menu = computed(() => {
-    if (current.value < 0) {
+    if (current < 0) {
       return <div />;
     }
-    const type = data.value[current.value]?.type;
+    const type = data.value[current]?.type;
     if (type === TV_SERIES) {
       return (
         <Suspense>
           <Menu
             folder={folderData}
-            data={data.value[current.value] as ITVShowData}
+            data={data.value[current] as ITVShowData}
             status={menuStatus}
+            closeMenu={() => setMenuStatus(false)}
           />
         </Suspense>
       );
@@ -209,9 +207,10 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
             index={index}
             media={media}
             current={current}
+            select={() => setCurrent(index)}
             folder={folderData}
             footer={footer}
-            menu={menuStatus}
+            openMenu={() => setMenuStatus(true)}
           />
         ))}
       </div>

@@ -4,20 +4,21 @@ import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
 import { CoverType, IEpisode, IFolder, ITVShowData } from '@/type';
 import { Dialog, Tab, Transition } from '@headlessui/react';
-import { Signal } from '@preact/signals-react';
 import join from 'lodash/join';
 import { Fragment, ReactElement } from 'react';
 
 interface ITVShowCardMenuProps {
   folder: IFolder;
   data: ITVShowData;
-  status: Signal<boolean>;
+  status: boolean;
+  closeMenu: VoidFunction;
 }
 
 export default function TVShowCardMenu({
   folder,
   data,
   status,
+  closeMenu,
 }: ITVShowCardMenuProps): ReactElement {
   async function openEpisodeFile(media: IEpisode) {
     const filePath = join([folder.path, media.relativePath, media.file], '/');
@@ -26,12 +27,8 @@ export default function TVShowCardMenu({
 
   const season_keys = Object.keys(data.seasons).sort();
   return (
-    <Transition.Root show={status.value} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        onClose={() => (status.value = false)}
-      >
+    <Transition.Root show={status} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeMenu}>
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
