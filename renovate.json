@@ -6,6 +6,42 @@
     {
       "updateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "groupName": "definitelyTyped",
+      "matchPackagePrefixes": [
+        "@types/"
+      ]
+    },
+    {
+      "groupName": "eslint",
+      "matchPackagePrefixes": [
+        "eslint",
+        "@typescript-eslint/"
+      ]
+    },
+    {
+      "groupName": "tauri",
+      "matchPackagePrefixes": [
+        "@tauri-apps/"
+      ]
+    },
+    {
+      "groupName": "styling",
+      "matchPackagePrefixes": [
+        "@headlessui/",
+        "@heroicons/",
+        "tailwindcss",
+        "autoprefixer",
+        "postcss"
+      ]
+    },
+    {
+      "groupName": "build-tools",
+      "matchPackagePrefixes": [
+        "vite",
+        "@vitejs/"
+      ]
     }
   ],
   "postUpdateOptions": ["npmDedupe"]
