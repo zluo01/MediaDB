@@ -2,22 +2,12 @@ import Media from '@/components/Content/media';
 import { openFile } from '@/lib/os';
 import {
   COMIC,
-  DEFAULT,
-  FILTER,
   IFolderData,
   IMediaData,
-  IMovieData,
-  ITags,
   ITVShowData,
   MOVIE,
-  TITLE_ASC,
-  TITLE_DSC,
   TV_SERIES,
-  YEAR_ASC,
-  YEAR_DSC,
 } from '@/type';
-import { computed, Signal } from '@preact/signals-react';
-import forEach from 'lodash/forEach';
 import join from 'lodash/join';
 import {
   Fragment,
@@ -55,62 +45,21 @@ function useGetColumnSize() {
 
 interface IContentProps {
   folderData: IFolderData;
-  filters: Signal<ITags>;
 }
 
-function Content({ folderData, filters }: IContentProps): ReactElement {
+function Content({ folderData }: IContentProps): ReactElement {
   const column = useGetColumnSize();
 
   const [menuStatus, setMenuStatus] = useState(false);
 
   const selected = useRef<number>(-1);
 
-  const data = computed(() => {
-    let media = [...folderData.data];
-
-    forEach(filters.value, (value, tag) => {
-      value.forEach(
-        v => (media = media.filter(o => o[tag as FILTER].includes(v))),
-      );
-    });
-
-    switch (folderData.sort) {
-      case DEFAULT:
-        break;
-      case TITLE_ASC:
-        media.sort((a: IMediaData, b: IMediaData) =>
-          a.title > b.title ? 1 : -1,
-        );
-        break;
-      case TITLE_DSC:
-        media.sort((a: IMediaData, b: IMediaData) =>
-          a.title < b.title ? 1 : -1,
-        );
-        break;
-      case YEAR_DSC:
-        if (media[0].type === MOVIE) {
-          media.sort((a: IMediaData, b: IMediaData) =>
-            (a as IMovieData).year < (b as IMovieData).year ? 1 : -1,
-          );
-        }
-        break;
-      case YEAR_ASC:
-        if (media[0].type === MOVIE) {
-          media.sort((a: IMediaData, b: IMediaData) =>
-            (a as IMovieData).year > (b as IMovieData).year ? 1 : -1,
-          );
-        }
-        break;
-    }
-    return media;
-  });
-
   useEffect(() => {
     const footer = document.getElementById('footer');
     if (footer) {
-      footer.innerText = `Total ${data.value.length}`;
+      footer.innerText = `Total ${folderData.data.length}`;
     }
-  }, [data]);
+  }, [folderData]);
 
   useEffect(() => {
     function focus() {
@@ -123,7 +72,7 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
 
     function moveVertical(newRow: number, newColumn: number) {
       const index = newRow * column + newColumn;
-      if (index >= 0 && index <= data.value.length - 1) {
+      if (index >= 0 && index <= folderData.data.length - 1) {
         selected.current = index;
       }
     }
@@ -141,10 +90,10 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
       const keyActions: Record<string, () => void> = {
         ArrowLeft: () => {
           selected.current =
-            current - 1 < 0 ? data.value.length - 1 : current - 1;
+            current - 1 < 0 ? folderData.data.length - 1 : current - 1;
         },
         ArrowRight: () => {
-          selected.current = (current + 1) % data.value.length;
+          selected.current = (current + 1) % folderData.data.length;
         },
         ArrowUp: () => {
           ev.preventDefault();
@@ -155,7 +104,7 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
           moveVertical(r + 1, c);
         },
         Enter: () => {
-          const media = data.value[selected.current] as IMediaData;
+          const media = folderData.data[selected.current] as IMediaData;
           switch (media.type) {
             case COMIC:
             case MOVIE:
@@ -184,19 +133,19 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [data, folderData, column, open]);
+  }, [folderData, column, open]);
 
-  const menu = computed(() => {
+  function TVMenu() {
     if (selected.current < 0) {
       return <div />;
     }
-    const type = data.value[selected.current]?.type;
+    const type = folderData.data[selected.current]?.type;
     if (type === TV_SERIES) {
       return (
         <Suspense>
           <Menu
             folder={folderData}
-            data={data.value[selected.current] as ITVShowData}
+            data={folderData.data[selected.current] as ITVShowData}
             status={menuStatus}
             closeMenu={() => setMenuStatus(false)}
           />
@@ -204,12 +153,12 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
       );
     }
     return <div />;
-  });
+  }
 
   return (
     <Fragment>
       <div className="grid auto-rows-fr pb-6 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
-        {data.value.map((media, index) => (
+        {folderData.data.map((media, index) => (
           <Media
             key={index}
             index={index}
@@ -220,7 +169,7 @@ function Content({ folderData, filters }: IContentProps): ReactElement {
           />
         ))}
       </div>
-      {menu}
+      <TVMenu />
     </Fragment>
   );
 }
