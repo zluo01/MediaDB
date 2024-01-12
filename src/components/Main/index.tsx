@@ -1,5 +1,4 @@
 import Content from '@/components/Content/content';
-import Footer from '@/components/Content/footer';
 import Toolbar from '@/components/Content/toolbar';
 import Loading from '@/components/Loading';
 import { searchContext } from '@/lib/controls';
@@ -17,7 +16,6 @@ function Home(): ReactElement {
   const { data: folderData, isLoading } = useGetFolderDataQuery(route);
 
   const filters: Signal<ITags> = signal(EMPTY_FILTERS);
-  const footer = signal('');
 
   const displayData = computed(() => {
     if (
@@ -54,17 +52,11 @@ function Home(): ReactElement {
     if (!displayData.value) {
       return <div />;
     }
-    return (
-      <Content
-        folderData={displayData.value}
-        filters={filters}
-        footer={footer}
-      />
-    );
+    return <Content folderData={displayData.value} filters={filters} />;
   });
 
   return (
-    <div className="h-full w-full overflow-auto bg-default">
+    <div className="h-full w-full overflow-auto scroll-smooth bg-default">
       <div className="flex h-full flex-col p-8">
         <Toolbar
           folderData={displayData.value}
@@ -73,7 +65,9 @@ function Home(): ReactElement {
         />
         {content}
       </div>
-      <Footer footer={footer} />
+      <footer className="fixed bottom-0 flex w-full flex-row flex-nowrap items-center justify-between bg-primary px-1">
+        <span className="cursor-default truncate text-secondary" id="footer" />
+      </footer>
     </div>
   );
 }

@@ -18,6 +18,7 @@ function Poster({
       style={{ backgroundImage: `url(${thumbnail})` }}
       {...props}
       alt={props.alt}
+      loading={'lazy'}
     />
   );
 }

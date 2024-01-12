@@ -11,31 +11,17 @@ import {
   MOVIE,
   TV_SERIES,
 } from '@/type';
-import { Signal } from '@preact/signals-react';
 import join from 'lodash/join';
-import { memo } from 'react';
 
 interface IMediaProps {
   index: number;
-  current: number;
   media: IMediaData;
   folder: IFolder;
-  footer: Signal<string>;
   select: VoidFunction;
   openMenu: VoidFunction;
 }
 
-function Media({
-  index,
-  current,
-  media,
-  select,
-  folder,
-  footer,
-  openMenu,
-}: IMediaProps) {
-  const isCurrent = current === index;
-
+function Media({ index, media, folder, select, openMenu }: IMediaProps) {
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
       case COMIC:
@@ -57,25 +43,32 @@ function Media({
     return 'opacity-0';
   }
 
-  function onSelect() {
-    select();
-    footer.value = media.title;
-  }
-
   const { thumbnail, cover } = getCacheImagePath(
     folder,
     join([media.relativePath, media.posters.main], '/'),
   );
+
+  function onSelect() {
+    select();
+    const anchor = document.getElementById(`c${index}`);
+    if (anchor) {
+      anchor.focus({ preventScroll: false });
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    const footer = document.getElementById('footer');
+    if (footer) {
+      footer.innerText = media.title;
+    }
+  }
 
   return (
     <div
       id={`c${index}`}
       onClick={onSelect}
       onDoubleClick={() => handleOpen(media)}
-      className={classNames(
-        isCurrent ? 'bg-white/20 shadow-lg rounded-md' : '',
-        'flex w-full flex-col items-center justify-center p-2 hover:scale-105 hover:transition-all hover:rounded-xl cursor-pointer',
-      )}
+      tabIndex={-1}
+      className="flex w-full cursor-pointer flex-col items-center justify-center p-2 hover:scale-105 hover:rounded-xl hover:transition-all focus:rounded-md focus:bg-white/20 focus:shadow-lg focus:ring-0"
     >
       <Poster
         thumbnail={thumbnail}
@@ -101,4 +94,4 @@ function Media({
   );
 }
 
-export default memo(Media);
+export default Media;

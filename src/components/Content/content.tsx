@@ -16,7 +16,7 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
-import { computed, effect, Signal } from '@preact/signals-react';
+import { computed, Signal } from '@preact/signals-react';
 import forEach from 'lodash/forEach';
 import join from 'lodash/join';
 import {
@@ -25,6 +25,7 @@ import {
   ReactElement,
   Suspense,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -55,14 +56,14 @@ function useGetColumnSize() {
 interface IContentProps {
   folderData: IFolderData;
   filters: Signal<ITags>;
-  footer: Signal<string>;
 }
 
-function Content({ folderData, filters, footer }: IContentProps): ReactElement {
+function Content({ folderData, filters }: IContentProps): ReactElement {
   const column = useGetColumnSize();
 
   const [menuStatus, setMenuStatus] = useState(false);
-  const [current, setCurrent] = useState(-1);
+
+  const selected = useRef<number>(-1);
 
   const data = computed(() => {
     let media = [...folderData.data];
@@ -104,70 +105,77 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
     return media;
   });
 
-  effect(() => {
-    footer.value = `Total ${data.value.length}`;
-  });
+  useEffect(() => {
+    const footer = document.getElementById('footer');
+    if (footer) {
+      footer.innerText = `Total ${data.value.length}`;
+    }
+  }, [data]);
 
   useEffect(() => {
-    if (current < 0) {
-      return;
+    function focus() {
+      const anchor = document.getElementById(`c${selected.current}`);
+      if (anchor) {
+        anchor.focus({ preventScroll: false });
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
-    const anchor = document.getElementById(`c${current}`);
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [current]);
 
-  useEffect(() => {
+    function moveVertical(newRow: number, newColumn: number) {
+      const index = newRow * column + newColumn;
+      if (index >= 0 && index <= data.value.length - 1) {
+        selected.current = index;
+      }
+    }
+
     async function handleKeyPress(ev: KeyboardEvent) {
       // when menu is opened, do not listen to key change
       if (menuStatus) {
         return;
       }
+
+      const { current } = selected;
       const c = current % column;
       const r = Math.floor(current / column);
-      let index: number;
-      switch (ev.key) {
-        case 'ArrowLeft':
-          setCurrent(prev => (prev - 1 < 0 ? data.value.length - 1 : prev - 1));
-          break;
-        case 'ArrowRight':
-          setCurrent(prev => (prev + 1) % data.value.length);
-          break;
-        case 'ArrowUp':
+
+      const keyActions: Record<string, () => void> = {
+        ArrowLeft: () => {
+          selected.current =
+            current - 1 < 0 ? data.value.length - 1 : current - 1;
+        },
+        ArrowRight: () => {
+          selected.current = (current + 1) % data.value.length;
+        },
+        ArrowUp: () => {
           ev.preventDefault();
-          index = (r - 1) * column + c;
-          if (index < 0) {
-            return;
-          }
-          setCurrent(index);
-          break;
-        case 'ArrowDown':
+          moveVertical(r - 1, c);
+        },
+        ArrowDown: () => {
           ev.preventDefault();
-          index = (r + 1) * column + c;
-          if (index > data.value.length - 1) {
-            return;
-          }
-          setCurrent(index);
-          break;
-        case 'Enter':
-          switch (data.value[current].type) {
+          moveVertical(r + 1, c);
+        },
+        Enter: () => {
+          const media = data.value[selected.current] as IMediaData;
+          switch (media.type) {
             case COMIC:
             case MOVIE:
-              // eslint-disable-next-line no-case-declarations
-              const media = data.value[current] as IMovieData;
-              // eslint-disable-next-line no-case-declarations
-              const filePath = join(
-                [folderData.path, media.relativePath, media.file],
-                '/',
+              openFile(
+                join([folderData.path, media.relativePath, media.file], '/'),
               );
-              await openFile(filePath);
               break;
             case TV_SERIES:
               setMenuStatus(true);
               break;
           }
-          break;
+        },
+      };
+
+      const action = keyActions[ev.key];
+      if (action) {
+        action();
+        if (ev.key !== 'ENTER') {
+          focus();
+        }
       }
     }
 
@@ -176,19 +184,19 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [current, data, folderData, column, open]);
+  }, [data, folderData, column, open]);
 
   const menu = computed(() => {
-    if (current < 0) {
+    if (selected.current < 0) {
       return <div />;
     }
-    const type = data.value[current]?.type;
+    const type = data.value[selected.current]?.type;
     if (type === TV_SERIES) {
       return (
         <Suspense>
           <Menu
             folder={folderData}
-            data={data.value[current] as ITVShowData}
+            data={data.value[selected.current] as ITVShowData}
             status={menuStatus}
             closeMenu={() => setMenuStatus(false)}
           />
@@ -200,16 +208,14 @@ function Content({ folderData, filters, footer }: IContentProps): ReactElement {
 
   return (
     <Fragment>
-      <div className="grid auto-rows-fr sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
+      <div className="grid auto-rows-fr pb-6 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
         {data.value.map((media, index) => (
           <Media
             key={index}
             index={index}
             media={media}
-            current={current}
-            select={() => setCurrent(index)}
+            select={() => (selected.current = index)}
             folder={folderData}
-            footer={footer}
             openMenu={() => setMenuStatus(true)}
           />
         ))}
