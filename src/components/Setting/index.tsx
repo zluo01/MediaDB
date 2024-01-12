@@ -1,7 +1,8 @@
 import Loading from '@/components/Loading';
 import FolderList from '@/components/Setting/FolderList';
 import SkipFolderList from '@/components/Setting/SkipFolderList';
-import { modalStatus } from '@/lib/controls';
+import { useAppDispatch } from '@/lib/context';
+import { openModal } from '@/lib/context/slice/modalSlice';
 import { notify } from '@/lib/os';
 import {
   useGetSettingQuery,
@@ -15,6 +16,8 @@ import React, { lazy, ReactElement, Suspense } from 'react';
 const SkipFolderModal = lazy(() => import('@/components/Modal/SkipFolder'));
 
 function Setting(): ReactElement {
+  const dispatch = useAppDispatch();
+
   const { trigger } = useHidePanelTrigger();
   const { data: setting } = useGetSettingQuery();
   const { data: version } = useGetVersionQuery();
@@ -52,7 +55,7 @@ function Setting(): ReactElement {
       <div className="flex w-full flex-row items-center justify-between px-2">
         <span className="py-2 text-lg text-secondary">Imported Folders</span>
         <button
-          onClick={() => (modalStatus.value = ModalType.DIRECTORY)}
+          onClick={() => dispatch(openModal(ModalType.DIRECTORY))}
           type="button"
           className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
         >
@@ -64,7 +67,7 @@ function Setting(): ReactElement {
       <div className="flex w-full flex-row items-center justify-between px-2">
         <span className="py-3 text-lg text-secondary">Skipped Folders</span>
         <button
-          onClick={() => (modalStatus.value = ModalType.SKIP_FOLDER)}
+          onClick={() => dispatch(openModal(ModalType.SKIP_FOLDER))}
           type="button"
           className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
         >

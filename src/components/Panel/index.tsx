@@ -1,4 +1,6 @@
-import { modalStatus } from '@/lib/controls';
+import { useAppDispatch } from '@/lib/context';
+import { reset } from '@/lib/context/slice/filterSlice';
+import { openModal } from '@/lib/context/slice/modalSlice';
 import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
 import classNames from '@/lib/utils';
 import { ModalType } from '@/type';
@@ -9,6 +11,8 @@ import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 const DirectoryModal = lazy(() => import('@/components/Modal/Directory'));
 
 function SidePanel(): ReactElement {
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -20,7 +24,12 @@ function SidePanel(): ReactElement {
   const { data: folderList } = useGetFolderListQuery();
 
   function handleOpen() {
-    modalStatus.value = ModalType.DIRECTORY;
+    dispatch(openModal(ModalType.DIRECTORY));
+  }
+
+  function navigateToPage(path: string) {
+    dispatch(reset());
+    navigate(path);
   }
 
   const showText = setting?.showSidePanel
@@ -49,7 +58,7 @@ function SidePanel(): ReactElement {
                   )}
                   key={folder.position}
                   title={folder.name}
-                  onClick={() => navigate(`/?id=${folder.position}`)}
+                  onClick={() => navigateToPage(`/?id=${folder.position}`)}
                 >
                   <FolderIcon
                     className={classNames(
@@ -79,7 +88,7 @@ function SidePanel(): ReactElement {
                   : 'pointer-events-auto',
                 'flex w-full cursor-pointer flex-row flex-nowrap items-center px-4  py-2 hover:bg-hover',
               )}
-              onClick={() => navigate(`/setting`)}
+              onClick={() => navigateToPage(`/setting`)}
             >
               <Cog6ToothIcon
                 className={classNames(

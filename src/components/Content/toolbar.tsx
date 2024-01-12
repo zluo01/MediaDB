@@ -6,7 +6,6 @@ import {
 import {
   DEFAULT,
   IFolderData,
-  ITags,
   TITLE_ASC,
   TITLE_DSC,
   YEAR_ASC,
@@ -18,8 +17,7 @@ import {
   Bars3BottomLeftIcon,
   FunnelIcon,
 } from '@heroicons/react/24/solid';
-import { signal, Signal } from '@preact/signals-react';
-import React, { Fragment, lazy, Suspense } from 'react';
+import React, { Fragment, lazy, Suspense, useState } from 'react';
 
 const FilterSection = lazy(() => import('./filter'));
 
@@ -82,11 +80,10 @@ function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
 interface IToolbarProps {
   folderData?: IFolderData;
   disabled: boolean;
-  filters: Signal<ITags>;
 }
 
-function Toolbar({ folderData, disabled, filters }: IToolbarProps) {
-  const open = signal(false);
+function Toolbar({ folderData, disabled }: IToolbarProps) {
+  const [open, setOpen] = useState(false);
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
     folderData?.position || 0,
@@ -117,7 +114,7 @@ function Toolbar({ folderData, disabled, filters }: IToolbarProps) {
           type="button"
           className="inline-flex items-center rounded-md bg-transparent px-3.5 py-1 text-center text-base font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
           disabled={disabled}
-          onClick={() => (open.value = true)}
+          onClick={() => setOpen(true)}
         >
           <FunnelIcon className="mr-2 h-3.5 w-3.5" />
           Filter
@@ -134,7 +131,11 @@ function Toolbar({ folderData, disabled, filters }: IToolbarProps) {
         </button>
       </div>
       <Suspense>
-        <FilterSection folderData={folderData} open={open} filters={filters} />
+        <FilterSection
+          folderData={folderData}
+          open={open}
+          close={() => setOpen(false)}
+        />
       </Suspense>
     </Fragment>
   );

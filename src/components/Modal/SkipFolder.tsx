@@ -1,50 +1,53 @@
-import { modalStatus } from '@/lib/controls';
+import { useAppDispatch, useAppSelector } from '@/lib/context';
+import { closeModal } from '@/lib/context/slice/modalSlice';
+import { RootState } from '@/lib/context/store';
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import classNames from '@/lib/utils';
 import { ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
-import { batch, computed, useSignal } from '@preact/signals-react';
-import React, { Fragment, ReactElement } from 'react';
+import React, { Fragment, ReactElement, useState } from 'react';
 
 interface ISkipFolderModal {
   skipFolders: string[];
 }
 
 function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
-  const folderName = useSignal('');
-  const loading = useSignal(false);
-  const open = computed(() => modalStatus.value === ModalType.SKIP_FOLDER);
-  const error = computed(
-    () => folderName.value && skipFolders.includes(folderName.value),
-  );
+  const dispatch = useAppDispatch();
+  const modalStatus = useAppSelector((state: RootState) => state.modal);
+
+  const [folderName, setFolderName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const error = folderName && skipFolders.includes(folderName);
 
   const { trigger } = useUpdateSkipFoldersTrigger();
 
   function close() {
-    batch(() => {
-      folderName.value = '';
-      modalStatus.value = ModalType.NONE;
-    });
+    setFolderName('');
+    dispatch(closeModal());
   }
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
-    loading.value = true;
+    setLoading(true);
     try {
-      await trigger([...skipFolders, folderName.value].join(','));
+      await trigger([...skipFolders, folderName].join(','));
       close();
     } catch (e) {
       await notify(`Edit Folder Name Error: ${e}`);
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   }
 
   return (
-    <Transition appear show={open.value} as={Fragment}>
+    <Transition
+      appear
+      show={modalStatus === ModalType.SKIP_FOLDER}
+      as={Fragment}
+    >
       <Dialog as="div" className="relative z-10" onClose={close}>
         <Transition.Child
           as={Fragment}
@@ -86,20 +89,20 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
                     </label>
                     <input
                       className={classNames(
-                        error.value ? 'border-red-500' : '',
+                        error ? 'border-red-500' : '',
                         'block w-full appearance-none text-primary border-b-2 border-[#1a2634] bg-default px-2 py-3 leading-tight focus:outline-none',
                       )}
                       id="grid-folder-name"
                       type="text"
-                      value={folderName.value}
-                      onChange={e => (folderName.value = e.target.value)}
-                      disabled={loading.value}
+                      value={folderName}
+                      onChange={e => setFolderName(e.target.value)}
+                      disabled={loading}
                       autoFocus
                       required
                     />
                     <p
                       className={classNames(
-                        error.value ? 'inline-block' : 'hidden',
+                        error ? 'inline-block' : 'hidden',
                         'text-xs italic text-red-500',
                       )}
                     >
@@ -112,9 +115,9 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
                     type="button"
                     className="inline-flex w-20 cursor-pointer justify-center rounded-md border border-selected bg-default px-4 py-2 text-sm font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:text-hover disabled:opacity-30"
                     onClick={handleSubmit}
-                    disabled={error.value || loading.value}
+                    disabled={error || loading}
                   >
-                    {loading.value ? 'loading...' : 'Add'}
+                    {loading ? 'loading...' : 'Add'}
                   </button>
                 </div>
               </Dialog.Panel>

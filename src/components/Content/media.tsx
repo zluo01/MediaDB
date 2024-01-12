@@ -1,5 +1,7 @@
 import { getCacheImagePath } from '@/components/ImageLoader/common';
 import Poster from '@/components/ImageLoader/poster';
+import { useAppDispatch } from '@/lib/context';
+import { openMenu } from '@/lib/context/slice/menuSlice';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
 import {
@@ -18,10 +20,11 @@ interface IMediaProps {
   media: IMediaData;
   folder: IFolder;
   select: VoidFunction;
-  openMenu: VoidFunction;
 }
 
-function Media({ index, media, folder, select, openMenu }: IMediaProps) {
+function Media({ index, media, folder, select }: IMediaProps) {
+  const dispatch = useAppDispatch();
+
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
       case COMIC:
@@ -31,7 +34,12 @@ function Media({ index, media, folder, select, openMenu }: IMediaProps) {
         );
         break;
       case TV_SERIES:
-        openMenu();
+        dispatch(
+          openMenu({
+            folder,
+            data: media,
+          }),
+        );
         break;
     }
   }

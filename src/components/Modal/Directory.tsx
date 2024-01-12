@@ -1,32 +1,28 @@
-import { modalStatus } from '@/lib/controls';
+import { useAppDispatch, useAppSelector } from '@/lib/context';
+import { closeModal } from '@/lib/context/slice/modalSlice';
+import { RootState } from '@/lib/context/store';
 import { getDirectory, notify } from '@/lib/os';
 import { useCreateLibraryTrigger } from '@/lib/queries';
 import classNames from '@/lib/utils';
 import { IFolder, ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
-import { batch, computed, useSignal } from '@preact/signals-react';
-import React, { Fragment, ReactElement } from 'react';
+import React, { Fragment, ReactElement, useState } from 'react';
 
 interface IDirectoryModal {
   folderList?: IFolder[];
 }
 
 function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
-  const folderName = useSignal('');
-  const folderPath = useSignal('');
-  const loading = useSignal(false);
+  const dispatch = useAppDispatch();
+  const modalStatus = useAppSelector((state: RootState) => state.modal);
 
-  const open = computed(() => modalStatus.value === ModalType.DIRECTORY);
-  const error = computed(
-    () =>
-      folderName.value &&
-      folderList?.map(o => o.name).includes(folderName.value),
-  );
-  const disabled = computed(
-    () => !folderPath.value || error.value || loading.value,
-  );
-  const buttonText = computed(() => (loading.value ? 'loading...' : 'Add'));
+  const [folderName, setFolderName] = useState('');
+  const [folderPath, setFolderPath] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const open = modalStatus === ModalType.DIRECTORY;
+  const error = folderName && folderList?.map(o => o.name).includes(folderName);
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
     folderList?.length || 0,
@@ -35,45 +31,41 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
   async function handleDirectory() {
     const path = await getDirectory();
     const name = path.split('\\')!.pop()!.split('/').pop() as string;
-    batch(() => {
-      folderName.value = name;
-      folderPath.value = path;
-    });
+    setFolderName(name);
+    setFolderPath(path);
   }
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
-    loading.value = true;
+    setLoading(true);
     try {
       await createLibraryTrigger({
-        folder: { position: 0, name: folderName.value, path: folderPath.value },
+        folder: { position: 0, name: folderName, path: folderPath },
       });
       close();
     } catch (e) {
       await notify(`Import Folders Error: ${e}`);
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   }
 
   function close() {
-    batch(() => {
-      folderName.value = '';
-      folderPath.value = '';
-      modalStatus.value = ModalType.NONE;
-    });
+    setFolderName('');
+    setFolderPath('');
+    dispatch(closeModal());
   }
 
   async function onClose() {
-    if (!loading.value) {
+    if (!loading) {
       close();
     }
   }
 
   return (
-    <Transition appear show={open.value} as={Fragment}>
+    <Transition appear show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
         <Transition.Child
           as={Fragment}
@@ -115,19 +107,19 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
                     </label>
                     <input
                       className={classNames(
-                        error.value ? 'border-red-500' : '',
+                        error ? 'border-red-500' : '',
                         'block w-full appearance-none text-primary border-b-2 border-[#1a2634] bg-default px-2 py-3 leading-tight focus:outline-none',
                       )}
                       id="grid-folder-name"
                       type="text"
-                      value={folderName.value}
-                      onChange={e => (folderName.value = e.target.value)}
-                      disabled={loading.value}
+                      value={folderName}
+                      onChange={e => setFolderName(e.target.value)}
+                      disabled={loading}
                       required
                     />
                     <p
                       className={classNames(
-                        error.value ? 'inline-block' : 'hidden',
+                        error ? 'inline-block' : 'hidden',
                         'text-xs italic text-red-500',
                       )}
                     >
@@ -146,9 +138,9 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
                         className="flex grow appearance-none border-b-2 border-[#1a2634] bg-default p-2 leading-tight text-primary focus:outline-none"
                         id="grid-directory-name"
                         type="text"
-                        value={folderPath.value}
-                        onChange={e => (folderPath.value = e.target.value)}
-                        disabled={loading.value}
+                        value={folderPath}
+                        onChange={e => setFolderPath(e.target.value)}
+                        disabled={loading}
                         autoFocus
                         required
                       />
@@ -166,10 +158,10 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
                   <button
                     type="button"
                     className="inline-flex cursor-pointer justify-center rounded-md border border-selected bg-default px-4 py-2 text-sm font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:text-hover"
-                    disabled={disabled.value}
+                    disabled={!folderPath || error || loading}
                     onClick={handleSubmit}
                   >
-                    {buttonText}
+                    {loading ? 'loading...' : 'Add'}
                   </button>
                 </div>
               </Dialog.Panel>

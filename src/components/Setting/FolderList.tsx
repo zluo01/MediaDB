@@ -1,4 +1,5 @@
-import { modalStatus } from '@/lib/controls';
+import { useAppDispatch } from '@/lib/context';
+import { openModal } from '@/lib/context/slice/modalSlice';
 import { notify } from '@/lib/os';
 import { useGetFolderListQuery, useRemoveFolderTrigger } from '@/lib/queries';
 import { updateFolderList } from '@/lib/storage';
@@ -19,6 +20,8 @@ import {
 const EditFolderModal = lazy(() => import('@/components/Modal/Folder'));
 
 function FolderList(): ReactElement {
+  const dispatch = useAppDispatch();
+
   const { data: folderList, mutate: revalidateFolderList } =
     useGetFolderListQuery();
   const { trigger } = useRemoveFolderTrigger();
@@ -61,9 +64,9 @@ function FolderList(): ReactElement {
     }
   }
 
-  function openModal(id: number) {
+  function open(id: number) {
     setFolderIndex(id);
-    modalStatus.value = ModalType.EDIT_FOLDER;
+    dispatch(openModal(ModalType.EDIT_FOLDER));
   }
 
   return (
@@ -103,7 +106,7 @@ function FolderList(): ReactElement {
                         </div>
                         <div className="flex flex-row flex-nowrap items-center justify-end">
                           <button
-                            onClick={() => openModal(folder.position)}
+                            onClick={() => open(folder.position)}
                             type="button"
                             className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
                           >

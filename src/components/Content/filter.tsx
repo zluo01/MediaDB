@@ -1,44 +1,27 @@
+import { useAppDispatch, useAppSelector } from '@/lib/context';
+import { clear, filter } from '@/lib/context/slice/filterSlice';
+import { RootState } from '@/lib/context/store';
 import classNames from '@/lib/utils';
-import { ACTOR, FILTER, GENRE, IFolderInfo, ITags, STUDIO, TAG } from '@/type';
+import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
-import { Signal } from '@preact/signals-react';
+import sortBy from 'lodash/sortBy';
 import { Fragment, ReactElement } from 'react';
 
 interface IFilerSection {
   folderData?: IFolderInfo;
-  open: Signal<boolean>;
-  filters: Signal<ITags>;
+  open: boolean;
+  close: VoidFunction;
 }
 
 const FILTER_TAGS: FILTER[] = [GENRE, ACTOR, STUDIO, TAG];
 
-function Filters({ folderData, open, filters }: IFilerSection): ReactElement {
-  function update(tag: FILTER, name: string) {
-    const filterValue = filters.value[tag];
-    if (filterValue.includes(name)) {
-      filters.value = {
-        ...filters.value,
-        [tag]: filterValue.filter(o => o !== name),
-      };
-    } else {
-      filters.value = {
-        ...filters.value,
-        [tag]: [...filters.value[tag], name],
-      };
-    }
-  }
-
-  function clear(tag: FILTER) {
-    filters.value = { ...filters.value, [tag]: [] };
-  }
+function Filters({ folderData, open, close }: IFilerSection): ReactElement {
+  const dispatch = useAppDispatch();
+  const tags = useAppSelector((state: RootState) => state.filter);
 
   return (
-    <Transition.Root show={open.value} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        onClose={() => (open.value = false)}
-      >
+    <Transition.Root show={open} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={close}>
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -66,36 +49,38 @@ function Filters({ folderData, open, filters }: IFilerSection): ReactElement {
                 <Dialog.Panel className="pointer-events-auto relative w-screen max-w-md">
                   <div className="flex h-full flex-col items-start justify-between overflow-y-scroll rounded-lg bg-default py-6 shadow-xl">
                     {folderData &&
-                      FILTER_TAGS.map(v => {
-                        const data = folderData[v];
-                        const filter = filters.value[v];
+                      FILTER_TAGS.map(tag => {
+                        const data = folderData[tag];
+                        const filteredTags = tags[tag];
                         return (
-                          <div key={v} className="w-full px-4">
+                          <div key={tag} className="w-full px-4">
                             <div className="flex flex-row items-center justify-between">
                               <span className="text-2xl capitalize text-secondary">
-                                {v}
+                                {tag}
                               </span>
                               <button
                                 className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
-                                disabled={filter.length === 0}
-                                onClick={() => clear(v)}
+                                disabled={filteredTags.length === 0}
+                                onClick={() => dispatch(clear(tag))}
                               >
                                 Clear
                               </button>
                             </div>
                             <div className="flex flex-row flex-wrap gap-y-2 py-2">
-                              {data.sort().map((value, index) => (
+                              {sortBy(data).map((name, index) => (
                                 <span
                                   key={index}
                                   className={classNames(
-                                    filter.includes(value)
+                                    filteredTags.includes(name)
                                       ? 'bg-selected text-hover'
                                       : 'bg-default border-selected border-[1px] text-selected',
                                     'mr-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-sm font-medium cursor-pointer hover:bg-hover hover:text-selected',
                                   )}
-                                  onClick={() => update(v, value)}
+                                  onClick={() =>
+                                    dispatch(filter({ tag, name }))
+                                  }
                                 >
-                                  {value}
+                                  {name}
                                 </span>
                               ))}
                             </div>

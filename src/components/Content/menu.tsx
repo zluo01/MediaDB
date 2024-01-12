@@ -1,34 +1,34 @@
 import { getCacheImagePath } from '@/components/ImageLoader/common';
 import Poster from '@/components/ImageLoader/poster';
+import { useAppDispatch, useAppSelector } from '@/lib/context';
+import { closeMenu } from '@/lib/context/slice/menuSlice';
+import { RootState } from '@/lib/context/store';
 import { openFile } from '@/lib/os';
 import classNames from '@/lib/utils';
-import { CoverType, IEpisode, IFolder, ITVShowData } from '@/type';
+import { CoverType, IEpisode } from '@/type';
 import { Dialog, Tab, Transition } from '@headlessui/react';
 import join from 'lodash/join';
 import { Fragment, ReactElement } from 'react';
 
-interface ITVShowCardMenuProps {
-  folder: IFolder;
-  data: ITVShowData;
-  status: boolean;
-  closeMenu: VoidFunction;
-}
+export default function TVShowCardMenu(): ReactElement {
+  const dispatch = useAppDispatch();
+  const { open, folder, data } = useAppSelector(
+    (state: RootState) => state.menu,
+  );
 
-export default function TVShowCardMenu({
-  folder,
-  data,
-  status,
-  closeMenu,
-}: ITVShowCardMenuProps): ReactElement {
   async function openEpisodeFile(media: IEpisode) {
-    const filePath = join([folder.path, media.relativePath, media.file], '/');
+    const filePath = join([folder?.path, media.relativePath, media.file], '/');
     await openFile(filePath);
   }
 
-  const season_keys = Object.keys(data.seasons).sort();
+  const season_keys = Object.keys(data?.seasons || []).sort();
   return (
-    <Transition.Root show={status} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeMenu}>
+    <Transition.Root show={open} as={Fragment}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        onClose={() => dispatch(closeMenu())}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -76,11 +76,11 @@ export default function TVShowCardMenu({
                       <Tab.Panels className="h-[90%] w-full bg-default">
                         {season_keys.map((key, index) => {
                           const { thumbnail, cover } = getCacheImagePath(
-                            folder,
+                            folder!,
                             join(
                               [
-                                data.relativePath,
-                                data.posters[key] || data.posters.main,
+                                data!.relativePath,
+                                data!.posters[key] || data!.posters.main,
                               ],
                               '/',
                             ),
@@ -94,14 +94,14 @@ export default function TVShowCardMenu({
                                 <Poster
                                   thumbnail={thumbnail}
                                   cover={cover}
-                                  alt={data.title}
+                                  alt={data!.title}
                                   width={220}
                                   height={320}
                                   t={CoverType.COVER}
                                 />
                               </div>
                               <div className="grid h-full w-[61.8vw] auto-cols-min auto-rows-min grid-cols-10 p-6">
-                                {data.seasons[key].map((o, i) => (
+                                {data?.seasons[key].map((o, i) => (
                                   <button
                                     key={i}
                                     type="button"

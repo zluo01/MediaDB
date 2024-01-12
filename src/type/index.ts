@@ -36,6 +36,11 @@ export const EMPTY_FILTERS: ITags = {
   [STUDIO]: [],
 };
 
+export interface IFilterAction {
+  tag: FILTER;
+  name: string;
+}
+
 export interface IFolderInfo extends ITags {
   sort: SORT;
   data: IMediaData[];

@@ -1,13 +1,9 @@
 import Media from '@/components/Content/media';
+import { useAppDispatch, useAppSelector } from '@/lib/context';
+import { openMenu } from '@/lib/context/slice/menuSlice';
+import { RootState } from '@/lib/context/store';
 import { openFile } from '@/lib/os';
-import {
-  COMIC,
-  IFolderData,
-  IMediaData,
-  ITVShowData,
-  MOVIE,
-  TV_SERIES,
-} from '@/type';
+import { COMIC, IFolderData, IMediaData, MOVIE, TV_SERIES } from '@/type';
 import join from 'lodash/join';
 import {
   Fragment,
@@ -48,9 +44,10 @@ interface IContentProps {
 }
 
 function Content({ folderData }: IContentProps): ReactElement {
-  const column = useGetColumnSize();
+  const dispatch = useAppDispatch();
+  const menuStatus = useAppSelector((state: RootState) => state.menu.open);
 
-  const [menuStatus, setMenuStatus] = useState(false);
+  const column = useGetColumnSize();
 
   const selected = useRef<number>(-1);
 
@@ -113,7 +110,12 @@ function Content({ folderData }: IContentProps): ReactElement {
               );
               break;
             case TV_SERIES:
-              setMenuStatus(true);
+              dispatch(
+                openMenu({
+                  folder: folderData,
+                  data: media,
+                }),
+              );
               break;
           }
         },
@@ -135,26 +137,6 @@ function Content({ folderData }: IContentProps): ReactElement {
     };
   }, [folderData, column, open]);
 
-  function TVMenu() {
-    if (selected.current < 0) {
-      return <div />;
-    }
-    const type = folderData.data[selected.current]?.type;
-    if (type === TV_SERIES) {
-      return (
-        <Suspense>
-          <Menu
-            folder={folderData}
-            data={folderData.data[selected.current] as ITVShowData}
-            status={menuStatus}
-            closeMenu={() => setMenuStatus(false)}
-          />
-        </Suspense>
-      );
-    }
-    return <div />;
-  }
-
   return (
     <Fragment>
       <div className="grid auto-rows-fr pb-6 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
@@ -165,11 +147,12 @@ function Content({ folderData }: IContentProps): ReactElement {
             media={media}
             select={() => (selected.current = index)}
             folder={folderData}
-            openMenu={() => setMenuStatus(true)}
           />
         ))}
       </div>
-      <TVMenu />
+      <Suspense>
+        <Menu />
+      </Suspense>
     </Fragment>
   );
 }

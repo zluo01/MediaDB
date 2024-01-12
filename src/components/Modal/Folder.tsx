@@ -1,10 +1,11 @@
-import { modalStatus } from '@/lib/controls';
+import { useAppDispatch, useAppSelector } from '@/lib/context';
+import { closeModal } from '@/lib/context/slice/modalSlice';
+import { RootState } from '@/lib/context/store';
 import { getDirectory, notify } from '@/lib/os';
 import { useGetFolderQuery, useUpdateFolderPathTrigger } from '@/lib/queries';
 import { ModalType } from '@/type';
 import { Dialog, Transition } from '@headlessui/react';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
-import { computed } from '@preact/signals-react';
 import React, { Fragment, ReactElement, useEffect, useState } from 'react';
 
 interface IFolderNameEdit {
@@ -12,7 +13,8 @@ interface IFolderNameEdit {
 }
 
 function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
-  const open = computed(() => modalStatus.value === ModalType.EDIT_FOLDER);
+  const dispatch = useAppDispatch();
+  const modalStatus = useAppSelector((state: RootState) => state.modal);
 
   const { data: folder } = useGetFolderQuery(index);
   const { trigger } = useUpdateFolderPathTrigger(folder?.position || 0);
@@ -27,7 +29,7 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   }, [folder?.path]);
 
   function close() {
-    modalStatus.value = ModalType.NONE;
+    dispatch(closeModal());
   }
 
   async function handleDirectory() {
@@ -53,7 +55,11 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   }
 
   return (
-    <Transition appear show={open.value} as={Fragment}>
+    <Transition
+      appear
+      show={modalStatus === ModalType.EDIT_FOLDER}
+      as={Fragment}
+    >
       <Dialog as="div" className="relative z-10" onClose={close}>
         <Transition.Child
           as={Fragment}
