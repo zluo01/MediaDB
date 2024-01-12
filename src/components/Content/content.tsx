@@ -52,13 +52,6 @@ function Content({ folderData }: IContentProps): ReactElement {
   const selected = useRef<number>(-1);
 
   useEffect(() => {
-    const footer = document.getElementById('footer');
-    if (footer) {
-      footer.innerText = `Total ${folderData.data.length}`;
-    }
-  }, [folderData]);
-
-  useEffect(() => {
     function focus() {
       const anchor = document.getElementById(`c${selected.current}`);
       if (anchor) {
