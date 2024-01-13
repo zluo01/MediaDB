@@ -22,7 +22,7 @@ tokio = { version = "1.35.1", features = ["full"] }
 log = "0.4"
 rayon = "1.8"
 zip = "0.6.6"
-image = { version = "0.24.7", features = ["webp-encoder"] }
+image = { version = "0.24.8", features = ["webp-encoder"] }
 
 [features]
 # by default Tauri runs in production mode
