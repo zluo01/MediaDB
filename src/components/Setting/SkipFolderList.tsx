@@ -25,7 +25,7 @@ function SkipFolderList({ skipFolders }: ISkipFolderListProps): ReactElement {
           className="flex flex-row items-center p-2 text-secondary"
           key={index}
         >
-          <FolderIcon className="mr-2 h-8 w-8" />
+          <FolderIcon className="mr-2 size-8" />
           <span className="flex grow items-center text-base text-primary">
             {folder}
           </span>
@@ -34,7 +34,7 @@ function SkipFolderList({ skipFolders }: ISkipFolderListProps): ReactElement {
             type="button"
             className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
           >
-            <TrashIcon className="h-6 w-6" />
+            <TrashIcon className="size-6" />
             <span className="sr-only">Delete filter folder</span>
           </button>
         </li>

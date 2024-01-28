@@ -149,7 +149,7 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
                         className="inline-flex items-center border-b-2 border-[#1a2634] bg-none p-2 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
                         onClick={handleDirectory}
                       >
-                        <EllipsisHorizontalIcon className="h-8 w-8" />
+                        <EllipsisHorizontalIcon className="size-8" />
                       </button>
                     </div>
                   </div>

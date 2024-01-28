@@ -29,7 +29,7 @@ function AppBar() {
       </span>
       <div className="relative block">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <MagnifyingGlassIcon className="h-5 w-5 text-[#21e18c]" />
+          <MagnifyingGlassIcon className="size-5 text-[#21e18c]" />
           <span className="sr-only">Search icon</span>
         </div>
         <input

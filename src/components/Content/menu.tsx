@@ -54,7 +54,7 @@ export default function TVShowCardMenu(): ReactElement {
                 leaveTo="translate-y-full"
               >
                 <Dialog.Panel className="pointer-events-auto relative h-screen max-h-[38.2vh] w-full">
-                  <div className="flex h-full w-full flex-col items-start justify-between bg-default shadow-xl">
+                  <div className="flex size-full flex-col items-start justify-between bg-default shadow-xl">
                     <Tab.Group>
                       <Tab.List className="flex h-[10%] w-full flex-row space-x-1 overflow-y-scroll bg-primary px-2">
                         {season_keys.map((key, index) => (
@@ -88,7 +88,7 @@ export default function TVShowCardMenu(): ReactElement {
                           return (
                             <Tab.Panel
                               key={index}
-                              className="flex h-full w-full flex-row flex-nowrap justify-around"
+                              className="flex size-full flex-row flex-nowrap justify-around"
                             >
                               <div className="flex h-full w-[38.2vw] items-center justify-center p-6">
                                 <Poster

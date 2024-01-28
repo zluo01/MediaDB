@@ -119,7 +119,7 @@ function Home(): ReactElement {
   }
 
   return (
-    <div className="h-full w-full overflow-auto scroll-smooth bg-default">
+    <div className="size-full overflow-auto scroll-smooth bg-default">
       <div className="flex h-full flex-col p-8">
         <Toolbar folderData={displayData} disabled={disabled} />
         <ContentView />

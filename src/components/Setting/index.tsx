@@ -34,7 +34,7 @@ function Setting(): ReactElement {
     return <Loading />;
   }
   return (
-    <div className="mx-auto h-full w-full max-w-2xl py-5">
+    <div className="mx-auto size-full max-w-2xl py-5">
       <span className="text-5xl font-medium text-primary">Setting</span>
       <hr className="mt-3 w-full border-[#505962]" />
       <div className="flex items-center p-2">
@@ -43,7 +43,7 @@ function Setting(): ReactElement {
           id="default-checkbox"
           type="checkbox"
           checked={setting.showSidePanel}
-          className="h-4 w-4 rounded focus:outline-none focus:ring-0"
+          className="size-4 rounded focus:outline-none focus:ring-0"
         />
         <label
           htmlFor="default-checkbox"
@@ -59,7 +59,7 @@ function Setting(): ReactElement {
           type="button"
           className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
         >
-          <PlusIcon className="h-6 w-6" />
+          <PlusIcon className="size-6" />
           <span className="sr-only">Add new folder</span>
         </button>
       </div>
@@ -71,7 +71,7 @@ function Setting(): ReactElement {
           type="button"
           className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
         >
-          <PlusIcon className="h-6 w-6" />
+          <PlusIcon className="size-6" />
           <span className="sr-only">Add skip folder</span>
         </button>
       </div>

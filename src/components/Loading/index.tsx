@@ -3,7 +3,7 @@ function Loading() {
     <div role="status">
       <svg
         aria-hidden="true"
-        className="fixed inset-1/2 h-8 w-8 animate-spin fill-[#217c46] text-gray-200"
+        className="fixed inset-1/2 size-8 animate-spin fill-[#217c46] text-gray-200"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

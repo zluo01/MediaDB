@@ -94,7 +94,7 @@ function FolderList(): ReactElement {
                     >
                       <li className="flex w-[100%] flex-row items-center justify-between p-2">
                         <div className="flex grow flex-row items-center text-secondary">
-                          <FolderIcon className="mr-2 h-10 w-10" />
+                          <FolderIcon className="mr-2 size-10" />
                           <div className="flex flex-col items-start justify-around ">
                             <span className="truncate text-primary">
                               {folder.name}
@@ -110,7 +110,7 @@ function FolderList(): ReactElement {
                             type="button"
                             className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
                           >
-                            <PencilSquareIcon className="h-6 w-6" />
+                            <PencilSquareIcon className="size-6" />
                             <span className="sr-only">Add new folder</span>
                           </button>
                           <button
@@ -118,7 +118,7 @@ function FolderList(): ReactElement {
                             type="button"
                             className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
                           >
-                            <TrashIcon className="h-6 w-6" />
+                            <TrashIcon className="size-6" />
                             <span className="sr-only">Add new folder</span>
                           </button>
                         </div>

@@ -44,7 +44,7 @@ function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
           disabled={disabled}
           className="inline-flex items-center rounded-md bg-transparent px-3.5 py-1 text-center text-base font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
         >
-          <Bars3BottomLeftIcon className="mr-2 h-3.5 w-3.5" />
+          <Bars3BottomLeftIcon className="mr-2 size-3.5" />
           {folderData?.sort}
         </Menu.Button>
       </div>
@@ -116,7 +116,7 @@ function Toolbar({ folderData, disabled }: IToolbarProps) {
           disabled={disabled}
           onClick={() => setOpen(true)}
         >
-          <FunnelIcon className="mr-2 h-3.5 w-3.5" />
+          <FunnelIcon className="mr-2 size-3.5" />
           Filter
         </button>
         <SortingMenu folderData={folderData} disabled={disabled} />
@@ -126,7 +126,7 @@ function Toolbar({ folderData, disabled }: IToolbarProps) {
           disabled={disabled}
           onClick={updateLibrary}
         >
-          <ArrowPathIcon className="mr-2 h-3.5 w-3.5" />
+          <ArrowPathIcon className="mr-2 size-3.5" />
           Refresh
         </button>
       </div>

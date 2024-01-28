@@ -43,7 +43,7 @@ function SidePanel(): ReactElement {
           'h-full bg-secondary flex',
         )}
       >
-        <div className="flex h-full w-full flex-col flex-nowrap items-center justify-between overflow-hidden">
+        <div className="flex size-full flex-col flex-nowrap items-center justify-between overflow-hidden">
           <div className="flex w-full grow flex-col items-start">
             {folderList?.map(folder => {
               const isCurr =
@@ -78,7 +78,7 @@ function SidePanel(): ReactElement {
               )}
               onClick={handleOpen}
             >
-              <PlusIcon className="h-8 w-8 text-[#6f7a83]" />
+              <PlusIcon className="size-8 text-[#6f7a83]" />
               <span className={showText}>Add Video</span>
             </div>
             <div
