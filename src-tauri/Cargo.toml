@@ -20,7 +20,7 @@ roxmltree = "0.19.0"
 sqlx = { version = "0.7", features = ["runtime-tokio-native-tls", "sqlite"] }
 tokio = { version = "1.36.0", features = ["full"] }
 log = "0.4"
-rayon = "1.8"
+rayon = "1.9"
 zip = "0.6.6"
 image = { version = "0.24.9" }
 
