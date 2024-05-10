@@ -2453,7 +2453,7 @@ dependencies = [
 
 [[package]]
 name = "mediadb"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "image 0.25.1",
  "log",
