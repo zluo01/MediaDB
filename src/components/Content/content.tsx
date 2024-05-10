@@ -10,6 +10,7 @@ import {
   lazy,
   ReactElement,
   Suspense,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -43,7 +44,29 @@ interface IContentProps {
   folderData: IFolderData;
 }
 
+const PAGE_SIZE = 48;
+
 function Content({ folderData }: IContentProps): ReactElement {
+  const [isLoading, setIsLoading] = useState(false);
+  const [index, setIndex] = useState(1);
+  const [items, setItems] = useState(folderData.data.slice(0, PAGE_SIZE));
+  const loaderRef = useRef(null);
+
+  const fetchData = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    setItems(prevItems => [
+      ...prevItems,
+      ...folderData.data.slice(index * PAGE_SIZE, (index + 1) * PAGE_SIZE),
+    ]);
+    setIndex(prevIndex => prevIndex + 1);
+
+    setIsLoading(false);
+  }, [index, isLoading, folderData]);
+
   const dispatch = useAppDispatch();
   const menuStatus = useAppSelector((state: RootState) => state.menu.open);
 
@@ -130,10 +153,29 @@ function Content({ folderData }: IContentProps): ReactElement {
     };
   }, [folderData, column, open]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        fetchData();
+      }
+    });
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [fetchData]);
+
   return (
     <Fragment>
       <div className="grid auto-rows-fr pb-6 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
-        {folderData.data.map((media, index) => (
+        {items.map((media, index) => (
           <Media
             key={index}
             index={index}
@@ -142,6 +184,7 @@ function Content({ folderData }: IContentProps): ReactElement {
             folder={folderData}
           />
         ))}
+        <div ref={loaderRef} />
       </div>
       <Suspense>
         <Menu />
