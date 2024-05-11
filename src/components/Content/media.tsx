@@ -3,7 +3,6 @@ import Poster from '@/components/ImageLoader/poster';
 import { useAppDispatch } from '@/lib/context';
 import { openMenu } from '@/lib/context/slice/menuSlice';
 import { openFile } from '@/lib/os';
-import classNames from '@/lib/utils';
 import {
   COMIC,
   CoverType,
@@ -13,6 +12,7 @@ import {
   MOVIE,
   TV_SERIES,
 } from '@/type';
+import clsx from 'clsx';
 import join from 'lodash/join';
 
 interface IMediaProps {
@@ -90,9 +90,7 @@ function Media({ index, media, folder, select }: IMediaProps) {
         <span title={media.title} className="truncate text-base text-primary">
           {media.title}
         </span>
-        <span
-          className={classNames(subStyle(), 'truncate text-sm text-secondary')}
-        >
+        <span className={clsx(subStyle(), 'truncate text-sm text-secondary')}>
           {media.type === MOVIE
             ? (media as IMovieData).year || 'DUMMY_TEXT'
             : 'DUMMY_TEXT'}

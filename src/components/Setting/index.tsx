@@ -10,8 +10,10 @@ import {
   useHidePanelTrigger,
 } from '@/lib/queries';
 import { ModalType } from '@/type';
+import { Checkbox } from '@headlessui/react';
+import { CheckIcon } from '@heroicons/react/16/solid';
 import { PlusIcon } from '@heroicons/react/24/solid';
-import React, { lazy, ReactElement, Suspense } from 'react';
+import { lazy, ReactElement, Suspense } from 'react';
 
 const SkipFolderModal = lazy(() => import('@/components/Modal/SkipFolder'));
 
@@ -22,9 +24,9 @@ function Setting(): ReactElement {
   const { data: setting } = useGetSettingQuery();
   const { data: version } = useGetVersionQuery();
 
-  async function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleCheckBox(checked: boolean) {
     try {
-      await trigger(event.target.checked);
+      await trigger(checked);
     } catch (e) {
       await notify(`Check Box Error: ${e}`);
     }
@@ -38,13 +40,13 @@ function Setting(): ReactElement {
       <span className="text-5xl font-medium text-primary">Setting</span>
       <hr className="mt-3 w-full border-[#505962]" />
       <div className="flex items-center p-2">
-        <input
-          onChange={handleCheckBox}
-          id="default-checkbox"
-          type="checkbox"
+        <Checkbox
           checked={setting.showSidePanel}
-          className="size-4 rounded focus:outline-none focus:ring-0"
-        />
+          onChange={handleCheckBox}
+          className="group size-6 cursor-pointer rounded bg-white/10 p-1 ring-1 ring-inset ring-white/15 data-[checked]:bg-white"
+        >
+          <CheckIcon className="hidden size-4 fill-black group-data-[checked]:block" />
+        </Checkbox>
         <label
           htmlFor="default-checkbox"
           className="ml-2 text-base font-medium text-primary"

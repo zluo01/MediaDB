@@ -11,7 +11,13 @@ import {
   YEAR_ASC,
   YEAR_DSC,
 } from '@/type';
-import { Menu, Transition } from '@headlessui/react';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
 import {
   ArrowPathIcon,
   Bars3BottomLeftIcon,
@@ -39,39 +45,36 @@ function SortingMenu({ folderData, disabled }: ISortingMenuProps) {
 
   return (
     <Menu as="div" className="relative inline-block text-left">
-      <div>
-        <Menu.Button
-          disabled={disabled}
-          className="inline-flex items-center rounded-md bg-transparent px-3.5 py-1 text-center text-base font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
-        >
-          <Bars3BottomLeftIcon className="mr-2 size-3.5" />
-          {folderData?.sort}
-        </Menu.Button>
-      </div>
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
+      <MenuButton
+        disabled={disabled}
+        className="inline-flex items-center rounded-md bg-transparent px-3.5 py-1 text-center text-base font-medium text-selected hover:bg-selected hover:text-hover focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
       >
-        <Menu.Items className="absolute right-0 z-30 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-secondary text-selected shadow-lg ring-1 ring-black/5 focus:outline-none">
+        <Bars3BottomLeftIcon className="mr-2 size-3.5" />
+        {folderData?.sort}
+      </MenuButton>
+      <Transition
+        enter="transition ease-out duration-100"
+        enterFrom="opacity-0 scale-95"
+        enterTo="opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-95"
+      >
+        <MenuItems className="absolute right-0 z-30 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-secondary text-selected shadow-lg ring-1 ring-black/5 focus:outline-none">
           <div className="p-1 ">
             {folderData &&
               SORT_TYPES.filter(o => o !== folderData.sort).map(type => (
-                <Menu.Item key={type}>
+                <MenuItem key={type}>
                   <button
                     className="group flex w-full items-center rounded-md p-2 text-sm hover:bg-selected hover:text-hover"
                     onClick={() => update(type)}
                   >
                     {type}
                   </button>
-                </Menu.Item>
+                </MenuItem>
               ))}
           </div>
-        </Menu.Items>
+        </MenuItems>
       </Transition>
     </Menu>
   );

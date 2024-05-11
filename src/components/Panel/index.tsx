@@ -2,11 +2,11 @@ import { useAppDispatch } from '@/lib/context';
 import { reset } from '@/lib/context/slice/filterSlice';
 import { openModal } from '@/lib/context/slice/modalSlice';
 import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
-import classNames from '@/lib/utils';
 import { ModalType } from '@/type';
 import { Cog6ToothIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
+import clsx from 'clsx';
 import { Fragment, lazy, ReactElement, Suspense } from 'react';
-import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const DirectoryModal = lazy(() => import('@/components/Modal/Directory'));
 
@@ -38,9 +38,9 @@ function SidePanel(): ReactElement {
   return (
     <Fragment>
       <div
-        className={classNames(
+        className={clsx(
           setting?.showSidePanel ? 'w-full max-w-xs' : 'w-fit max-w-[5.5vw]',
-          'h-full bg-secondary flex',
+          'flex h-full bg-secondary',
         )}
       >
         <div className="flex size-full flex-col flex-nowrap items-center justify-between overflow-hidden">
@@ -50,7 +50,7 @@ function SidePanel(): ReactElement {
                 !isSettingPage && folder.position === currFolderIndex;
               return (
                 <div
-                  className={classNames(
+                  className={clsx(
                     isCurr
                       ? 'pointer-events-none opacity-30'
                       : 'pointer-events-auto',
@@ -61,9 +61,9 @@ function SidePanel(): ReactElement {
                   onClick={() => navigateToPage(`/?id=${folder.position}`)}
                 >
                   <FolderIcon
-                    className={classNames(
+                    className={clsx(
                       isCurr ? 'text-[#21e18c]' : 'text-[#6f7a83]',
-                      'h-8 w-8',
+                      'size-8',
                     )}
                   />
                   <span className={showText}>{folder.name}</span>
@@ -73,7 +73,7 @@ function SidePanel(): ReactElement {
           </div>
           <div className="flex w-full flex-col flex-nowrap items-center justify-between border-t-2 border-gray-700">
             <div
-              className={classNames(
+              className={clsx(
                 'flex w-full cursor-pointer flex-row flex-nowrap items-center  px-4  py-2 hover:bg-hover',
               )}
               onClick={handleOpen}
@@ -82,7 +82,7 @@ function SidePanel(): ReactElement {
               <span className={showText}>Add Video</span>
             </div>
             <div
-              className={classNames(
+              className={clsx(
                 isSettingPage
                   ? 'pointer-events-none opacity-30'
                   : 'pointer-events-auto',
@@ -91,9 +91,9 @@ function SidePanel(): ReactElement {
               onClick={() => navigateToPage(`/setting`)}
             >
               <Cog6ToothIcon
-                className={classNames(
+                className={clsx(
                   isSettingPage ? 'text-[#21e18c]' : 'text-[#6f7a83]',
-                  'h-8 w-8',
+                  'size-8',
                 )}
               />
               <span className={showText}>Setting</span>

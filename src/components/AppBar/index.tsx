@@ -1,7 +1,9 @@
 import { useAppDispatch, useAppSelector } from '@/lib/context';
 import { search } from '@/lib/context/slice/searchSlice';
 import { RootState } from '@/lib/context/store';
+import { Input } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import clsx from 'clsx';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -27,15 +29,16 @@ function AppBar() {
       >
         MediaDB
       </span>
-      <div className="relative block">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+      <div className="relative mx-2 block w-auto">
+        <div className="pointer-events-none absolute flex h-full items-center justify-center px-4">
           <MagnifyingGlassIcon className="size-5 text-[#21e18c]" />
-          <span className="sr-only">Search icon</span>
         </div>
-        <input
+        <Input
           type="text"
-          id="search-navbar"
-          className="block w-full rounded-lg bg-white/20 p-2 pl-10 text-base text-primary hover:bg-white/30 focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
+          className={clsx(
+            'inline-flex w-40 rounded-lg bg-white/20 py-2 pl-10 pr-2 text-base text-primary transition-all duration-300',
+            'hover:bg-white/30 focus:w-64 focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30',
+          )}
           placeholder="Search..."
           value={searchKey}
           onChange={handleSearch}

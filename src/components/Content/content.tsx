@@ -157,7 +157,7 @@ function Content({ folderData }: IContentProps): ReactElement {
     const observer = new IntersectionObserver(entries => {
       const target = entries[0];
       if (target.isIntersecting) {
-        fetchData();
+        fetchData().catch(e => console.error(e));
       }
     });
 

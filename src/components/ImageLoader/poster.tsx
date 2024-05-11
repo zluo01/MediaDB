@@ -1,5 +1,5 @@
-import classNames from '@/lib/utils';
 import { CoverType, IImageLoaderPops } from '@/type';
+import clsx from 'clsx';
 import { ReactElement } from 'react';
 
 function Poster({
@@ -10,9 +10,9 @@ function Poster({
 }: IImageLoaderPops): ReactElement {
   return (
     <img
-      className={classNames(
+      className={clsx(
         t === CoverType.POSTER ? 'w-full object-cover' : 'w-auto',
-        'max-w-full bg-no-repeat bg-cover italic align-middle h-full',
+        'h-full max-w-full bg-cover bg-no-repeat align-middle italic',
       )}
       src={cover}
       style={{ backgroundImage: `url(${thumbnail})` }}
