@@ -27,6 +27,17 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
   return (
     <Transition appear show={open}>
       <Dialog as="div" className="relative z-10" onClose={close}>
+        <TransitionChild
+          enter="ease-out duration-500"
+          enterFrom="opacity-0 transform-[scale(95%)]"
+          enterTo="opacity-100 transform-[scale(100%)]"
+          leave="ease-in duration-500"
+          leaveFrom="opacity-100 transform-[scale(100%)]"
+          leaveTo="opacity-0 transform-[scale(95%)]"
+        >
+          <div className="fixed inset-0 bg-secondary/75 transition-opacity" />
+        </TransitionChild>
+
         <div className="absolute inset-0 overflow-hidden">
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
             <TransitionChild
@@ -64,7 +75,7 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
                                 className={clsx(
                                   filteredTags.includes(name)
                                     ? 'bg-selected text-hover'
-                                    : 'border-DEFAULT border-selected bg-default text-selected',
+                                    : 'border border-selected bg-default text-selected',
                                   'mr-2 cursor-pointer rounded-full bg-blue-100 px-2.5 py-0.5 text-sm font-medium hover:bg-hover hover:text-selected',
                                 )}
                                 onClick={() => dispatch(filter({ tag, name }))}

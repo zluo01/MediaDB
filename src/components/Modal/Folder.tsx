@@ -69,6 +69,17 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
   return (
     <Transition appear show={modalStatus === ModalType.EDIT_FOLDER}>
       <Dialog as="div" className="relative z-10" onClose={close}>
+        <TransitionChild
+          enter="ease-out duration-300"
+          enterFrom="opacity-0 transform-[scale(95%)]"
+          enterTo="opacity-100 transform-[scale(100%)]"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100 transform-[scale(100%)]"
+          leaveTo="opacity-0 transform-[scale(95%)]"
+        >
+          <div className="fixed inset-0 bg-secondary/75 transition-opacity" />
+        </TransitionChild>
+
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center text-center">
             <TransitionChild

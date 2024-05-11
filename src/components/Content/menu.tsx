@@ -39,6 +39,17 @@ export default function TVShowCardMenu(): ReactElement {
         className="relative z-10"
         onClose={() => dispatch(closeMenu())}
       >
+        <TransitionChild
+          enter="transform transition ease-in-out duration-500"
+          enterFrom="translate-y-full"
+          enterTo="translate-y-0"
+          leave="transform transition ease-in-out duration-500"
+          leaveFrom="translate-y-0"
+          leaveTo="translate-y-full"
+        >
+          <div className="fixed inset-0 bg-secondary/75 transition-opacity" />
+        </TransitionChild>
+
         <div className="absolute inset-0 overflow-hidden">
           <div className="pointer-events-none fixed inset-x-0 bottom-0 flex max-h-full pt-10">
             <TransitionChild
