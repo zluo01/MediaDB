@@ -95,6 +95,9 @@ fn read_dir<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, path: &str, ski
             }
         }
     }
+
+    major_media.par_sort_by(|a, b| a.relative_path().cmp(b.relative_path()));
+
     (major_media, secondary_media)
 }
 
