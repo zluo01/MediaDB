@@ -51,7 +51,7 @@ function Media({ index, media, folder, select }: IMediaProps) {
     return 'opacity-0';
   }
 
-  const { thumbnail, cover } = getCacheImagePath(
+  const cover = getCacheImagePath(
     folder,
     join([media.relativePath, media.posters.main], '/'),
   );
@@ -79,7 +79,6 @@ function Media({ index, media, folder, select }: IMediaProps) {
       className="flex w-full cursor-pointer flex-col items-center justify-center p-2 hover:scale-105 hover:rounded-xl hover:transition-all focus:rounded-md focus:bg-white/20 focus:shadow-lg focus:ring-0"
     >
       <Poster
-        thumbnail={thumbnail}
         cover={cover}
         alt={media.title}
         width={240}

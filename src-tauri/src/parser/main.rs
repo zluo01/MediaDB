@@ -207,19 +207,12 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
 fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
     let root_path = Path::new(path);
     let cover_path = app_dir.join("covers");
-    let thumbnail_path = app_dir.join("thumbnails");
 
 
     let cover_folder_path = cover_path.join(name);
-    let thumbnail_folder_path = thumbnail_path.join(name);
 
     if let Err(e) = fs::create_dir_all(&cover_folder_path) {
         error!("Fail to create cover directory {}. Raising error {}", &cover_folder_path.to_string_lossy(), e);
-        return;
-    }
-
-    if let Err(e) = fs::create_dir_all(&thumbnail_folder_path) {
-        error!("Fail to create thumbnail directory {}. Raising error {}", &thumbnail_folder_path.to_string_lossy(), e);
         return;
     }
 
@@ -238,7 +231,6 @@ fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<Pa
                 .replace(".webp", "");
 
             let cover_dest_path = cover_folder_path.join(&file_path);
-            let thumbnail_dest_path = thumbnail_folder_path.join(&file_path);
 
             let img = image::open(&source_path);
             if let Err(e) = img {
@@ -249,7 +241,6 @@ fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<Pa
             let img_content = img.unwrap();
 
             save_cover(&source_path, &cover_dest_path, file_path, &img_content);
-            save_thumbnail(&source_path, &thumbnail_dest_path, &img_content);
         });
 }
 
@@ -270,17 +261,5 @@ fn save_cover(source_path: &PathBuf, dest_path: &PathBuf, file_path: String, img
 
     if let Err(e) = img.resize(320, 480, FilterType::Lanczos3).save_with_format(&dest_path, ImageFormat::WebP) {
         error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
-    }
-}
-
-fn save_thumbnail(source_path: &PathBuf, dest_path: &PathBuf, img: &DynamicImage) {
-    let parent_path = dest_path.as_path().parent().unwrap();
-    if let Err(e) = fs::create_dir_all(&parent_path) {
-        error!("Fail to create directory {:?}. Raising error {}", parent_path, e);
-        return;
-    }
-
-    if let Err(e) = img.thumbnail(40, 60).save_with_format(&dest_path, ImageFormat::WebP) {
-        error!("Fail to save thumbnail from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
     }
 }

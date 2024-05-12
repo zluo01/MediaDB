@@ -44,7 +44,7 @@ interface IContentProps {
   folderData: IFolderData;
 }
 
-const PAGE_SIZE = 48;
+const PAGE_SIZE = 24;
 
 function Content({ folderData }: IContentProps): ReactElement {
   const [isLoading, setIsLoading] = useState(false);

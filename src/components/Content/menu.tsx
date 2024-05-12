@@ -82,7 +82,7 @@ export default function TVShowCardMenu(): ReactElement {
                     </TabList>
                     <TabPanels className="h-[90%] w-full bg-default">
                       {season_keys.map((key, index) => {
-                        const { thumbnail, cover } = getCacheImagePath(
+                        const cover = getCacheImagePath(
                           folder!,
                           join(
                             [
@@ -99,7 +99,6 @@ export default function TVShowCardMenu(): ReactElement {
                           >
                             <div className="flex h-full w-[38.2vw] items-center justify-center p-6">
                               <Poster
-                                thumbnail={thumbnail}
                                 cover={cover}
                                 alt={data!.title}
                                 width={220}

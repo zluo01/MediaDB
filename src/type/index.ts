@@ -116,7 +116,6 @@ export enum CoverType {
 }
 
 export interface IImageLoaderPops {
-  thumbnail: string;
   cover: string;
   alt: string;
   width: number;

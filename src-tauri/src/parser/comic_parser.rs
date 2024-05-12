@@ -21,17 +21,14 @@ pub(crate) fn parse_comics(identifier: &String,
     }
 
     let cover_path = app_dir.join("covers");
-    let thumbnail_path = app_dir.join("thumbnails");
 
     let comic_folder_name = root_path.file_name().unwrap();
 
     let cover_folder_path = cover_path.join(comic_folder_name);
-    let thumbnail_folder_path = thumbnail_path.join(comic_folder_name);
 
     return comic_files.into_par_iter()
         .filter_map(|comic_file| {
             match parse_comic(&cover_folder_path,
-                              &thumbnail_folder_path,
                               root_path,
                               comic_file) {
                 Ok(media) => Some(media),
@@ -50,7 +47,6 @@ pub(crate) fn parse_comics(identifier: &String,
 }
 
 fn parse_comic(cover_folder_path: &PathBuf,
-               thumbnail_folder_path: &PathBuf,
                root_path: &Path,
                file_path: &OsString) -> Result<Option<Media>, String> {
     let comic_path = root_path.join(file_path);
@@ -62,14 +58,9 @@ fn parse_comic(cover_folder_path: &PathBuf,
         .replace(".cbt", "")
         .replace(".cb7", "");
     let cover_dest_path = cover_folder_path.join(&relative_file_path);
-    let thumbnail_dest_path = thumbnail_folder_path.join(&relative_file_path);
 
     if let Err(e) = fs::create_dir_all(&cover_dest_path.parent().unwrap()) {
         return Err(format!("Fail to create cover directory {}. Raising error {}", &cover_dest_path.parent().unwrap().to_string_lossy(), e));
-    }
-
-    if let Err(e) = fs::create_dir_all(&thumbnail_dest_path.parent().unwrap()) {
-        return Err(format!("Fail to create thumbnail directory {}. Raising error {}", &thumbnail_dest_path.parent().unwrap().to_string_lossy(), e));
     }
 
     let file = File::open(&comic_path).expect("Fail to open comic file.");
@@ -81,7 +72,7 @@ fn parse_comic(cover_folder_path: &PathBuf,
             continue;
         }
 
-        save_cover(&cover_dest_path, &thumbnail_dest_path, &mut file)?;
+        save_cover(&cover_dest_path, &mut file)?;
         break;
     }
 
@@ -97,7 +88,6 @@ fn parse_comic(cover_folder_path: &PathBuf,
 }
 
 fn save_cover(comic_dest_name: &PathBuf,
-              thumbnail_dest_path: &PathBuf,
               file: &mut ZipFile) -> Result<(), String> {
     let mut content = Vec::new();
     file.read_to_end(&mut content).expect("Fail to read zip file");
@@ -107,9 +97,6 @@ fn save_cover(comic_dest_name: &PathBuf,
         File::create(comic_dest_name)
             .expect("Fail to create cover.")
             .write_all(content.as_slice()).expect("Fail to write buffer to cover.");
-        File::create(thumbnail_dest_path)
-            .expect("Fail to create thumbnail.")
-            .write_all(content.as_slice()).expect("Fail to write buffer to thumbnail.");
 
         let comic_cover_path = comic_dest_name.as_os_str().to_str().unwrap();
         let comic_cover_output_path = format!("{}.avif", comic_cover_path);
@@ -126,28 +113,10 @@ fn save_cover(comic_dest_name: &PathBuf,
             .expect("Fail to convert cover.");
 
         fs::rename(comic_cover_output_path, comic_cover_path).expect("Fail to rename cover.");
-
-        let comic_thumbnail_path = thumbnail_dest_path.as_os_str().to_str().unwrap();
-        let comic_thumbnail_output_path = format!("{}.avif", comic_thumbnail_path);
-        Command::new("ffmpeg")
-            .args(&[
-                "-y",
-                "-i",
-                comic_thumbnail_path,
-                "-vf", "thumbnail,scale='if(gt(a,40/60),40,-1)':'if(gt(a,40/60),-1,60)'",
-                "-frames:v", "1",
-                comic_thumbnail_output_path.as_str()
-            ])
-            .output()
-            .expect("Fail to convert thumbnail.");
-
-        fs::rename(comic_thumbnail_output_path, comic_thumbnail_path).expect("Fail to rename thumbnail.");
     } else {
         let img = image::load_from_memory(&content).expect("Fail to load image.");
         img.resize(320, 480, FilterType::Lanczos3).save_with_format(comic_dest_name, ImageFormat::WebP)
             .expect("Fail to save cover.");
-        img.thumbnail(40, 60).save_with_format(thumbnail_dest_path, ImageFormat::WebP)
-            .expect("Fail to save thumbnail.");
     }
     Ok(())
 }
