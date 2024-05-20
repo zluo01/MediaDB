@@ -12,7 +12,7 @@ function Poster({ cover, t, ...props }: IImageLoaderPops): ReactElement {
       src={cover}
       {...props}
       alt={props.alt}
-      loading={'lazy'}
+      loading="lazy"
     />
   );
 }

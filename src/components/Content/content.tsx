@@ -4,6 +4,7 @@ import { openMenu } from '@/lib/context/slice/menuSlice';
 import { RootState } from '@/lib/context/store';
 import { openFile } from '@/lib/os';
 import { COMIC, IFolderData, IMediaData, MOVIE, TV_SERIES } from '@/type';
+import clsx from 'clsx';
 import join from 'lodash/join';
 import {
   Fragment,
@@ -174,7 +175,13 @@ function Content({ folderData }: IContentProps): ReactElement {
 
   return (
     <Fragment>
-      <div className="grid auto-rows-fr pb-6 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12">
+      <div
+        className={clsx(
+          'm-0 border-0 pb-6',
+          'grid grid-flow-dense auto-rows-fr',
+          'sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12',
+        )}
+      >
         {items.map((media, index) => (
           <Media
             key={index}
@@ -184,8 +191,8 @@ function Content({ folderData }: IContentProps): ReactElement {
             folder={folderData}
           />
         ))}
-        <div ref={loaderRef} />
       </div>
+      <div ref={loaderRef} className="-z-10 mt-[-35vh] w-full pb-6 opacity-0" />
       <Suspense>
         <Menu />
       </Suspense>
