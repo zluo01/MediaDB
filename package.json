@@ -40,7 +40,7 @@
     "@types/use-sync-external-store": "0.0.6",
     "@typescript-eslint/eslint-plugin": "7.9.0",
     "@typescript-eslint/parser": "7.9.0",
-    "@vitejs/plugin-react-swc": "3.6.0",
+    "@vitejs/plugin-react-swc": "3.7.0",
     "autoprefixer": "10.4.19",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
