@@ -2,6 +2,7 @@ import Media from '@/components/Content/media';
 import { useAppDispatch, useAppSelector } from '@/lib/context';
 import { openMenu } from '@/lib/context/slice/menuSlice';
 import { RootState } from '@/lib/context/store';
+import { errorLog } from '@/lib/log';
 import { openFile } from '@/lib/os';
 import { COMIC, IFolderData, IMediaData, MOVIE, TV_SERIES } from '@/type';
 import clsx from 'clsx';
@@ -158,7 +159,7 @@ function Content({ folderData }: IContentProps): ReactElement {
     const observer = new IntersectionObserver(entries => {
       const target = entries[0];
       if (target.isIntersecting) {
-        fetchData().catch(e => console.error(e));
+        fetchData().catch(errorLog);
       }
     });
 

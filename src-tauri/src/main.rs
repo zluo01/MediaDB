@@ -9,7 +9,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::sync::Arc;
 
-use log::{error, LevelFilter};
+use log::{error, info, LevelFilter};
 use serde_json::{json, Value};
 use sqlx::{Pool, Sqlite};
 use tauri::{
@@ -286,10 +286,18 @@ async fn delete_folder<R: Runtime>(app_handle: tauri::AppHandle<R>,
 }
 
 fn main() {
+    let log_level;
+    if cfg!(debug_assertions) {
+        log_level = LevelFilter::Trace;
+    } else {
+        log_level = LevelFilter::Error;
+    }
+
+    info!("Log Level: {:?}", log_level);
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default()
             .targets([LogTarget::LogDir, LogTarget::Stdout])
-            .level(LevelFilter::Error)
+            .level(log_level)
             .build())
         .invoke_handler(tauri::generate_handler![
             parser,

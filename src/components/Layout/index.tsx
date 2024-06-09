@@ -1,5 +1,6 @@
 import AppBar from '@/components/AppBar';
 import SidePanel from '@/components/Panel';
+import { errorLog } from '@/lib/log';
 import { Event, listen } from '@tauri-apps/api/event';
 import { Fragment, useEffect } from 'react';
 import { Outlet } from 'react-router';
@@ -12,7 +13,7 @@ export default function Layout() {
     const unListen = listen('parsing', (e: Event<string>) => mutate(e.payload));
 
     return () => {
-      unListen.then(f => f()).catch(e => console.error(e));
+      unListen.then(f => f()).catch(errorLog);
     };
   }, []);
 
