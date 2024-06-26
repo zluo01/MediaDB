@@ -23,7 +23,7 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["src"],
   "exclude": ["node_modules", "src-tauri", "*.js", "dist"],
   "references": [
     {
