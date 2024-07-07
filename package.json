@@ -19,7 +19,7 @@
     "@headlessui/react": "2.1.2",
     "@heroicons/react": "2.1.4",
     "@reduxjs/toolkit": "2.2.6",
-    "@tauri-apps/api": "1.5.6",
+    "@tauri-apps/api": "1.6.0",
     "clsx": "2.1.1",
     "lodash": "4.17.21",
     "react": "18.3.1",
@@ -31,7 +31,7 @@
     "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log#v1"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "1.5.14",
+    "@tauri-apps/cli": "1.6.0",
     "@trivago/prettier-plugin-sort-imports": "4.3.0",
     "@types/lodash": "4.17.6",
     "@types/node": "20.14.10",
