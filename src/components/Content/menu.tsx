@@ -1,8 +1,6 @@
 import { getCacheImagePath } from '@/components/ImageLoader/common';
 import Poster from '@/components/ImageLoader/poster';
-import { useAppDispatch, useAppSelector } from '@/lib/context';
-import { closeMenu } from '@/lib/context/slice/menuSlice';
-import { RootState } from '@/lib/context/store';
+import { useMenuStore } from '@/lib/context';
 import { openFile } from '@/lib/os';
 import { CoverType, IEpisode } from '@/type';
 import {
@@ -21,10 +19,7 @@ import join from 'lodash/join';
 import { ReactElement } from 'react';
 
 export default function TVShowCardMenu(): ReactElement {
-  const dispatch = useAppDispatch();
-  const { open, folder, data } = useAppSelector(
-    (state: RootState) => state.menu,
-  );
+  const { menuStatus, folder, data, closeMenu } = useMenuStore();
 
   async function openEpisodeFile(media: IEpisode) {
     const filePath = join([folder?.path, media.relativePath, media.file], '/');
@@ -33,12 +28,8 @@ export default function TVShowCardMenu(): ReactElement {
 
   const season_keys = Object.keys(data?.seasons || []).sort();
   return (
-    <Transition appear show={open}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        onClose={() => dispatch(closeMenu())}
-      >
+    <Transition appear show={menuStatus}>
+      <Dialog as="div" className="relative z-10" onClose={closeMenu}>
         <TransitionChild
           enter="transform transition ease-in-out duration-500"
           enterFrom="translate-y-full"

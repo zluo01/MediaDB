@@ -1,7 +1,6 @@
 import { getCacheImagePath } from '@/components/ImageLoader/common';
 import Poster from '@/components/ImageLoader/poster';
-import { useAppDispatch } from '@/lib/context';
-import { openMenu } from '@/lib/context/slice/menuSlice';
+import { useMenuStore } from '@/lib/context';
 import { openFile } from '@/lib/os';
 import {
   COMIC,
@@ -23,7 +22,7 @@ interface IMediaProps {
 }
 
 function Media({ index, media, folder, select }: IMediaProps) {
-  const dispatch = useAppDispatch();
+  const { openMenu } = useMenuStore();
 
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
@@ -34,12 +33,10 @@ function Media({ index, media, folder, select }: IMediaProps) {
         );
         break;
       case TV_SERIES:
-        dispatch(
-          openMenu({
-            folder,
-            data: media,
-          }),
-        );
+        openMenu({
+          folder,
+          data: media,
+        });
         break;
     }
   }

@@ -1,6 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/lib/context';
-import { closeModal } from '@/lib/context/slice/modalSlice';
-import { RootState } from '@/lib/context/store';
+import { useModalStore } from '@/lib/context';
 import { getDirectory, notify } from '@/lib/os';
 import { useCreateLibraryTrigger } from '@/lib/queries';
 import { IFolder, ModalType } from '@/type';
@@ -26,14 +24,13 @@ interface IDirectoryModal {
 }
 
 function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
-  const dispatch = useAppDispatch();
-  const modalStatus = useAppSelector((state: RootState) => state.modal);
+  const { modalState, closeModal } = useModalStore();
 
   const [folderName, setFolderName] = useState('');
   const [folderPath, setFolderPath] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const open = modalStatus === ModalType.DIRECTORY;
+  const open = modalState === ModalType.DIRECTORY;
   const error = folderName && folderList?.map(o => o.name).includes(folderName);
 
   const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
@@ -67,7 +64,7 @@ function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
   function close() {
     setFolderName('');
     setFolderPath('');
-    dispatch(closeModal());
+    closeModal();
   }
 
   async function onClose() {

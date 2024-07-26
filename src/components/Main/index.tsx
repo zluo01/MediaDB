@@ -1,8 +1,7 @@
 import Content from '@/components/Content/content';
 import Toolbar from '@/components/Content/toolbar';
 import Loading from '@/components/Loading';
-import { useAppSelector } from '@/lib/context';
-import { RootState } from '@/lib/context/store';
+import { useFilterStore, useSearchStore } from '@/lib/context';
 import { useGetFolderDataQuery } from '@/lib/queries';
 import {
   DEFAULT,
@@ -87,8 +86,8 @@ function filteredData(
 }
 
 function Home(): ReactElement {
-  const searchKey = useAppSelector((state: RootState) => state.search);
-  const filteredTags = useAppSelector((state: RootState) => state.filter);
+  const { searchKey } = useSearchStore();
+  const { tags } = useFilterStore();
 
   const [searchParams] = useSearchParams();
 
@@ -96,7 +95,7 @@ function Home(): ReactElement {
 
   const { data: folderData, isLoading } = useGetFolderDataQuery(route);
 
-  const displayData = finalizedData(filteredTags, searchKey, folderData);
+  const displayData = finalizedData(tags, searchKey, folderData);
 
   const disabled = searchKey !== '' || !displayData || isLoading;
 

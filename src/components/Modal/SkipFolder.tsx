@@ -1,6 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/lib/context';
-import { closeModal } from '@/lib/context/slice/modalSlice';
-import { RootState } from '@/lib/context/store';
+import { useModalStore } from '@/lib/context';
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import { ModalType } from '@/type';
@@ -25,8 +23,7 @@ interface ISkipFolderModal {
 }
 
 function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
-  const dispatch = useAppDispatch();
-  const modalStatus = useAppSelector((state: RootState) => state.modal);
+  const { modalState, closeModal } = useModalStore();
 
   const [folderName, setFolderName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,7 +33,7 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
 
   function close() {
     setFolderName('');
-    dispatch(closeModal());
+    closeModal();
   }
 
   async function handleSubmit(
@@ -55,7 +52,7 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
   }
 
   return (
-    <Transition appear show={modalStatus === ModalType.SKIP_FOLDER}>
+    <Transition appear show={modalState === ModalType.SKIP_FOLDER}>
       <Dialog as="div" className="relative z-10" onClose={close}>
         <TransitionChild
           enter="ease-out duration-300"

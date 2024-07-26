@@ -38,7 +38,7 @@ export const EMPTY_FILTERS: ITags = {
 
 export interface IFilterAction {
   tag: FILTER;
-  name: string;
+  value: string;
 }
 
 export interface IFolderInfo extends ITags {

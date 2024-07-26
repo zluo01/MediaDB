@@ -1,5 +1,4 @@
-import { useAppDispatch } from '@/lib/context';
-import { openModal } from '@/lib/context/slice/modalSlice';
+import { useModalStore } from '@/lib/context';
 import { notify } from '@/lib/os';
 import { useGetFolderListQuery, useRemoveFolderTrigger } from '@/lib/queries';
 import { updateFolderList } from '@/lib/storage';
@@ -20,7 +19,7 @@ import {
 const EditFolderModal = lazy(() => import('@/components/Modal/Folder'));
 
 function FolderList(): ReactElement {
-  const dispatch = useAppDispatch();
+  const { openModal } = useModalStore();
 
   const { data: folderList, mutate: revalidateFolderList } =
     useGetFolderListQuery();
@@ -66,7 +65,7 @@ function FolderList(): ReactElement {
 
   function open(id: number) {
     setFolderIndex(id);
-    dispatch(openModal(ModalType.EDIT_FOLDER));
+    openModal(ModalType.EDIT_FOLDER);
   }
 
   return (

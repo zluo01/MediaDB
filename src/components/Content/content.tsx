@@ -1,7 +1,5 @@
 import Media from '@/components/Content/media';
-import { useAppDispatch, useAppSelector } from '@/lib/context';
-import { openMenu } from '@/lib/context/slice/menuSlice';
-import { RootState } from '@/lib/context/store';
+import { useMenuStore } from '@/lib/context';
 import { errorLog } from '@/lib/log';
 import { openFile } from '@/lib/os';
 import { COMIC, IFolderData, IMediaData, MOVIE, TV_SERIES } from '@/type';
@@ -69,8 +67,7 @@ function Content({ folderData }: IContentProps): ReactElement {
     setIsLoading(false);
   }, [index, isLoading, folderData]);
 
-  const dispatch = useAppDispatch();
-  const menuStatus = useAppSelector((state: RootState) => state.menu.open);
+  const { menuStatus, openMenu } = useMenuStore();
 
   const column = useGetColumnSize();
 
@@ -128,12 +125,10 @@ function Content({ folderData }: IContentProps): ReactElement {
               );
               break;
             case TV_SERIES:
-              dispatch(
-                openMenu({
-                  folder: folderData,
-                  data: media,
-                }),
-              );
+              openMenu({
+                folder: folderData,
+                data: media,
+              });
               break;
           }
         },

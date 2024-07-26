@@ -1,6 +1,4 @@
-import { useAppDispatch } from '@/lib/context';
-import { reset } from '@/lib/context/slice/filterSlice';
-import { openModal } from '@/lib/context/slice/modalSlice';
+import { useFilterStore, useModalStore } from '@/lib/context';
 import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
 import { ModalType } from '@/type';
 import { Cog6ToothIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
@@ -11,8 +9,6 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 const DirectoryModal = lazy(() => import('@/components/Modal/Directory'));
 
 function SidePanel(): ReactElement {
-  const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -23,12 +19,15 @@ function SidePanel(): ReactElement {
   const { data: setting } = useGetSettingQuery();
   const { data: folderList } = useGetFolderListQuery();
 
+  const { reset } = useFilterStore();
+  const { openModal } = useModalStore();
+
   function handleOpen() {
-    dispatch(openModal(ModalType.DIRECTORY));
+    openModal(ModalType.DIRECTORY);
   }
 
   function navigateToPage(path: string) {
-    dispatch(reset());
+    reset();
     navigate(path);
   }
 

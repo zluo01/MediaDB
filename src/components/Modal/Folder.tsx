@@ -1,6 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/lib/context';
-import { closeModal } from '@/lib/context/slice/modalSlice';
-import { RootState } from '@/lib/context/store';
+import { useModalStore } from '@/lib/context';
 import { getDirectory, notify } from '@/lib/os';
 import { useGetFolderQuery, useUpdateFolderPathTrigger } from '@/lib/queries';
 import { ModalType } from '@/type';
@@ -25,8 +23,7 @@ interface IFolderNameEdit {
 }
 
 function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
-  const dispatch = useAppDispatch();
-  const modalStatus = useAppSelector((state: RootState) => state.modal);
+  const { modalState, closeModal } = useModalStore();
 
   const { data: folder } = useGetFolderQuery(index);
   const { trigger } = useUpdateFolderPathTrigger(folder?.position || 0);
@@ -39,10 +36,6 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
       setPath(folder?.path);
     }
   }, [folder?.path]);
-
-  function close() {
-    dispatch(closeModal());
-  }
 
   async function handleDirectory() {
     setPath(await getDirectory());
@@ -60,15 +53,15 @@ function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
       await trigger({ ...folder, path });
       setLoading(false);
       setPath('');
-      close();
+      closeModal();
     } catch (e) {
       await notify(`Edit Folder Name Error: ${e}`);
     }
   }
 
   return (
-    <Transition appear show={modalStatus === ModalType.EDIT_FOLDER}>
-      <Dialog as="div" className="relative z-10" onClose={close}>
+    <Transition appear show={modalState === ModalType.EDIT_FOLDER}>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
         <TransitionChild
           enter="ease-out duration-300"
           enterFrom="opacity-0 transform-[scale(95%)]"

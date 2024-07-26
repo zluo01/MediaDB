@@ -1,6 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/lib/context';
-import { clear, filter } from '@/lib/context/slice/filterSlice';
-import { RootState } from '@/lib/context/store';
+import { useFilterStore } from '@/lib/context';
 import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
 import {
   Dialog,
@@ -10,7 +8,8 @@ import {
 } from '@headlessui/react';
 import clsx from 'clsx';
 import sortBy from 'lodash/sortBy';
-import { ReactElement } from 'react';
+import { ReactElement, useMemo } from 'react';
+import Select, { OnChangeValue } from 'react-select';
 
 interface IFilerSection {
   folderData?: IFolderInfo;
@@ -18,11 +17,51 @@ interface IFilerSection {
   close: VoidFunction;
 }
 
+interface FilterOption {
+  readonly tag: FILTER;
+  readonly label: string;
+  readonly value: string;
+}
+
+export interface GroupedOption {
+  readonly label: string;
+  readonly options: readonly FilterOption[];
+}
+
 const FILTER_TAGS: FILTER[] = [GENRE, ACTOR, STUDIO, TAG];
 
 function Filters({ folderData, open, close }: IFilerSection): ReactElement {
-  const dispatch = useAppDispatch();
-  const tags = useAppSelector((state: RootState) => state.filter);
+  const { tags, addTag, setTags, clear } = useFilterStore();
+
+  const options: GroupedOption[] = useMemo(() => {
+    if (!folderData) {
+      return [];
+    }
+    return FILTER_TAGS.map(tag => ({
+      label: tag,
+      options: folderData[tag].sort().map(o => ({
+        tag,
+        label: o,
+        value: o,
+      })),
+    }));
+  }, [folderData]);
+
+  const selected: FilterOption[] = FILTER_TAGS.flatMap(tag =>
+    tags[tag].map(o => ({
+      tag,
+      label: o,
+      value: o,
+    })),
+  );
+
+  function onChange(selectedOptions: OnChangeValue<FilterOption, true>) {
+    setTags(
+      selectedOptions.map(o => ({
+        ...o,
+      })),
+    );
+  }
 
   return (
     <Transition appear show={open}>
@@ -39,7 +78,7 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
         </TransitionChild>
 
         <div className="absolute inset-0 overflow-hidden">
-          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+          <div className="pointer-events-none fixed inset-0 flex w-screen items-center justify-center p-4">
             <TransitionChild
               enter="ease-out duration-500"
               enterFrom="opacity-0 transform-[scale(95%)]"
@@ -48,8 +87,22 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
               leaveFrom="opacity-100 transform-[scale(100%)]"
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
-              <DialogPanel className="pointer-events-auto relative w-screen max-w-md">
-                <div className="flex h-full flex-col items-start justify-between overflow-y-scroll rounded-lg bg-default py-6 shadow-xl">
+              <DialogPanel className="pointer-events-auto relative h-[61.8vh] w-[61.8vw]">
+                <div className="flex size-full flex-col items-start justify-between overflow-y-scroll rounded-2xl bg-default py-6">
+                  <div className="flex w-full flex-row px-4 py-2">
+                    <Select
+                      isMulti
+                      name="filters"
+                      options={options}
+                      className="_select"
+                      classNamePrefix="_select"
+                      autoFocus
+                      hideSelectedOptions
+                      value={selected}
+                      onChange={onChange}
+                    />
+                  </div>
+
                   {folderData &&
                     FILTER_TAGS.map(tag => {
                       const data = folderData[tag];
@@ -63,24 +116,24 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
                             <button
                               className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
                               disabled={filteredTags.length === 0}
-                              onClick={() => dispatch(clear(tag))}
+                              onClick={() => clear(tag)}
                             >
                               Clear
                             </button>
                           </div>
                           <div className="flex flex-row flex-wrap gap-y-2 py-2">
-                            {sortBy(data).map((name, index) => (
+                            {sortBy(data).map((value, index) => (
                               <span
                                 key={index}
                                 className={clsx(
-                                  filteredTags.includes(name)
+                                  filteredTags.includes(value)
                                     ? 'bg-selected text-hover'
                                     : 'border border-selected bg-default text-selected',
-                                  'mr-2 cursor-pointer rounded-full bg-blue-100 px-2.5 py-0.5 text-sm font-medium hover:bg-hover hover:text-selected',
+                                  'mr-2 cursor-pointer rounded-full px-2.5 py-0.5 text-sm font-medium hover:bg-hover hover:text-selected',
                                 )}
-                                onClick={() => dispatch(filter({ tag, name }))}
+                                onClick={() => addTag({ tag, value })}
                               >
-                                {name}
+                                {value}
                               </span>
                             ))}
                           </div>

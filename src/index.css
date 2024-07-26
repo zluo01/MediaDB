@@ -23,3 +23,41 @@
 *::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(26, 172, 84, 0.4);
 }
+
+@layer components {
+  ._select {
+    @apply w-full;
+  }
+
+  ._select ._select__control {
+    @apply bg-primary border-0 rounded-xl ring-0;
+  }
+
+  ._select ._select__input-container {
+    @apply text-primary;
+  }
+
+  ._select ._select__multi-value {
+    @apply bg-selected rounded-xl;
+  }
+
+  ._select ._select__multi-value__label {
+    @apply text-hover;
+  }
+
+  ._select ._select__multi-value__remove {
+    @apply text-hover hover:bg-transparent hover:text-secondary;
+  }
+
+  ._select ._select__menu {
+    @apply bg-primary shadow rounded;
+  }
+
+  ._select ._select__group-heading {
+    @apply text-secondary font-bold text-base;
+  }
+
+  ._select ._select__option {
+    @apply text-primary bg-transparent hover:bg-selected cursor-pointer;
+  }
+}

@@ -1,6 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/lib/context';
-import { search } from '@/lib/context/slice/searchSlice';
-import { RootState } from '@/lib/context/store';
+import { useSearchStore } from '@/lib/context';
 import { Input } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
@@ -8,9 +6,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function AppBar() {
-  const dispatch = useAppDispatch();
-
-  const searchKey = useAppSelector((state: RootState) => state.search);
+  const { searchKey, search } = useSearchStore();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,7 +14,7 @@ function AppBar() {
   function handleSearch(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
-    dispatch(search(e.target.value));
+    search(e.target.value);
   }
 
   return (
