@@ -88,7 +88,7 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
               <DialogPanel className="pointer-events-auto relative h-[61.8vh] w-[61.8vw]">
-                <div className="flex size-full flex-col items-start justify-between overflow-y-scroll rounded-2xl bg-default py-6">
+                <div className="flex size-full flex-col items-start overflow-y-scroll rounded-2xl bg-default py-6">
                   <div className="flex w-full flex-row px-4 py-2">
                     <Select
                       isMulti

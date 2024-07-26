@@ -9,20 +9,20 @@ edition = "2021"
 rust-version = "1.78"
 
 [build-dependencies]
-tauri-build = { version = "1.5.2", features = [] }
+tauri-build = { version = "1.5.3", features = [] }
 
 [dependencies]
-serde_json = "1.0.117"
-serde = { version = "1.0.201", features = ["derive"] }
-tauri = { version = "1.6.5", features = ["dialog-open", "notification-all", "protocol-asset", "shell-open"] }
+serde_json = "1.0.120"
+serde = { version = "1.0.204", features = ["derive"] }
+tauri = { version = "1.7.1", features = ["dialog-open", "notification-all", "protocol-asset", "shell-open"] }
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 roxmltree = "0.20.0"
 sqlx = { version = "0.7.4", features = ["runtime-tokio", "sqlite"] }
-tokio = { version = "1.37.0", features = ["full"] }
-log = "0.4.21"
+tokio = { version = "1.39.1", features = ["full"] }
+log = "0.4.22"
 rayon = "1.10"
-zip = "2.0.0"
-image = { version = "0.25.1" }
+zip = "2.1.5"
+image = { version = "0.25.2" }
 
 [features]
 # by default Tauri runs in production mode
