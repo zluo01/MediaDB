@@ -18,6 +18,7 @@ import {
   YEAR_DSC,
 } from '@/type';
 import forEach from 'lodash/forEach';
+import intersection from 'lodash/intersection';
 import { ReactElement } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -49,9 +50,11 @@ function filteredData(
   }
 
   forEach(filterTags, (value, tag) => {
-    value.forEach(
-      v => (media = media.filter(o => o[tag as FILTER].includes(v))),
-    );
+    if (value.length) {
+      media = media.filter(
+        o => intersection(o[tag as FILTER], value).length > 0,
+      );
+    }
   });
 
   switch (folderData.sort) {
