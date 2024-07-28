@@ -1,6 +1,6 @@
 #![cfg_attr(
-all(not(debug_assertions), target_os = "windows"),
-windows_subsystem = "windows"
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
 )]
 
 extern crate core;
@@ -10,7 +10,7 @@ use std::fs;
 use std::sync::Arc;
 
 use log::{error, info, LevelFilter};
-use serde_json::{json, Value};
+use serde_json::Value;
 use sqlx::{Pool, Sqlite};
 use tauri::{
     api::notification::Notification,
@@ -22,9 +22,16 @@ use tauri::{
 use tauri_plugin_log::LogTarget;
 
 use crate::db::main::{create_pool, get_database_path};
+use crate::db::types::Tag;
 
 mod parser;
 mod db;
+
+#[derive(Clone, serde::Serialize)]
+struct Payload {
+    args: Vec<String>,
+    cwd: String,
+}
 
 struct DatabaseConnectionState(Arc<Mutex<HashMap<u8, Pool<Sqlite>>>>);
 
@@ -57,7 +64,7 @@ async fn parser<R: Runtime>(app_handle: tauri::AppHandle<R>,
         let mut folder_position = position;
         // for new folder, add basic information to database first and get the folder index
         if !update {
-            if let Err(e) = db::main::insert_folder_data(&pool, name, &json!({}), path).await {
+            if let Err(e) = db::main::insert_folder_data(&pool, name, path).await {
                 error!("Fail to add data to database. Raising Error: {:?}", e.into_database_error());
                 return;
             }
@@ -109,7 +116,7 @@ async fn update_folder_path<R: Runtime>(app_handle: tauri::AppHandle<R>,
             return;
         }
 
-        // refetch data and update data for new path
+        // refresh data and update data for new path
         process_parsing(&app_handle, &pool, name, path, position).await;
     });
     Ok(())
@@ -139,7 +146,7 @@ async fn process_parsing<R: Runtime>(app_handle: &tauri::AppHandle<R>,
         let identifier = &app_handle.config().tauri.bundle.identifier;
         Notification::new(identifier)
             .title("MediaDB")
-            .body(format!("Building direcotry {} is finished.", name))
+            .body(format!("Building directory {} is finished.", name))
             .show()
             .expect("Fail to send notification.");
     }
@@ -164,7 +171,7 @@ async fn handle_parsing<R: Runtime>(app_handle: &tauri::AppHandle<R>,
 
     let value = parser::main::parse(&app_handle, name, path, &skip_folders);
 
-    if let Err(e) = db::main::update_folder_data(&pool, name, &value).await {
+    if let Err(e) = db::main::insert_new_media(&pool, name, &value).await {
         return Err(format!("Fail to update folder data. Raising Error: {:?}", e.into_database_error()));
     }
     Ok(())
@@ -235,6 +242,28 @@ async fn get_folder_data<R: Runtime>(app_handle: tauri::AppHandle<R>, database_s
 }
 
 #[tauri::command]
+async fn get_folder_media(database_state: State<'_, DatabaseConnectionState>, position: i32, key: &str, tags: Vec<Tag>) -> Result<Vec<Value>, String> {
+    let mut instances = database_state.0.lock().await;
+    let pool = instances.get_mut(&0).expect("Cannot find database instance.");
+    let folder_media_result = db::main::get_folder_media(pool, &position, key, &tags).await;
+    if let Err(e) = folder_media_result {
+        return Err(format!("Fail to get folder media. Raising Error: {:?}", e.into_database_error()));
+    }
+    Ok(folder_media_result.unwrap())
+}
+
+#[tauri::command]
+async fn get_folder_media_tags(database_state: State<'_, DatabaseConnectionState>, position: i32) -> Result<Vec<Value>, String> {
+    let mut instances = database_state.0.lock().await;
+    let pool = instances.get_mut(&0).expect("Cannot find database instance.");
+    let folder_data_result = db::main::get_folder_media_tags(pool, &position).await;
+    if let Err(e) = folder_data_result {
+        return Err(format!("Fail to get folder media tags. Raising Error: {:?}", e.into_database_error()));
+    }
+    Ok(folder_data_result.unwrap())
+}
+
+#[tauri::command]
 async fn get_folder_info(database_state: State<'_, DatabaseConnectionState>, position: i32) -> Result<Value, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances.get_mut(&0).expect("Cannot find database instance.");
@@ -246,7 +275,7 @@ async fn get_folder_info(database_state: State<'_, DatabaseConnectionState>, pos
 }
 
 #[tauri::command]
-async fn update_sort_type(database_state: State<'_, DatabaseConnectionState>, position: i32, sort_type: String) -> Result<(), String> {
+async fn update_sort_type(database_state: State<'_, DatabaseConnectionState>, position: i32, sort_type: u8) -> Result<(), String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances.get_mut(&0).expect("Cannot find database instance.");
     if let Err(e) = db::main::update_sort_type(pool, &position, &sort_type).await {
@@ -299,6 +328,10 @@ fn main() {
             .targets([LogTarget::LogDir, LogTarget::Stdout])
             .level(log_level)
             .build())
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
+            info!("{}, {argv:?}, {cwd}", app.package_info().name);
+            app.emit_all("single-instance", Payload { args: argv, cwd }).unwrap();
+        }))
         .invoke_handler(tauri::generate_handler![
             parser,
             get_data_path,
@@ -308,6 +341,8 @@ fn main() {
             get_folder_list,
             get_folder_info,
             get_folder_data,
+            get_folder_media,
+            get_folder_media_tags,
             update_sort_type,
             update_folder_path,
             reorder_folder,

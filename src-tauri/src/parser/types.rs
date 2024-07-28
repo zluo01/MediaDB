@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::ffi::OsString;
+
 use serde_json::{json, Value};
 
 #[derive(Debug)]
@@ -41,13 +42,20 @@ impl MediaSource {
     }
 }
 
-#[derive(Debug)]
+#[repr(u8)]
+#[derive(Debug, Copy, Clone)]
 pub enum MediaType {
-    Movie,
-    TvShow,
-    Episode,
-    Comic,
-    UNKNOWN,
+    Movie = 0,
+    TvShow = 1,
+    Comic = 2,
+    Episode = 3,
+    Unknown = 4,
+}
+
+impl MediaType {
+    fn as_u8(&self) -> u8 {
+        *self as u8
+    }
 }
 
 #[derive(Debug)]
@@ -63,14 +71,14 @@ pub struct Media {
     actors: Vec<String>,
     studios: Vec<String>,
 
-    season: String,
-    episode: String,
+    season: String, // season number
+    episode: String, // episode number
 }
 
 impl Default for Media {
     fn default() -> Media {
         Media {
-            media_type: MediaType::UNKNOWN,
+            media_type: MediaType::Unknown,
             relative_path: Default::default(),
             file: "".to_string(),
             title: "".to_string(),
@@ -130,18 +138,6 @@ impl Media {
     pub fn posters(&self) -> &Vec<String> {
         &self.posters
     }
-    pub fn tags(&self) -> &Vec<String> {
-        &self.tags
-    }
-    pub fn genres(&self) -> &Vec<String> {
-        &self.genres
-    }
-    pub fn actors(&self) -> &Vec<String> {
-        &self.actors
-    }
-    pub fn studios(&self) -> &Vec<String> {
-        &self.studios
-    }
     pub fn season(&self) -> &str {
         &self.season
     }
@@ -179,25 +175,26 @@ impl Media {
     }
 
     // json
-    pub fn movie_json(&self) -> Option<Value> {
+    pub fn movie(&self) -> Option<MediaItem> {
         if let MediaType::Movie = self.media_type {
-            return Some(json!({
-                "type": "movie",
-                "relativePath": self.relative_path().to_str().unwrap(),
-                "title": self.title,
-                "year": self.year,
-                "file": self.file,
-                "posters": self.construct_poster_map(),
-                "tags": self.tags,
-                "genres": self.genres,
-                "actors": self.actors,
-                "studios": self.studios
-            }));
+            return Some(MediaItem {
+                media_type: MediaType::Movie.as_u8(),
+                path: self.relative_path().to_str().unwrap().to_string(),
+                title: self.title.clone(),
+                posters: format!("{}", self.construct_poster_map()),
+                tags: self.tags.clone(),
+                genres: self.genres.clone(),
+                actors: self.actors.clone(),
+                studios: self.studios.clone(),
+                year: self.year.clone(),
+                file: self.file.clone(),
+                seasons: String::from(""),
+            });
         }
         panic!("Expect a movie, but get {:?}", self.media_type)
     }
 
-    pub fn tvshow_json(&self, season_map: Option<&HashMap<String, Vec<&Media>>>) -> Option<Value> {
+    pub fn tv_show(&self, season_map: Option<&HashMap<String, Vec<&Media>>>) -> Option<MediaItem> {
         if season_map.is_none() {
             println!("Expect to get seasons data, but get none. {}", self.relative_path.to_string_lossy());
             return None;
@@ -212,17 +209,19 @@ impl Media {
                     return (season, values.iter().map(|o| o.episode_json()).collect::<Vec<Value>>());
                 })
                 .collect::<HashMap<&String, Vec<Value>>>();
-            return Some(json!({
-                "type": "tvshow",
-                "relativePath": self.relative_path.to_str().unwrap(),
-                "title": self.title,
-                "posters": self.construct_poster_map(),
-                "tags": self.tags,
-                "genres": self.genres,
-                "actors": self.actors,
-                "studios": self.studios,
-                "seasons": seasons,
-            }));
+            return Some(MediaItem {
+                media_type: MediaType::TvShow.as_u8(),
+                path: self.relative_path().to_str().unwrap().to_string(),
+                title: self.title.clone(),
+                posters: format!("{}", self.construct_poster_map()),
+                tags: self.tags.clone(),
+                genres: self.genres.clone(),
+                actors: self.actors.clone(),
+                studios: self.studios.clone(),
+                year: String::from(""),
+                file: String::from(""),
+                seasons: format!("{}", json!(seasons)),
+            });
         }
         panic!("Expect a tv show, but get {:?}", self.media_type)
     }
@@ -234,39 +233,109 @@ impl Media {
                 "file": self.file,
                 "season": self.season,
                 "episode": self.episode,
-                "relativePath": self.relative_path.to_str().unwrap(),
+                "path": self.relative_path.to_str().unwrap(),
             });
         }
         panic!("Expect an episode, but get {:?}", self.media_type)
     }
 
-    fn construct_poster_map(&self) -> HashMap<String, &String> {
-        let mut poster_map = HashMap::new();
+    fn construct_poster_map(&self) -> Value {
+        let mut poster_map = serde_json::Map::new();
         for p in self.posters() {
             if p.starts_with("season-specials") {
-                poster_map.insert(String::from("00"), p);
+                poster_map.insert(String::from("00"), Value::String(p.clone()));
             } else if p.starts_with("season") {
                 let season = p.split("-").collect::<Vec<&str>>();
                 if season.first().is_some() {
-                    poster_map.insert(season.first().unwrap().strip_prefix("season").unwrap().to_string(), p);
+                    poster_map.insert(season.first().unwrap().strip_prefix("season").unwrap().to_string(), Value::String(p.clone()));
                 }
             } else {
-                poster_map.insert(String::from("main"), p);
+                poster_map.insert(String::from("main"), Value::String(p.clone()));
             }
         }
-        poster_map
+        Value::Object(poster_map)
     }
 
-    pub fn comic_json(&self) -> Option<Value> {
+    pub fn comic(&self) -> Option<MediaItem> {
         if let MediaType::Comic = self.media_type {
-            return Some(json!({
-                "type": "comic",
-                "relativePath": self.relative_path().to_str().unwrap(),
-                "title": self.title,
-                "file": self.file,
-                "posters": self.construct_poster_map(),
-            }));
+            return Some(MediaItem {
+                media_type: MediaType::Comic.as_u8(),
+                path: self.relative_path().to_str().unwrap().to_string(),
+                title: self.title.clone(),
+                posters: format!("{}", self.construct_poster_map()),
+                tags: vec![],
+                genres: vec![],
+                actors: vec![],
+                studios: vec![],
+                year: String::from(""),
+                file: self.file.clone(),
+                seasons: String::from(""),
+            });
         }
         panic!("Expect a comic, but get {:?}", self.media_type)
     }
 }
+
+#[derive(Debug)]
+pub struct MediaItem {
+    media_type: u8,
+    path: String,
+    title: String,
+    posters: String,
+    tags: Vec<String>,
+    genres: Vec<String>,
+    actors: Vec<String>,
+    studios: Vec<String>,
+
+    // optional fields
+    year: String,
+    file: String,
+    seasons: String,
+}
+
+impl MediaItem {
+    pub fn media_type(&self) -> u8 {
+        self.media_type
+    }
+
+    pub fn path(&self) -> &str {
+        &self.path
+    }
+
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    pub fn posters(&self) -> &str {
+        &self.posters
+    }
+
+    pub fn tags(&self) -> &Vec<String> {
+        &self.tags
+    }
+
+    pub fn genres(&self) -> &Vec<String> {
+        &self.genres
+    }
+
+    pub fn actors(&self) -> &Vec<String> {
+        &self.actors
+    }
+
+    pub fn studios(&self) -> &Vec<String> {
+        &self.studios
+    }
+
+    pub fn year(&self) -> &str {
+        &self.year
+    }
+
+    pub fn file(&self) -> &str {
+        &self.file
+    }
+
+    pub fn seasons(&self) -> &str {
+        &self.seasons
+    }
+}
+

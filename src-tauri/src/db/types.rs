@@ -61,8 +61,8 @@ pub struct Folder {
 #[derive(Serialize, Deserialize)]
 pub struct FolderData {
     folder_name: String,
-    data: String,
-    sort_type: String,
+    sort_type: u8,
+    filter_type: u8,
     path: String,
     position: i32,
     status: u8,
@@ -70,19 +70,67 @@ pub struct FolderData {
 
 impl FolderData {
     pub fn to_json(&self, app_dir: String) -> Value {
-        let v: Value = serde_json::from_str(self.data.as_str()).unwrap();
-        match v {
-            Value::Object(m) => {
-                let mut m = m;
-                m.insert(String::from("name"), Value::String(self.folder_name.to_string()));
-                m.insert(String::from("sort"), Value::String(self.sort_type.to_string()));
-                m.insert(String::from("path"), Value::String(self.path.to_string()));
-                m.insert(String::from("appDir"), Value::String(app_dir));
-                m.insert(String::from("position"), Value::from(self.position));
-                m.insert(String::from("status"), Value::from(self.status));
-                Value::Object(m)
-            }
-            v => v,
+        json!({
+            "name": self.folder_name,
+            "sort": self.sort_type,
+            "filterType": self.filter_type,
+            "path": self.path,
+            "appDir": app_dir,
+            "position": self.position,
+            "status": self.status
+        })
+    }
+}
+
+#[derive(sqlx::FromRow)]
+#[derive(Serialize, Deserialize)]
+pub struct Media {
+    t: u8,
+    path: String,
+    title: String,
+    posters: String,
+    year: String,
+    file: String,
+    seasons: String,
+}
+
+impl Media {
+    pub fn to_json(&self) -> Value {
+        let mut data = serde_json::Map::new();
+        data.insert("type".to_string(), Value::from(self.t));
+        data.insert("path".to_string(), Value::String(self.path.clone()));
+        data.insert("title".to_string(), Value::String(self.title.clone()));
+
+        let posters: Value = serde_json::from_str(self.posters.as_str()).unwrap();
+        data.insert("posters".to_string(), posters);
+
+        data.insert("year".to_string(), Value::String(self.year.clone()));
+        data.insert("file".to_string(), Value::String(self.file.clone()));
+
+        if !self.seasons.is_empty() {
+            let seasons: Value = serde_json::from_str(self.seasons.as_str()).unwrap();
+            data.insert("seasons".to_string(), seasons);
         }
+
+        Value::Object(data)
+    }
+}
+
+
+#[derive(sqlx::FromRow)]
+#[derive(Serialize, Deserialize)]
+pub struct Tag {
+    tag: String,
+    value: String,
+    label: String,
+}
+
+impl Tag {
+    pub fn tag(&self) -> &str {
+        &self.tag
+    }
+
+    pub fn value(&self) -> &str {
+        &self.value
     }
 }

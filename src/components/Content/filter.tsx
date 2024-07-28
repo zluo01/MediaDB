@@ -1,5 +1,6 @@
 import { useFilterStore } from '@/lib/context';
-import { ACTOR, FILTER, GENRE, IFolderInfo, STUDIO, TAG } from '@/type';
+import { useGetFolderMediaTags } from '@/lib/queries';
+import { FilterOption } from '@/type';
 import {
   Dialog,
   DialogPanel,
@@ -7,60 +8,28 @@ import {
   TransitionChild,
 } from '@headlessui/react';
 import clsx from 'clsx';
-import sortBy from 'lodash/sortBy';
-import { ReactElement, useMemo } from 'react';
+import { ReactElement } from 'react';
 import Select, { OnChangeValue } from 'react-select';
 
+function hasTag(tags: FilterOption[], tag: FilterOption): boolean {
+  return (
+    tags.filter(o => o.tag === tag.tag && o.label === tag.label).length > 0
+  );
+}
+
 interface IFilerSection {
-  folderData?: IFolderInfo;
+  folderIndex: number;
   open: boolean;
   close: VoidFunction;
 }
 
-interface FilterOption {
-  readonly tag: FILTER;
-  readonly label: string;
-  readonly value: string;
-}
-
-export interface GroupedOption {
-  readonly label: string;
-  readonly options: readonly FilterOption[];
-}
-
-const FILTER_TAGS: FILTER[] = [GENRE, ACTOR, STUDIO, TAG];
-
-function Filters({ folderData, open, close }: IFilerSection): ReactElement {
+function Filters({ folderIndex, open, close }: IFilerSection): ReactElement {
   const { tags, addTag, setTags, clear } = useFilterStore();
 
-  const options: GroupedOption[] = useMemo(() => {
-    if (!folderData) {
-      return [];
-    }
-    return FILTER_TAGS.map(tag => ({
-      label: tag,
-      options: folderData[tag].sort().map(o => ({
-        tag,
-        label: o,
-        value: o,
-      })),
-    }));
-  }, [folderData]);
-
-  const selected: FilterOption[] = FILTER_TAGS.flatMap(tag =>
-    tags[tag].map(o => ({
-      tag,
-      label: o,
-      value: o,
-    })),
-  );
+  const { data: options } = useGetFolderMediaTags(folderIndex);
 
   function onChange(selectedOptions: OnChangeValue<FilterOption, true>) {
-    setTags(
-      selectedOptions.map(o => ({
-        ...o,
-      })),
-    );
+    setTags([...selectedOptions]);
   }
 
   return (
@@ -88,7 +57,7 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
               <DialogPanel className="pointer-events-auto relative h-[61.8vh] w-[61.8vw]">
-                <div className="flex size-full flex-col items-start overflow-y-scroll rounded-2xl bg-default py-6">
+                <div className="flex size-full flex-col items-start overflow-y-scroll rounded bg-default py-6">
                   <div className="flex w-full flex-row px-4 py-2">
                     <Select
                       isMulti
@@ -98,48 +67,48 @@ function Filters({ folderData, open, close }: IFilerSection): ReactElement {
                       classNamePrefix="_select"
                       autoFocus
                       hideSelectedOptions
-                      value={selected}
+                      value={tags}
                       onChange={onChange}
                     />
                   </div>
 
-                  {folderData &&
-                    FILTER_TAGS.map(tag => {
-                      const data = folderData[tag];
-                      const filteredTags = tags[tag];
-                      return (
-                        <div key={tag} className="w-full px-4">
-                          <div className="flex flex-row items-center justify-between">
-                            <span className="text-2xl capitalize text-secondary">
-                              {tag}
-                            </span>
-                            <button
-                              className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
-                              disabled={filteredTags.length === 0}
-                              onClick={() => clear(tag)}
-                            >
-                              Clear
-                            </button>
-                          </div>
-                          <div className="flex flex-row flex-wrap gap-y-2 py-2">
-                            {sortBy(data).map((value, index) => (
-                              <span
-                                key={index}
-                                className={clsx(
-                                  filteredTags.includes(value)
-                                    ? 'bg-selected text-hover'
-                                    : 'border border-selected bg-default text-selected',
-                                  'mr-2 cursor-pointer rounded-full px-2.5 py-0.5 text-sm font-medium hover:bg-hover hover:text-selected',
-                                )}
-                                onClick={() => addTag({ tag, value })}
-                              >
-                                {value}
-                              </span>
-                            ))}
-                          </div>
+                  {options?.map(option => {
+                    const filteredTags = tags.filter(
+                      o => o.tag === option.label,
+                    );
+                    return (
+                      <div key={option.label} className="w-full px-4">
+                        <div className="flex flex-row items-center justify-between">
+                          <span className="text-2xl capitalize text-secondary">
+                            {option.label}
+                          </span>
+                          <button
+                            className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
+                            disabled={filteredTags.length === 0}
+                            onClick={() => clear(option.label)}
+                          >
+                            Clear
+                          </button>
                         </div>
-                      );
-                    })}
+                        <div className="flex flex-row flex-wrap gap-y-2 py-2">
+                          {option.options.map((value, index) => (
+                            <span
+                              key={index}
+                              className={clsx(
+                                hasTag(filteredTags, value)
+                                  ? 'bg-selected text-hover'
+                                  : 'border border-selected bg-default text-selected',
+                                'mr-2 cursor-pointer rounded-full px-2.5 py-0.5 text-sm font-medium hover:bg-hover hover:text-selected',
+                              )}
+                              onClick={() => addTag(value)}
+                            >
+                              {value.label}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </DialogPanel>
             </TransitionChild>

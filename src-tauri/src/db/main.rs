@@ -7,7 +7,8 @@ use sqlx::{migrate::MigrateDatabase, Pool, Sqlite, SqlitePool};
 use tauri::Runtime;
 
 use crate::db::queries;
-use crate::db::types::{Folder, FolderData, Position, Setting, SkipFolders};
+use crate::db::types::{Folder, FolderData, Media, Position, Setting, SkipFolders, Tag};
+use crate::parser::types::MediaItem;
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
@@ -82,10 +83,9 @@ pub async fn update_skip_folders(pool: &Pool<Sqlite>, skip_folders: &str) -> Res
     Ok(())
 }
 
-pub async fn insert_folder_data(pool: &Pool<Sqlite>, folder_name: &str, data: &Value, path: &str) -> Result<(), sqlx::Error> {
+pub async fn insert_folder_data(pool: &Pool<Sqlite>, folder_name: &str, path: &str) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::INSERT_NEW_FOLDER_DATA)
         .bind(folder_name)
-        .bind(format!("{}", data))
         .bind(path)
         .execute(pool)
         .await?;
@@ -116,16 +116,179 @@ pub async fn get_folder_data<R: Runtime>(app: &tauri::AppHandle<R>, pool: &Pool<
     Ok(folder_data.to_json(app_dir.to_str().unwrap().to_string()))
 }
 
-pub async fn update_folder_data(pool: &Pool<Sqlite>, folder_name: &str, data: &Value) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query(queries::UPDATE_FOLDER_DATA)
-        .bind(format!("{}", data))
+pub async fn insert_new_media(pool: &Pool<Sqlite>, folder_name: &str, data: &Vec<MediaItem>) -> Result<(), sqlx::Error> {
+    let mut tx = pool.begin().await?;
+    let _ = sqlx::query(queries::CLEAR_MEDIA)
         .bind(folder_name)
-        .execute(pool)
+        .bind(folder_name)
+        .execute(&mut *tx)
         .await?;
+    for media in data {
+        let _ = sqlx::query(queries::INSERT_NEW_MEDIA)
+            .bind(media.media_type())
+            .bind(media.path())
+            .bind(media.title())
+            .bind(media.posters())
+            .bind(media.year())
+            .bind(media.file())
+            .bind(media.seasons())
+            .bind(folder_name)
+            .execute(&mut *tx)
+            .await?;
+
+        for tag in media.tags() {
+            let _ = sqlx::query(queries::INSERT_NEW_TAG)
+                .bind(folder_name)
+                .bind(media.path())
+                .bind(tag)
+                .bind("tags")
+                .execute(&mut *tx)
+                .await?;
+        }
+
+        for genre in media.genres() {
+            let _ = sqlx::query(queries::INSERT_NEW_TAG)
+                .bind(folder_name)
+                .bind(media.path())
+                .bind(genre)
+                .bind("genres")
+                .execute(&mut *tx)
+                .await?;
+        }
+
+        for actor in media.actors() {
+            let _ = sqlx::query(queries::INSERT_NEW_TAG)
+                .bind(folder_name)
+                .bind(media.path())
+                .bind(actor)
+                .bind("actors")
+                .execute(&mut *tx)
+                .await?;
+        }
+
+        for studio in media.studios() {
+            // folder_name, path, name, t
+            let _ = sqlx::query(queries::INSERT_NEW_TAG)
+                .bind(folder_name)
+                .bind(media.path())
+                .bind(studio)
+                .bind("studios")
+                .execute(&mut *tx)
+                .await?;
+        }
+    }
+    tx.commit().await?;
     Ok(())
 }
 
-pub async fn update_sort_type(pool: &Pool<Sqlite>, position: &i32, sort_type: &String) -> Result<(), sqlx::Error> {
+//     SELECT media.type as t, media.path, media.title, media.posters, media.year, media.file, media.seasons
+//     FROM media
+//              JOIN folders ON media.folder = folders.folder_name
+//              JOIN tags ON media.path = tags.path
+//     WHERE folders.position = ?
+//       AND title LIKE ? COLLATE NOCASE
+//       {} -- Filter query
+//     ORDER BY CASE
+//                  WHEN folders.sort_type = 2 THEN media.title
+//                  WHEN folders.sort_type = 4 THEN media.year
+//                  END DESC,
+//              CASE
+//                  WHEN folders.sort_type = 1 THEN media.title
+//                  WHEN folders.sort_type = 3 THEN media.year
+//                  ELSE media.path
+//                  END;
+pub async fn get_folder_media(pool: &Pool<Sqlite>, position: &i32, key: &str, filter_tags: &Vec<Tag>) -> Result<Vec<Value>, sqlx::Error> {
+    // construct query
+    let mut query = String::from(
+        "SELECT DISTINCT media.type as t, media.path, media.title, media.posters, media.year, media.file, media.seasons
+        FROM media
+        JOIN folders ON media.folder = folders.folder_name
+        JOIN tags ON media.path = tags.path
+        WHERE folders.position = ? AND title LIKE ? COLLATE NOCASE",
+    );
+    let filter_query = if !filter_tags.is_empty() {
+        let tag_groups = filter_tags.iter()
+            .fold(std::collections::HashMap::new(), |mut acc, tag| {
+                acc.entry(tag.tag())
+                    .or_insert_with(Vec::new)
+                    .push(tag);
+                acc
+            });
+
+        let mut q = String::from(" AND (");
+        let filter_query = tag_groups.iter()
+            .map(|(tag_label, tags)| format!("(tags.t = '{}' AND tags.name IN ({}))",
+                                             tag_label,
+                                             tags.iter().map(|t| format!("\'{}\'", t.value())).collect::<Vec<_>>().join(",")))
+            .collect::<Vec<_>>()
+            .join("OR");
+        q.push_str(&filter_query);
+        q.push_str(")");
+        q
+    } else {
+        String::from("")
+    };
+
+    query.push_str(&filter_query);
+    query.push_str(
+        " ORDER BY CASE
+             WHEN folders.sort_type = 2 THEN media.title
+             WHEN folders.sort_type = 4 THEN media.year
+             END DESC,
+             CASE
+                 WHEN folders.sort_type = 1 THEN media.title
+                 WHEN folders.sort_type = 3 THEN media.year
+                 ELSE media.path
+             END",
+    );
+    let media_list = sqlx::query_as::<_, Media>(query.as_str())
+        .bind(position)
+        .bind(format!("%{}%", key))
+        .fetch_all(pool)
+        .await?;
+
+    Ok(media_list.into_iter().map(|o| o.to_json()).collect())
+}
+
+pub async fn get_folder_media_tags(pool: &Pool<Sqlite>, position: &i32) -> Result<Vec<Value>, sqlx::Error> {
+    let tag_list = sqlx::query_as::<_, Tag>(queries::TAGS_IN_FOLDER)
+        .bind(position)
+        .fetch_all(pool)
+        .await?;
+
+    let tag_groups = tag_list.iter()
+        .fold(std::collections::HashMap::new(), |mut acc, tag| {
+            acc.entry(tag.tag())
+                .or_insert_with(Vec::new)
+                .push(tag);
+            acc
+        });
+
+    if tag_groups.is_empty() {
+        return Ok(vec![]);
+    }
+    let empty_tags:Vec<&Tag> = vec![];
+    Ok(vec![
+        json!({
+            "label": "genres",
+            "options": tag_groups.get("genres").unwrap_or(&empty_tags)
+        }),
+        json!({
+            "label": "actors",
+            "options": tag_groups.get("actors").unwrap_or(&empty_tags)
+        }),
+        json!({
+            "label": "studios",
+            "options": tag_groups.get("studios").unwrap_or(&empty_tags)
+        }),
+        json!({
+            "label": "tags",
+            "options": tag_groups.get("tags").unwrap_or(&empty_tags)
+        }),
+    ])
+}
+
+pub async fn update_sort_type(pool: &Pool<Sqlite>, position: &i32, sort_type: &u8) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_SORT_TYPE)
         .bind(sort_type)
         .bind(position)
@@ -165,7 +328,7 @@ pub async fn delete_folder(pool: &Pool<Sqlite>, name: &str, position: &i32) -> R
     Ok(())
 }
 
-pub async fn update_folder_status(pool: &Pool<Sqlite>, status: &i32, position: &i32) -> Result<(), sqlx::Error> {
+pub async fn update_folder_status(pool: &Pool<Sqlite>, status: &u8, position: &i32) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_FOLDER_STATUS)
         .bind(status)
         .bind(position)

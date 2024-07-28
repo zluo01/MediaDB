@@ -9,7 +9,6 @@ use image::{DynamicImage, ImageFormat};
 use image::imageops::FilterType;
 use log::error;
 use rayon::prelude::*;
-use serde_json::{json, Value};
 use tauri::api::notification::Notification;
 
 use crate::{
@@ -18,8 +17,9 @@ use crate::{
     parser::utilities,
 };
 use crate::parser::comic_parser::parse_comics;
+use crate::parser::types::MediaItem;
 
-pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Value {
+pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Vec<MediaItem> {
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
     let (major_media, secondary_media) = read_dir(app_handle, path, skip_paths);
     let (data, posters) = aggregate_data(&major_media, &secondary_media);
@@ -130,33 +130,12 @@ fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
         .collect();
 }
 
-fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Value, HashSet<PathBuf>) {
-    let mut tags = HashSet::new();
-    let mut genres = HashSet::new();
-    let mut actors = HashSet::new();
-    let mut studios = HashSet::new();
+fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Vec<MediaItem>, HashSet<PathBuf>) {
     let mut posters = HashSet::new();
     let mut seasons_map: HashMap<OsString, HashMap<String, Vec<&Media>>> = HashMap::new();
 
     // aggregate attributes
     for m in major_media {
-        if !m.tags().is_empty() {
-            tags.extend(m.tags());
-        }
-
-        if !m.genres().is_empty() {
-            genres.extend(m.genres());
-        }
-
-        if !m.actors().is_empty() {
-            actors.extend(m.actors());
-        }
-
-        if !m.studios().is_empty() {
-            studios.extend(m.studios());
-        }
-
-
         if !m.posters().is_empty() {
             match m.media_type() {
                 MediaType::Movie | MediaType::TvShow => posters.extend(m.posters()
@@ -190,21 +169,15 @@ fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Va
 
     let data = major_media.into_par_iter()
         .map(|o| match o.media_type() {
-            MediaType::Movie => o.movie_json(),
-            MediaType::TvShow => o.tvshow_json(seasons_map.get(o.relative_path())),
-            MediaType::Comic => o.comic_json(),
+            MediaType::Movie => o.movie(),
+            MediaType::TvShow => o.tv_show(seasons_map.get(o.relative_path())),
+            MediaType::Comic => o.comic(),
             _ => panic!("Unexpected media type: {:?}", o.media_type())
         })
         .filter_map(|o| o)
-        .collect::<Vec<Value>>();
+        .collect::<Vec<MediaItem>>();
 
-    (json!({
-        "data": data,
-        "tags": tags,
-        "genres": genres,
-        "actors": actors,
-        "studios": studios,
-    }), posters)
+    (data, posters)
 }
 
 fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {

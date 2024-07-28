@@ -1,13 +1,5 @@
-import {
-  EMPTY_FILTERS,
-  FILTER,
-  IFilterAction,
-  IFolder,
-  ITags,
-  ITVShowData,
-  ModalType,
-} from '@/type';
-import cloneDeep from 'lodash/cloneDeep';
+import { FilterOption, IFolder, ITVShowData, ModalType } from '@/type';
+import isEqual from 'lodash/isEqual';
 import { create } from 'zustand';
 
 interface IMenuPayload {
@@ -54,48 +46,31 @@ export const useModalStore = create<IModalState>()(set => ({
 }));
 
 interface IFilterState {
-  tags: ITags;
-  addTag: (payload: IFilterAction) => void;
-  setTags: (payload: IFilterAction[]) => void;
-  clear: (key: FILTER) => void;
+  tags: FilterOption[];
+  addTag: (payload: FilterOption) => void;
+  setTags: (payload: FilterOption[]) => void;
+  clear: (key: string) => void;
   reset: VoidFunction;
 }
 
 export const useFilterStore = create<IFilterState>()(set => ({
-  tags: cloneDeep(EMPTY_FILTERS),
+  tags: [],
   addTag: payload =>
     set(state => {
-      const { tag, value } = payload;
-      const filterValue = state.tags[tag];
-      if (filterValue.includes(value)) {
+      if (state.tags.includes(payload)) {
         return {
-          tags: {
-            ...state.tags,
-            [tag]: filterValue.filter(o => o !== value),
-          },
+          tags: state.tags.filter(o => !isEqual(o, payload)),
         };
       } else {
         return {
-          tags: {
-            ...state.tags,
-            [tag]: [...state.tags[tag], value],
-          },
+          tags: [...state.tags, payload],
         };
       }
     }),
-  setTags: payload => set({ tags: filterTags(payload) }),
+  setTags: payload => set({ tags: payload }),
   clear: key =>
     set(state => ({
-      tags: {
-        ...state.tags,
-        [key]: [],
-      },
+      tags: state.tags.filter(o => o.tag !== key),
     })),
-  reset: () => set({ tags: cloneDeep(EMPTY_FILTERS) }),
+  reset: () => set({ tags: [] }),
 }));
-
-function filterTags(payload: IFilterAction[]) {
-  const tags = cloneDeep(EMPTY_FILTERS);
-  payload.forEach(o => tags[o.tag].push(o.value));
-  return tags;
-}

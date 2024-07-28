@@ -1,4 +1,11 @@
-import { IFolder, IFolderData, ISetting } from '@/type';
+import {
+  FilterOption,
+  GroupedOption,
+  IFolder,
+  IFolderData,
+  IMediaData,
+  ISetting,
+} from '@/type';
 import { invoke } from '@tauri-apps/api/tauri';
 
 export async function getFolderList(): Promise<IFolder[]> {
@@ -15,6 +22,24 @@ export async function getFolderInfo(position: number): Promise<IFolderData> {
   return await invoke<IFolderData>('get_folder_data', { position });
 }
 
+export async function getFolderMedia(
+  position: number,
+  key: string,
+  tags: FilterOption[],
+): Promise<IMediaData[]> {
+  return await invoke<IMediaData[]>('get_folder_media', {
+    position,
+    key,
+    tags,
+  });
+}
+
+export async function getFolderMediaTags(
+  position: number,
+): Promise<GroupedOption[]> {
+  return await invoke<GroupedOption[]>('get_folder_media_tags', { position });
+}
+
 export async function updateFolderPathFromStorage(
   folder: IFolder,
 ): Promise<void> {
@@ -23,7 +48,7 @@ export async function updateFolderPathFromStorage(
 
 export async function updateFolderSortType(
   position: number,
-  sortType: string,
+  sortType: number,
 ): Promise<void> {
   await invoke('update_sort_type', { position, sortType });
 }

@@ -2,7 +2,7 @@ import Media from '@/components/Content/media';
 import { useMenuStore } from '@/lib/context';
 import { errorLog } from '@/lib/log';
 import { openFile } from '@/lib/os';
-import { COMIC, IFolderData, IMediaData, MOVIE, TV_SERIES } from '@/type';
+import { IFolderData, IMediaData, MediaType } from '@/type';
 import clsx from 'clsx';
 import join from 'lodash/join';
 import {
@@ -41,15 +41,16 @@ function useGetColumnSize() {
 }
 
 interface IContentProps {
-  folderData: IFolderData;
+  folderIndo: IFolderData;
+  mediaData: IMediaData[];
 }
 
 const PAGE_SIZE = 24;
 
-function Content({ folderData }: IContentProps): ReactElement {
+function Content({ folderIndo, mediaData }: IContentProps): ReactElement {
   const [isLoading, setIsLoading] = useState(false);
   const [index, setIndex] = useState(1);
-  const [items, setItems] = useState(folderData.data.slice(0, PAGE_SIZE));
+  const [items, setItems] = useState(mediaData.slice(0, PAGE_SIZE));
   const loaderRef = useRef(null);
 
   const fetchData = useCallback(async () => {
@@ -60,12 +61,12 @@ function Content({ folderData }: IContentProps): ReactElement {
     setIsLoading(true);
     setItems(prevItems => [
       ...prevItems,
-      ...folderData.data.slice(index * PAGE_SIZE, (index + 1) * PAGE_SIZE),
+      ...mediaData.slice(index * PAGE_SIZE, (index + 1) * PAGE_SIZE),
     ]);
     setIndex(prevIndex => prevIndex + 1);
 
     setIsLoading(false);
-  }, [index, isLoading, folderData]);
+  }, [index, isLoading, mediaData]);
 
   const { menuStatus, openMenu } = useMenuStore();
 
@@ -84,7 +85,7 @@ function Content({ folderData }: IContentProps): ReactElement {
 
     function moveVertical(newRow: number, newColumn: number) {
       const index = newRow * column + newColumn;
-      if (index >= 0 && index <= folderData.data.length - 1) {
+      if (index >= 0 && index <= mediaData.length - 1) {
         selected.current = index;
       }
     }
@@ -102,10 +103,10 @@ function Content({ folderData }: IContentProps): ReactElement {
       const keyActions: Record<string, () => void> = {
         ArrowLeft: () => {
           selected.current =
-            current - 1 < 0 ? folderData.data.length - 1 : current - 1;
+            current - 1 < 0 ? mediaData.length - 1 : current - 1;
         },
         ArrowRight: () => {
-          selected.current = (current + 1) % folderData.data.length;
+          selected.current = (current + 1) % mediaData.length;
         },
         ArrowUp: () => {
           ev.preventDefault();
@@ -116,17 +117,15 @@ function Content({ folderData }: IContentProps): ReactElement {
           moveVertical(r + 1, c);
         },
         Enter: () => {
-          const media = folderData.data[selected.current] as IMediaData;
+          const media = mediaData[selected.current];
           switch (media.type) {
-            case COMIC:
-            case MOVIE:
-              openFile(
-                join([folderData.path, media.relativePath, media.file], '/'),
-              );
+            case MediaType.COMIC:
+            case MediaType.MOVIE:
+              openFile(join([folderIndo.path, media.path, media.file], '/'));
               break;
-            case TV_SERIES:
+            case MediaType.TV_SERIES:
               openMenu({
-                folder: folderData,
+                folder: folderIndo,
                 data: media,
               });
               break;
@@ -148,7 +147,7 @@ function Content({ folderData }: IContentProps): ReactElement {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [folderData, column, open]);
+  }, [folderIndo, column, open]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -184,7 +183,7 @@ function Content({ folderData }: IContentProps): ReactElement {
             index={index}
             media={media}
             select={() => (selected.current = index)}
-            folder={folderData}
+            folder={folderIndo}
           />
         ))}
       </div>

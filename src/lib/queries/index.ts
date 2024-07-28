@@ -4,13 +4,20 @@ import {
   getFolder,
   getFolderInfo,
   getFolderList,
+  getFolderMediaTags,
   getSetting,
   hideSidePanel,
   removeFolderFromStorage,
   updateFolderPathFromStorage,
   updateFolderSortType,
 } from '@/lib/storage';
-import { FolderStatus, IFolder, IFolderData, ISetting } from '@/type';
+import {
+  FolderStatus,
+  GroupedOption,
+  IFolder,
+  IFolderData,
+  ISetting,
+} from '@/type';
 import { getVersion } from '@tauri-apps/api/app';
 import useSWR, { useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -28,6 +35,12 @@ export function useGetFolderListQuery() {
 
 export function useGetFolderQuery(route: number) {
   return useSWR<IFolder>(FOLDER_KEY(route), () => getFolder(route));
+}
+
+export function useGetFolderMediaTags(route: number) {
+  return useSWR<GroupedOption[]>(FOLDER_KEY(route) + '/tags', () =>
+    getFolderMediaTags(route),
+  );
 }
 
 export function useGetFolderDataQuery(route: number) {
@@ -50,7 +63,7 @@ export function useGetFolderDataQuery(route: number) {
 export function useUpdateSortTypeTrigger(position: number) {
   return useSWRMutation(
     FOLDER_DETAIL_KEY(position),
-    async (_url, opts: { arg: string }) => {
+    async (_url, opts: { arg: number }) => {
       await updateFolderSortType(position, opts.arg);
     },
   );
@@ -69,6 +82,7 @@ export function useCreateLibraryTrigger(position: number) {
       const { folder, update } = opts.arg;
       await buildDirectory(folder, update);
       await mutate(FOLDER_LIST);
+      await mutate(FOLDER_KEY(position) + '/tags');
     },
   );
 }

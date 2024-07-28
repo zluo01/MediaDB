@@ -2,15 +2,7 @@ import { getCacheImagePath } from '@/components/ImageLoader/common';
 import Poster from '@/components/ImageLoader/poster';
 import { useMenuStore } from '@/lib/context';
 import { openFile } from '@/lib/os';
-import {
-  COMIC,
-  CoverType,
-  IFolder,
-  IMediaData,
-  IMovieData,
-  MOVIE,
-  TV_SERIES,
-} from '@/type';
+import { CoverType, IFolder, IMediaData, IMovieData, MediaType } from '@/type';
 import clsx from 'clsx';
 import join from 'lodash/join';
 
@@ -26,13 +18,11 @@ function Media({ index, media, folder, select }: IMediaProps) {
 
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
-      case COMIC:
-      case MOVIE:
-        await openFile(
-          join([folder.path, media.relativePath, media.file], '/'),
-        );
+      case MediaType.COMIC:
+      case MediaType.MOVIE:
+        await openFile(join([folder.path, media.path, media.file], '/'));
         break;
-      case TV_SERIES:
+      case MediaType.TV_SERIES:
         openMenu({
           folder,
           data: media,
@@ -42,7 +32,7 @@ function Media({ index, media, folder, select }: IMediaProps) {
   }
 
   function subStyle() {
-    if (media.type === MOVIE && (media as IMovieData).year) {
+    if (media.type === MediaType.MOVIE && (media as IMovieData).year) {
       return 'opacity-100';
     }
     return 'opacity-0';
@@ -50,7 +40,7 @@ function Media({ index, media, folder, select }: IMediaProps) {
 
   const cover = getCacheImagePath(
     folder,
-    join([media.relativePath, media.posters.main], '/'),
+    join([media.path, media.posters.main], '/'),
   );
 
   function onSelect() {
@@ -87,7 +77,7 @@ function Media({ index, media, folder, select }: IMediaProps) {
           {media.title}
         </span>
         <span className={clsx(subStyle(), 'truncate text-sm text-secondary')}>
-          {media.type === MOVIE
+          {media.type === MediaType.MOVIE
             ? (media as IMovieData).year || 'DUMMY_TEXT'
             : 'DUMMY_TEXT'}
         </span>

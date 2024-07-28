@@ -22,7 +22,7 @@ export default function TVShowCardMenu(): ReactElement {
   const { menuStatus, folder, data, closeMenu } = useMenuStore();
 
   async function openEpisodeFile(media: IEpisode) {
-    const filePath = join([folder?.path, media.relativePath, media.file], '/');
+    const filePath = join([folder?.path, media.path, media.file], '/');
     await openFile(filePath);
   }
 
@@ -77,7 +77,7 @@ export default function TVShowCardMenu(): ReactElement {
                           folder!,
                           join(
                             [
-                              data!.relativePath,
+                              data!.path,
                               data!.posters[key] || data!.posters.main,
                             ],
                             '/',

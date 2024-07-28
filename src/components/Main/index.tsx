@@ -2,89 +2,28 @@ import Content from '@/components/Content/content';
 import Toolbar from '@/components/Content/toolbar';
 import Loading from '@/components/Loading';
 import { useFilterStore, useSearchStore } from '@/lib/context';
+import { errorLog } from '@/lib/log';
 import { useGetFolderDataQuery } from '@/lib/queries';
-import {
-  DEFAULT,
-  FILTER,
-  FolderStatus,
-  IFolderData,
-  IMediaData,
-  IMovieData,
-  ITags,
-  MOVIE,
-  TITLE_ASC,
-  TITLE_DSC,
-  YEAR_ASC,
-  YEAR_DSC,
-} from '@/type';
-import forEach from 'lodash/forEach';
-import intersection from 'lodash/intersection';
-import { ReactElement } from 'react';
+import { getFolderMedia } from '@/lib/storage';
+import { FilterOption, FolderStatus, IMediaData, SORT } from '@/type';
+import { ReactElement, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-function finalizedData(
-  filterTags: ITags,
+function useGetFolderMediaData(
+  folderIndex: number,
   searchKey: string,
-  folderData?: IFolderData,
+  tags: FilterOption[],
+  status: FolderStatus,
+  sortType: SORT,
 ) {
-  if (!folderData || folderData.status === FolderStatus.ERROR) {
-    return folderData;
-  }
+  const [media, setMedia] = useState<IMediaData[]>([]);
 
-  return {
-    ...folderData,
-    data: filteredData(filterTags, searchKey, folderData),
-  };
-}
+  useEffect(() => {
+    getFolderMedia(folderIndex, searchKey, tags)
+      .then(o => setMedia(o))
+      .catch(e => errorLog(e));
+  }, [folderIndex, searchKey, tags, sortType, status]);
 
-function filteredData(
-  filterTags: ITags,
-  searchKey: string,
-  folderData: IFolderData,
-): IMediaData[] {
-  let media = [...folderData.data];
-  if (searchKey && folderData && folderData.status !== FolderStatus.ERROR) {
-    media = media.filter(o =>
-      o.title.toLowerCase().includes(searchKey.toLowerCase()),
-    );
-  }
-
-  forEach(filterTags, (value, tag) => {
-    if (value.length) {
-      media = media.filter(
-        o => intersection(o[tag as FILTER], value).length > 0,
-      );
-    }
-  });
-
-  switch (folderData.sort) {
-    case DEFAULT:
-      break;
-    case TITLE_ASC:
-      media.sort((a: IMediaData, b: IMediaData) =>
-        a.title > b.title ? 1 : -1,
-      );
-      break;
-    case TITLE_DSC:
-      media.sort((a: IMediaData, b: IMediaData) =>
-        a.title < b.title ? 1 : -1,
-      );
-      break;
-    case YEAR_DSC:
-      if (media[0].type === MOVIE) {
-        media.sort((a: IMediaData, b: IMediaData) =>
-          (a as IMovieData).year < (b as IMovieData).year ? 1 : -1,
-        );
-      }
-      break;
-    case YEAR_ASC:
-      if (media[0].type === MOVIE) {
-        media.sort((a: IMediaData, b: IMediaData) =>
-          (a as IMovieData).year > (b as IMovieData).year ? 1 : -1,
-        );
-      }
-      break;
-  }
   return media;
 }
 
@@ -96,20 +35,26 @@ function Home(): ReactElement {
 
   const route = parseInt(searchParams.get('id') || '0');
 
-  const { data: folderData, isLoading } = useGetFolderDataQuery(route);
+  const { data: folderInfo, isLoading } = useGetFolderDataQuery(route);
 
-  const displayData = finalizedData(tags, searchKey, folderData);
+  const mediaData = useGetFolderMediaData(
+    route,
+    searchKey,
+    tags,
+    folderInfo?.status || FolderStatus.NONE,
+    folderInfo?.sort || SORT.DEFAULT,
+  );
 
-  const disabled = searchKey !== '' || !displayData || isLoading;
+  const disabled = searchKey !== '' || !mediaData || isLoading;
 
   function ContentView() {
     if (isLoading) {
       return <Loading />;
     }
-    if (!displayData) {
+    if (!mediaData || !folderInfo) {
       return <div />;
     }
-    if (displayData.status === FolderStatus.ERROR) {
+    if (folderInfo.status === FolderStatus.ERROR) {
       return (
         <div className="inset-0 flex h-full flex-col items-center justify-center space-y-1.5 text-xl text-white">
           <p>Encounter Error When Building Directory.</p>
@@ -117,18 +62,18 @@ function Home(): ReactElement {
         </div>
       );
     }
-    return <Content folderData={displayData} />;
+    return <Content folderIndo={folderInfo} mediaData={mediaData} />;
   }
 
   return (
     <div className="size-full overflow-auto scroll-smooth bg-default">
       <div className="flex h-full flex-col p-8">
-        <Toolbar folderData={displayData} disabled={disabled} />
+        <Toolbar folderInfo={folderInfo} disabled={disabled} />
         <ContentView />
       </div>
       <footer className="fixed bottom-0 flex w-full flex-row flex-nowrap items-center justify-between bg-primary px-1">
         <span className="cursor-default truncate text-secondary" id="footer">
-          {displayData && `Total ${displayData?.data.length}`}
+          {mediaData && `Total ${mediaData?.length}`}
         </span>
       </footer>
     </div>

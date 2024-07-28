@@ -1,5 +1,5 @@
 pub mod main;
 mod nfo_parser;
-mod types;
+pub(crate) mod types;
 mod utilities;
 mod comic_parser;
