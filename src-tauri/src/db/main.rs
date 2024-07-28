@@ -144,13 +144,15 @@ pub async fn update_folder_path(pool: &Pool<Sqlite>, position: &i32, path: &str)
 }
 
 pub async fn reorder_folder(pool: &Pool<Sqlite>, folder_name: &[&str]) -> Result<(), sqlx::Error> {
+    let mut tx = pool.begin().await?;
     for i in 0..folder_name.len() {
         let _ = sqlx::query(queries::UPDATE_FOLDER_POSITION)
             .bind(i as i32)
             .bind(folder_name[i])
-            .execute(pool)
+            .execute(&mut *tx)
             .await?;
     }
+    tx.commit().await?;
     Ok(())
 }
 
