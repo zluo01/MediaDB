@@ -25,6 +25,7 @@ fn execute_command(args: &Vec<&str>) -> Output {
         .expect("Failed to execute command")
 }
 
+#[cfg(not(target_os = "windows"))]
 fn execute_command(args: &Vec<&str>) -> Output {
     Command::new("ffmpeg")
         .args(args)
