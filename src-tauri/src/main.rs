@@ -5,9 +5,12 @@
 
 extern crate core;
 
-use std::collections::HashMap;
-use std::fs;
-use std::sync::Arc;
+use std::{
+    collections::HashMap,
+    fs,
+    process::Command,
+    sync::Arc,
+};
 
 use log::{error, info, LevelFilter};
 use serde_json::Value;
@@ -314,6 +317,18 @@ async fn delete_folder<R: Runtime>(app_handle: tauri::AppHandle<R>,
     Ok(())
 }
 
+fn check_ffmpeg_exists() -> bool {
+    // Attempt to execute `ffmpeg` with `-version` argument
+    let output = Command::new("ffmpeg")
+        .arg("-version")
+        .output();
+
+    match output {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+
 fn main() {
     let log_level;
     if cfg!(debug_assertions) {
@@ -351,6 +366,16 @@ fn main() {
         .manage(DatabaseConnectionState(Arc::new(Mutex::new(HashMap::new()))))
         .setup(|app| {
             let app_handle = app.app_handle().clone();
+            let identifier = &app_handle.config().tauri.bundle.identifier;
+            if !check_ffmpeg_exists() {
+                Notification::new(identifier)
+                    .title("MediaDB")
+                    .body("Missing core dependency ffmpeg, please download and install from https://www.ffmpeg.org/download.html.")
+                    .show()
+                    .expect("Fail to send notification.");
+                panic!("Missing ffmpeg, please download and install from https://www.ffmpeg.org/download.html.")
+            }
+
             if let Err(e) = db::main::initialize(&app_handle) {
                 panic!("Fail to initialize database. Error: {:?}", e)
             }

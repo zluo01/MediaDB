@@ -5,8 +5,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use image::{DynamicImage, ImageFormat};
-use image::imageops::FilterType;
 use log::error;
 use rayon::prelude::*;
 use tauri::api::notification::Notification;
@@ -18,6 +16,7 @@ use crate::{
 };
 use crate::parser::comic_parser::parse_comics;
 use crate::parser::types::MediaItem;
+use crate::parser::utilities::convert_image;
 
 pub fn parse<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>, name: &str, path: &str, skip_paths: &Vec<String>) -> Vec<MediaItem> {
     let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
@@ -208,34 +207,22 @@ fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<Pa
 
             let cover_dest_path = cover_folder_path.join(&file_path);
 
-            let img = image::open(&source_path);
-            if let Err(e) = img {
-                error!("Fail to read image file {:?}. Raising error {}", source_path, e);
-                return;
-            }
-
-            let img_content = img.unwrap();
-
-            save_cover(&source_path, &cover_dest_path, file_path, &img_content);
+            save_cover(&source_path, &cover_dest_path);
         });
 }
 
-fn save_cover(source_path: &PathBuf, dest_path: &PathBuf, file_path: String, img: &DynamicImage) {
+fn save_cover(source_path: &PathBuf, dest_path: &PathBuf) {
     let parent_path = dest_path.as_path().parent().unwrap();
     if let Err(e) = fs::create_dir_all(&parent_path) {
         error!("Fail to create directory {:?}. Raising error {}", parent_path, e);
         return;
     }
 
-    // skip gif
-    if file_path.ends_with(".gif") {
-        if let Err(e) = fs::copy(&source_path, &dest_path) {
-            error!("Fail to copy file from {:?} to {:?}. Raising error {}", &source_path, &dest_path, e);
-            return;
-        }
-    }
+    let cover_src_path = source_path.as_os_str().to_str().unwrap();
+    let cover_output_path = dest_path.as_os_str().to_str().unwrap();
 
-    if let Err(e) = img.resize(320, 480, FilterType::Lanczos3).save_with_format(&dest_path, ImageFormat::WebP) {
-        error!("Fail to save file from {:?} to {:?}. Raising error {}", source_path, dest_path, e);
+    if let Err(e) = convert_image(cover_src_path, cover_output_path) {
+        error!("{}", e);
+        return;
     }
 }

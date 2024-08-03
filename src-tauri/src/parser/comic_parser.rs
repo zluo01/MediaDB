@@ -1,16 +1,15 @@
 use std::{ffi::OsString, fs, path::{Path, PathBuf}};
 use std::fs::File;
 use std::io::{Read, Write};
-use std::process::Command;
 
-use image::ImageFormat;
-use image::imageops::FilterType;
+use log::error;
 use rayon::prelude::*;
 use tauri::api::notification::Notification;
 use zip::read::ZipFile;
 use zip::ZipArchive;
 
 use crate::parser::types::{Media, MediaType};
+use crate::parser::utilities::convert_image;
 
 pub(crate) fn parse_comics(identifier: &String,
                            app_dir: &PathBuf,
@@ -72,7 +71,7 @@ fn parse_comic(cover_folder_path: &PathBuf,
             continue;
         }
 
-        save_cover(&cover_dest_path, &mut file)?;
+        save_cover(&cover_dest_path, &mut file);
         break;
     }
 
@@ -87,36 +86,18 @@ fn parse_comic(cover_folder_path: &PathBuf,
     Ok(Some(media))
 }
 
-fn save_cover(comic_dest_name: &PathBuf,
-              file: &mut ZipFile) -> Result<(), String> {
+fn save_cover(comic_dest_name: &PathBuf, file: &mut ZipFile) {
     let mut content = Vec::new();
     file.read_to_end(&mut content).expect("Fail to read zip file");
 
-    // use ffmpeg until image has better support for avif
-    if file.name().ends_with("avif") {
-        File::create(comic_dest_name)
-            .expect("Fail to create cover.")
-            .write_all(content.as_slice()).expect("Fail to write buffer to cover.");
+    File::create(comic_dest_name)
+        .expect("Fail to create cover.")
+        .write_all(content.as_slice()).expect("Fail to write buffer to cover.");
 
-        let comic_cover_path = comic_dest_name.as_os_str().to_str().unwrap();
-        let comic_cover_output_path = format!("{}.avif", comic_cover_path);
+    let comic_cover_path = comic_dest_name.as_os_str().to_str().unwrap();
 
-        Command::new("ffmpeg")
-            .args(&[
-                "-y",
-                "-i",
-                comic_cover_path,
-                "-vf", "scale='if(gt(a,320/480),320,-1)':'if(gt(a,320/480),-1,480)'",
-                comic_cover_output_path.as_str()
-            ])
-            .output()
-            .expect("Fail to convert cover.");
-
-        fs::rename(comic_cover_output_path, comic_cover_path).expect("Fail to rename cover.");
-    } else {
-        let img = image::load_from_memory(&content).expect("Fail to load image.");
-        img.resize(320, 480, FilterType::Lanczos3).save_with_format(comic_dest_name, ImageFormat::WebP)
-            .expect("Fail to save cover.");
+    if let Err(e) = convert_image(comic_cover_path, comic_cover_path) {
+        error!("{}", e);
+        return;
     }
-    Ok(())
 }
