@@ -17,7 +17,7 @@ pub fn get_relative_path(path: &Path, base: &Path) -> Option<PathBuf> {
 #[cfg(target_os = "windows")]
 fn execute_command(args: &Vec<&str>) -> Output {
     use std::os::windows::process::CommandExt;
-    std::process::Command("ffmpeg")
+    Command::new("ffmpeg")
         .args(args)
         // https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
         .creation_flags(0x08000000)
