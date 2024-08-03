@@ -11,7 +11,6 @@ use std::{
     process::Command,
     sync::Arc,
 };
-
 use log::{error, info, LevelFilter};
 use serde_json::Value;
 use sqlx::{Pool, Sqlite};
@@ -317,6 +316,22 @@ async fn delete_folder<R: Runtime>(app_handle: tauri::AppHandle<R>,
     Ok(())
 }
 
+#[cfg(target_os = "windows")]
+fn check_ffmpeg_exists() -> bool {
+    use std::os::windows::process::CommandExt;
+    let output = Command::new("ffmpeg")
+        .arg("-version")
+        // https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
+        .creation_flags(0x08000000)
+        .output();
+
+    match output {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+
+#[cfg(not(target_os = "windows"))]
 fn check_ffmpeg_exists() -> bool {
     // Attempt to execute `ffmpeg` with `-version` argument
     let output = Command::new("ffmpeg")
