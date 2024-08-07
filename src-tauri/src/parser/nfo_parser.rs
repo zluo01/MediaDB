@@ -74,9 +74,6 @@ fn parse_movie_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) {
             "year" => if let Some(v) = text {
                 media.set_year(v.to_string());
             },
-            "original_filename" => if let Some(v) = text {
-                media.set_file(v.to_string());
-            },
             "poster" => if let Some(v) = text {
                 media.add_poster(v.to_string());
             },
