@@ -29,14 +29,10 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     indent: 'off',
     '@typescript-eslint/indent': 'off',
-    semi: 'off',
-    '@typescript-eslint/semi': ['error', 'always'],
     'no-array-constructor': 'off',
     '@typescript-eslint/no-array-constructor': 'error',
     'no-empty-function': 'off',
     '@typescript-eslint/no-empty-function': ['error'],
-    'no-extra-semi': 'off',
-    '@typescript-eslint/no-extra-semi': ['error'],
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': [
       2,
@@ -54,12 +50,4 @@ module.exports = {
     '@typescript-eslint/camelcase': 'off',
     'react/no-unknown-property': ['error', { ignore: ['augmented-ui'] }],
   },
-  overrides: [
-    {
-      files: ['*.js'],
-      rules: {
-        '@typescript-eslint/no-var-requires': 'off',
-      },
-    },
-  ],
 };
