@@ -4,17 +4,17 @@ import { useGetFolderListQuery, useRemoveFolderTrigger } from '@/lib/queries';
 import { updateFolderList } from '@/lib/storage';
 import { IFolder, ModalType } from '@/type';
 import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from '@hello-pangea/dnd';
+import {
   FolderIcon,
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/solid';
 import { Fragment, lazy, ReactElement, Suspense, useState } from 'react';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from 'react-beautiful-dnd';
 
 const EditFolderModal = lazy(() => import('@/components/Modal/Folder'));
 
