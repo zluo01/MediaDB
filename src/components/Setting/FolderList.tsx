@@ -6,7 +6,9 @@ import { IFolder, ModalType } from '@/type';
 import {
   DragDropContext,
   Draggable,
+  DraggableProvided,
   Droppable,
+  DroppableProvided,
   DropResult,
 } from '@hello-pangea/dnd';
 import {
@@ -72,11 +74,11 @@ function FolderList(): ReactElement {
     <Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
-          {provided => (
+          {(dropProvided: DroppableProvided) => (
             <ul
               className="w-full"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
+              ref={dropProvided.innerRef}
+              {...dropProvided.droppableProps}
             >
               {folderList?.map(folder => (
                 <Draggable
@@ -84,12 +86,12 @@ function FolderList(): ReactElement {
                   draggableId={folder.name}
                   index={folder.position}
                 >
-                  {provided => (
+                  {(dragProvided: DraggableProvided) => (
                     <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={{ ...provided.draggableProps.style }}
+                      ref={dragProvided.innerRef}
+                      {...dragProvided.draggableProps}
+                      {...dragProvided.dragHandleProps}
+                      style={{ ...dragProvided.draggableProps.style }}
                     >
                       <li className="flex w-full flex-row items-center justify-between p-2">
                         <div className="flex grow flex-row items-center text-secondary">
@@ -126,7 +128,7 @@ function FolderList(): ReactElement {
                   )}
                 </Draggable>
               ))}
-              {provided.placeholder}
+              {dropProvided.placeholder}
             </ul>
           )}
         </Droppable>
