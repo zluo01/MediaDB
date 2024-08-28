@@ -202,10 +202,17 @@ pub async fn get_folder_media(pool: &Pool<Sqlite>, position: &i32, key: &str, fi
     let mut query = String::from(
         "SELECT DISTINCT media.type as t, media.path, media.title, media.posters, media.year, media.file, media.seasons
         FROM media
-        JOIN folders ON media.folder = folders.folder_name
-        JOIN tags ON media.path = tags.path
-        WHERE folders.position = ? AND title LIKE ? COLLATE NOCASE",
-    );
+        JOIN folders ON media.folder = folders.folder_name");
+    // only join when we need to do filtering such that 
+    // for media like comic that does not have tag information
+    // will not be filtered out during query
+    // since there is no tag for comic, 
+    // hence impossible to filter any comic through frontend
+    if !filter_tags.is_empty() {
+        query.push_str(" JOIN tags ON media.path = tags.path");
+    }
+    query.push_str(" WHERE folders.position = ? AND title LIKE ? COLLATE NOCASE");
+
     let filter_query = if !filter_tags.is_empty() {
         let tag_groups = filter_tags.iter()
             .fold(std::collections::HashMap::new(), |mut acc, tag| {
@@ -267,7 +274,7 @@ pub async fn get_folder_media_tags(pool: &Pool<Sqlite>, position: &i32) -> Resul
     if tag_groups.is_empty() {
         return Ok(vec![]);
     }
-    let empty_tags:Vec<&Tag> = vec![];
+    let empty_tags: Vec<&Tag> = vec![];
     Ok(vec![
         json!({
             "label": "genres",

@@ -110,7 +110,7 @@ fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
                                                &app_dir,
                                                root_path,
                                                media_source.comic());
-    return nfo_files.into_par_iter()
+    nfo_files.into_par_iter()
         .filter_map(|nfo_file| {
             match parse_nfo(root_path, nfo_file, &media_source) {
                 Ok(media) => Some(media),
@@ -126,7 +126,7 @@ fn handle_media_path<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>,
         })
         .flat_map(|v| v)
         .chain(comic_media)
-        .collect();
+        .collect()
 }
 
 fn aggregate_data(major_media: &Vec<Media>, secondary_media: &Vec<Media>) -> (Vec<MediaItem>, HashSet<PathBuf>) {

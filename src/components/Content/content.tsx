@@ -120,6 +120,8 @@ function Content({ folderIndo, mediaData }: IContentProps): ReactElement {
           const media = mediaData[selected.current];
           switch (media.type) {
             case MediaType.COMIC:
+              openFile(join([folderIndo.path, media.file], '/'));
+              break;
             case MediaType.MOVIE:
               openFile(join([folderIndo.path, media.path, media.file], '/'));
               break;

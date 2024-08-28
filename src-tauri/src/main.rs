@@ -180,13 +180,7 @@ async fn handle_parsing<R: Runtime>(app_handle: &tauri::AppHandle<R>,
 }
 
 fn get_folder_detail_cache_key(position: i32) -> String {
-    return format!("folder/info/{}", position);
-}
-
-#[tauri::command]
-fn get_data_path<R: Runtime>(app_handle: tauri::AppHandle<R>) -> String {
-    let app_dir = app_handle.path_resolver().app_data_dir().unwrap();
-    return app_dir.to_str().unwrap().to_string();
+    format!("folder/info/{}", position)
 }
 
 #[tauri::command]
@@ -364,7 +358,6 @@ fn main() {
         }))
         .invoke_handler(tauri::generate_handler![
             parser,
-            get_data_path,
             get_setting,
             hide_side_panel,
             update_skip_folders,

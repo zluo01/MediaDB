@@ -1,12 +1,18 @@
-use std::{ffi::OsString, fs, path::{Path, PathBuf}};
-use std::fs::File;
-use std::io::{Read, Write};
+use std::{
+    ffi::OsString,
+    fs,
+    fs::File,
+    io::{Read, Write},
+    path::{Path, PathBuf},
+};
 
 use log::error;
 use rayon::prelude::*;
 use tauri::api::notification::Notification;
-use zip::read::ZipFile;
-use zip::ZipArchive;
+use zip::{
+    read::ZipFile,
+    ZipArchive,
+};
 
 use crate::parser::types::{Media, MediaType};
 use crate::parser::utilities::convert_image;
@@ -25,7 +31,7 @@ pub(crate) fn parse_comics(identifier: &String,
 
     let cover_folder_path = cover_path.join(comic_folder_name);
 
-    return comic_files.into_par_iter()
+    comic_files.into_par_iter()
         .filter_map(|comic_file| {
             match parse_comic(&cover_folder_path,
                               root_path,
@@ -42,7 +48,7 @@ pub(crate) fn parse_comics(identifier: &String,
             }
         })
         .flat_map(|v| v)
-        .collect();
+        .collect()
 }
 
 fn parse_comic(cover_folder_path: &PathBuf,
@@ -82,7 +88,7 @@ fn parse_comic(cover_folder_path: &PathBuf,
     media.set_title(String::from(file_name.to_string_lossy()));
     media.set_file(String::from(comic_path.file_name().unwrap().to_string_lossy()));
     media.add_poster(String::from(file_name.to_string_lossy()));
-    media.set_relative_path(PathBuf::from(file_path).parent().unwrap().as_os_str().to_os_string());
+    media.set_relative_path(file_path.to_os_string());
     Ok(Some(media))
 }
 

@@ -19,6 +19,8 @@ function Media({ index, media, folder, select }: IMediaProps) {
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
       case MediaType.COMIC:
+        await openFile(join([folder.path, media.file], '/'));
+        break;
       case MediaType.MOVIE:
         await openFile(join([folder.path, media.path, media.file], '/'));
         break;
@@ -40,7 +42,9 @@ function Media({ index, media, folder, select }: IMediaProps) {
 
   const cover = getCacheImagePath(
     folder,
-    join([media.path, media.posters.main], '/'),
+    media.type === MediaType.COMIC
+      ? media.posters.main
+      : join([media.path, media.posters.main], '/'),
   );
 
   function onSelect() {
