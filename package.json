@@ -16,7 +16,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@headlessui/react": "2.1.5",
+    "@headlessui/react": "2.1.8",
     "@hello-pangea/dnd": "16.6.0",
     "@heroicons/react": "2.1.5",
     "@tauri-apps/api": "1.6.0",
@@ -54,7 +54,7 @@
     "postcss": "8.4.45",
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.6",
-    "tailwindcss": "3.4.10",
+    "tailwindcss": "3.4.11",
     "typescript": "5.5.4",
     "vite": "5.4.5",
     "vite-tsconfig-paths": "5.0.1"
