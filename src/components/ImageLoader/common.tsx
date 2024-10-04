@@ -1,5 +1,5 @@
 import { IFolder } from '@/type';
-import { convertFileSrc } from '@tauri-apps/api/tauri';
+import { convertFileSrc } from '@tauri-apps/api/core';
 import join from 'lodash/join';
 
 export function getCacheImagePath(folder: IFolder, src: string): string {

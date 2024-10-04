@@ -4,7 +4,7 @@ use std::result::Result;
 use log::{debug, error};
 use serde_json::{json, Value};
 use sqlx::{migrate::MigrateDatabase, Pool, Sqlite, SqlitePool};
-use tauri::Runtime;
+use tauri::{Manager, Runtime};
 
 use crate::db::queries;
 use crate::db::types::{Folder, FolderData, Media, Position, Setting, SkipFolders, Tag};
@@ -12,7 +12,7 @@ use crate::parser::types::MediaItem;
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
-        let app_dir = app.path_resolver().app_data_dir().unwrap();
+        let app_dir = app.path().app_data_dir().unwrap();
         debug!("App Directory: {:?}", &app_dir);
 
         let create_dir_result = fs::create_dir_all(&app_dir);
@@ -31,7 +31,10 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
                 return Err(err_msg);
             }
             if let Err(e) = create_tables(&db_url).await {
-                let err_msg = format!("Fail to create tables. Error: {:?}", e.into_database_error());
+                let err_msg = format!(
+                    "Fail to create tables. Error: {:?}",
+                    e.into_database_error()
+                );
                 error!("{:?}", err_msg);
                 return Err(err_msg);
             }
@@ -42,14 +45,16 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
 
 async fn create_tables(db_url: &str) -> Result<(), sqlx::Error> {
     let pool = SqlitePool::connect(&db_url).await?;
-    let _ = sqlx::query(&queries::CREAT_TABLE_QUERY).execute(&pool).await;
+    let _ = sqlx::query(&queries::CREAT_TABLE_QUERY)
+        .execute(&pool)
+        .await;
     pool.close().await;
     Ok(())
 }
 
 pub fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
-    let app_dir = app.path_resolver().app_data_dir().unwrap();
-    return format!("sqlite://{}/sqlite.db", app_dir.display()).to_string();
+    let app_dir = app.path().app_data_dir().unwrap();
+    format!("sqlite://{}/sqlite.db", app_dir.display()).to_string()
 }
 
 pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
@@ -58,16 +63,23 @@ pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
 }
 
 pub async fn get_settings(pool: &Pool<Sqlite>) -> Result<Value, sqlx::Error> {
-    let settings = sqlx::query_as::<_, Setting>(queries::GET_SETTINGS).fetch_one(pool).await?;
+    let settings = sqlx::query_as::<_, Setting>(queries::GET_SETTINGS)
+        .fetch_one(pool)
+        .await?;
     Ok(settings.to_json())
 }
 
 pub async fn get_skip_folders(pool: &Pool<Sqlite>) -> Result<Vec<String>, sqlx::Error> {
-    let skip_folders = sqlx::query_as::<_, SkipFolders>(queries::GET_SKIP_FOLDERS).fetch_one(pool).await?;
+    let skip_folders = sqlx::query_as::<_, SkipFolders>(queries::GET_SKIP_FOLDERS)
+        .fetch_one(pool)
+        .await?;
     Ok(skip_folders.get_skip_folder_list())
 }
 
-pub async fn update_hide_side_panel(pool: &Pool<Sqlite>, hide_panel: &i32) -> Result<(), sqlx::Error> {
+pub async fn update_hide_side_panel(
+    pool: &Pool<Sqlite>,
+    hide_panel: &i32,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_HIDE_PANEL)
         .bind(hide_panel)
         .execute(pool)
@@ -75,7 +87,10 @@ pub async fn update_hide_side_panel(pool: &Pool<Sqlite>, hide_panel: &i32) -> Re
     Ok(())
 }
 
-pub async fn update_skip_folders(pool: &Pool<Sqlite>, skip_folders: &str) -> Result<(), sqlx::Error> {
+pub async fn update_skip_folders(
+    pool: &Pool<Sqlite>,
+    skip_folders: &str,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_SKIP_FOLDERS)
         .bind(skip_folders)
         .execute(pool)
@@ -83,7 +98,11 @@ pub async fn update_skip_folders(pool: &Pool<Sqlite>, skip_folders: &str) -> Res
     Ok(())
 }
 
-pub async fn insert_folder_data(pool: &Pool<Sqlite>, folder_name: &str, path: &str) -> Result<(), sqlx::Error> {
+pub async fn insert_folder_data(
+    pool: &Pool<Sqlite>,
+    folder_name: &str,
+    path: &str,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::INSERT_NEW_FOLDER_DATA)
         .bind(folder_name)
         .bind(path)
@@ -107,16 +126,24 @@ pub async fn get_folder_info(pool: &Pool<Sqlite>, position: &i32) -> Result<Valu
     Ok(json!(folder_info))
 }
 
-pub async fn get_folder_data<R: Runtime>(app: &tauri::AppHandle<R>, pool: &Pool<Sqlite>, position: &i32) -> Result<Value, sqlx::Error> {
+pub async fn get_folder_data<R: Runtime>(
+    app: &tauri::AppHandle<R>,
+    pool: &Pool<Sqlite>,
+    position: &i32,
+) -> Result<Value, sqlx::Error> {
     let folder_data = sqlx::query_as::<_, FolderData>(queries::GET_FOLDER_DATA)
         .bind(position)
         .fetch_one(pool)
         .await?;
-    let app_dir = app.path_resolver().app_data_dir().unwrap();
+    let app_dir = app.path().app_data_dir().unwrap();
     Ok(folder_data.to_json(app_dir.to_str().unwrap().to_string()))
 }
 
-pub async fn insert_new_media(pool: &Pool<Sqlite>, folder_name: &str, data: &Vec<MediaItem>) -> Result<(), sqlx::Error> {
+pub async fn insert_new_media(
+    pool: &Pool<Sqlite>,
+    folder_name: &str,
+    data: &Vec<MediaItem>,
+) -> Result<(), sqlx::Error> {
     let mut tx = pool.begin().await?;
     let _ = sqlx::query(queries::CLEAR_MEDIA)
         .bind(folder_name)
@@ -197,16 +224,21 @@ pub async fn insert_new_media(pool: &Pool<Sqlite>, folder_name: &str, data: &Vec
 //                  WHEN folders.sort_type = 3 THEN media.year
 //                  ELSE media.path
 //                  END;
-pub async fn get_folder_media(pool: &Pool<Sqlite>, position: &i32, key: &str, filter_tags: &Vec<Tag>) -> Result<Vec<Value>, sqlx::Error> {
+pub async fn get_folder_media(
+    pool: &Pool<Sqlite>,
+    position: &i32,
+    key: &str,
+    filter_tags: &Vec<Tag>,
+) -> Result<Vec<Value>, sqlx::Error> {
     // construct query
     let mut query = String::from(
         "SELECT DISTINCT media.type as t, media.path, media.title, media.posters, media.year, media.file, media.seasons
         FROM media
         JOIN folders ON media.folder = folders.folder_name");
-    // only join when we need to do filtering such that 
+    // only join when we need to do filtering such that
     // for media like comic that does not have tag information
     // will not be filtered out during query
-    // since there is no tag for comic, 
+    // since there is no tag for comic,
     // hence impossible to filter any comic through frontend
     if !filter_tags.is_empty() {
         query.push_str(" JOIN tags ON media.path = tags.path");
@@ -214,19 +246,27 @@ pub async fn get_folder_media(pool: &Pool<Sqlite>, position: &i32, key: &str, fi
     query.push_str(" WHERE folders.position = ? AND title LIKE ? COLLATE NOCASE");
 
     let filter_query = if !filter_tags.is_empty() {
-        let tag_groups = filter_tags.iter()
-            .fold(std::collections::HashMap::new(), |mut acc, tag| {
-                acc.entry(tag.tag())
-                    .or_insert_with(Vec::new)
-                    .push(tag);
-                acc
-            });
+        let tag_groups =
+            filter_tags
+                .iter()
+                .fold(std::collections::HashMap::new(), |mut acc, tag| {
+                    acc.entry(tag.tag()).or_insert_with(Vec::new).push(tag);
+                    acc
+                });
 
         let mut q = String::from(" AND (");
-        let filter_query = tag_groups.iter()
-            .map(|(tag_label, tags)| format!("(tags.t = '{}' AND tags.name IN ({}))",
-                                             tag_label,
-                                             tags.iter().map(|t| format!("\'{}\'", t.value())).collect::<Vec<_>>().join(",")))
+        let filter_query = tag_groups
+            .iter()
+            .map(|(tag_label, tags)| {
+                format!(
+                    "(tags.t = '{}' AND tags.name IN ({}))",
+                    tag_label,
+                    tags.iter()
+                        .map(|t| format!("\'{}\'", t.value()))
+                        .collect::<Vec<_>>()
+                        .join(",")
+                )
+            })
             .collect::<Vec<_>>()
             .join("OR");
         q.push_str(&filter_query);
@@ -257,17 +297,19 @@ pub async fn get_folder_media(pool: &Pool<Sqlite>, position: &i32, key: &str, fi
     Ok(media_list.into_iter().map(|o| o.to_json()).collect())
 }
 
-pub async fn get_folder_media_tags(pool: &Pool<Sqlite>, position: &i32) -> Result<Vec<Value>, sqlx::Error> {
+pub async fn get_folder_media_tags(
+    pool: &Pool<Sqlite>,
+    position: &i32,
+) -> Result<Vec<Value>, sqlx::Error> {
     let tag_list = sqlx::query_as::<_, Tag>(queries::TAGS_IN_FOLDER)
         .bind(position)
         .fetch_all(pool)
         .await?;
 
-    let tag_groups = tag_list.iter()
+    let tag_groups = tag_list
+        .iter()
         .fold(std::collections::HashMap::new(), |mut acc, tag| {
-            acc.entry(tag.tag())
-                .or_insert_with(Vec::new)
-                .push(tag);
+            acc.entry(tag.tag()).or_insert_with(Vec::new).push(tag);
             acc
         });
 
@@ -295,7 +337,11 @@ pub async fn get_folder_media_tags(pool: &Pool<Sqlite>, position: &i32) -> Resul
     ])
 }
 
-pub async fn update_sort_type(pool: &Pool<Sqlite>, position: &i32, sort_type: &u8) -> Result<(), sqlx::Error> {
+pub async fn update_sort_type(
+    pool: &Pool<Sqlite>,
+    position: &i32,
+    sort_type: &u8,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_SORT_TYPE)
         .bind(sort_type)
         .bind(position)
@@ -304,7 +350,11 @@ pub async fn update_sort_type(pool: &Pool<Sqlite>, position: &i32, sort_type: &u
     Ok(())
 }
 
-pub async fn update_folder_path(pool: &Pool<Sqlite>, position: &i32, path: &str) -> Result<(), sqlx::Error> {
+pub async fn update_folder_path(
+    pool: &Pool<Sqlite>,
+    position: &i32,
+    path: &str,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_FOLDER_PATH)
         .bind(path)
         .bind(position)
@@ -326,7 +376,11 @@ pub async fn reorder_folder(pool: &Pool<Sqlite>, folder_name: &[&str]) -> Result
     Ok(())
 }
 
-pub async fn delete_folder(pool: &Pool<Sqlite>, name: &str, position: &i32) -> Result<(), sqlx::Error> {
+pub async fn delete_folder(
+    pool: &Pool<Sqlite>,
+    name: &str,
+    position: &i32,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::DELETE_FOLDER)
         .bind(name)
         .bind(position)
@@ -335,7 +389,11 @@ pub async fn delete_folder(pool: &Pool<Sqlite>, name: &str, position: &i32) -> R
     Ok(())
 }
 
-pub async fn update_folder_status(pool: &Pool<Sqlite>, status: &u8, position: &i32) -> Result<(), sqlx::Error> {
+pub async fn update_folder_status(
+    pool: &Pool<Sqlite>,
+    status: &u8,
+    position: &i32,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_FOLDER_STATUS)
         .bind(status)
         .bind(position)
@@ -344,7 +402,11 @@ pub async fn update_folder_status(pool: &Pool<Sqlite>, status: &u8, position: &i
     Ok(())
 }
 
-pub async fn get_folder_position(pool: &Pool<Sqlite>, name: &str, path: &str) -> Result<i32, sqlx::Error> {
+pub async fn get_folder_position(
+    pool: &Pool<Sqlite>,
+    name: &str,
+    path: &str,
+) -> Result<i32, sqlx::Error> {
     let position = sqlx::query_as::<_, Position>(queries::GET_FOLDER_POSITION)
         .bind(name)
         .bind(path)
@@ -354,8 +416,6 @@ pub async fn get_folder_position(pool: &Pool<Sqlite>, name: &str, path: &str) ->
 }
 
 pub async fn recover(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query(queries::RECOVER)
-        .execute(pool)
-        .await?;
+    let _ = sqlx::query(queries::RECOVER).execute(pool).await?;
     Ok(())
 }

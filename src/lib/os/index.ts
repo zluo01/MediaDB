@@ -1,12 +1,12 @@
 import { IFolder } from '@/type';
-import { open as openDialog } from '@tauri-apps/api/dialog';
+import { invoke } from '@tauri-apps/api/core';
+import { open as openDialog } from '@tauri-apps/plugin-dialog';
 import {
   isPermissionGranted,
   requestPermission,
   sendNotification,
-} from '@tauri-apps/api/notification';
-import { open } from '@tauri-apps/api/shell';
-import { invoke } from '@tauri-apps/api/tauri';
+} from '@tauri-apps/plugin-notification';
+import { open } from '@tauri-apps/plugin-shell';
 
 export async function openFile(path: string): Promise<void> {
   try {

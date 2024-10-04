@@ -1,10 +1,5 @@
-use std::{
-    fs,
-    path::Path,
-    path::PathBuf,
-    process::Command,
-};
 use std::process::Output;
+use std::{fs, path::Path, path::PathBuf, process::Command};
 
 pub fn get_relative_path(path: &Path, base: &Path) -> Option<PathBuf> {
     let relative_path = path.strip_prefix(base);
@@ -40,21 +35,32 @@ pub fn convert_image(src_path: &str, dst_path: &str) -> Result<(), String> {
         "-y",
         "-i",
         src_path,
-        "-c:v", "libsvtav1", "-an",
-        "-preset", "4",
-        "-vf", "scale='if(gt(a,320/480),320,-2)':'if(gt(a,320/480),-2,480)'",
-        "-loglevel", "fatal",
+        "-c:v",
+        "libsvtav1",
+        "-an",
+        "-preset",
+        "4",
+        "-vf",
+        "scale='if(gt(a,320/480),320,-2)':'if(gt(a,320/480),-2,480)'",
+        "-loglevel",
+        "fatal",
         &dst_conversion_path,
     ];
 
     let output = execute_command(&args);
 
     if !&output.status.success() {
-        return Err(format!("Fail to covert image. Raising error {}", String::from_utf8_lossy(&output.stderr)));
+        return Err(format!(
+            "Fail to covert image. Raising error {}",
+            String::from_utf8_lossy(&output.stderr)
+        ));
     }
 
     if let Err(e) = fs::rename(&dst_conversion_path, dst_path) {
-        return Err(format!("Fail to rename file from {:?} to {:?}. Raising error {}", &dst_conversion_path, dst_path, e));
+        return Err(format!(
+            "Fail to rename file from {:?} to {:?}. Raising error {}",
+            &dst_conversion_path, dst_path, e
+        ));
     }
 
     Ok(())

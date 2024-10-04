@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::ffi::OsString;
-
+use log::info;
 use serde_json::{json, Value};
 
 #[derive(Debug)]
@@ -71,7 +71,7 @@ pub struct Media {
     actors: Vec<String>,
     studios: Vec<String>,
 
-    season: String, // season number
+    season: String,  // season number
     episode: String, // episode number
 }
 
@@ -196,7 +196,10 @@ impl Media {
 
     pub fn tv_show(&self, season_map: Option<&HashMap<String, Vec<&Media>>>) -> Option<MediaItem> {
         if season_map.is_none() {
-            println!("Expect to get seasons data, but get none. {}", self.relative_path.to_string_lossy());
+            info!(
+                "Expect to get seasons data, but get none. {}",
+                self.relative_path.to_string_lossy()
+            );
             return None;
         }
         if let MediaType::TvShow = self.media_type {
@@ -206,7 +209,13 @@ impl Media {
                 .map(|(season, episodes)| {
                     let mut values = episodes.into_iter().map(|o| o).collect::<Vec<&&Media>>();
                     values.sort_by(|a, b| a.episode().cmp(b.episode()));
-                    return (season, values.iter().map(|o| o.episode_json()).collect::<Vec<Value>>());
+                    return (
+                        season,
+                        values
+                            .iter()
+                            .map(|o| o.episode_json())
+                            .collect::<Vec<Value>>(),
+                    );
                 })
                 .collect::<HashMap<&String, Vec<Value>>>();
             return Some(MediaItem {
@@ -247,7 +256,15 @@ impl Media {
             } else if p.starts_with("season") {
                 let season = p.split("-").collect::<Vec<&str>>();
                 if season.first().is_some() {
-                    poster_map.insert(season.first().unwrap().strip_prefix("season").unwrap().to_string(), Value::String(p.clone()));
+                    poster_map.insert(
+                        season
+                            .first()
+                            .unwrap()
+                            .strip_prefix("season")
+                            .unwrap()
+                            .to_string(),
+                        Value::String(p.clone()),
+                    );
                 }
             } else {
                 poster_map.insert(String::from("main"), Value::String(p.clone()));
@@ -338,4 +355,3 @@ impl MediaItem {
         &self.seasons
     }
 }
-

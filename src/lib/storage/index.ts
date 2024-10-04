@@ -6,7 +6,7 @@ import {
   IMediaData,
   ISetting,
 } from '@/type';
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 
 export async function getFolderList(): Promise<IFolder[]> {
   return (await invoke<IFolder[]>('get_folder_list')) || [];

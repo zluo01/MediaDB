@@ -1,6 +1,5 @@
 //language=sqlite
-pub const CREAT_TABLE_QUERY: &str =
-    "
+pub const CREAT_TABLE_QUERY: &str = "
     create table if not exists settings
     (
         settings_id INTEGER not null
@@ -67,57 +66,48 @@ pub const CREAT_TABLE_QUERY: &str =
     ";
 
 //language=sqlite
-pub const GET_SETTINGS: &str =
-    "
+pub const GET_SETTINGS: &str = "
     SELECT * FROM  settings
     ";
 
 //language=sqlite
-pub const GET_SKIP_FOLDERS: &str =
-    "
+pub const GET_SKIP_FOLDERS: &str = "
     SELECT skip_folders FROM settings
     ";
 
 //language=sqlite
-pub const UPDATE_HIDE_PANEL: &str =
-    "
+pub const UPDATE_HIDE_PANEL: &str = "
     UPDATE settings SET hide_panel = ? WHERE settings_id=0
     ";
 
 //language=sqlite
-pub const UPDATE_SKIP_FOLDERS: &str =
-    "
+pub const UPDATE_SKIP_FOLDERS: &str = "
     UPDATE settings SET skip_folders = ? WHERE settings_id=0
     ";
 
 //language=sqlite
-pub const INSERT_NEW_FOLDER_DATA: &str =
-    "
+pub const INSERT_NEW_FOLDER_DATA: &str = "
     INSERT INTO folders (folder_name, position, path)
     VALUES (?, (SELECT COUNT(folder_name) FROM folders), ?);
     ";
 
 //language=sqlite
-pub const GET_FOLDER_LIST: &str =
-    "
+pub const GET_FOLDER_LIST: &str = "
     SELECT folder_name, path, position from folders ORDER BY position
     ";
 
 //language=sqlite
-pub const GET_FOLDER_INFO: &str =
-    "
+pub const GET_FOLDER_INFO: &str = "
     SELECT folder_name, path, position from folders WHERE position=?
     ";
 
 //language=sqlite
-pub const GET_FOLDER_DATA: &str =
-    "
+pub const GET_FOLDER_DATA: &str = "
     SELECT * from folders WHERE position=?
     ";
 
 //language=sqlite
-pub const CLEAR_MEDIA: &str =
-    "
+pub const CLEAR_MEDIA: &str = "
     DELETE FROM media WHERE folder = ?;
     DELETE FROM tags  WHERE folder_name = ?;
     ";
@@ -129,58 +119,48 @@ pub const INSERT_NEW_MEDIA: &str =
     ";
 
 //language=sqlite
-pub const INSERT_NEW_TAG: &str =
-    "
+pub const INSERT_NEW_TAG: &str = "
     INSERT INTO tags (folder_name, path, name, t) VALUES (?,?,?,?) ON CONFLICT DO NOTHING
     ";
 
 //language=sqlite
-pub const UPDATE_SORT_TYPE: &str =
-    "
+pub const UPDATE_SORT_TYPE: &str = "
      UPDATE folders SET sort_type = ? WHERE position=?
     ";
 
 //language=sqlite
-pub const UPDATE_FOLDER_PATH: &str =
-    "
+pub const UPDATE_FOLDER_PATH: &str = "
      UPDATE folders SET path = ? WHERE position=?
     ";
 
 //language=sqlite
-pub const UPDATE_FOLDER_POSITION: &str =
-    "
+pub const UPDATE_FOLDER_POSITION: &str = "
      UPDATE folders SET position = ? WHERE folder_name=?
     ";
 
-
 //language=sqlite
-pub const DELETE_FOLDER: &str =
-    "
+pub const DELETE_FOLDER: &str = "
      DELETE FROM folders WHERE folder_name=?;
      UPDATE folders SET position = position -1 WHERE position > ?
     ";
 
 //language=sqlite
-pub const UPDATE_FOLDER_STATUS: &str =
-    "
+pub const UPDATE_FOLDER_STATUS: &str = "
      UPDATE folders SET status = ? WHERE position = ?
     ";
 
 //language=sqlite
-pub const GET_FOLDER_POSITION: &str =
-    "
+pub const GET_FOLDER_POSITION: &str = "
      SELECT position from folders WHERE folder_name=? AND path=?
     ";
 
 //language=sqlite
-pub const RECOVER: &str =
-    "
+pub const RECOVER: &str = "
      UPDATE folders SET status =2 WHERE status=1
     ";
 
 //language=sqlite
-pub const TAGS_IN_FOLDER: &str =
-    "
+pub const TAGS_IN_FOLDER: &str = "
     SELECT DISTINCT tags.t as tag, tags.name as value, tags.name AS label
     FROM tags
              JOIN folders ON tags.folder_name = folders.folder_name
