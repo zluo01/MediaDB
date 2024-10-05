@@ -16,7 +16,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@headlessui/react": "2.1.8",
+    "@headlessui/react": "2.1.9",
     "@hello-pangea/dnd": "17.0.0",
     "@heroicons/react": "2.1.5",
     "@tauri-apps/api": "1.6.0",
