@@ -28,7 +28,7 @@
     "react-select": "5.8.1",
     "swr": "2.2.5",
     "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log#v1",
-    "zustand": "4.5.5"
+    "zustand": "5.0.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "1.6.2",
