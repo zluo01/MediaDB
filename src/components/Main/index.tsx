@@ -27,8 +27,8 @@ function Home(): ReactElement {
   }
 
   return (
-    <div className="size-full overflow-auto scroll-smooth bg-default">
-      <div className="relative flex h-full flex-col p-8">
+    <div className="size-full overflow-y-auto scroll-smooth bg-default">
+      <div className="relative flex flex-col p-8">
         <DisplayView />
       </div>
       <footer className="fixed bottom-0 flex w-full flex-row flex-nowrap items-center justify-between bg-primary px-1">

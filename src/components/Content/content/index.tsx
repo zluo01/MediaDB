@@ -70,7 +70,12 @@ interface IContentProps {
   folderInfo: IFolderData;
 }
 
+const PAGE_SIZE = 48;
+
 function Content({ folderInfo }: IContentProps): ReactElement {
+  const [index, setIndex] = useState(1);
+  const loaderRef = useRef(null);
+
   const mediaData = useGetFolderMediaData(
     folderInfo.position,
     folderInfo.status,
@@ -160,6 +165,25 @@ function Content({ folderInfo }: IContentProps): ReactElement {
     };
   }, [folderInfo, column, open, mediaData]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        setIndex(prevState => prevState + 1);
+      }
+    });
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, []);
+
   return (
     <Fragment>
       <div
@@ -169,7 +193,7 @@ function Content({ folderInfo }: IContentProps): ReactElement {
           'sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12',
         )}
       >
-        {mediaData.map((media, index) => (
+        {mediaData.slice(0, index * PAGE_SIZE).map((media, index) => (
           <Context
             key={index}
             index={index}
@@ -181,6 +205,7 @@ function Content({ folderInfo }: IContentProps): ReactElement {
           </Context>
         ))}
       </div>
+      <div ref={loaderRef} className="-z-10 mt-[-35vh] w-full pb-6 opacity-0" />
       <Suspense>
         <Menu />
       </Suspense>

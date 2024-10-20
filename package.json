@@ -7,7 +7,7 @@
     "vite-dev": "vite",
     "vite-build": "tsc && vite build",
     "tauri": "tauri",
-    "dev": "WEBKIT_DISABLE_DMABUF_RENDERER=1 tauri dev",
+    "dev": "tauri dev",
     "build": "tauri build",
     "build-debug": "tauri build --debug",
     "format": "prettier --write .",
