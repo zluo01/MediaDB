@@ -13,20 +13,31 @@
     },
     {
       "groupName": "eslint",
-      "matchPackagePrefixes": ["eslint", "@typescript-eslint/"]
+      "matchPackagePrefixes": [
+        "@eslint",
+        "eslint",
+        "typescript-eslint",
+        "globals"
+      ]
     },
     {
       "groupName": "tauri",
-      "matchPackagePrefixes": ["@tauri-apps/"]
+      "matchPackagePrefixes": ["@tauri-apps/", "tauri"]
     },
     {
       "groupName": "styling",
       "matchPackagePrefixes": [
-        "@headlessui/",
+        "@radix-ui/",
+        "lucide-react",
+        "react-select",
+        "@hello-pangea/",
         "@heroicons/",
+        "tailwind",
         "tailwindcss",
         "autoprefixer",
-        "postcss"
+        "postcss",
+        "clsx",
+        "class-variance-authority"
       ]
     },
     {
