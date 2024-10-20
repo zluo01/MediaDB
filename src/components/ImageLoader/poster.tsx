@@ -6,8 +6,8 @@ function Poster({ cover, t, ...props }: IImageLoaderPops): ReactElement {
   return (
     <img
       className={clsx(
-        t === CoverType.POSTER ? 'w-full object-cover' : 'w-auto',
-        'h-full max-w-full bg-cover bg-no-repeat align-middle italic',
+        'h-full w-auto max-w-full bg-cover bg-no-repeat object-cover align-middle italic',
+        t === CoverType.POSTER && 'w-full transition-all hover:scale-105',
       )}
       src={cover}
       {...props}

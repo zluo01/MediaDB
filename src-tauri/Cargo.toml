@@ -1,6 +1,6 @@
 [package]
 name = "mediadb"
-version = "0.5.2"
+version = "0.5.3"
 description = "manager for movie and tv shows"
 authors = ["zluo01"]
 license = ""
@@ -9,17 +9,17 @@ edition = "2021"
 rust-version = "1.80.0"
 
 [build-dependencies]
-tauri-build = { version = "2.0.0", features = [] }
+tauri-build = { version = "2.0.1", features = [] }
 
 [dependencies]
-serde_json = "1.0.128"
+serde_json = "1.0.132"
 serde = { version = "1.0.210", features = ["derive"] }
-tauri = { version = "2.0.0", features = [ "protocol-asset"] }
-tauri-plugin-log = { version = "2.0.0" }
-tauri-plugin-single-instance = { version = "2.0.0" }
-tauri-plugin-shell = "2.0.0"
-tauri-plugin-notification = "2.0.0"
-tauri-plugin-dialog = "2.0.0"
+tauri = { version = "2.0.4", features = ["protocol-asset"] }
+tauri-plugin-log = { version = "2.0.1" }
+tauri-plugin-single-instance = { version = "2.0.1" }
+tauri-plugin-shell = "2.0.1"
+tauri-plugin-notification = "2.0.1"
+tauri-plugin-dialog = "2.0.1"
 roxmltree = "0.20.0"
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "sqlite"] }
 tokio = { version = "1.40.0", features = ["full"] }

@@ -483,6 +483,8 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
             let _ = show_window(app);
+            println!("{}, {args:?}, {cwd}", app.package_info().name);
+            app.emit("single-instance", Payload { args, cwd }).unwrap();
         }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init())
@@ -494,10 +496,6 @@ fn main() {
             ])
             .level(log_level)
             .build())
-        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
-            println!("{}, {argv:?}, {cwd}", app.package_info().name);
-            app.emit("single-instance", Payload { args: argv, cwd }).unwrap();
-        }))
         .invoke_handler(tauri::generate_handler![
             parser,
             get_setting,

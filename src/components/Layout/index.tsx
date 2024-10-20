@@ -10,9 +10,19 @@ export default function Layout() {
   const { mutate } = useSWRConfig();
 
   useEffect(() => {
+    const isDev = window.location.host.startsWith('localhost:');
+    // Disable the default context menu on production builds
+    if (!isDev) {
+      window.addEventListener('contextmenu', e => e.preventDefault());
+    }
+
     const unListen = listen('parsing', (e: Event<string>) => mutate(e.payload));
 
     return () => {
+      if (!isDev) {
+        window.removeEventListener('contextmenu', e => e.preventDefault());
+      }
+
       unListen.then(f => f()).catch(errorLog);
     };
   }, []);

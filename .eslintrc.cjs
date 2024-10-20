@@ -23,12 +23,11 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint'],
   rules: {
+    'react/prop-types': 'off',
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    indent: 'off',
-    '@typescript-eslint/indent': 'off',
     'no-array-constructor': 'off',
     '@typescript-eslint/no-array-constructor': 'error',
     'no-empty-function': 'off',
@@ -46,8 +45,5 @@ module.exports = {
         allow: ['warn', 'error', 'debug'],
       },
     ],
-    camelcase: 'off',
-    '@typescript-eslint/camelcase': 'off',
-    'react/no-unknown-property': ['error', { ignore: ['augmented-ui'] }],
   },
 };

@@ -1,8 +1,10 @@
-import Media from '@/components/Content/media';
-import { useMenuStore } from '@/lib/context';
+import Context from '@/components/Content/content/context';
+import Media from '@/components/Content/content/media';
+import { useFilterStore, useMenuStore, useSearchStore } from '@/lib/context';
 import { errorLog } from '@/lib/log';
 import { openFile } from '@/lib/os';
-import { IFolderData, IMediaData, MediaType } from '@/type';
+import { getFolderMedia } from '@/lib/storage';
+import { FolderStatus, IFolderData, IMediaData, MediaType, SORT } from '@/type';
 import clsx from 'clsx';
 import join from 'lodash/join';
 import {
@@ -10,13 +12,37 @@ import {
   lazy,
   ReactElement,
   Suspense,
-  useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
 
 const Menu = lazy(() => import('./menu'));
+
+function useGetFolderMediaData(
+  folderIndex: number,
+  status: FolderStatus,
+  sortType: SORT,
+) {
+  const { tags } = useFilterStore();
+  const { searchKey } = useSearchStore();
+  const [media, setMedia] = useState<IMediaData[]>([]);
+
+  useEffect(() => {
+    getFolderMedia(folderIndex, searchKey, tags)
+      .then(o => {
+        setMedia(o);
+        const footer = document.getElementById('footer');
+        if (footer) {
+          footer.innerText = `Total ${o.length}`;
+        }
+        return null;
+      })
+      .catch(e => errorLog(e));
+  }, [folderIndex, searchKey, tags, sortType, status]);
+
+  return media;
+}
 
 function useGetColumnSize() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -41,32 +67,15 @@ function useGetColumnSize() {
 }
 
 interface IContentProps {
-  folderIndo: IFolderData;
-  mediaData: IMediaData[];
+  folderInfo: IFolderData;
 }
 
-const PAGE_SIZE = 24;
-
-function Content({ folderIndo, mediaData }: IContentProps): ReactElement {
-  const [isLoading, setIsLoading] = useState(false);
-  const [index, setIndex] = useState(1);
-  const [items, setItems] = useState(mediaData.slice(0, PAGE_SIZE));
-  const loaderRef = useRef(null);
-
-  const fetchData = useCallback(async () => {
-    if (isLoading) {
-      return;
-    }
-
-    setIsLoading(true);
-    setItems(prevItems => [
-      ...prevItems,
-      ...mediaData.slice(index * PAGE_SIZE, (index + 1) * PAGE_SIZE),
-    ]);
-    setIndex(prevIndex => prevIndex + 1);
-
-    setIsLoading(false);
-  }, [index, isLoading, mediaData]);
+function Content({ folderInfo }: IContentProps): ReactElement {
+  const mediaData = useGetFolderMediaData(
+    folderInfo.position,
+    folderInfo.status,
+    folderInfo.sort,
+  );
 
   const { menuStatus, openMenu } = useMenuStore();
 
@@ -120,14 +129,14 @@ function Content({ folderIndo, mediaData }: IContentProps): ReactElement {
           const media = mediaData[selected.current];
           switch (media.type) {
             case MediaType.COMIC:
-              openFile(join([folderIndo.path, media.file], '/'));
+              openFile(join([folderInfo.path, media.file], '/'));
               break;
             case MediaType.MOVIE:
-              openFile(join([folderIndo.path, media.path, media.file], '/'));
+              openFile(join([folderInfo.path, media.path, media.file], '/'));
               break;
             case MediaType.TV_SERIES:
               openMenu({
-                folder: folderIndo,
+                folder: folderInfo,
                 data: media,
               });
               break;
@@ -149,26 +158,7 @@ function Content({ folderIndo, mediaData }: IContentProps): ReactElement {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [folderIndo, column, open]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      const target = entries[0];
-      if (target.isIntersecting) {
-        fetchData().catch(errorLog);
-      }
-    });
-
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
-
-    return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
-      }
-    };
-  }, [fetchData]);
+  }, [folderInfo, column, open, mediaData]);
 
   return (
     <Fragment>
@@ -179,17 +169,18 @@ function Content({ folderIndo, mediaData }: IContentProps): ReactElement {
           'sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12',
         )}
       >
-        {items.map((media, index) => (
-          <Media
+        {mediaData.map((media, index) => (
+          <Context
             key={index}
             index={index}
             media={media}
+            folder={folderInfo}
             select={() => (selected.current = index)}
-            folder={folderIndo}
-          />
+          >
+            <Media media={media} folder={folderInfo} />
+          </Context>
         ))}
       </div>
-      <div ref={loaderRef} className="-z-10 mt-[-35vh] w-full pb-6 opacity-0" />
       <Suspense>
         <Menu />
       </Suspense>

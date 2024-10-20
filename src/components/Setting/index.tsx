@@ -1,6 +1,8 @@
 import Loading from '@/components/Loading';
 import FolderList from '@/components/Setting/FolderList';
 import SkipFolderList from '@/components/Setting/SkipFolderList';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { useModalStore } from '@/lib/context';
 import { notify } from '@/lib/os';
 import {
@@ -9,9 +11,7 @@ import {
   useHidePanelTrigger,
 } from '@/lib/queries';
 import { ModalType } from '@/type';
-import { Checkbox } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/16/solid';
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { PlusIcon } from '@radix-ui/react-icons';
 import { lazy, ReactElement, Suspense } from 'react';
 
 const SkipFolderModal = lazy(() => import('@/components/Modal/SkipFolder'));
@@ -41,17 +41,15 @@ function Setting(): ReactElement {
       <div className="flex items-center p-2">
         <Checkbox
           checked={setting.showSidePanel}
-          onChange={handleCheckBox}
-          className="group size-6 cursor-pointer rounded bg-white/10 p-1 ring-1 ring-inset ring-white/15 data-[checked]:bg-white"
-        >
-          <CheckIcon className="hidden size-4 fill-black group-data-[checked]:block" />
-        </Checkbox>
-        <label
+          onCheckedChange={handleCheckBox}
+          className="bg-white/10 ring-1 ring-inset ring-white/15 data-[state=checked]:bg-white"
+        />
+        <Label
           htmlFor="default-checkbox"
           className="ml-2 text-base font-medium text-primary"
         >
           Show Slide Panel Button Name.
-        </label>
+        </Label>
       </div>
       <div className="flex w-full flex-row items-center justify-between px-2">
         <span className="py-2 text-lg text-secondary">Imported Folders</span>

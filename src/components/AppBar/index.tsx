@@ -1,6 +1,5 @@
 import { useSearchStore } from '@/lib/context';
-import { Input } from '@headlessui/react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -29,7 +28,7 @@ function AppBar() {
         <div className="pointer-events-none absolute flex h-full items-center justify-center px-4">
           <MagnifyingGlassIcon className="size-5 text-[#21e18c]" />
         </div>
-        <Input
+        <input
           type="text"
           className={clsx(
             'inline-flex w-40 rounded-lg bg-white/20 py-2 pl-10 pr-2 text-base text-primary transition-all duration-300',
