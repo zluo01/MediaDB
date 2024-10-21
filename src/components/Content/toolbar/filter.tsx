@@ -1,4 +1,10 @@
 import { TagFilterSelect } from '@/components/Content/toolbar/tag-filter-select';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { useFilterStore } from '@/lib/context';
@@ -13,7 +19,7 @@ interface IFilerSection {
 }
 
 function Filters({ folderIndex }: IFilerSection): ReactElement {
-  const { tags, addTag, clear } = useFilterStore();
+  const { tags, addTag } = useFilterStore();
 
   const { data: options } = useGetFolderMediaTags(folderIndex);
 
@@ -28,43 +34,41 @@ function Filters({ folderIndex }: IFilerSection): ReactElement {
         aria-describedby="Filter"
       >
         <div className="relative flex size-full flex-col items-start overflow-y-scroll pb-6">
-          <div className="sticky top-0 z-10 w-full bg-default px-4 py-2">
+          <div className="sticky top-0 z-10 w-full bg-default px-4 pb-2 pt-4">
             <TagFilterSelect options={options} />
           </div>
-          {options?.map(option => {
-            const filteredTags = tags.filter(o => o.tag === option.label);
-            return (
-              <div key={option.label} className="w-full px-4">
-                <div className="flex flex-row items-center justify-between">
-                  <span className="text-2xl capitalize text-secondary">
+          <Accordion
+            type="multiple"
+            className="w-full px-4"
+            defaultValue={[options?.[0].label || '']}
+          >
+            {options?.map(option => {
+              const filteredTags = tags.filter(o => o.tag === option.label);
+              return (
+                <AccordionItem key={option.label} value={option.label}>
+                  <AccordionTrigger className="appearance-none text-2xl capitalize text-secondary">
                     {option.label}
-                  </span>
-                  <button
-                    className="text-xl text-secondary focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:opacity-30"
-                    disabled={filteredTags.length === 0}
-                    onClick={() => clear(option.label)}
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="flex flex-row flex-wrap gap-y-2 space-x-1 py-2">
-                  {option.options.map((value, index) => (
-                    <Badge
-                      key={index}
-                      variant="outline"
-                      onClick={() => addTag(value)}
-                      className={clsx(
-                        'cursor-pointer rounded-full border-selected bg-default px-2.5 py-0.5 text-sm font-medium text-selected hover:bg-hover hover:text-selected',
-                        hasTag(filteredTags, value) && 'bg-selected text-hover',
-                      )}
-                    >
-                      {value.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+                  </AccordionTrigger>
+                  <AccordionContent className="flex flex-row flex-wrap gap-y-2 space-x-1 pt-0.5">
+                    {option.options.map((value, index) => (
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        onClick={() => addTag(value)}
+                        className={clsx(
+                          'cursor-pointer rounded-full border-selected bg-default px-2.5 py-0.5 text-sm font-medium text-selected hover:bg-hover hover:text-selected',
+                          hasTag(filteredTags, value) &&
+                            'bg-selected text-hover',
+                        )}
+                      >
+                        {value.label}
+                      </Badge>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
         </div>
       </DialogContent>
     </Dialog>
