@@ -163,9 +163,11 @@ function Content({ folderInfo }: IContentProps): ReactElement {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [folderInfo, column, open, mediaData]);
+  }, [folderInfo, column, mediaData, menuStatus, openMenu]);
 
   useEffect(() => {
+    let observerRefValue = null;
+
     const observer = new IntersectionObserver(entries => {
       const target = entries[0];
       if (target.isIntersecting) {
@@ -175,11 +177,12 @@ function Content({ folderInfo }: IContentProps): ReactElement {
 
     if (loaderRef.current) {
       observer.observe(loaderRef.current);
+      observerRefValue = loaderRef.current;
     }
 
     return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
+      if (observerRefValue) {
+        observer.unobserve(observerRefValue);
       }
     };
   }, []);

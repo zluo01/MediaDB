@@ -25,7 +25,7 @@ export default function Layout() {
 
       unListen.then(f => f()).catch(errorLog);
     };
-  }, []);
+  }, [mutate]);
 
   return (
     <Fragment>

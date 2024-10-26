@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import pluginPromise from 'eslint-plugin-promise';
 import pluginReact from 'eslint-plugin-react';
+import pluginReactHooks from 'eslint-plugin-react-hooks';
 import tailwind from 'eslint-plugin-tailwindcss';
 import globals from 'globals';
 import ts from 'typescript-eslint';
@@ -16,9 +17,11 @@ export default [
   pluginPromise.configs['flat/recommended'],
   eslintConfigPrettier,
   {
+    plugins: {
+      'react-hooks': pluginReactHooks,
+    },
     rules: {
       'react/prop-types': 'off',
-      '@typescript-eslint/no-use-before-define': 'off',
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-array-constructor': 'error',
@@ -30,6 +33,7 @@ export default [
         },
       ],
       'no-console': 'error',
+      ...pluginReactHooks.configs.recommended.rules,
     },
   },
   {
