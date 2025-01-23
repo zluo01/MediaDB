@@ -9,14 +9,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/solid';
 import { Reorder, useDragControls } from 'motion/react';
-import {
-  lazy,
-  MutableRefObject,
-  ReactElement,
-  Suspense,
-  useRef,
-  useState,
-} from 'react';
+import { lazy, MutableRefObject, Suspense, useRef, useState } from 'react';
 
 const EditFolderModal = lazy(() => import('@/components/Modal/Folder'));
 
@@ -27,12 +20,7 @@ interface IFolderItemProps {
   container: MutableRefObject<null>;
 }
 
-function FolderItem({
-  folder,
-  open,
-  remove,
-  container,
-}: IFolderItemProps): ReactElement {
+function FolderItem({ folder, open, remove, container }: IFolderItemProps) {
   const controls = useDragControls();
 
   return (
@@ -81,7 +69,7 @@ function FolderItem({
   );
 }
 
-function FolderList(): ReactElement {
+function FolderList() {
   const container = useRef(null);
 
   const { openModal } = useModalStore();

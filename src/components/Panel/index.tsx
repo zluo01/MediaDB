@@ -3,12 +3,12 @@ import { useGetFolderListQuery, useGetSettingQuery } from '@/lib/queries';
 import { ModalType } from '@/type';
 import { Cog6ToothIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
-import { Fragment, lazy, ReactElement, Suspense } from 'react';
+import { Fragment, lazy, Suspense } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const DirectoryModal = lazy(() => import('@/components/Modal/Directory'));
 
-function SidePanel(): ReactElement {
+function SidePanel() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();

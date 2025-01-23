@@ -3,10 +3,9 @@ import Loading from '@/components/Loading';
 import ErrorHandler from '@/components/error';
 import { useGetFolderDataQuery } from '@/lib/queries';
 import { FolderStatus } from '@/type';
-import { ReactElement } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-function Home(): ReactElement {
+function Home() {
   const [searchParams] = useSearchParams();
 
   const route = parseInt(searchParams.get('id') || '0');

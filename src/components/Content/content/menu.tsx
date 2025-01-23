@@ -6,9 +6,8 @@ import { useMenuStore } from '@/lib/context';
 import { openFile } from '@/lib/os';
 import { CoverType, IEpisode } from '@/type';
 import join from 'lodash/join';
-import { ReactElement } from 'react';
 
-export default function TVShowCardMenu(): ReactElement {
+export default function TVShowCardMenu() {
   const { menuStatus, folder, data, closeMenu } = useMenuStore();
 
   async function openEpisodeFile(media: IEpisode) {

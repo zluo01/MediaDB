@@ -15,13 +15,13 @@ import { useCreateLibraryTrigger } from '@/lib/queries';
 import { IFolder, ModalType } from '@/type';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 
 interface IDirectoryModal {
   folderList?: IFolder[];
 }
 
-function DirectoryModal({ folderList }: IDirectoryModal): ReactElement {
+function DirectoryModal({ folderList }: IDirectoryModal) {
   const { modalState, closeModal } = useModalStore();
 
   const [folderName, setFolderName] = useState('');

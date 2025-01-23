@@ -1,13 +1,12 @@
 import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import { FolderIcon, TrashIcon } from '@heroicons/react/24/solid';
-import { ReactElement } from 'react';
 
 interface ISkipFolderListProps {
   skipFolders: string[];
 }
 
-function SkipFolderList({ skipFolders }: ISkipFolderListProps): ReactElement {
+function SkipFolderList({ skipFolders }: ISkipFolderListProps) {
   const { trigger } = useUpdateSkipFoldersTrigger();
 
   async function handleRemove(folder: string) {

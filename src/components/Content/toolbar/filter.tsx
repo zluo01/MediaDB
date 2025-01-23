@@ -12,13 +12,12 @@ import { useGetFolderMediaTags } from '@/lib/queries';
 import { hasTag } from '@/lib/utils';
 import { FunnelIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
-import { ReactElement } from 'react';
 
 interface IFilerSection {
   folderIndex: number;
 }
 
-function Filters({ folderIndex }: IFilerSection): ReactElement {
+function Filters({ folderIndex }: IFilerSection) {
   const { tags, addTag } = useFilterStore();
 
   const { data: options } = useGetFolderMediaTags(folderIndex);

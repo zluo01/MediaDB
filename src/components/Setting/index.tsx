@@ -12,11 +12,11 @@ import {
 } from '@/lib/queries';
 import { ModalType } from '@/type';
 import { PlusIcon } from '@radix-ui/react-icons';
-import { lazy, ReactElement, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 
 const SkipFolderModal = lazy(() => import('@/components/Modal/SkipFolder'));
 
-function Setting(): ReactElement {
+function Setting() {
   const { openModal } = useModalStore();
 
   const { trigger } = useHidePanelTrigger();

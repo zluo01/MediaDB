@@ -8,14 +8,14 @@ import { useMenuStore } from '@/lib/context';
 import { openFile } from '@/lib/os';
 import { IFolder, IMediaData, MediaType } from '@/type';
 import join from 'lodash/join';
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 interface IContextProps {
   index: number;
   media: IMediaData;
   folder: IFolder;
   select: VoidFunction;
-  children: ReactElement;
+  children: ReactNode;
 }
 
 async function openContainedFolder(

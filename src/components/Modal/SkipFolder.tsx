@@ -14,13 +14,13 @@ import { notify } from '@/lib/os';
 import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
 import { ModalType } from '@/type';
 import clsx from 'clsx';
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 
 interface ISkipFolderModal {
   skipFolders: string[];
 }
 
-function SkipFolderModal({ skipFolders }: ISkipFolderModal): ReactElement {
+function SkipFolderModal({ skipFolders }: ISkipFolderModal) {
   const { modalState, closeModal } = useModalStore();
 
   const [folderName, setFolderName] = useState('');

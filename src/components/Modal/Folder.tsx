@@ -14,13 +14,13 @@ import { useGetFolderQuery, useUpdateFolderPathTrigger } from '@/lib/queries';
 import { ModalType } from '@/type';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface IFolderNameEdit {
   index: number;
 }
 
-function EditFolderModal({ index }: IFolderNameEdit): ReactElement {
+function EditFolderModal({ index }: IFolderNameEdit) {
   const { modalState, closeModal } = useModalStore();
 
   const { data: folder } = useGetFolderQuery(index);

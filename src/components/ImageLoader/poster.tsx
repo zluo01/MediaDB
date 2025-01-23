@@ -1,8 +1,7 @@
 import { CoverType, IImageLoaderPops } from '@/type';
 import clsx from 'clsx';
-import { ReactElement } from 'react';
 
-function Poster({ cover, t, ...props }: IImageLoaderPops): ReactElement {
+function Poster({ cover, t, ...props }: IImageLoaderPops) {
   return (
     <img
       className={clsx(
