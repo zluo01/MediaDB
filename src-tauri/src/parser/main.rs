@@ -84,7 +84,7 @@ fn read_dir<R: tauri::Runtime>(
                             media_source.add_poster(relative_path.unwrap().into_os_string())
                         }
                     }
-                    "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" => {
+                    "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" | "rmvb" => {
                         media_source.add_media(relative_path.unwrap().into_os_string())
                     }
                     "cbr" | "cbz" | "cbt" | "cb7" => {

@@ -1,4 +1,5 @@
 use crate::parser::types::{Media, MediaSource, MediaType};
+use log::error;
 use roxmltree::Node;
 use std::collections::VecDeque;
 use std::ffi::OsString;
@@ -54,7 +55,7 @@ pub(crate) fn parse_nfo(
     match nfo_type {
         "movie" => parse_movie_nfo(&mut media, nfo_node, media_source),
         "tvshow" => parse_tvshow_nfo(&mut media, nfo_node, media_source),
-        "episodedetails" => parse_episode_nfo(&mut media, nfo_node),
+        "episodedetails" => parse_episode_nfo(&mut media, nfo_node, &nfo_path, media_source),
         &_ => panic!("Get unknown type {} for parsing", nfo_type),
     }
 
@@ -70,7 +71,7 @@ fn is_valid_source(o: &Node) -> bool {
     if tag_name == "movie" || tag_name == "tvshow" || tag_name == "episodedetails" {
         return true;
     }
-    return false;
+    false
 }
 
 fn parse_movie_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) {
@@ -181,7 +182,12 @@ fn parse_tvshow_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) 
     media.set_posters(get_poster_filename(media_source));
 }
 
-fn parse_episode_nfo(media: &mut Media, root: &Node) {
+fn parse_episode_nfo(
+    media: &mut Media,
+    root: &Node,
+    nfo_path: &PathBuf,
+    media_source: &MediaSource,
+) {
     media.set_media_type(MediaType::Episode);
 
     // parsing tags
@@ -195,11 +201,6 @@ fn parse_episode_nfo(media: &mut Media, root: &Node) {
             "title" => {
                 if let Some(v) = text {
                     media.set_title(v.to_string());
-                }
-            }
-            "original_filename" => {
-                if let Some(v) = text {
-                    media.set_file(v.to_string());
                 }
             }
             "season" => {
@@ -220,27 +221,66 @@ fn parse_episode_nfo(media: &mut Media, root: &Node) {
             }
         }
     }
+    
+    if let Some(episode_filename) =
+        get_episode_filename(nfo_path, media_source, media.season(), media.episode())
+    {
+        media.set_file(episode_filename)
+    } else {
+        error!("Fail to find episode filename for {:?} from {:?}", nfo_path, media_source.media())
+    }
 }
 
 fn get_actor_name(node: &Node) -> Vec<String> {
-    return node
-        .children()
+    node.children()
         .filter(|v| v.tag_name().name() == "name")
         .map(|v| v.text())
         .filter(|v| v.is_some())
         .map(|v| v.unwrap())
         .filter(|v| !v.is_empty())
         .map(|v| v.to_string())
-        .collect::<Vec<String>>();
+        .collect::<Vec<String>>()
 }
 
 fn get_poster_filename(media_source: &MediaSource) -> Vec<String> {
-    return media_source
+    media_source
         .poster()
         .iter()
         .map(|o| Path::new(o.as_os_str()))
         .map(|o| o.file_name())
         .filter(|o| o.is_some())
         .map(|o| o.unwrap().to_str().unwrap().to_string())
-        .collect::<Vec<String>>();
+        .collect::<Vec<String>>()
+}
+
+fn get_episode_filename(
+    nfo_path: &PathBuf,
+    media_source: &MediaSource,
+    season: &str,
+    episode: &str,
+) -> Option<String> {
+    if let Some(nfo_stem) = nfo_path.file_stem() {
+        for media in media_source.media() {
+            let media_path = Path::new(media);
+            if let Some(media_stem) = media_path.file_stem() {
+                if media_stem.eq(nfo_stem)
+                    || media_stem
+                        .to_str()
+                        .unwrap()
+                        .to_lowercase()
+                        .contains(format!("s{}e{}", season, episode).as_str())
+                {
+                    return Some(
+                        media_path
+                            .file_name()
+                            .unwrap()
+                            .to_str()
+                            .unwrap()
+                            .to_string(),
+                    );
+                }
+            }
+        }
+    }
+    None
 }
