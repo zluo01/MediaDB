@@ -7,15 +7,7 @@ import { getFolderMedia } from '@/lib/storage';
 import { FolderStatus, IFolderData, IMediaData, MediaType, SORT } from '@/type';
 import clsx from 'clsx';
 import join from 'lodash/join';
-import {
-  Fragment,
-  lazy,
-  ReactElement,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, lazy, Suspense, useEffect, useRef, useState } from 'react';
 
 const Menu = lazy(() => import('./menu'));
 
@@ -48,14 +40,18 @@ function useGetColumnSize() {
   const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    window.addEventListener('resize', () => {
-      setWidth(window.innerWidth);
-    });
-    return () => {
-      window.removeEventListener('resize', () => {
+    const controller = new AbortController();
+
+    window.addEventListener(
+      'resize',
+      () => {
         setWidth(window.innerWidth);
-      });
-    };
+      },
+      {
+        signal: controller.signal,
+      },
+    );
+    return () => controller.abort();
   }, []);
 
   if (width < 2560) {
@@ -70,12 +66,7 @@ interface IContentProps {
   folderInfo: IFolderData;
 }
 
-const PAGE_SIZE = 48;
-
-function Content({ folderInfo }: IContentProps): ReactElement {
-  const [index, setIndex] = useState(1);
-  const loaderRef = useRef(null);
-
+function Content({ folderInfo }: IContentProps) {
   const mediaData = useGetFolderMediaData(
     folderInfo.position,
     folderInfo.status,
@@ -89,6 +80,8 @@ function Content({ folderInfo }: IContentProps): ReactElement {
   const selected = useRef<number>(-1);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     function focus() {
       const anchor = document.getElementById(`c${selected.current}`);
       if (anchor) {
@@ -158,34 +151,12 @@ function Content({ folderInfo }: IContentProps): ReactElement {
       }
     }
 
-    document.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [folderInfo, column, mediaData, menuStatus, openMenu]);
-
-  useEffect(() => {
-    let observerRefValue = null;
-
-    const observer = new IntersectionObserver(entries => {
-      const target = entries[0];
-      if (target.isIntersecting) {
-        setIndex(prevState => prevState + 1);
-      }
+    document.addEventListener('keydown', handleKeyPress, {
+      signal: controller.signal,
     });
 
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-      observerRefValue = loaderRef.current;
-    }
-
-    return () => {
-      if (observerRefValue) {
-        observer.unobserve(observerRefValue);
-      }
-    };
-  }, []);
+    return () => controller.abort();
+  }, [folderInfo, column, mediaData, menuStatus, openMenu]);
 
   return (
     <Fragment>
@@ -196,7 +167,7 @@ function Content({ folderInfo }: IContentProps): ReactElement {
           'sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12',
         )}
       >
-        {mediaData.slice(0, index * PAGE_SIZE).map((media, index) => (
+        {mediaData.map((media, index) => (
           <Context
             key={index}
             index={index}
@@ -208,7 +179,6 @@ function Content({ folderInfo }: IContentProps): ReactElement {
           </Context>
         ))}
       </div>
-      <div ref={loaderRef} className="-z-10 mt-[-35vh] w-full pb-6 opacity-0" />
       <Suspense>
         <Menu />
       </Suspense>
