@@ -1,5 +1,6 @@
 import Context from '@/components/Content/content/context';
 import Media from '@/components/Content/content/media';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useFilterStore, useMenuStore, useSearchStore } from '@/lib/context';
 import { errorLog } from '@/lib/log';
 import { openFile } from '@/lib/os';
@@ -20,8 +21,10 @@ function useGetFolderMediaData(
   const { searchKey } = useSearchStore();
   const [media, setMedia] = useState<IMediaData[]>([]);
 
+  const debounceSearch = useDebounce(searchKey);
+
   useEffect(() => {
-    getFolderMedia(folderIndex, searchKey, tags)
+    getFolderMedia(folderIndex, debounceSearch, tags)
       .then(o => {
         setMedia(o);
         const footer = document.getElementById('footer');
@@ -31,7 +34,7 @@ function useGetFolderMediaData(
         return null;
       })
       .catch(e => errorLog(e));
-  }, [folderIndex, searchKey, tags, sortType, status]);
+  }, [folderIndex, debounceSearch, tags, sortType, status]);
 
   return media;
 }
