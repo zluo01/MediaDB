@@ -1,14 +1,13 @@
-import { CoverType, IImageLoaderPops } from '@/type';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
+import React from 'react';
 
-function Poster({ cover, t, ...props }: IImageLoaderPops) {
+function Poster({ className, ...props }: React.ComponentProps<'img'>) {
   return (
     <img
-      className={clsx(
+      className={cn(
         'h-full w-auto max-w-full bg-cover bg-no-repeat object-cover align-middle italic',
-        t === CoverType.POSTER && 'w-full transition-all hover:scale-105',
+        className,
       )}
-      src={cover}
       {...props}
       alt={props.alt}
       loading="lazy"

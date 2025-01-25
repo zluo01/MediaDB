@@ -74,3 +74,13 @@ export const useFilterStore = create<IFilterState>()(set => ({
     })),
   reset: () => set({ tags: [] }),
 }));
+
+interface IFooterState {
+  footer: string;
+  update: (payload: string) => void;
+}
+
+export const useFooterStore = create<IFooterState>()(set => ({
+  footer: '',
+  update: footer => set({ footer }),
+}));

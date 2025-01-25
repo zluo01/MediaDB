@@ -1,7 +1,10 @@
 import { useModalStore } from '@/lib/context';
 import { notify } from '@/lib/os';
-import { useGetFolderListQuery, useRemoveFolderTrigger } from '@/lib/queries';
-import { updateFolderList } from '@/lib/storage';
+import {
+  updateFolderOrder,
+  useGetFolderListQuery,
+  useRemoveFolderTrigger,
+} from '@/lib/queries';
 import { IFolder, ModalType } from '@/type';
 import {
   FolderIcon,
@@ -74,8 +77,7 @@ function FolderList() {
 
   const { openModal } = useModalStore();
 
-  const { data: folderList, mutate: revalidateFolderList } =
-    useGetFolderListQuery();
+  const { data: folderList } = useGetFolderListQuery();
   const { trigger } = useRemoveFolderTrigger();
 
   const [folderIndex, setFolderIndex] = useState(-1);
@@ -99,8 +101,7 @@ function FolderList() {
       return;
     }
     try {
-      await updateFolderList(newOrder);
-      await revalidateFolderList();
+      await updateFolderOrder(newOrder);
     } catch (e) {
       await notify(`Drag End: ${e}`);
     }

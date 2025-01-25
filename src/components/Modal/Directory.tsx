@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useModalStore } from '@/lib/context';
 import { getDirectory, notify } from '@/lib/os';
-import { useCreateLibraryTrigger } from '@/lib/queries';
+import { createLibrary } from '@/lib/queries';
 import { IFolder, ModalType } from '@/type';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
@@ -31,10 +31,6 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
   const open = modalState === ModalType.DIRECTORY;
   const error = folderName && folderList?.map(o => o.name).includes(folderName);
 
-  const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
-    folderList?.length || 0,
-  );
-
   async function handleDirectory() {
     const path = await getDirectory();
     const name = path.split('\\')!.pop()!.split('/').pop() as string;
@@ -48,9 +44,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
     e.preventDefault();
     setLoading(true);
     try {
-      await createLibraryTrigger({
-        folder: { position: 0, name: folderName, path: folderPath },
-      });
+      await createLibrary({ position: 0, name: folderName, path: folderPath });
       close();
     } catch (e) {
       await notify(`Import Folders Error: ${e}`);

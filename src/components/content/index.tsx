@@ -1,43 +1,24 @@
-import Context from '@/components/Content/content/context';
-import Media from '@/components/Content/content/media';
+import Context from '@/components/content/context';
+import Media from '@/components/content/media';
+import ErrorHandler from '@/components/error';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useFilterStore, useMenuStore, useSearchStore } from '@/lib/context';
+import {
+  useFilterStore,
+  useFooterStore,
+  useMenuStore,
+  useSearchStore,
+} from '@/lib/context';
 import { errorLog } from '@/lib/log';
 import { openFile } from '@/lib/os';
-import { getFolderMedia } from '@/lib/storage';
-import { FolderStatus, IFolderData, IMediaData, MediaType, SORT } from '@/type';
-import clsx from 'clsx';
+import { useGetFolderContent, useGetFolderDataQuery } from '@/lib/queries';
+import { cn } from '@/lib/utils';
+import { FolderStatus, MediaType } from '@/type';
 import join from 'lodash/join';
-import { Fragment, lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Loading, LoadingContent } from 'src/components/loading';
 
 const Menu = lazy(() => import('./menu'));
-
-function useGetFolderMediaData(
-  folderIndex: number,
-  status: FolderStatus,
-  sortType: SORT,
-) {
-  const { tags } = useFilterStore();
-  const { searchKey } = useSearchStore();
-  const [media, setMedia] = useState<IMediaData[]>([]);
-
-  const debounceSearch = useDebounce(searchKey);
-
-  useEffect(() => {
-    getFolderMedia(folderIndex, debounceSearch, tags)
-      .then(o => {
-        setMedia(o);
-        const footer = document.getElementById('footer');
-        if (footer) {
-          footer.innerText = `Total ${o.length}`;
-        }
-        return null;
-      })
-      .catch(e => errorLog(e));
-  }, [folderIndex, debounceSearch, tags, sortType, status]);
-
-  return media;
-}
 
 function useGetColumnSize() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -65,22 +46,39 @@ function useGetColumnSize() {
   return 12;
 }
 
-interface IContentProps {
-  folderInfo: IFolderData;
-}
+function Content() {
+  const [searchParams] = useSearchParams();
 
-function Content({ folderInfo }: IContentProps) {
-  const mediaData = useGetFolderMediaData(
-    folderInfo.position,
-    folderInfo.status,
-    folderInfo.sort,
-  );
+  const folderId = parseInt(searchParams.get('id') || '0');
+
+  const { update } = useFooterStore();
+  const { tags } = useFilterStore();
+  const { searchKey } = useSearchStore();
+  const debounceSearch = useDebounce(searchKey);
+
+  const { data: folderInfo, isLoading: folderLoadingState } =
+    useGetFolderDataQuery(folderId);
+  const {
+    data: media,
+    isLoading: contentLoadingState,
+    mutate,
+  } = useGetFolderContent(folderId, debounceSearch, tags);
 
   const { menuStatus, openMenu } = useMenuStore();
 
   const column = useGetColumnSize();
 
   const selected = useRef<number>(-1);
+
+  useEffect(() => {
+    if (media) {
+      update(`Total ${media.length}`);
+    }
+  }, [update, media]);
+
+  useEffect(() => {
+    mutate().catch(e => errorLog(e));
+  }, [debounceSearch, tags, mutate]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -95,14 +93,14 @@ function Content({ folderInfo }: IContentProps) {
 
     function moveVertical(newRow: number, newColumn: number) {
       const index = newRow * column + newColumn;
-      if (index >= 0 && index <= mediaData.length - 1) {
+      if (index >= 0 && index <= media!.length - 1) {
         selected.current = index;
       }
     }
 
     async function handleKeyPress(ev: KeyboardEvent) {
       // when menu is opened, do not listen to key change
-      if (menuStatus) {
+      if (menuStatus || !folderInfo || !media) {
         return;
       }
 
@@ -112,11 +110,10 @@ function Content({ folderInfo }: IContentProps) {
 
       const keyActions: Record<string, () => void> = {
         ArrowLeft: () => {
-          selected.current =
-            current - 1 < 0 ? mediaData.length - 1 : current - 1;
+          selected.current = current - 1 < 0 ? media.length - 1 : current - 1;
         },
         ArrowRight: () => {
-          selected.current = (current + 1) % mediaData.length;
+          selected.current = (current + 1) % media.length;
         },
         ArrowUp: () => {
           ev.preventDefault();
@@ -127,18 +124,18 @@ function Content({ folderInfo }: IContentProps) {
           moveVertical(r + 1, c);
         },
         Enter: () => {
-          const media = mediaData[selected.current];
-          switch (media.type) {
+          const m = media[selected.current];
+          switch (m.type) {
             case MediaType.COMIC:
-              openFile(join([folderInfo.path, media.file], '/'));
+              openFile(join([folderInfo.path, m.file], '/'));
               break;
             case MediaType.MOVIE:
-              openFile(join([folderInfo.path, media.path, media.file], '/'));
+              openFile(join([folderInfo.path, m.path, m.file], '/'));
               break;
             case MediaType.TV_SERIES:
               openMenu({
                 folder: folderInfo,
-                data: media,
+                data: m,
               });
               break;
           }
@@ -159,33 +156,50 @@ function Content({ folderInfo }: IContentProps) {
     });
 
     return () => controller.abort();
-  }, [folderInfo, column, mediaData, menuStatus, openMenu]);
+  }, [folderInfo, column, media, menuStatus, openMenu]);
 
+  if (folderLoadingState) {
+    return <Loading />;
+  }
+  if (!folderInfo) {
+    return <div />;
+  }
+  if (folderInfo.status === FolderStatus.ERROR) {
+    return <ErrorHandler folderInfo={folderInfo} />;
+  }
   return (
-    <Fragment>
+    <>
       <div
-        className={clsx(
+        className={cn(
           'm-0 border-0 pb-6',
           'grid grid-flow-dense auto-rows-fr',
           'sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12',
         )}
       >
-        {mediaData.map((media, index) => (
-          <Context
-            key={index}
-            index={index}
-            media={media}
-            folder={folderInfo}
-            select={() => (selected.current = index)}
-          >
-            <Media media={media} folder={folderInfo} />
-          </Context>
-        ))}
+        {contentLoadingState ? (
+          <LoadingContent />
+        ) : (
+          media?.map((media, index) => (
+            <Context
+              key={index}
+              index={index}
+              media={media}
+              folder={folderInfo}
+              select={() => (selected.current = index)}
+            >
+              <Media
+                media={media}
+                folderDir={folderInfo.appDir!}
+                folderName={folderInfo.name}
+              />
+            </Context>
+          ))
+        )}
       </div>
       <Suspense>
         <Menu />
       </Suspense>
-    </Fragment>
+    </>
   );
 }
 

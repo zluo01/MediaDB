@@ -1,8 +1,11 @@
-import { IFolder } from '@/type';
 import { convertFileSrc } from '@tauri-apps/api/core';
 import join from 'lodash/join';
 
-export function getCacheImagePath(folder: IFolder, src: string): string {
+export function getCacheImagePath(
+  folderDir: string,
+  folderName: string,
+  src: string,
+): string {
   const cleanupImagePath = src
     .replace('\\', '/')
     .replace('.jpg', '')
@@ -13,9 +16,6 @@ export function getCacheImagePath(folder: IFolder, src: string): string {
     .replace('.webp', '');
 
   return convertFileSrc(
-    join(
-      [folder.appDir as string, 'covers', folder.name, cleanupImagePath],
-      '/',
-    ),
+    join([folderDir, 'covers', folderName, cleanupImagePath], '/'),
   );
 }

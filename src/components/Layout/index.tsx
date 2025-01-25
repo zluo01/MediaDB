@@ -1,8 +1,8 @@
-import AppBar from '@/components/AppBar';
 import SidePanel from '@/components/Panel';
+import Header from '@/components/header';
 import { errorLog } from '@/lib/log';
 import { Event, listen } from '@tauri-apps/api/event';
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router';
 import { useSWRConfig } from 'swr';
 
@@ -32,12 +32,12 @@ export default function Layout() {
   }, [mutate]);
 
   return (
-    <Fragment>
-      <AppBar />
+    <>
+      <Header />
       <div className="flex h-full w-screen flex-row flex-nowrap bg-default pt-[max(5vh,64px)]">
         <SidePanel />
         <Outlet />
       </div>
-    </Fragment>
+    </>
   );
 }

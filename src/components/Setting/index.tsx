@@ -1,4 +1,3 @@
-import Loading from '@/components/Loading';
 import FolderList from '@/components/Setting/FolderList';
 import SkipFolderList from '@/components/Setting/SkipFolderList';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -13,6 +12,7 @@ import {
 import { ModalType } from '@/type';
 import { PlusIcon } from '@radix-ui/react-icons';
 import { lazy, Suspense } from 'react';
+import { Loading } from 'src/components/loading';
 
 const SkipFolderModal = lazy(() => import('@/components/Modal/SkipFolder'));
 

@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function AppBar() {
+function Header() {
   const { searchKey, search } = useSearchStore();
 
   const navigate = useNavigate();
@@ -44,4 +44,4 @@ function AppBar() {
   );
 }
 
-export default AppBar;
+export default Header;

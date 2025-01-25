@@ -4,7 +4,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { useMenuStore } from '@/lib/context';
+import { useFooterStore, useMenuStore } from '@/lib/context';
 import { openFile } from '@/lib/os';
 import { IFolder, IMediaData, MediaType } from '@/type';
 import join from 'lodash/join';
@@ -36,6 +36,7 @@ async function openContainedFolder(
 
 function Context({ index, media, folder, children, select }: IContextProps) {
   const { openMenu } = useMenuStore();
+  const { update } = useFooterStore();
 
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
@@ -61,11 +62,7 @@ function Context({ index, media, folder, children, select }: IContextProps) {
       anchor.focus({ preventScroll: false });
       anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-
-    const footer = document.getElementById('footer');
-    if (footer) {
-      footer.innerText = media.title;
-    }
+    update(media.title);
   }
 
   return (

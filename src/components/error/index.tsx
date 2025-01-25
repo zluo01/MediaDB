@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { notify } from '@/lib/os';
-import { useCreateLibraryTrigger } from '@/lib/queries';
+import { createLibrary } from '@/lib/queries';
 import { IFolderData } from '@/type';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import React from 'react';
@@ -10,19 +10,12 @@ interface IErrorHandlerProps {
 }
 
 export default function ErrorHandler({ folderInfo }: IErrorHandlerProps) {
-  const { trigger: createLibraryTrigger } = useCreateLibraryTrigger(
-    folderInfo.position,
-  );
-
   async function updateLibrary(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
     try {
-      await createLibraryTrigger({
-        folder: { ...folderInfo },
-        update: true,
-      });
+      await createLibrary({ ...folderInfo }, true);
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
     }

@@ -1,4 +1,6 @@
-function Loading() {
+import { Skeleton } from '@/components/ui/skeleton';
+
+export function Loading() {
   return (
     <div role="status">
       <svg
@@ -21,4 +23,24 @@ function Loading() {
     </div>
   );
 }
-export default Loading;
+
+export function LoadingContent() {
+  return (
+    <>
+      {Array.from({ length: 18 }, (_v, i) => (
+        <div
+          key={i}
+          className="flex w-full cursor-pointer flex-col items-center justify-center p-2"
+        >
+          <div className="flex size-full overflow-hidden rounded-md">
+            <Skeleton className="aspect-[2/3] h-auto w-full bg-secondary object-cover align-middle italic" />
+          </div>
+          <div className="flex w-full flex-col space-y-0.5 pt-1">
+            <Skeleton className="h-6 w-full rounded bg-secondary" />
+            <Skeleton className="h-5 w-[38.2%] rounded bg-secondary" />
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}

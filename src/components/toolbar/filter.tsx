@@ -1,4 +1,4 @@
-import { TagFilterSelect } from '@/components/Content/toolbar/tag-filter-select';
+import { TagFilterSelect } from '@/components/toolbar/tag-filter-select';
 import {
   Accordion,
   AccordionContent,
@@ -8,23 +8,31 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { useFilterStore } from '@/lib/context';
-import { useGetFolderMediaTags } from '@/lib/queries';
-import { hasTag } from '@/lib/utils';
+import { useGetFolderDataQuery, useGetFolderMediaTags } from '@/lib/queries';
+import { cn, hasTag } from '@/lib/utils';
 import { FunnelIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 
 interface IFilerSection {
-  folderIndex: number;
+  folderId: number;
 }
 
-function Filters({ folderIndex }: IFilerSection) {
+function Filters({ folderId }: IFilerSection) {
   const { tags, addTag } = useFilterStore();
 
-  const { data: options } = useGetFolderMediaTags(folderIndex);
+  const { isLoading } = useGetFolderDataQuery(folderId);
+  const { data: options } = useGetFolderMediaTags(folderId);
 
   return (
     <Dialog>
-      <DialogTrigger className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-base font-medium text-selected shadow-sm transition-colors hover:bg-secondary/80 hover:bg-selected hover:text-hover focus:outline-none focus:ring-0 focus-visible:outline-none">
+      <DialogTrigger
+        disabled={isLoading}
+        className={cn(
+          'inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-base font-medium',
+          'text-selected shadow-sm transition-colors hover:bg-secondary/80 hover:bg-selected hover:text-hover',
+          'focus:outline-none focus:ring-0 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-30 disabled:bg-secondary',
+        )}
+      >
         <FunnelIcon className="mr-2 size-3.5" />
         Filter
       </DialogTrigger>
@@ -39,7 +47,7 @@ function Filters({ folderIndex }: IFilerSection) {
           <Accordion
             type="multiple"
             className="w-full px-4"
-            defaultValue={[options?.[0].label || '']}
+            defaultValue={[options?.[0]?.label || '']}
           >
             {options?.map(option => {
               const filteredTags = tags.filter(o => o.tag === option.label);

@@ -77,19 +77,6 @@ export enum ModalType {
   SKIP_FOLDER,
 }
 
-export enum CoverType {
-  POSTER,
-  COVER,
-}
-
-export interface IImageLoaderPops {
-  cover: string;
-  alt: string;
-  width: number;
-  height: number;
-  t: CoverType;
-}
-
 export interface FilterOption {
   readonly tag: string;
   readonly label: string;

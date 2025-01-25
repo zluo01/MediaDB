@@ -6,8 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUpdateSortTypeTrigger } from '@/lib/queries';
-import { IFolderData, SORT } from '@/type';
+import { updateSortType, useGetFolderDataQuery } from '@/lib/queries';
+import { SORT } from '@/type';
 import { Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
 
 function sortTypeLabel(sortType: SORT): string {
@@ -26,40 +26,34 @@ function sortTypeLabel(sortType: SORT): string {
 }
 
 interface ISortingMenuProps {
-  folderData: IFolderData;
+  folderId: number;
 }
 
-function SortMenu({ folderData }: ISortingMenuProps) {
-  const { trigger: sortTypeTrigger } = useUpdateSortTypeTrigger(
-    folderData.position,
-  );
-
-  async function update(type: SORT) {
-    await sortTypeTrigger(type);
-  }
+function SortMenu({ folderId }: ISortingMenuProps) {
+  const { data, isLoading } = useGetFolderDataQuery(folderId);
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild disabled={isLoading}>
         <Button
           variant="ghost"
           className="text-base font-medium text-selected hover:bg-selected hover:text-hover"
         >
           <Bars3BottomLeftIcon className="mr-2 size-3.5" />
-          {folderData && sortTypeLabel(folderData.sort)}
+          {data ? sortTypeLabel(data.sort) : 'Unknown'}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 border-0 bg-secondary text-selected focus:outline-none">
         <DropdownMenuGroup>
-          {folderData &&
+          {data &&
             Object.keys(SORT)
               .filter(key => !isNaN(Number(key)))
               .map(key => Number(key))
-              .filter(o => o !== folderData.sort)
+              .filter(o => o !== data.sort)
               .map(type => (
                 <DropdownMenuItem
                   key={type}
-                  onClick={() => update(type)}
+                  onClick={() => updateSortType(folderId, type)}
                   className="cursor-pointer focus:bg-selected focus:text-hover"
                 >
                   {sortTypeLabel(type)}
