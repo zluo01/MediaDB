@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import { FolderStatus, MediaType } from '@/type';
 import join from 'lodash/join';
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { Loading, LoadingContent } from 'src/components/loading';
 
 const Menu = lazy(() => import('./menu'));

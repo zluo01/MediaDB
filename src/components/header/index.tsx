@@ -2,7 +2,7 @@ import { useSearchStore } from '@/lib/context';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 function Header() {
   const { searchKey, search } = useSearchStore();

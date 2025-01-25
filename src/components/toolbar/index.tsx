@@ -1,7 +1,7 @@
 import Filter from '@/components/toolbar/filter';
 import RefreshButton from '@/components/toolbar/refresh';
 import SortMenu from '@/components/toolbar/sort-menu';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 function Toolbar() {
   const [searchParams] = useSearchParams();
