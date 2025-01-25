@@ -72,7 +72,7 @@ function Context({ index, media, folder, children, select }: IContextProps) {
         onClick={onSelect}
         onDoubleClick={() => handleOpen(media)}
         tabIndex={-1}
-        className="flex w-full cursor-pointer p-2 hover:rounded-xl focus:rounded-md focus:bg-white/20 focus:shadow-lg focus:ring-0"
+        className="flex w-full cursor-pointer p-2 hover:rounded-xl focus:rounded-md focus:bg-white/20 focus:shadow-lg focus:ring-0 data-[state='open']:rounded-xl data-[state='open']:bg-white/20"
       >
         {children}
       </ContextMenuTrigger>
