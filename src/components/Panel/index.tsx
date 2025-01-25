@@ -29,7 +29,7 @@ function SidePanel() {
     : 'hidden';
   return (
     <Fragment>
-      <div
+      <nav
         className={clsx(
           setting?.showSidePanel ? 'w-full max-w-xs' : 'w-fit max-w-[5.5vw]',
           'flex h-full bg-secondary',
@@ -41,24 +41,24 @@ function SidePanel() {
               const isCurr =
                 !isSettingPage && folder.position === currFolderIndex;
               return (
-                <Link key={folder.position} to={`/?id=${folder.position}`}>
-                  <div
+                <Link
+                  key={folder.position}
+                  to={`/?id=${folder.position}`}
+                  className={clsx(
+                    isCurr
+                      ? 'pointer-events-none opacity-30'
+                      : 'pointer-events-auto',
+                    'flex w-full cursor-pointer flex-row flex-nowrap items-center px-4 py-2 hover:bg-hover',
+                  )}
+                  title={folder.name}
+                >
+                  <FolderIcon
                     className={clsx(
-                      isCurr
-                        ? 'pointer-events-none opacity-30'
-                        : 'pointer-events-auto',
-                      'flex w-full cursor-pointer flex-row flex-nowrap items-center px-4 py-2 hover:bg-hover',
+                      isCurr ? 'text-[#21e18c]' : 'text-[#6f7a83]',
+                      'size-8',
                     )}
-                    title={folder.name}
-                  >
-                    <FolderIcon
-                      className={clsx(
-                        isCurr ? 'text-[#21e18c]' : 'text-[#6f7a83]',
-                        'size-8',
-                      )}
-                    />
-                    <span className={showText}>{folder.name}</span>
-                  </div>
+                  />
+                  <span className={showText}>{folder.name}</span>
                 </Link>
               );
             })}
@@ -73,27 +73,26 @@ function SidePanel() {
               <PlusIcon className="size-8 text-[#6f7a83]" />
               <span className={showText}>Add Video</span>
             </div>
-            <Link to={'/setting'}>
-              <div
+            <Link
+              to={'/setting'}
+              className={clsx(
+                isSettingPage
+                  ? 'pointer-events-none opacity-30'
+                  : 'pointer-events-auto',
+                'flex w-full cursor-pointer flex-row flex-nowrap items-center px-4  py-2 hover:bg-hover',
+              )}
+            >
+              <Cog6ToothIcon
                 className={clsx(
-                  isSettingPage
-                    ? 'pointer-events-none opacity-30'
-                    : 'pointer-events-auto',
-                  'flex w-full cursor-pointer flex-row flex-nowrap items-center px-4  py-2 hover:bg-hover',
+                  isSettingPage ? 'text-[#21e18c]' : 'text-[#6f7a83]',
+                  'size-8',
                 )}
-              >
-                <Cog6ToothIcon
-                  className={clsx(
-                    isSettingPage ? 'text-[#21e18c]' : 'text-[#6f7a83]',
-                    'size-8',
-                  )}
-                />
-                <span className={showText}>Setting</span>
-              </div>
+              />
+              <span className={showText}>Setting</span>
             </Link>
           </div>
         </div>
-      </div>
+      </nav>
       <Suspense>
         <DirectoryModal folderList={folderList} />
       </Suspense>
