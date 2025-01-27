@@ -8,6 +8,10 @@
       "automerge": true
     },
     {
+      "matchDepTypes": ["devDependencies"],
+      "matchPackagePatterns": ["lint", "prettier", "husky", "@trivago/"]
+    },
+    {
       "groupName": "definitelyTyped",
       "matchPackagePrefixes": ["@types/"]
     },
