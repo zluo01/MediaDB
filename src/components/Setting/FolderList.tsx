@@ -1,134 +1,78 @@
-import { useModalStore } from '@/lib/context';
-import { notify } from '@/lib/os';
-import {
-  updateFolderOrder,
-  useGetFolderListQuery,
-  useRemoveFolderTrigger,
-} from '@/lib/queries';
-import { IFolder, ModalType } from '@/type';
-import {
-  FolderIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from '@heroicons/react/24/solid';
-import { Reorder, useDragControls } from 'motion/react';
-import { lazy, MutableRefObject, Suspense, useRef, useState } from 'react';
+import { folderListQueryOptions, removeFolder } from '@/lib/queries';
+import { openModal } from '@/lib/utils';
+import { IFolder } from '@/type';
+import { createQuery } from '@tanstack/solid-query';
+import { createSignal, For, lazy } from 'solid-js';
 
-const EditFolderModal = lazy(() => import('@/components/Modal/Folder'));
-
-interface IFolderItemProps {
-  folder: IFolder;
-  open: (id: number) => void;
-  remove: (folder: IFolder) => void;
-  container: MutableRefObject<null>;
-}
-
-function FolderItem({ folder, open, remove, container }: IFolderItemProps) {
-  const controls = useDragControls();
-
-  return (
-    <Reorder.Item
-      key={folder.name}
-      className="flex w-full cursor-grab flex-row items-center justify-between p-2"
-      value={folder}
-      whileDrag={{
-        scale: 1.05,
-        boxShadow: '0px 4px 10px rgba(0,0,0,0.3)',
-      }}
-      dragListener={false}
-      dragControls={controls}
-      dragConstraints={container}
-      dragElastic={0.1}
-    >
-      <div
-        className="flex grow flex-row items-center text-secondary"
-        onPointerDown={e => controls.start(e)}
-      >
-        <FolderIcon className="mr-2 size-10" />
-        <div className="flex flex-col items-start justify-around ">
-          <span className="truncate text-primary">{folder.name}</span>
-          <span className="truncate text-sm">{folder.path}</span>
-        </div>
-      </div>
-      <div className="flex flex-row flex-nowrap items-center justify-end">
-        <button
-          onClick={() => open(folder.position)}
-          type="button"
-          className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
-        >
-          <PencilSquareIcon className="size-6" />
-          <span className="sr-only">Add new folder</span>
-        </button>
-        <button
-          onClick={() => remove(folder)}
-          type="button"
-          className="inline-flex items-center rounded-lg bg-none p-2.5 text-center text-sm font-medium text-secondary hover:text-hover focus:outline-none focus:ring-0"
-        >
-          <TrashIcon className="size-6" />
-          <span className="sr-only">Add new folder</span>
-        </button>
-      </div>
-    </Reorder.Item>
-  );
-}
+const EditFolderModal = lazy(() => import('@/components/Modal/EditFolder'));
 
 function FolderList() {
-  const container = useRef(null);
+  const folderListQuery = createQuery(() => folderListQueryOptions());
+  const folderList = () => folderListQuery.data || [];
 
-  const { openModal } = useModalStore();
+  const [folder, selectFolder] = createSignal<IFolder>();
 
-  const { data: folderList } = useGetFolderListQuery();
-  const { trigger } = useRemoveFolderTrigger();
-
-  const [folderIndex, setFolderIndex] = useState(-1);
-
-  function open(id: number) {
-    setFolderIndex(id);
-    openModal(ModalType.EDIT_FOLDER);
-  }
-
-  async function remove(folder: IFolder) {
-    try {
-      await trigger(folder);
-    } catch (e) {
-      await notify(`Update Folder Error: ${e}`);
-    }
-  }
-
-  async function onDragEnd(newOrder: IFolder[]) {
-    // dropped outside the list
-    if (!folderList || !newOrder) {
-      return;
-    }
-    try {
-      await updateFolderOrder(newOrder);
-    } catch (e) {
-      await notify(`Drag End: ${e}`);
-    }
+  function open(folder: IFolder) {
+    selectFolder(folder);
+    openModal('edit-folder-modal');
   }
 
   return (
     <>
-      <Reorder.Group
-        className="flex w-full select-none flex-col flex-nowrap"
-        values={folderList || []}
-        axis="y"
-        onReorder={onDragEnd}
-        ref={container}
-      >
-        {folderList?.map(folder => (
-          <FolderItem
-            key={folder.name}
-            folder={folder}
-            open={open}
-            remove={remove}
-            container={container}
-          />
-        ))}
-      </Reorder.Group>
-      <Suspense>
-        <EditFolderModal index={folderIndex} />
-      </Suspense>
+      <ul class="list bg-base-100 rounded-box shadow-md">
+        <For each={folderList()}>
+          {folder => (
+            <li class="list-row">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="mr-2 size-8"
+              >
+                <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+              </svg>
+              <div>
+                <div>{folder.name}</div>
+                <div class="text-xs font-semibold uppercase opacity-60">
+                  {folder.path}
+                </div>
+              </div>
+              <button
+                onClick={() => open(folder)}
+                class="btn btn-circle btn-ghost focus:outline-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="size-6"
+                >
+                  <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                  <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => removeFolder(folder)}
+                class="btn btn-circle btn-ghost focus:outline-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </li>
+          )}
+        </For>
+      </ul>
+      <EditFolderModal folder={folder} />
     </>
   );
 }

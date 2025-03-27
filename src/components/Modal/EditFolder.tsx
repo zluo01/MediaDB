@@ -1,63 +1,56 @@
 import { getDirectory, notify } from '@/lib/os';
-import { createLibrary } from '@/lib/queries';
+import { invalidateForFolderPathChange } from '@/lib/queries';
+import { updateFolderPathFromStorage } from '@/lib/storage';
 import { closeModal } from '@/lib/utils';
 import { IFolder } from '@/type';
 import { Accessor, createSignal } from 'solid-js';
 import { DOMElement } from 'solid-js/jsx-runtime';
 
-interface IDirectoryModal {
-  folderList: Accessor<IFolder[]>;
+interface IFolderNameEdit {
+  folder: Accessor<IFolder | undefined>;
 }
 
-function DirectoryModal({ folderList }: IDirectoryModal) {
-  const [folderName, setFolderName] = createSignal('');
-  const [folderPath, setFolderPath] = createSignal('');
+function EditFolderModal({ folder }: IFolderNameEdit) {
+  const folderPath = () => folder()?.path || '';
+
+  const [path, setPath] = createSignal(folderPath());
   const [loading, setLoading] = createSignal(false);
 
   async function handleDirectory() {
-    const path = await getDirectory();
-    const name = path.split('\\')!.pop()!.split('/').pop() as string;
-    setFolderName(name);
-    setFolderPath(path);
+    setPath(await getDirectory());
   }
 
   async function handleSubmit(
     e: MouseEvent & { currentTarget: HTMLButtonElement; target: DOMElement },
   ) {
+    if (!folder()) {
+      return;
+    }
     e.preventDefault();
     setLoading(true);
     try {
-      await createLibrary(folderName(), folderPath(), 0);
-      closeModal('directory-modal');
+      await updateFolderPathFromStorage({ ...folder()!, path: path() });
+      await invalidateForFolderPathChange(folder()!.position);
+      closeModal('edit-folder-modal');
     } catch (e) {
-      await notify(`Import Folders Error: ${e}`);
+      await notify(`Edit Folder Name Error: ${e}`);
     } finally {
       setLoading(false);
     }
   }
 
-  const invalidPattern = () =>
-    `^(?!${folderList()
-      .map(o => o.name)
-      .join('$|')}$).+$`;
-
   return (
-    <dialog id="directory-modal" class="modal">
+    <dialog id="edit-folder-modal" class="modal">
       <fieldset class="fieldset bg-base-200 border-base-300 rounded-box modal-box border p-4">
-        <legend class="fieldset-legend text-nowrap">Add New Folder</legend>
+        <legend class="fieldset-legend text-nowrap">Edit Folder</legend>
 
         <legend class="fieldset-legend">Name</legend>
         <input
           type="text"
           class="input validator w-full"
-          placeholder="Folder Name"
-          value={folderName()}
-          onInput={e => setFolderName(e.target.value)}
-          disabled={loading()}
-          pattern={invalidPattern()}
-          required
+          value={folder()?.name || ''}
+          disabled
         />
-        <p class="validator-hint">Name already exists.</p>
 
         <legend class="fieldset-legend">Directory</legend>
         <div class="join w-full">
@@ -66,7 +59,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
             type="text"
             placeholder="Folder Path"
             value={folderPath()}
-            onInput={e => setFolderPath(e.target.value)}
+            onInput={e => setPath(e.target.value)}
             disabled={loading()}
             autofocus
             required
@@ -91,7 +84,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
         </div>
 
         <button class="btn btn-neutral mt-4" onClick={handleSubmit}>
-          {loading() ? 'Loading...' : 'Add'}
+          {loading() ? 'Loading...' : 'Change'}
         </button>
       </fieldset>
       <form method="dialog" class="modal-backdrop">
@@ -101,4 +94,4 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
   );
 }
 
-export default DirectoryModal;
+export default EditFolderModal;

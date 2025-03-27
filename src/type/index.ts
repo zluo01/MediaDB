@@ -50,6 +50,18 @@ export interface IComicData extends IBaseData {
   readonly file: string;
 }
 
+export interface IContentResponse {
+  status: FolderStatus;
+  name: string;
+  path: string;
+  media?: IMediaData[];
+}
+
+export interface ITagResponse {
+  status: FolderStatus;
+  groupOptions: GroupedOption[];
+}
+
 export type IMediaData = IMovieData | ITVShowData | IComicData;
 
 export interface ISetting {
@@ -61,20 +73,12 @@ export interface IFolder {
   readonly name: string;
   readonly path: string;
   readonly position: number;
-  readonly appDir?: string;
 }
 
 export enum FolderStatus {
   NONE,
   LOADING,
   ERROR,
-}
-
-export enum ModalType {
-  NONE,
-  DIRECTORY,
-  EDIT_FOLDER,
-  SKIP_FOLDER,
 }
 
 export interface FilterOption {
@@ -86,4 +90,14 @@ export interface FilterOption {
 export interface GroupedOption {
   readonly label: string;
   readonly options: readonly FilterOption[];
+}
+
+export enum InvalidationType {
+  FOLDER_LIST,
+  FOLDER_INFORMATION,
+}
+
+export interface InvalidationPayload {
+  t: InvalidationType;
+  id: number;
 }

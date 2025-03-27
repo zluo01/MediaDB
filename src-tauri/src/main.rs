@@ -8,7 +8,7 @@ extern crate core;
 use crate::db::main::{create_pool, get_database_path};
 use crate::db::types::Tag;
 use log::{error, info, LevelFilter};
-use serde_json::Value;
+use serde_json::{json, Value};
 use sqlx::{Pool, Sqlite};
 use std::{collections::HashMap, fs, process::Command, sync::Arc};
 use tauri::{async_runtime::Mutex, Emitter, Manager, Runtime, State};
@@ -22,6 +22,12 @@ mod parser;
 struct Payload {
     args: Vec<String>,
     cwd: String,
+}
+
+#[derive(Clone, serde::Serialize)]
+struct InvalidationPayload {
+    t: u8,  // type of invalidation
+    id: i32, // folderId
 }
 
 struct DatabaseConnectionState(Arc<Mutex<HashMap<u8, Pool<Sqlite>>>>);
@@ -69,7 +75,13 @@ async fn parser<R: Runtime>(
             }
 
             let _ = app_handle
-                .emit("parsing", "folderList")
+                .emit(
+                    "parsing",
+                    InvalidationPayload {
+                        t: 0u8,
+                        id: position,
+                    },
+                )
                 .expect("Fail to send message to update folder list.");
 
             let folder_position_result = db::main::get_folder_position(&pool, name, path).await;
@@ -141,6 +153,10 @@ async fn process_parsing<R: Runtime>(
     path: &str,
     position: i32,
 ) {
+    let invalidation_payload: InvalidationPayload = InvalidationPayload {
+        t: 1u8,
+        id: position,
+    };
     if let Err(e) = handle_parsing(&app_handle, &pool, name, path, position).await {
         error!("Error on parsing: {}", e);
 
@@ -152,7 +168,7 @@ async fn process_parsing<R: Runtime>(
             );
         }
         let _ = app_handle
-            .emit("parsing", get_folder_detail_cache_key(position))
+            .emit("parsing", invalidation_payload)
             .expect("Fail to send message to refresh status on error.");
     } else {
         if let Err(e) = db::main::update_folder_status(&pool, &0, &position).await {
@@ -162,7 +178,7 @@ async fn process_parsing<R: Runtime>(
             );
         }
         let _ = &app_handle
-            .emit("parsing", get_folder_detail_cache_key(position))
+            .emit("parsing", invalidation_payload)
             .expect("Fail to send message to refresh status on finish.");
 
         let _ = app_handle
@@ -182,6 +198,10 @@ async fn handle_parsing<R: Runtime>(
     path: &str,
     position: i32,
 ) -> Result<(), String> {
+    let invalidation_payload: InvalidationPayload = InvalidationPayload {
+        t: 1u8,
+        id: position,
+    };
     if let Err(e) = db::main::update_folder_status(&pool, &1, &position).await {
         return Err(format!(
             "Fail to change folder status to loading. Raising Error: {:?}",
@@ -189,7 +209,7 @@ async fn handle_parsing<R: Runtime>(
         ));
     }
     let _ = app_handle
-        .emit("parsing", get_folder_detail_cache_key(position))
+        .emit("parsing", invalidation_payload)
         .expect("Fail to send message to refresh status on loading.");
 
     let skip_folders_result = db::main::get_skip_folders(&pool).await;
@@ -210,10 +230,6 @@ async fn handle_parsing<R: Runtime>(
         ));
     }
     Ok(())
-}
-
-fn get_folder_detail_cache_key(position: i32) -> String {
-    format!("folder/info/{}", position)
 }
 
 #[tauri::command]
@@ -288,8 +304,7 @@ async fn get_folder_list(
 }
 
 #[tauri::command]
-async fn get_folder_data<R: Runtime>(
-    app_handle: tauri::AppHandle<R>,
+async fn get_folder_data(
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
 ) -> Result<Value, String> {
@@ -297,14 +312,14 @@ async fn get_folder_data<R: Runtime>(
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
-    let folder_data_result = db::main::get_folder_data(&app_handle, pool, &position).await;
+    let folder_data_result = db::main::get_folder_data(pool, &position).await;
     if let Err(e) = folder_data_result {
         return Err(format!(
             "Fail to get folder data. Raising Error: {:?}",
             e.into_database_error()
         ));
     }
-    Ok(folder_data_result.unwrap())
+    Ok(folder_data_result.unwrap().to_json())
 }
 
 #[tauri::command]
@@ -313,11 +328,31 @@ async fn get_folder_media(
     position: i32,
     key: &str,
     tags: Vec<Tag>,
-) -> Result<Vec<Value>, String> {
+) -> Result<Value, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
+
+    // check folder status
+    let folder_data_result = db::main::get_folder_data(pool, &position).await;
+    if let Err(e) = folder_data_result {
+        return Err(format!(
+            "Fail to get folder data. Raising Error: {:?}",
+            e.into_database_error()
+        ));
+    }
+
+    let folder_data = folder_data_result.unwrap();
+    // current folder is building database
+    if &folder_data.status() == &1u8 {
+        return Ok(json!({
+            "status": &folder_data.status(),
+            "name": &folder_data.folder_name(),
+            "path": &folder_data.path()
+        }));
+    }
+
     let folder_media_result = db::main::get_folder_media(pool, &position, key, &tags).await;
     if let Err(e) = folder_media_result {
         return Err(format!(
@@ -325,26 +360,52 @@ async fn get_folder_media(
             e.into_database_error()
         ));
     }
-    Ok(folder_media_result.unwrap())
+    Ok(json!({
+        "status": &folder_data.status(),
+        "name": &folder_data.folder_name(),
+        "path": &folder_data.path(),
+        "media": folder_media_result.unwrap()
+    }))
 }
 
 #[tauri::command]
 async fn get_folder_media_tags(
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
-) -> Result<Vec<Value>, String> {
+) -> Result<Value, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
-    let folder_data_result = db::main::get_folder_media_tags(pool, &position).await;
+
+    // check folder status
+    let folder_data_result = db::main::get_folder_data(pool, &position).await;
     if let Err(e) = folder_data_result {
+        return Err(format!(
+            "Fail to get folder data. Raising Error: {:?}",
+            e.into_database_error()
+        ));
+    }
+
+    let folder_data = folder_data_result.unwrap();
+    // current folder is building database
+    if &folder_data.status() == &1u8 {
+        return Ok(json!({
+            "status": &folder_data.status(),
+        }));
+    }
+
+    let tags_result = db::main::get_folder_media_tags(pool, &position).await;
+    if let Err(e) = tags_result {
         return Err(format!(
             "Fail to get folder media tags. Raising Error: {:?}",
             e.into_database_error()
         ));
     }
-    Ok(folder_data_result.unwrap())
+    Ok(json!({
+        "status": &folder_data.status(),
+        "groupOptions": tags_result.unwrap()
+    }))
 }
 
 #[tauri::command]
@@ -460,7 +521,6 @@ fn check_ffmpeg_exists() -> bool {
     }
 }
 
-
 fn show_window(app_handle: &tauri::AppHandle) {
     let windows = app_handle.webview_windows();
     windows
@@ -488,7 +548,7 @@ fn main() {
         }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_log::Builder::new()
             .targets([
                 Target::new(TargetKind::Stdout),

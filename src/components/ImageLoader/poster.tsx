@@ -1,12 +1,16 @@
 import { cn } from '@/lib/utils';
-import React from 'react';
+import { ComponentProps } from 'solid-js';
 
-function Poster({ className, ...props }: React.ComponentProps<'img'>) {
+interface PosterProps extends ComponentProps<'img'> {
+  styles?: string;
+}
+
+function Poster({ styles, ...props }: PosterProps) {
   return (
     <img
-      className={cn(
+      class={cn(
         'h-full w-auto max-w-full bg-cover bg-no-repeat object-cover align-middle italic',
-        className,
+        styles,
       )}
       {...props}
       alt={props.alt}

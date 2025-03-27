@@ -1,6 +1,6 @@
 {
   "productName": "mediadb",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "identifier": "mediadb",
   "build": {
     "beforeDevCommand": "npm run vite-dev",
@@ -20,7 +20,7 @@
     ]
   },
   "app": {
-    "withGlobalTauri": false,
+    "withGlobalTauri": true,
     "windows": [
       {
         "fullscreen": false,

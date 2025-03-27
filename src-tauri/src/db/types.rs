@@ -19,8 +19,7 @@ impl Setting {
         if self.skip_folders.is_empty() {
             return vec![];
         }
-        self
-            .skip_folders
+        self.skip_folders
             .split(",")
             .map(|v| v.trim().to_string())
             .collect()
@@ -34,8 +33,7 @@ pub struct SkipFolders {
 
 impl SkipFolders {
     pub fn get_skip_folder_list(&self) -> Vec<String> {
-        self
-            .skip_folders
+        self.skip_folders
             .split(",")
             .map(|v| v.trim().to_string())
             .collect()
@@ -72,16 +70,39 @@ pub struct FolderData {
 }
 
 impl FolderData {
-    pub fn to_json(&self, app_dir: String) -> Value {
+    pub fn to_json(&self) -> Value {
         json!({
             "name": self.folder_name,
             "sort": self.sort_type,
             "filterType": self.filter_type,
             "path": self.path,
-            "appDir": app_dir,
             "position": self.position,
             "status": self.status
         })
+    }
+
+    pub fn folder_name(&self) -> &str {
+        &self.folder_name
+    }
+
+    pub fn sort_type(&self) -> u8 {
+        self.sort_type
+    }
+
+    pub fn filter_type(&self) -> u8 {
+        self.filter_type
+    }
+
+    pub fn path(&self) -> &str {
+        &self.path
+    }
+
+    pub fn position(&self) -> i32 {
+        self.position
+    }
+
+    pub fn status(&self) -> u8 {
+        self.status
     }
 }
 

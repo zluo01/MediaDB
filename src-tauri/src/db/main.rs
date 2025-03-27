@@ -126,17 +126,15 @@ pub async fn get_folder_info(pool: &Pool<Sqlite>, position: &i32) -> Result<Valu
     Ok(json!(folder_info))
 }
 
-pub async fn get_folder_data<R: Runtime>(
-    app: &tauri::AppHandle<R>,
+pub async fn get_folder_data(
     pool: &Pool<Sqlite>,
     position: &i32,
-) -> Result<Value, sqlx::Error> {
+) -> Result<FolderData, sqlx::Error> {
     let folder_data = sqlx::query_as::<_, FolderData>(queries::GET_FOLDER_DATA)
         .bind(position)
         .fetch_one(pool)
         .await?;
-    let app_dir = app.path().app_data_dir().unwrap();
-    Ok(folder_data.to_json(app_dir.to_str().unwrap().to_string()))
+    Ok(folder_data)
 }
 
 pub async fn insert_new_media(

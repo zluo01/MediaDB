@@ -1,7 +1,6 @@
-import { buildDirectory } from '@/lib/os';
+import { buildDirectory, notify } from '@/lib/os';
 import {
   changeSkipFolders,
-  getFolder,
   getFolderInfo,
   getFolderList,
   getFolderMedia,
@@ -9,146 +8,155 @@ import {
   getSetting,
   hideSidePanel,
   removeFolderFromStorage,
-  updateFolderList,
-  updateFolderPathFromStorage,
   updateFolderSortType,
 } from '@/lib/storage';
-import {
-  FilterOption,
-  FolderStatus,
-  GroupedOption,
-  IFolder,
-  IFolderData,
-  IMediaData,
-  ISetting,
-  SORT,
-} from '@/type';
-import { getVersion } from '@tauri-apps/api/app';
-import useSWR, { useSWRConfig, mutate } from 'swr';
-import useSWRImmutable from 'swr/immutable';
-import useSWRMutation from 'swr/mutation';
+import { FilterOption, IFolder, SORT } from '@/type';
+import { QueryClient, queryOptions } from '@tanstack/solid-query';
 
 const FOLDER_LIST = 'folderList';
-const SETTING = 'setting;';
+const SETTING = 'setting';
+const TAGS = 'TAGS';
 
-const FOLDER_KEY = (index: number) => `folder/${index}`;
-const FOLDER_CONTENT_KEY = (index: number) => `content/${index}`;
-const FOLDER_DETAIL_KEY = (index: number) => `folder/info/${index}`;
+const FOLDER_KEY = `folder`;
+const FOLDER_CONTENT_KEY = `content`;
+const FOLDER_DETAIL_KEY = `folder/info`;
 
-export function useGetFolderListQuery() {
-  return useSWR<IFolder[]>(FOLDER_LIST, getFolderList);
-}
+export const queryClient = new QueryClient();
 
-export function useGetFolderQuery(folderId: number) {
-  return useSWR<IFolder>(FOLDER_KEY(folderId), () => getFolder(folderId));
-}
+export const folderListQueryOptions = () =>
+  queryOptions({
+    queryKey: [FOLDER_LIST],
+    queryFn: getFolderList,
+  });
 
-export function useGetFolderContent(
+export const contentQueryOptions = (
   folderId: number,
   searchKey: string,
   tags: FilterOption[],
-) {
-  return useSWR<IMediaData[]>(FOLDER_CONTENT_KEY(folderId), () =>
-    getFolderMedia(folderId, searchKey, tags),
-  );
-}
+) =>
+  queryOptions({
+    queryKey: [FOLDER_CONTENT_KEY, folderId, searchKey, tags],
+    queryFn: () => getFolderMedia(folderId, searchKey, tags),
+  });
 
-export function useGetFolderMediaTags(folderId: number) {
-  return useSWR<GroupedOption[]>(FOLDER_KEY(folderId) + '/tags', () =>
-    getFolderMediaTags(folderId),
-  );
-}
+export const mediaTagsQueryOptions = (folderId: number) =>
+  queryOptions({
+    queryKey: [TAGS, folderId],
+    queryFn: () => getFolderMediaTags(folderId),
+  });
 
-export function useGetFolderDataQuery(folderId: number) {
-  const { data, isLoading } = useSWR<IFolderData>(
-    FOLDER_DETAIL_KEY(folderId),
-    () => getFolderInfo(folderId),
-  );
-
-  if (isLoading || data?.status === FolderStatus.LOADING) {
-    return {
-      isLoading: true,
-    };
-  }
-  return {
-    data,
-    isLoading: false,
-  };
-}
+export const folderDataQueryOptions = (folderId: number) =>
+  queryOptions({
+    queryKey: [FOLDER_DETAIL_KEY, folderId],
+    queryFn: () => getFolderInfo(folderId),
+  });
 
 export async function updateSortType(folderId: number, sortType: SORT) {
   await updateFolderSortType(folderId, sortType);
-  await mutate(
-    key =>
-      typeof key === 'string' &&
-      [FOLDER_DETAIL_KEY(folderId), FOLDER_CONTENT_KEY(folderId)].includes(key),
-    undefined,
-    { revalidate: true },
-  );
-}
-
-export async function createLibrary(folder: IFolder, update?: boolean) {
-  await buildDirectory(folder, update);
-  await mutate(
-    key =>
-      typeof key === 'string' &&
-      [
-        FOLDER_DETAIL_KEY(folder.position),
-        FOLDER_LIST,
-        FOLDER_KEY(folder.position) + '/tags',
-      ].includes(key),
-    undefined,
-    { revalidate: true },
-  );
-}
-
-export async function updateFolderOrder(folders: IFolder[]) {
-  await updateFolderList(folders);
-  await mutate(
-    key =>
-      typeof key === 'string' &&
-      (key === FOLDER_LIST || key.startsWith('content/')),
-    undefined,
-    { revalidate: true },
-  );
-}
-
-export function useUpdateFolderPathTrigger(folderId: number) {
-  const { mutate } = useSWRConfig();
-  return useSWRMutation(
-    FOLDER_DETAIL_KEY(folderId),
-    async (_url, opts: { arg: IFolder }) => {
-      await updateFolderPathFromStorage(opts.arg);
-      await mutate(FOLDER_LIST);
-      await mutate(FOLDER_KEY(folderId));
+  await queryClient.invalidateQueries({
+    predicate: query => {
+      return (
+        [FOLDER_CONTENT_KEY, FOLDER_DETAIL_KEY].includes(
+          query.queryKey[0] as string,
+        ) && query.queryKey[1] === folderId
+      );
     },
-  );
-}
-
-export function useRemoveFolderTrigger() {
-  return useSWRMutation(FOLDER_LIST, async (_url, opts: { arg: IFolder }) => {
-    await removeFolderFromStorage(opts.arg);
+    refetchType: 'active',
   });
 }
 
-export function useGetSettingQuery() {
-  return useSWR<ISetting>(SETTING, getSetting);
+export async function createLibrary(
+  folderName: string,
+  folderPath: string,
+  folderPosition: number,
+  update?: boolean,
+) {
+  await buildDirectory(folderName, folderPath, folderPosition, update);
+  await queryClient.invalidateQueries({
+    predicate: query => {
+      return (
+        [FOLDER_LIST, TAGS, FOLDER_DETAIL_KEY].includes(
+          query.queryKey[0] as string,
+        ) && query.queryKey[1] === folderPosition
+      );
+    },
+    refetchType: 'active',
+  });
 }
 
-export function useHidePanelTrigger() {
-  return useSWRMutation(
-    SETTING,
-    async (_url, opts: { arg: boolean }) => await hideSidePanel(opts.arg),
-  );
+// export async function updateFolderOrder(folders: IFolder[]) {
+//   await updateFolderList(folders);
+//   await mutate(
+//     key =>
+//       typeof key === 'string' &&
+//       (key === FOLDER_LIST || key.startsWith('content/')),
+//     undefined,
+//     { revalidate: true },
+//   );
+// }
+
+export async function invalidateForFolderPathChange(folderId: number) {
+  await queryClient.invalidateQueries({
+    predicate: query => {
+      return (
+        [FOLDER_LIST, FOLDER_KEY, FOLDER_DETAIL_KEY].includes(
+          query.queryKey[0] as string,
+        ) && query.queryKey[1] === folderId
+      );
+    },
+    refetchType: 'active',
+  });
 }
 
-export function useUpdateSkipFoldersTrigger() {
-  return useSWRMutation(
-    SETTING,
-    async (_url, opts: { arg: string }) => await changeSkipFolders(opts.arg),
-  );
+export async function removeFolder(folder: IFolder) {
+  try {
+    await removeFolderFromStorage(folder);
+    await invalidateFolderListChange();
+  } catch (e) {
+    await notify(`Update Folder Error: ${e}`);
+  }
 }
 
-export function useGetVersionQuery() {
-  return useSWRImmutable<string>('VERSION', getVersion);
+export async function invalidateFolderListChange() {
+  await queryClient.invalidateQueries({
+    queryKey: [FOLDER_LIST],
+    exact: true,
+    refetchType: 'active',
+  });
+}
+
+export async function invalidateFolderInformation(folderId: number) {
+  await queryClient.invalidateQueries({
+    predicate: query => {
+      return (
+        [TAGS, FOLDER_DETAIL_KEY].includes(query.queryKey[0] as string) &&
+        query.queryKey[1] === folderId
+      );
+    },
+    refetchType: 'active',
+  });
+}
+
+export async function changePanelDisplay(status: boolean) {
+  await hideSidePanel(status);
+  await invalidSetting();
+}
+
+export const settingQueryOptions = () =>
+  queryOptions({
+    queryKey: [SETTING],
+    queryFn: getSetting,
+  });
+
+export async function updateSkipFolder(skipFolders: string) {
+  await changeSkipFolders(skipFolders);
+  await invalidSetting();
+}
+
+async function invalidSetting() {
+  await queryClient.invalidateQueries({
+    queryKey: [SETTING],
+    exact: true,
+    refetchType: 'active',
+  });
 }

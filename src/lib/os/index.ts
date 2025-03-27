@@ -1,4 +1,3 @@
-import { IFolder } from '@/type';
 import { invoke } from '@tauri-apps/api/core';
 import { open as openDialog } from '@tauri-apps/plugin-dialog';
 import {
@@ -6,21 +5,28 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification';
-import { open } from '@tauri-apps/plugin-shell';
+import { openPath } from '@tauri-apps/plugin-opener';
 
 export async function openFile(path: string): Promise<void> {
   try {
-    await open(path);
+    await openPath(path);
   } catch (e) {
     await notify(`${e}. Path: ${path}`);
   }
 }
 
 export async function buildDirectory(
-  folder: IFolder,
+  folderName: string,
+  folderPath: string,
+  folderPosition: number,
   update?: boolean,
 ): Promise<void> {
-  await invoke('parser', { ...folder, update: update || false });
+  await invoke('parser', {
+    position: folderPosition,
+    name: folderName,
+    path: folderPath,
+    update: update || false,
+  });
 }
 
 export async function getDirectory(): Promise<string> {

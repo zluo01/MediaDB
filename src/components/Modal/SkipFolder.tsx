@@ -1,47 +1,25 @@
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useModalStore } from '@/lib/context';
 import { notify } from '@/lib/os';
-import { useUpdateSkipFoldersTrigger } from '@/lib/queries';
-import { ModalType } from '@/type';
-import clsx from 'clsx';
-import React, { useState } from 'react';
+import { updateSkipFolder } from '@/lib/queries';
+import { closeModal } from '@/lib/utils';
+import { Accessor, createSignal } from 'solid-js';
+import { DOMElement } from 'solid-js/jsx-runtime';
 
 interface ISkipFolderModal {
-  skipFolders: string[];
+  skipFolders: Accessor<string[]>;
 }
 
 function SkipFolderModal({ skipFolders }: ISkipFolderModal) {
-  const { modalState, closeModal } = useModalStore();
-
-  const [folderName, setFolderName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const error = folderName && skipFolders.includes(folderName);
-
-  const { trigger } = useUpdateSkipFoldersTrigger();
-
-  function close() {
-    setFolderName('');
-    closeModal();
-  }
+  const [folderName, setFolderName] = createSignal('');
+  const [loading, setLoading] = createSignal(false);
 
   async function handleSubmit(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e: MouseEvent & { currentTarget: HTMLButtonElement; target: DOMElement },
   ) {
     e.preventDefault();
     setLoading(true);
     try {
-      await trigger([...skipFolders, folderName].join(','));
-      close();
+      await updateSkipFolder([...skipFolders(), folderName()].join(','));
+      closeModal('skip-folder-modal');
     } catch (e) {
       await notify(`Edit Folder Name Error: ${e}`);
     } finally {
@@ -49,55 +27,34 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal) {
     }
   }
 
+  const invalidPattern = () => `^(?!${skipFolders().join('$|')}$).+$`;
+
   return (
-    <Dialog open={modalState === ModalType.SKIP_FOLDER} onOpenChange={close}>
-      <DialogContent className="w-full max-w-xl overflow-hidden rounded-lg border-0 bg-primary text-left align-middle shadow-xl">
-        <DialogHeader>
-          <DialogTitle className="text-base/7 font-semibold text-white">
-            Add Skip Folder
-          </DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="flex flex-col space-y-1.5">
-            <Label className="text-sm/6 font-medium text-white">Name</Label>
-            <Input
-              className={clsx(
-                error && 'border border-red-500',
-                'mt-3 block w-full rounded-lg bg-white/5 px-3 py-1.5 text-sm/6 text-white',
-                'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
-              )}
-              type="text"
-              value={folderName}
-              onChange={e => setFolderName(e.target.value)}
-              disabled={loading}
-              autoFocus
-              required
-            />
-            <DialogDescription
-              className={clsx(
-                error ? 'inline-block' : 'hidden',
-                'text-sm/6 text-red-500',
-              )}
-            >
-              Name already exists.
-            </DialogDescription>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={handleSubmit}
-            disabled={error || loading}
-            className={clsx(
-              'border-selected bg-default px-4 py-2 text-sm font-medium text-selected',
-              'hover:bg-selected hover:text-hover',
-            )}
-          >
-            {loading ? 'loading...' : 'Add'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <dialog id="skip-folder-modal" class="modal">
+      <fieldset class="fieldset bg-base-200 border-base-300 rounded-box modal-box border p-4">
+        <legend class="fieldset-legend text-nowrap">Add Skip Folder</legend>
+
+        <legend class="fieldset-legend">Name</legend>
+        <input
+          type="text"
+          class="input validator w-full"
+          placeholder="Folder Name"
+          value={folderName()}
+          onInput={e => setFolderName(e.target.value)}
+          disabled={loading()}
+          pattern={invalidPattern()}
+          required
+        />
+        <p class="validator-hint">Name already exists.</p>
+
+        <button class="btn btn-neutral mt-4" onClick={handleSubmit}>
+          {loading() ? 'Loading...' : 'Add'}
+        </button>
+      </fieldset>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   );
 }
 

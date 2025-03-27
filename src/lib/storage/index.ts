@@ -1,10 +1,10 @@
 import {
   FilterOption,
-  GroupedOption,
+  IContentResponse,
   IFolder,
   IFolderData,
-  IMediaData,
   ISetting,
+  ITagResponse,
 } from '@/type';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -26,8 +26,8 @@ export async function getFolderMedia(
   position: number,
   key: string,
   tags: FilterOption[],
-): Promise<IMediaData[]> {
-  return await invoke<IMediaData[]>('get_folder_media', {
+): Promise<IContentResponse> {
+  return await invoke<IContentResponse>('get_folder_media', {
     position,
     key,
     tags,
@@ -36,8 +36,8 @@ export async function getFolderMedia(
 
 export async function getFolderMediaTags(
   position: number,
-): Promise<GroupedOption[]> {
-  return await invoke<GroupedOption[]>('get_folder_media_tags', { position });
+): Promise<ITagResponse> {
+  return await invoke<ITagResponse>('get_folder_media_tags', { position });
 }
 
 export async function updateFolderPathFromStorage(

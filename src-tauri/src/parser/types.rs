@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use std::ffi::OsString;
 use log::info;
 use serde_json::{json, Value};
+use std::collections::HashMap;
+use std::ffi::OsString;
 
 #[derive(Debug)]
 pub struct MediaSource {

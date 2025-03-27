@@ -221,13 +221,17 @@ fn parse_episode_nfo(
             }
         }
     }
-    
+
     if let Some(episode_filename) =
         get_episode_filename(nfo_path, media_source, media.season(), media.episode())
     {
         media.set_file(episode_filename)
     } else {
-        error!("Fail to find episode filename for {:?} from {:?}", nfo_path, media_source.media())
+        error!(
+            "Fail to find episode filename for {:?} from {:?}",
+            nfo_path,
+            media_source.media()
+        )
     }
 }
 
