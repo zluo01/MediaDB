@@ -3,7 +3,13 @@ use std::result::Result;
 
 use log::{debug, error};
 use serde_json::{json, Value};
-use sqlx::{migrate::MigrateDatabase, Pool, Sqlite, SqlitePool};
+use sqlx::{
+    migrate::MigrateDatabase,
+    sqlite::SqlitePoolOptions,
+    sqlite::{SqliteConnectOptions, SqliteJournalMode},
+    Pool, Sqlite, SqlitePool,
+};
+use std::str::FromStr;
 use tauri::{Manager, Runtime};
 
 use crate::db::queries;
@@ -58,7 +64,12 @@ pub fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
 }
 
 pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
-    let pool = SqlitePool::connect(db_path).await?;
+    let opts =
+        SqliteConnectOptions::from_str(db_path)?.journal_mode(SqliteJournalMode::Wal);
+    let pool = SqlitePoolOptions::new()
+        .max_connections(10)
+        .connect_with(opts)
+        .await?;
     Ok(pool)
 }
 
