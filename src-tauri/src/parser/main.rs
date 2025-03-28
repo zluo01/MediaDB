@@ -10,14 +10,10 @@ use rayon::prelude::*;
 use tauri::Manager;
 use tauri_plugin_notification::NotificationExt;
 
+use crate::model::parser::{Media, MediaItem, MediaSource, MediaType};
 use crate::parser::comic_parser::parse_comics;
-use crate::parser::types::MediaItem;
 use crate::parser::utilities::convert_image;
-use crate::{
-    parser::nfo_parser::parse_nfo,
-    parser::types::{Media, MediaSource, MediaType},
-    parser::utilities,
-};
+use crate::{parser::nfo_parser::parse_nfo, parser::utilities};
 
 pub fn parse<R: tauri::Runtime>(
     app_handle: &tauri::AppHandle<R>,

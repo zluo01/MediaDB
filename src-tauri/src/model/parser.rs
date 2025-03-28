@@ -1,4 +1,4 @@
-use log::info;
+use log::error;
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::ffi::OsString;
@@ -196,7 +196,7 @@ impl Media {
 
     pub fn tv_show(&self, season_map: Option<&HashMap<String, Vec<&Media>>>) -> Option<MediaItem> {
         if season_map.is_none() {
-            info!(
+            error!(
                 "Expect to get seasons data, but get none. {}",
                 self.relative_path.to_string_lossy()
             );

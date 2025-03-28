@@ -6,13 +6,12 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use crate::model::parser::{Media, MediaType};
+use crate::parser::utilities::convert_image;
 use log::error;
 use rayon::prelude::*;
 use tauri_plugin_notification::NotificationExt;
 use zip::{read::ZipFile, ZipArchive};
-
-use crate::parser::types::{Media, MediaType};
-use crate::parser::utilities::convert_image;
 
 pub(crate) fn parse_comics<R: tauri::Runtime>(
     app_handle: &tauri::AppHandle<R>,

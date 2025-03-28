@@ -1,4 +1,4 @@
-use crate::parser::types::{Media, MediaSource, MediaType};
+use crate::model::parser::{Media, MediaSource, MediaType};
 use log::error;
 use roxmltree::Node;
 use std::collections::VecDeque;

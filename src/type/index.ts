@@ -12,12 +12,18 @@ export interface IFolderInfo {
 
 export interface IFolderData extends IFolder, IFolderInfo {
   status: FolderStatus;
+  filterType: FilterType;
 }
 
 export enum MediaType {
   MOVIE,
   TV_SERIES,
   COMIC,
+}
+
+export enum FilterType {
+  OR,
+  AND,
 }
 
 export interface IBaseData {
@@ -50,18 +56,6 @@ export interface IComicData extends IBaseData {
   readonly file: string;
 }
 
-export interface IContentResponse {
-  status: FolderStatus;
-  name: string;
-  path: string;
-  media?: IMediaData[];
-}
-
-export interface ITagResponse {
-  status: FolderStatus;
-  groupOptions: GroupedOption[];
-}
-
 export type IMediaData = IMovieData | ITVShowData | IComicData;
 
 export interface ISetting {
@@ -82,9 +76,8 @@ export enum FolderStatus {
 }
 
 export interface FilterOption {
-  readonly tag: string;
+  readonly group: string; // tag group
   readonly label: string;
-  readonly value: string;
 }
 
 export interface GroupedOption {

@@ -6,16 +6,21 @@
 extern crate core;
 
 use crate::db::main::{create_pool, get_database_path};
-use crate::db::types::Tag;
+use crate::helper::main::group_tags;
+use crate::model::database::{Folder, FolderData, Media, MediaTag, Tag};
 use log::{error, info, LevelFilter};
-use serde_json::{json, Value};
+use rayon::prelude::*;
+use serde_json::Value;
 use sqlx::{Pool, Sqlite};
+use std::collections::HashSet;
 use std::{collections::HashMap, fs, process::Command, sync::Arc};
 use tauri::{async_runtime::Mutex, Emitter, Manager, Runtime, State};
 use tauri_plugin_log::{Target, TargetKind};
 use tauri_plugin_notification::NotificationExt;
 
 mod db;
+mod helper;
+mod model;
 mod parser;
 
 #[derive(Clone, serde::Serialize)]
@@ -26,7 +31,7 @@ struct Payload {
 
 #[derive(Clone, serde::Serialize)]
 struct InvalidationPayload {
-    t: u8,  // type of invalidation
+    t: u8,   // type of invalidation
     id: i32, // folderId
 }
 
@@ -288,38 +293,38 @@ async fn update_skip_folders(
 #[tauri::command]
 async fn get_folder_list(
     database_state: State<'_, DatabaseConnectionState>,
-) -> Result<Value, String> {
+) -> Result<Vec<Folder>, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
     let folder_list_result = db::main::get_folder_list(pool).await;
-    if let Err(e) = folder_list_result {
-        return Err(format!(
+    match folder_list_result {
+        Ok(folder_list) => Ok(folder_list),
+        Err(e) => Err(format!(
             "Fail to get folder list. Raising Error: {:?}",
             e.into_database_error()
-        ));
+        )),
     }
-    Ok(folder_list_result.unwrap())
 }
 
 #[tauri::command]
 async fn get_folder_data(
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
-) -> Result<Value, String> {
+) -> Result<FolderData, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
     let folder_data_result = db::main::get_folder_data(pool, &position).await;
-    if let Err(e) = folder_data_result {
-        return Err(format!(
+    match folder_data_result {
+        Ok(folder_data) => Ok(folder_data),
+        Err(e) => Err(format!(
             "Fail to get folder data. Raising Error: {:?}",
             e.into_database_error()
-        ));
+        )),
     }
-    Ok(folder_data_result.unwrap().to_json())
 }
 
 #[tauri::command]
@@ -328,84 +333,102 @@ async fn get_folder_media(
     position: i32,
     key: &str,
     tags: Vec<Tag>,
-) -> Result<Value, String> {
+) -> Result<Vec<Media>, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
 
-    // check folder status
-    let folder_data_result = db::main::get_folder_data(pool, &position).await;
-    if let Err(e) = folder_data_result {
-        return Err(format!(
-            "Fail to get folder data. Raising Error: {:?}",
-            e.into_database_error()
-        ));
-    }
-
-    let folder_data = folder_data_result.unwrap();
-    // current folder is building database
-    if &folder_data.status() == &1u8 {
-        return Ok(json!({
-            "status": &folder_data.status(),
-            "name": &folder_data.folder_name(),
-            "path": &folder_data.path()
-        }));
-    }
-
-    let folder_media_result = db::main::get_folder_media(pool, &position, key, &tags).await;
+    let no_filtering = tags.is_empty();
+    let folder_media_result = db::main::get_folder_media(pool, &position, key, no_filtering).await;
     if let Err(e) = folder_media_result {
+        error!("{:?}", e);
         return Err(format!(
             "Fail to get folder media. Raising Error: {:?}",
             e.into_database_error()
         ));
     }
-    Ok(json!({
-        "status": &folder_data.status(),
-        "name": &folder_data.folder_name(),
-        "path": &folder_data.path(),
-        "media": folder_media_result.unwrap()
-    }))
+
+    let result = folder_media_result.unwrap();
+    let media_list = result.media_list;
+
+    if no_filtering {
+        return Ok(media_list);
+    }
+
+    let tag_list = result.tags;
+    let tags_group = tag_list.iter().fold(HashMap::new(), |mut acc, tag| {
+        acc.entry(tag.path())
+            .or_insert_with(Vec::new)
+            .push(tag.clone());
+        acc
+    });
+
+    let media_keys = filter_media(&tags_group, &tags, result.filter_type);
+    Ok(media_list
+        .into_iter()
+        .filter(|o| media_keys.contains(&o.path().to_string()))
+        .collect::<Vec<Media>>())
+}
+
+fn filter_media(
+    tags_group: &HashMap<&str, Vec<MediaTag>>,
+    filter_tags: &Vec<Tag>,
+    filter_type: u8,
+) -> Vec<String> {
+    if filter_tags.is_empty() {
+        return tags_group.keys().map(|&k| k.to_string()).collect();
+    }
+
+    let filter_tag_groups = group_tags(filter_tags);
+
+    tags_group
+        .into_par_iter()
+        .filter(|(_, v)| {
+            let groups = group_tags(&v);
+            let mut keep = true;
+            for (key, value) in groups {
+                if let Some(filter_tags) = filter_tag_groups.get(key) {
+                    keep = keep & check_filter_condition(&value, filter_tags, filter_type);
+                }
+            }
+            return keep;
+        })
+        .map(|(k, _)| k.to_string())
+        .collect()
+}
+
+fn check_filter_condition(source: &Vec<Tag>, target: &Vec<Tag>, filter_type: u8) -> bool {
+    let source_set: HashSet<_> = source.into_iter().collect();
+    let target_set: HashSet<_> = target.into_iter().collect();
+
+    // OR, if media tag contains any of the filter tag, return true
+    if filter_type == 0u8 {
+        return source_set.intersection(&target_set).count() > 0;
+    }
+
+    // AND, we need to make sure source tags contains all tags from filter tags
+    target_set.is_subset(&source_set)
 }
 
 #[tauri::command]
 async fn get_folder_media_tags(
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
-) -> Result<Value, String> {
+) -> Result<Vec<Value>, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
 
-    // check folder status
-    let folder_data_result = db::main::get_folder_data(pool, &position).await;
-    if let Err(e) = folder_data_result {
-        return Err(format!(
-            "Fail to get folder data. Raising Error: {:?}",
-            e.into_database_error()
-        ));
-    }
-
-    let folder_data = folder_data_result.unwrap();
-    // current folder is building database
-    if &folder_data.status() == &1u8 {
-        return Ok(json!({
-            "status": &folder_data.status(),
-        }));
-    }
-
     let tags_result = db::main::get_folder_media_tags(pool, &position).await;
-    if let Err(e) = tags_result {
-        return Err(format!(
+    match tags_result {
+        Ok(tags) => Ok(tags),
+        Err(e) => Err(format!(
             "Fail to get folder media tags. Raising Error: {:?}",
             e.into_database_error()
-        ));
+        )),
     }
-    Ok(json!({
-        "status": &folder_data.status(),
-        "groupOptions": tags_result.unwrap()
-    }))
 }
 
 #[tauri::command]
@@ -418,13 +441,13 @@ async fn get_folder_info(
         .get_mut(&0)
         .expect("Cannot find database instance.");
     let folder_info_result = db::main::get_folder_info(pool, &position).await;
-    if let Err(e) = folder_info_result {
-        return Err(format!(
+    match folder_info_result {
+        Ok(info) => Ok(info),
+        Err(e) => Err(format!(
             "Fail to get folder info. Raising Error: {:?}",
             e.into_database_error()
-        ));
+        )),
     }
-    Ok(folder_info_result.unwrap())
 }
 
 #[tauri::command]

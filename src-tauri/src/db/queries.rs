@@ -66,6 +66,49 @@ pub const CREAT_TABLE_QUERY: &str = "
     ";
 
 //language=sqlite
+pub const GET_FOLDER_CONTENT: &str = "
+    SELECT media.type as t,
+           media.path,
+           media.title,
+           media.posters,
+           media.year,
+           media.file,
+           media.seasons
+    FROM media
+             JOIN folders ON media.folder = folders.folder_name
+    WHERE folders.position = ?
+      AND title LIKE ? COLLATE NOCASE
+    ORDER BY CASE
+                 WHEN folders.sort_type = 2 THEN media.title
+                 WHEN folders.sort_type = 4 THEN media.year
+                 END DESC,
+             CASE
+                 WHEN folders.sort_type = 1 THEN media.title
+                 WHEN folders.sort_type = 3 THEN media.year
+                 ELSE media.path
+                 END;
+";
+
+//language=sqlite
+pub const GET_FOLDER_FILTER_TYPE: &str = "
+    SELECT folders.filter_type
+    FROM folders
+    WHERE folders.position = ?
+";
+
+//language=sqlite
+pub const GET_TAGS_IN_FOLDER: &str = "
+    SELECT tags.path as path,
+           tags.t    as tag_group,
+           tags.name as tag_label
+    FROM media
+             JOIN folders ON media.folder = folders.folder_name
+             JOIN tags ON media.path = tags.path
+    WHERE folders.position = ?
+      AND title LIKE ? COLLATE NOCASE
+";
+
+//language=sqlite
 pub const GET_SETTINGS: &str = "
     SELECT * FROM  settings
     ";
@@ -161,7 +204,7 @@ pub const RECOVER: &str = "
 
 //language=sqlite
 pub const TAGS_IN_FOLDER: &str = "
-    SELECT DISTINCT tags.t as tag, tags.name as value, tags.name AS label
+    SELECT DISTINCT tags.t as tag_group, tags.name as tag_label
     FROM tags
              JOIN folders ON tags.folder_name = folders.folder_name
     WHERE folders.position = ?
