@@ -1,22 +1,26 @@
 import { useFilter } from '@/lib/context/filterContext';
-import { cn, hasTag } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { GroupedOption } from '@/type';
-import groupBy from 'lodash/groupBy';
 import includes from 'lodash/includes';
 import { Accessor, createSignal, For, Show } from 'solid-js';
 
-interface ITagFilterSelectProps {
-  groupOptions: Accessor<GroupedOption[]>;
-}
+type ITagFilterSelectProps = {
+  readonly folderId: Accessor<number>;
+  readonly groupOptions: Accessor<GroupedOption[]>;
+};
 
-export function TagFilterSelect({ groupOptions }: ITagFilterSelectProps) {
-  const { tags, changeTag, removeLastTag } = useFilter();
+export function TagFilterSelect({
+  folderId,
+  groupOptions,
+}: ITagFilterSelectProps) {
+  const { getTags, modifyTag, removeLastTag } = useFilter();
+  const tags = () => getTags(folderId());
 
   const [search, setSearch] = createSignal('');
 
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const filterTagGroups = () => groupBy(tags(), 'group');
+  const filterTagGroups = () => tags().groupBy(o => o.group);
 
   const onKeyDown = (event: KeyboardEvent) => {
     switch (event.key) {
@@ -43,7 +47,7 @@ export function TagFilterSelect({ groupOptions }: ITagFilterSelectProps) {
         if (search()) {
           return;
         }
-        removeLastTag();
+        removeLastTag(folderId());
         break;
       case ' ':
         if (search()) {
@@ -80,10 +84,10 @@ export function TagFilterSelect({ groupOptions }: ITagFilterSelectProps) {
     >
       <div class="input w-full">
         <Show when={tags()}>
-          <For each={tags()}>
+          <For each={tags().toArray()}>
             {option => (
               <div
-                onClick={() => changeTag(option)}
+                onClick={() => modifyTag(folderId(), option)}
                 class={cn(
                   'badge badge-soft hover:badge-ghost cursor-pointer px-2.5 py-0.5 text-sm font-medium',
                 )}
@@ -132,13 +136,12 @@ export function TagFilterSelect({ groupOptions }: ITagFilterSelectProps) {
                       <li
                         class={cn(
                           'list-row cursor-pointer',
-                          hasTag(
-                            filterTagGroups()[groupOption.label] || [],
-                            option,
-                          ) && 'pointer-events-none opacity-30',
+                          filterTagGroups()
+                            .get(groupOption.label)
+                            ?.has(option) && 'pointer-events-none opacity-30',
                           !includes(option.label, search()) && 'hidden',
                         )}
-                        onClick={() => changeTag(option)}
+                        onClick={() => modifyTag(folderId(), option)}
                       >
                         {option.label}
                       </li>

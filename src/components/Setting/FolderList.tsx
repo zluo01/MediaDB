@@ -1,3 +1,4 @@
+import { useFilter } from '@/lib/context/filterContext';
 import { folderListQueryOptions, removeFolder } from '@/lib/queries';
 import { openModal } from '@/lib/utils';
 import { IFolder } from '@/type';
@@ -7,6 +8,8 @@ import { createSignal, For, lazy } from 'solid-js';
 const EditFolderModal = lazy(() => import('@/components/Modal/EditFolder'));
 
 function FolderList() {
+  const { removeTagFolder } = useFilter();
+
   const folderListQuery = createQuery(() => folderListQueryOptions());
   const folderList = () => folderListQuery.data || [];
 
@@ -15,6 +18,11 @@ function FolderList() {
   function open(folder: IFolder) {
     selectFolder(folder);
     openModal('edit-folder-modal');
+  }
+
+  async function remove(folder: IFolder) {
+    await removeFolder(folder);
+    removeTagFolder(folder.position);
   }
 
   return (
@@ -52,7 +60,7 @@ function FolderList() {
                 </svg>
               </button>
               <button
-                onClick={() => removeFolder(folder)}
+                onClick={() => remove(folder)}
                 class="btn btn-circle btn-ghost focus:outline-none"
               >
                 <svg

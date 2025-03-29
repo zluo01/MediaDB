@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import SidePanel from '@/components/Panel';
+import { FilterProvider } from '@/lib/context/filterContext';
 import { errorLog } from '@/lib/log';
 import {
   invalidateFolderInformation,
@@ -59,7 +60,9 @@ function RootComponent() {
       <Header />
       <div class="flex h-full w-screen flex-row flex-nowrap pt-16">
         <SidePanel />
-        <Outlet />
+        <FilterProvider>
+          <Outlet />
+        </FilterProvider>
       </div>
       <SolidQueryDevtools buttonPosition="top-right" />
       <TanStackRouterDevtools position="bottom-right" />

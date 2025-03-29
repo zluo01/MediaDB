@@ -1,8 +1,10 @@
-import { hasTag } from '@/lib/utils';
+import {
+  modifyTagInFolder,
+  removeFolderFromStore,
+  removeLastTagInFolder,
+} from '@/lib/context/helper';
 import { FilterOption } from '@/type';
-import filter from 'lodash/filter';
-import isEqual from 'lodash/isEqual';
-import slice from 'lodash/slice';
+import { Map, OrderedSet } from 'immutable';
 import {
   createContext,
   createSignal,
@@ -11,23 +13,24 @@ import {
 } from 'solid-js';
 
 function useProviderValue() {
-  const [tags, setTags] = createSignal<FilterOption[]>([]);
+  const [tags, setTags] =
+    createSignal<Map<number, OrderedSet<FilterOption>>>(Map());
 
-  function changeTag(tag: FilterOption) {
-    setTags(prev => {
-      if (hasTag(prev, tag)) {
-        return filter(prev, o => !isEqual(o, tag));
-      } else {
-        return [...prev, tag];
-      }
-    });
+  const getTags = (folderId: number) => tags().get(folderId) || OrderedSet();
+
+  function modifyTag(folderId: number, tag: FilterOption) {
+    setTags(prev => modifyTagInFolder(prev, folderId, tag));
   }
 
-  function removeLastTag() {
-    setTags(prev => slice(prev, 0, -1));
+  function removeLastTag(folderId: number) {
+    setTags(prev => removeLastTagInFolder(prev, folderId));
   }
 
-  return { tags, changeTag, removeLastTag };
+  function removeTagFolder(folderId: number) {
+    setTags(prev => removeFolderFromStore(prev, folderId));
+  }
+
+  return { getTags, modifyTag, removeLastTag, removeTagFolder };
 }
 
 type ContextType = ReturnType<typeof useProviderValue>;

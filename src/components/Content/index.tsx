@@ -69,7 +69,7 @@ function Content({
   folderPath,
   filterType,
 }: IContentProps) {
-  const { tags } = useFilter();
+  const { getTags } = useFilter();
 
   const column = useGetColumnSize();
   const [selected, setSelected] = createSignal<number>(-1);
@@ -85,7 +85,7 @@ function Content({
       mediaList: media(),
       filterType: filterType(),
       searchKey: searchKey(),
-      tags: tags(),
+      tags: getTags(folderId()).toArray(),
     }),
     filterMedia,
   );

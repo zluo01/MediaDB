@@ -1,10 +1,9 @@
 import SearchFilterControl from '@/components/Toolbar/searchFilterControl';
 import { TagFilterSelect } from '@/components/Toolbar/tag-filter-select';
 import { useFilter } from '@/lib/context/filterContext';
-import { cn, hasTag } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { FilterType, GroupedOption } from '@/type';
 import filter from 'lodash/filter';
-import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
 import { Accessor, For } from 'solid-js';
 
@@ -15,18 +14,19 @@ type ITagFilterProps = {
 };
 
 function TagFilter({ folderId, filterType, groupOptions }: ITagFilterProps) {
-  const { tags, changeTag } = useFilter();
+  const { getTags, modifyTag } = useFilter();
+  const tags = () => getTags(folderId());
 
   const options = () => filter(groupOptions(), group => !isEmpty(group));
 
-  const filterTagGroups = () => groupBy(tags(), 'group');
+  const filterTagGroups = () => tags().groupBy(o => o.group);
 
   return (
     <dialog id="filter-modal" class="modal">
       <div class="modal-box h-[61.8vh] w-[61.8vw] max-w-[61.8vw]">
         <div class="relative flex flex-col gap-6">
           <div class="flex flex-row items-center">
-            <TagFilterSelect groupOptions={options} />
+            <TagFilterSelect folderId={folderId} groupOptions={options} />
             <SearchFilterControl folderId={folderId} filterType={filterType} />
           </div>
           <For each={options()}>
@@ -41,13 +41,12 @@ function TagFilter({ folderId, filterType, groupOptions }: ITagFilterProps) {
                     <For each={groupOption.options}>
                       {option => (
                         <div
-                          onClick={() => changeTag(option)}
+                          onClick={() => modifyTag(folderId(), option)}
                           class={cn(
                             'badge badge-outline hover:badge-ghost cursor-pointer px-2.5 py-0.5 text-sm font-medium',
-                            hasTag(
-                              filterTagGroups()[groupOption.label] || [],
-                              option,
-                            ) && 'badge-soft',
+                            filterTagGroups()
+                              .get(groupOption.label)
+                              ?.has(option) && 'badge-soft',
                           )}
                         >
                           {option.label}

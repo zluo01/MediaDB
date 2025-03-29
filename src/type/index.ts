@@ -75,15 +75,15 @@ export enum FolderStatus {
   ERROR,
 }
 
-export interface FilterOption {
+export type FilterOption = {
   readonly group: string; // tag group
   readonly label: string;
-}
+};
 
-export interface GroupedOption {
+export type GroupedOption = {
   readonly label: string;
   readonly options: FilterOption[];
-}
+};
 
 export enum InvalidationType {
   FOLDER_LIST,

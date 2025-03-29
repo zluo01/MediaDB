@@ -5,7 +5,6 @@ import { Loading } from '@/components/Loading';
 import Filter from '@/components/Toolbar/filter';
 import RefreshButton from '@/components/Toolbar/refresh';
 import SortMenu from '@/components/Toolbar/sort-menu';
-import { FilterProvider } from '@/lib/context/filterContext';
 import { folderDataQueryOptions } from '@/lib/queries';
 import { FilterType, FolderStatus, SORT } from '@/type';
 import { createQuery } from '@tanstack/solid-query';
@@ -33,67 +32,61 @@ export const Route = createFileRoute('/')({
       basedInformationQuery.data?.status !== FolderStatus.NONE;
 
     return (
-      <FilterProvider>
-        <div class="bg-base-300 size-full overflow-y-auto scroll-smooth">
-          <ErrorBoundary fallback={<div />}>
-            <Suspense fallback={<Loading />}>
-              <Switch>
-                <Match
-                  when={
-                    basedInformationQuery.data?.status === FolderStatus.LOADING
-                  }
-                >
-                  <Loading />
-                </Match>
-                <Match
-                  when={
-                    basedInformationQuery.data?.status === FolderStatus.ERROR
-                  }
-                >
-                  <ErrorHandler
-                    folderName={folderName()}
-                    folderPath={folderPath()}
-                    folderPosition={folderId()}
-                  />
-                </Match>
-                <Match
-                  when={
-                    basedInformationQuery.data?.status === FolderStatus.NONE
-                  }
-                >
-                  <>
-                    <div class="relative flex flex-col p-8">
-                      <div class="bg-base-300 sticky top-0 z-10 flex flex-row flex-nowrap items-center gap-2 py-2">
-                        <hr class="ml-1 grow opacity-30" />
-                        <Filter
-                          folderId={folderId}
-                          filterType={filterType}
-                          disabled={shouldDisabled}
-                        />
-                        <SortMenu folderId={folderId} sortType={sortType} />
-                        <RefreshButton
-                          folderId={folderId}
-                          folderName={folderName}
-                          folderPath={folderPath}
-                          disabled={shouldDisabled}
-                        />
-                      </div>
-                      <Content
-                        appDir={appDir}
+      <div class="bg-base-300 size-full overflow-y-auto scroll-smooth">
+        <ErrorBoundary fallback={<div />}>
+          <Suspense fallback={<Loading />}>
+            <Switch>
+              <Match
+                when={
+                  basedInformationQuery.data?.status === FolderStatus.LOADING
+                }
+              >
+                <Loading />
+              </Match>
+              <Match
+                when={basedInformationQuery.data?.status === FolderStatus.ERROR}
+              >
+                <ErrorHandler
+                  folderName={folderName()}
+                  folderPath={folderPath()}
+                  folderPosition={folderId()}
+                />
+              </Match>
+              <Match
+                when={basedInformationQuery.data?.status === FolderStatus.NONE}
+              >
+                <>
+                  <div class="relative flex flex-col p-8">
+                    <div class="bg-base-300 sticky top-0 z-10 flex flex-row flex-nowrap items-center gap-2 py-2">
+                      <hr class="ml-1 grow opacity-30" />
+                      <Filter
+                        folderId={folderId}
+                        filterType={filterType}
+                        disabled={shouldDisabled}
+                      />
+                      <SortMenu folderId={folderId} sortType={sortType} />
+                      <RefreshButton
                         folderId={folderId}
                         folderName={folderName}
                         folderPath={folderPath}
-                        filterType={filterType}
+                        disabled={shouldDisabled}
                       />
                     </div>
-                    <Footer />
-                  </>
-                </Match>
-              </Switch>
-            </Suspense>
-          </ErrorBoundary>
-        </div>
-      </FilterProvider>
+                    <Content
+                      appDir={appDir}
+                      folderId={folderId}
+                      folderName={folderName}
+                      folderPath={folderPath}
+                      filterType={filterType}
+                    />
+                  </div>
+                  <Footer />
+                </>
+              </Match>
+            </Switch>
+          </Suspense>
+        </ErrorBoundary>
+      </div>
     );
   },
 });
