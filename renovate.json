@@ -9,11 +9,23 @@
     },
     {
       "matchDepTypes": ["devDependencies"],
-      "matchPackagePatterns": ["lint", "prettier", "husky", "@trivago/"]
+      "matchPackagePatterns": [
+        "lint",
+        "prettier",
+        "husky",
+        "@trivago/",
+        "@jest",
+        "jest",
+        "ts-jest"
+      ]
     },
     {
       "groupName": "definitelyTyped",
       "matchPackagePrefixes": ["@types/"]
+    },
+    {
+      "groupName": "web framework",
+      "matchPackagePrefixes": ["solid", "@solid"]
     },
     {
       "groupName": "eslint",
@@ -31,18 +43,18 @@
     {
       "groupName": "styling",
       "matchPackagePrefixes": [
-        "@radix-ui/",
-        "lucide-react",
-        "react-select",
-        "@hello-pangea/",
-        "@heroicons/",
+        "daisyui",
         "tailwind",
         "tailwindcss",
+        "@tailwindcss",
         "autoprefixer",
         "postcss",
-        "clsx",
-        "class-variance-authority"
+        "clsx"
       ]
+    },
+    {
+      "groupName": "utilities",
+      "matchPackagePrefixes": ["@tanstack", "immutable", "lodash"]
     },
     {
       "groupName": "build-tools",
