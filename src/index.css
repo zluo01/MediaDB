@@ -1,9 +1,8 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
   themes:
-    light --default,
-    dark --prefersdark,
-    luxury;
+    cupcake --default,
+    luxury --prefersdark;
 }
 @plugin 'tailwindcss-animate';
 
