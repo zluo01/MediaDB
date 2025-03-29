@@ -8,9 +8,10 @@ import {
   getSetting,
   hideSidePanel,
   removeFolderFromStorage,
+  switchFolderFilterType,
   updateFolderSortType,
 } from '@/lib/storage';
-import { FilterOption, IFolder, SORT } from '@/type';
+import { IFolder, SORT } from '@/type';
 import { QueryClient, queryOptions } from '@tanstack/solid-query';
 
 const FOLDER_LIST = 'folderList';
@@ -29,14 +30,11 @@ export const folderListQueryOptions = () =>
     queryFn: getFolderList,
   });
 
-export const contentQueryOptions = (
-  folderId: number,
-  searchKey: string,
-  tags: FilterOption[],
-) =>
+export const contentQueryOptions = (folderId: number) =>
   queryOptions({
-    queryKey: [FOLDER_CONTENT_KEY, folderId, searchKey, tags],
-    queryFn: () => getFolderMedia(folderId, searchKey, tags),
+    queryKey: [FOLDER_CONTENT_KEY, folderId],
+    queryFn: () => getFolderMedia(folderId),
+    throwOnError: true,
   });
 
 export const mediaTagsQueryOptions = (folderId: number) =>
@@ -49,7 +47,17 @@ export const folderDataQueryOptions = (folderId: number) =>
   queryOptions({
     queryKey: [FOLDER_DETAIL_KEY, folderId],
     queryFn: () => getFolderInfo(folderId),
+    throwOnError: true,
   });
+
+export async function switchFilterType(folderId: number) {
+  await switchFolderFilterType(folderId);
+  await queryClient.invalidateQueries({
+    queryKey: [FOLDER_DETAIL_KEY, folderId],
+    exact: true,
+    refetchType: 'active',
+  });
+}
 
 export async function updateSortType(folderId: number, sortType: SORT) {
   await updateFolderSortType(folderId, sortType);

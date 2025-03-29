@@ -3,26 +3,34 @@ use serde_json::{json, Value};
 
 #[derive(sqlx::FromRow, Serialize, Deserialize)]
 pub struct Setting {
+    #[serde(rename = "showSidePanel")]
+    #[serde(serialize_with = "serialize_bool_number")]
     hide_panel: i32,
+    #[serde(rename = "skipFolders")]
+    #[serde(serialize_with = "serialize_string_list")]
     skip_folders: String,
 }
 
-impl Setting {
-    pub fn to_json(&self) -> Value {
-        json!({
-            "showSidePanel": self.hide_panel == 0,
-            "skipFolders": self.to_skip_folder_list()
-        })
-    }
+fn serialize_bool_number<S>(v: &i32, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    let ret = v == &0i32;
+    ret.serialize(serializer)
+}
 
-    fn to_skip_folder_list(&self) -> Vec<String> {
-        if self.skip_folders.is_empty() {
-            return vec![];
-        }
-        self.skip_folders
-            .split(",")
+fn serialize_string_list<S>(v: &String, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    if v.is_empty() {
+        let v: Vec<String> = vec![];
+        v.serialize(serializer)
+    } else {
+        v.split(",")
             .map(|v| v.trim().to_string())
-            .collect()
+            .collect::<Vec<String>>()
+            .serialize(serializer)
     }
 }
 
@@ -45,22 +53,6 @@ pub struct FolderData {
     path: String,
     position: i32,
     status: u8,
-}
-
-pub struct MediaResponse {
-    pub(crate) media_list: Vec<Media>,
-    pub(crate) tags: Vec<MediaTag>,
-    pub(crate) filter_type: u8,
-}
-
-impl MediaResponse {
-    pub fn new(media_list: Vec<Media>, tags: Vec<MediaTag>, filter_type: u8) -> Self {
-        Self {
-            media_list,
-            tags,
-            filter_type,
-        }
-    }
 }
 
 #[derive(sqlx::FromRow, Debug, Serialize, Deserialize)]
@@ -86,12 +78,6 @@ where
     } else {
         let value: Value = serde_json::from_str(v.as_str()).unwrap();
         value.serialize(serializer)
-    }
-}
-
-impl Media {
-    pub fn path(&self) -> &str {
-        &self.path
     }
 }
 

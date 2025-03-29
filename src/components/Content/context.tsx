@@ -1,4 +1,4 @@
-import { footerStore } from '@/lib/context';
+import { updateFooter } from '@/lib/context';
 import { openFile } from '@/lib/os';
 import { openModal } from '@/lib/utils';
 import { IMediaData, MediaType } from '@/type';
@@ -54,7 +54,7 @@ function Context({
 
   function onSelect() {
     select();
-    footerStore.setState(() => media.title);
+    updateFooter(media.title);
   }
 
   async function openMenu(

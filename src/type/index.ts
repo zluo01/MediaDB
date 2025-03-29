@@ -82,7 +82,7 @@ export interface FilterOption {
 
 export interface GroupedOption {
   readonly label: string;
-  readonly options: readonly FilterOption[];
+  readonly options: FilterOption[];
 }
 
 export enum InvalidationType {

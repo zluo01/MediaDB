@@ -1,10 +1,11 @@
 import {
   FilterOption,
-  IContentResponse,
+  FilterType,
+  GroupedOption,
   IFolder,
   IFolderData,
+  IMediaData,
   ISetting,
-  ITagResponse,
 } from '@/type';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -22,22 +23,28 @@ export async function getFolderInfo(position: number): Promise<IFolderData> {
   return await invoke<IFolderData>('get_folder_data', { position });
 }
 
-export async function getFolderMedia(
-  position: number,
-  key: string,
-  tags: FilterOption[],
-): Promise<IContentResponse> {
-  return await invoke<IContentResponse>('get_folder_media', {
+export async function getFolderMedia(position: number): Promise<IMediaData[]> {
+  return await invoke<IMediaData[]>('get_folder_media', {
     position,
-    key,
+  });
+}
+
+export async function filterMediaWithTag(
+  position: number,
+  filterType: FilterType,
+  tags: FilterOption[],
+): Promise<string[]> {
+  return await invoke<string[]>('filter_media_with_tags', {
+    position,
+    filterType,
     tags,
   });
 }
 
 export async function getFolderMediaTags(
   position: number,
-): Promise<ITagResponse> {
-  return await invoke<ITagResponse>('get_folder_media_tags', { position });
+): Promise<GroupedOption[]> {
+  return await invoke<GroupedOption[]>('get_folder_media_tags', { position });
 }
 
 export async function updateFolderPathFromStorage(
@@ -71,4 +78,8 @@ export async function hideSidePanel(show: boolean): Promise<void> {
 
 export async function changeSkipFolders(skipFolders: string): Promise<void> {
   await invoke('update_skip_folders', { skipFolders });
+}
+
+export async function switchFolderFilterType(position: number) {
+  await invoke<IFolderData>('update_folder_filter_type', { position });
 }

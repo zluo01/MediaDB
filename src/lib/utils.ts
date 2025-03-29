@@ -1,5 +1,7 @@
 import { FilterOption } from '@/type';
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
+import filter from 'lodash/filter';
+import isEqual from 'lodash/isEqual';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -7,9 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function hasTag(tags: FilterOption[], tag: FilterOption): boolean {
-  return (
-    tags.filter(o => o.tag === tag.tag && o.label === tag.label).length > 0
-  );
+  return filter(tags, o => isEqual(o, tag)).length > 0;
 }
 
 export function openModal(id: string) {
@@ -18,4 +18,8 @@ export function openModal(id: string) {
 
 export function closeModal(id: string) {
   (document.getElementById(id) as HTMLDialogElement)?.close();
+}
+
+export function isModalOpen() {
+  return document.querySelector('dialog[open]') !== null;
 }

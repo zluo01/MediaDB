@@ -1,37 +1,34 @@
 import { notify } from '@/lib/os';
-import { createLibrary, folderDataQueryOptions } from '@/lib/queries';
-import { createQuery } from '@tanstack/solid-query';
+import { createLibrary } from '@/lib/queries';
 import { Accessor } from 'solid-js';
 import { DOMElement } from 'solid-js/jsx-runtime';
 
 type RefreshButtonProps = {
   folderId: Accessor<number>;
+  folderName: Accessor<string>;
+  folderPath: Accessor<string>;
+  disabled: Accessor<boolean>;
 };
 
-export default function RefreshButton({ folderId }: RefreshButtonProps) {
-  const folderDataQuery = createQuery(() => folderDataQueryOptions(folderId()));
-
+export default function RefreshButton({
+  folderId,
+  folderName,
+  folderPath,
+  disabled,
+}: RefreshButtonProps) {
   async function updateLibrary(
     e: MouseEvent & { currentTarget: HTMLButtonElement; target: DOMElement },
   ) {
     e.preventDefault();
-    if (!folderDataQuery.data) {
-      return;
-    }
     try {
-      const { name, path, position } = folderDataQuery.data;
-      await createLibrary(name, path, position, true);
+      await createLibrary(folderName(), folderPath(), folderId(), true);
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
     }
   }
 
   return (
-    <button
-      class="btn btn-ghost"
-      onClick={updateLibrary}
-      disabled={folderDataQuery.isLoading}
-    >
+    <button class="btn btn-ghost" onClick={updateLibrary} disabled={disabled()}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

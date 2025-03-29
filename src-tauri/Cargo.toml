@@ -6,7 +6,7 @@ authors = ["zluo01"]
 license = ""
 repository = "https://github.com/zluo01/MediaDB"
 edition = "2021"
-rust-version = "1.80.0"
+rust-version = "1.85.0"
 
 [build-dependencies]
 tauri-build = { version = "2.1.0", features = [] }

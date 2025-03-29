@@ -77,7 +77,6 @@ pub const GET_FOLDER_CONTENT: &str = "
     FROM media
              JOIN folders ON media.folder = folders.folder_name
     WHERE folders.position = ?
-      AND title LIKE ? COLLATE NOCASE
     ORDER BY CASE
                  WHEN folders.sort_type = 2 THEN media.title
                  WHEN folders.sort_type = 4 THEN media.year
@@ -90,13 +89,6 @@ pub const GET_FOLDER_CONTENT: &str = "
 ";
 
 //language=sqlite
-pub const GET_FOLDER_FILTER_TYPE: &str = "
-    SELECT folders.filter_type
-    FROM folders
-    WHERE folders.position = ?
-";
-
-//language=sqlite
 pub const GET_TAGS_IN_FOLDER: &str = "
     SELECT tags.path as path,
            tags.t    as tag_group,
@@ -105,7 +97,6 @@ pub const GET_TAGS_IN_FOLDER: &str = "
              JOIN folders ON media.folder = folders.folder_name
              JOIN tags ON media.path = tags.path
     WHERE folders.position = ?
-      AND title LIKE ? COLLATE NOCASE
 ";
 
 //language=sqlite
@@ -210,3 +201,10 @@ pub const TAGS_IN_FOLDER: &str = "
     WHERE folders.position = ?
     ORDER BY 1, 2;
     ";
+
+//language=sqlite
+pub const UPDATE_FOLDER_FILTER_TYPE: &str = "
+    UPDATE folders
+    SET filter_type = 1 - filter_type
+    WHERE position = ?
+";

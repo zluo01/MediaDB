@@ -6,13 +6,11 @@
 extern crate core;
 
 use crate::db::main::{create_pool, get_database_path};
-use crate::helper::main::group_tags;
-use crate::model::database::{Folder, FolderData, Media, MediaTag, Tag};
+use crate::helper::main::filter_media;
+use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use log::{error, info, LevelFilter};
-use rayon::prelude::*;
 use serde_json::Value;
 use sqlx::{Pool, Sqlite};
-use std::collections::HashSet;
 use std::{collections::HashMap, fs, process::Command, sync::Arc};
 use tauri::{async_runtime::Mutex, Emitter, Manager, Runtime, State};
 use tauri_plugin_log::{Target, TargetKind};
@@ -238,20 +236,21 @@ async fn handle_parsing<R: Runtime>(
 }
 
 #[tauri::command]
-async fn get_setting(database_state: State<'_, DatabaseConnectionState>) -> Result<Value, String> {
+async fn get_setting(
+    database_state: State<'_, DatabaseConnectionState>,
+) -> Result<Setting, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
     let setting_result = db::main::get_settings(pool).await;
-    if let Err(e) = setting_result {
-        return Err(format!(
+    match setting_result {
+        Ok(setting) => Ok(setting),
+        Err(e) => Err(format!(
             "Fail to get setting. Raising Error: {:?}",
             e.into_database_error()
-        ));
+        )),
     }
-    let setting = setting_result.unwrap();
-    Ok(setting)
 }
 
 #[tauri::command]
@@ -331,84 +330,57 @@ async fn get_folder_data(
 async fn get_folder_media(
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
-    key: &str,
-    tags: Vec<Tag>,
 ) -> Result<Vec<Media>, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
         .expect("Cannot find database instance.");
 
-    let no_filtering = tags.is_empty();
-    let folder_media_result = db::main::get_folder_media(pool, &position, key, no_filtering).await;
+    let folder_media_result = db::main::get_folder_media(pool, &position).await;
     if let Err(e) = folder_media_result {
-        error!("{:?}", e);
         return Err(format!(
             "Fail to get folder media. Raising Error: {:?}",
             e.into_database_error()
         ));
     }
 
-    let result = folder_media_result.unwrap();
-    let media_list = result.media_list;
-
-    if no_filtering {
-        return Ok(media_list);
-    }
-
-    let tag_list = result.tags;
-    let tags_group = tag_list.iter().fold(HashMap::new(), |mut acc, tag| {
-        acc.entry(tag.path())
-            .or_insert_with(Vec::new)
-            .push(tag.clone());
-        acc
-    });
-
-    let media_keys = filter_media(&tags_group, &tags, result.filter_type);
-    Ok(media_list
-        .into_iter()
-        .filter(|o| media_keys.contains(&o.path().to_string()))
-        .collect::<Vec<Media>>())
+    Ok(folder_media_result.unwrap())
 }
 
-fn filter_media(
-    tags_group: &HashMap<&str, Vec<MediaTag>>,
-    filter_tags: &Vec<Tag>,
+#[tauri::command]
+async fn filter_media_with_tags(
+    database_state: State<'_, DatabaseConnectionState>,
+    position: i32,
     filter_type: u8,
-) -> Vec<String> {
-    if filter_tags.is_empty() {
-        return tags_group.keys().map(|&k| k.to_string()).collect();
+    tags: Vec<Tag>,
+) -> Result<Vec<String>, String> {
+    let mut instances = database_state.0.lock().await;
+    let pool = instances
+        .get_mut(&0)
+        .expect("Cannot find database instance.");
+
+    let tags_in_folder_result = db::main::get_tags_in_folder(pool, &position).await;
+    if let Err(e) = tags_in_folder_result {
+        return Err(format!(
+            "Fail to get tags in folder {}. Raising Error: {:?}",
+            position,
+            e.into_database_error()
+        ));
     }
 
-    let filter_tag_groups = group_tags(filter_tags);
+    let tags_group =
+        tags_in_folder_result
+            .unwrap()
+            .into_iter()
+            .fold(HashMap::new(), |mut acc, tag| {
+                acc.entry(tag.path().to_string())
+                    .or_insert_with(Vec::new)
+                    .push(tag.clone());
+                acc
+            });
 
-    tags_group
-        .into_par_iter()
-        .filter(|(_, v)| {
-            let groups = group_tags(&v);
-            let mut keep = true;
-            for (key, value) in groups {
-                if let Some(filter_tags) = filter_tag_groups.get(key) {
-                    keep = keep & check_filter_condition(&value, filter_tags, filter_type);
-                }
-            }
-            return keep;
-        })
-        .map(|(k, _)| k.to_string())
-        .collect()
-}
-
-fn check_filter_condition(source: &Vec<Tag>, target: &Vec<Tag>, filter_type: u8) -> bool {
-    let source_set: HashSet<_> = source.into_iter().collect();
-    let target_set: HashSet<_> = target.into_iter().collect();
-
-    // OR, if media tag contains any of the filter tag, return true
-    if filter_type == 0u8 {
-        return source_set.intersection(&target_set).count() > 0;
-    }
-
-    // AND, we need to make sure source tags contains all tags from filter tags
-    target_set.is_subset(&source_set)
+    let media_keys = filter_media(&tags_group, &tags, filter_type);
+    Ok(media_keys)
 }
 
 #[tauri::command]
@@ -518,6 +490,24 @@ async fn delete_folder<R: Runtime>(
     Ok(())
 }
 
+#[tauri::command]
+async fn update_folder_filter_type(
+    database_state: State<'_, DatabaseConnectionState>,
+    position: i32,
+) -> Result<(), String> {
+    let mut instances = database_state.0.lock().await;
+    let pool = instances
+        .get_mut(&0)
+        .expect("Cannot find database instance.");
+    if let Err(e) = db::main::update_folder_filter_type(pool, &position).await {
+        return Err(format!(
+            "Fail to update folder filter type. Raising Error: {:?}",
+            e.into_database_error()
+        ));
+    }
+    Ok(())
+}
+
 #[cfg(target_os = "windows")]
 fn check_ffmpeg_exists() -> bool {
     use std::os::windows::process::CommandExt;
@@ -589,6 +579,8 @@ fn main() {
             get_folder_data,
             get_folder_media,
             get_folder_media_tags,
+            filter_media_with_tags,
+            update_folder_filter_type,
             update_sort_type,
             update_folder_path,
             reorder_folder,

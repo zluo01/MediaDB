@@ -1,6 +1,5 @@
-import { folderDataQueryOptions, updateSortType } from '@/lib/queries';
+import { updateSortType } from '@/lib/queries';
 import { SORT } from '@/type';
-import { createQuery } from '@tanstack/solid-query';
 import { Accessor, For } from 'solid-js';
 
 function sortTypeLabel(sortType: SORT): string {
@@ -20,12 +19,10 @@ function sortTypeLabel(sortType: SORT): string {
 
 interface ISortingMenuProps {
   folderId: Accessor<number>;
+  sortType: Accessor<SORT>;
 }
 
-function SortMenu({ folderId }: ISortingMenuProps) {
-  const folderDataQuery = createQuery(() => folderDataQueryOptions(folderId()));
-  const sortType = () => folderDataQuery.data?.sort || SORT.DEFAULT;
-
+function SortMenu({ folderId, sortType }: ISortingMenuProps) {
   return (
     <div class="dropdown">
       <div tabIndex="0" role="button" class="btn btn-ghost m-1">

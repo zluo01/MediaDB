@@ -1,32 +1,155 @@
-// import { FilterOption, GroupedOption } from '@/type';
-// import { Select } from '@thisbeyond/solid-select';
-//
-// interface ITagFilterSelectProps {
-//   options: GroupedOption[];
-// }
-//
-// export function TagFilterSelect({ options }: ITagFilterSelectProps) {
-//   // const { tags, setTags } = useFilterStore();
-//   //
-//   // function onChange(selectedOptions: OnChangeValue<FilterOption, true>) {
-//   //   setTags([...selectedOptions]);
-//   // }
-//
-//   return (
-//     <Select
-//       multiple
-//       options={['apple', 'banana', 'pear', 'pineapple', 'kiwi']}
-//     />
-//     // <Select
-//     //   isMulti
-//     //   name="filters"
-//     //   options={options}
-//     //   className="_select"
-//     //   classNamePrefix="_select"
-//     //   autoFocus
-//     //   hideSelectedOptions
-//     //   value={tags}
-//     //   onChange={onChange}
-//     // />
-//   );
-// }
+import { useFilter } from '@/lib/context/filterContext';
+import { cn, hasTag } from '@/lib/utils';
+import { GroupedOption } from '@/type';
+import groupBy from 'lodash/groupBy';
+import includes from 'lodash/includes';
+import { Accessor, createSignal, For, Show } from 'solid-js';
+
+interface ITagFilterSelectProps {
+  groupOptions: Accessor<GroupedOption[]>;
+}
+
+export function TagFilterSelect({ groupOptions }: ITagFilterSelectProps) {
+  const { tags, changeTag, removeLastTag } = useFilter();
+
+  const [search, setSearch] = createSignal('');
+
+  const [isOpen, setIsOpen] = createSignal(false);
+
+  const filterTagGroups = () => groupBy(tags(), 'group');
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case 'ArrowDown':
+        // focusNextOption();
+        break;
+      case 'ArrowUp':
+        // focusPreviousOption();
+        break;
+      case 'Enter':
+        // if (isOpen() && focusedOption()) {
+        //   pickOption(focusedOption());
+        //   break;
+        // }
+        return;
+      case 'Escape':
+        if (isOpen()) {
+          setIsOpen(false);
+          break;
+        }
+        return;
+      case 'Delete':
+      case 'Backspace':
+        if (search()) {
+          return;
+        }
+        removeLastTag();
+        break;
+      case ' ':
+        if (search()) {
+          return;
+        }
+        if (!isOpen()) {
+          setIsOpen(true);
+        } else {
+          // if (focusedOption()) {
+          //   pickOption(focusedOption());
+          // }
+        }
+        break;
+      case 'Tab':
+        //   pickOption(focusedOption());
+        //   break;
+        // }
+        return;
+      default:
+        return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  return (
+    <div
+      class="sticky top-0 z-10 w-full bg-inherit py-2"
+      onFocusOut={() => setIsOpen(false)}
+      onMouseDown={event => {
+        event.preventDefault();
+        event.currentTarget.getElementsByTagName('input')[0].focus();
+      }}
+    >
+      <div class="input w-full">
+        <Show when={tags()}>
+          <For each={tags()}>
+            {option => (
+              <div
+                onClick={() => changeTag(option)}
+                class={cn(
+                  'badge badge-soft hover:badge-ghost cursor-pointer px-2.5 py-0.5 text-sm font-medium',
+                )}
+              >
+                {option.label}
+              </div>
+            )}
+          </For>
+        </Show>
+        <input
+          type="text"
+          tabIndex={0}
+          autocomplete="off"
+          autoCapitalize="none"
+          autocorrect="off"
+          autofocus
+          onClick={() => setIsOpen(prev => !prev)}
+          value={search()}
+          onInput={e => setSearch(e.target.value)}
+          onKeyDown={(event: KeyboardEvent) => {
+            onKeyDown(event);
+            if (!event.defaultPrevented) {
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                (event.target as HTMLElement).blur();
+              }
+            }
+          }}
+          onMouseDown={event => {
+            event.stopPropagation();
+          }}
+        />
+      </div>
+      <Show when={isOpen()}>
+        <ul class="list bg-base-100 absolute z-2 mt-2 max-h-[36vh] w-full overflow-y-auto rounded-lg border">
+          <For each={groupOptions()}>
+            {groupOption => {
+              return (
+                <>
+                  <li class="bg-base-200 sticky top-0 z-1 p-4 pb-2 text-lg font-bold tracking-wide capitalize">
+                    {groupOption.label}
+                  </li>
+                  <For each={groupOption.options}>
+                    {option => (
+                      <li
+                        class={cn(
+                          'list-row cursor-pointer',
+                          hasTag(
+                            filterTagGroups()[groupOption.label] || [],
+                            option,
+                          ) && 'pointer-events-none opacity-30',
+                          !includes(option.label, search()) && 'hidden',
+                        )}
+                        onClick={() => changeTag(option)}
+                      >
+                        {option.label}
+                      </li>
+                    )}
+                  </For>
+                </>
+              );
+            }}
+          </For>
+        </ul>
+      </Show>
+    </div>
+  );
+}

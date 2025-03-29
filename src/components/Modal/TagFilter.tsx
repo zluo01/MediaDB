@@ -1,35 +1,36 @@
-import { filterStore } from '@/lib/context';
+import SearchFilterControl from '@/components/Toolbar/searchFilterControl';
+import { TagFilterSelect } from '@/components/Toolbar/tag-filter-select';
+import { useFilter } from '@/lib/context/filterContext';
 import { cn, hasTag } from '@/lib/utils';
-import { FilterOption, GroupedOption } from '@/type';
-import { useStore } from '@tanstack/solid-store';
-import isEqual from 'lodash/isEqual';
+import { FilterType, GroupedOption } from '@/type';
+import filter from 'lodash/filter';
+import groupBy from 'lodash/groupBy';
+import isEmpty from 'lodash/isEmpty';
 import { Accessor, For } from 'solid-js';
 
-interface ITagFilterProps {
-  groupOptions: Accessor<GroupedOption[]>;
-}
+type ITagFilterProps = {
+  readonly folderId: Accessor<number>;
+  readonly filterType: Accessor<FilterType>;
+  readonly groupOptions: Accessor<GroupedOption[]>;
+};
 
-function TagFilter({ groupOptions }: ITagFilterProps) {
-  const tags = useStore(filterStore);
+function TagFilter({ folderId, filterType, groupOptions }: ITagFilterProps) {
+  const { tags, changeTag } = useFilter();
 
-  function addTag(tag: FilterOption) {
-    filterStore.setState(prev => {
-      if (hasTag(prev, tag)) {
-        return prev.filter(o => !isEqual(o, tag));
-      } else {
-        return [...prev, tag];
-      }
-    });
-  }
+  const options = () => filter(groupOptions(), group => !isEmpty(group));
+
+  const filterTagGroups = () => groupBy(tags(), 'group');
 
   return (
     <dialog id="filter-modal" class="modal">
       <div class="modal-box h-[61.8vh] w-[61.8vw] max-w-[61.8vw]">
-        <div class="flex flex-col gap-6">
-          <For each={groupOptions()}>
+        <div class="relative flex flex-col gap-6">
+          <div class="flex flex-row items-center">
+            <TagFilterSelect groupOptions={options} />
+            <SearchFilterControl folderId={folderId} filterType={filterType} />
+          </div>
+          <For each={options()}>
             {groupOption => {
-              const filteredTags = () =>
-                tags().filter(o => o.tag === groupOption.label);
               return (
                 <div class="bg-base-100 border-base-300 collapse border">
                   <input type="radio" name="tag-options" />
@@ -40,10 +41,13 @@ function TagFilter({ groupOptions }: ITagFilterProps) {
                     <For each={groupOption.options}>
                       {option => (
                         <div
-                          onClick={() => addTag(option)}
+                          onClick={() => changeTag(option)}
                           class={cn(
                             'badge badge-outline hover:badge-ghost cursor-pointer px-2.5 py-0.5 text-sm font-medium',
-                            hasTag(filteredTags(), option) && 'badge-soft',
+                            hasTag(
+                              filterTagGroups()[groupOption.label] || [],
+                              option,
+                            ) && 'badge-soft',
                           )}
                         >
                           {option.label}

@@ -1,6 +1,5 @@
 import { mediaTagsQueryOptions } from '@/lib/queries';
 import { openModal } from '@/lib/utils';
-import { FolderStatus } from '@/type';
 import { createQuery } from '@tanstack/solid-query';
 import { Accessor, lazy } from 'solid-js';
 
@@ -8,16 +7,16 @@ const TagFilter = lazy(() => import('@/components/Modal/TagFilter'));
 
 interface IFilerSection {
   folderId: Accessor<number>;
+  disabled: Accessor<boolean>;
+  filterType: Accessor<number>;
 }
 
-function Filters({ folderId }: IFilerSection) {
+function Filters({ folderId, disabled, filterType }: IFilerSection) {
   const groupOptionsQuery = createQuery(() =>
     mediaTagsQueryOptions(folderId()),
   );
 
-  const disabled = () => groupOptionsQuery.data?.status !== FolderStatus.NONE;
-
-  const groupOptions = () => groupOptionsQuery.data?.groupOptions || [];
+  const groupOptions = () => groupOptionsQuery.data || [];
 
   return (
     <>
@@ -42,7 +41,11 @@ function Filters({ folderId }: IFilerSection) {
         </svg>
         Filter
       </button>
-      <TagFilter groupOptions={groupOptions} />
+      <TagFilter
+        folderId={folderId}
+        groupOptions={groupOptions}
+        filterType={filterType}
+      />
     </>
   );
 }

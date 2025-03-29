@@ -7,7 +7,7 @@ use tauri::{Manager, Runtime};
 
 use crate::db::queries;
 use crate::helper::main::group_tags;
-use crate::model::database::{Folder, FolderData, Media, MediaResponse, MediaTag, Setting, Tag};
+use crate::model::database::{Folder, FolderData, Media, MediaTag, Setting, Tag};
 use crate::model::parser::MediaItem;
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
@@ -65,11 +65,11 @@ pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
     Ok(pool)
 }
 
-pub async fn get_settings(pool: &Pool<Sqlite>) -> Result<Value, sqlx::Error> {
+pub async fn get_settings(pool: &Pool<Sqlite>) -> Result<Setting, sqlx::Error> {
     let settings = sqlx::query_as::<_, Setting>(queries::GET_SETTINGS)
         .fetch_one(pool)
         .await?;
-    Ok(settings.to_json())
+    Ok(settings)
 }
 
 pub async fn get_skip_folders(pool: &Pool<Sqlite>) -> Result<Vec<String>, sqlx::Error> {
@@ -216,36 +216,25 @@ pub async fn insert_new_media(
 pub async fn get_folder_media(
     pool: &Pool<Sqlite>,
     position: &i32,
-    key: &str,
-    no_filtering: bool,
-) -> Result<MediaResponse, sqlx::Error> {
-    let mut tx = pool.begin().await?;
-
+) -> Result<Vec<Media>, sqlx::Error> {
     let media_list = sqlx::query_as::<_, Media>(queries::GET_FOLDER_CONTENT)
         .bind(position)
-        .bind(format!("%{}%", key))
-        .fetch_all(&mut *tx)
+        .fetch_all(pool)
         .await?;
 
-    if no_filtering {
-        tx.commit().await?;
-        return Ok(MediaResponse::new(media_list, vec![], 0));
-    }
+    Ok(media_list)
+}
 
-    let filter_type = sqlx::query(queries::GET_FOLDER_FILTER_TYPE)
-        .bind(position)
-        .fetch_one(&mut *tx)
-        .await?;
-
+pub async fn get_tags_in_folder(
+    pool: &Pool<Sqlite>,
+    position: &i32,
+) -> Result<Vec<MediaTag>, sqlx::Error> {
     let tags = sqlx::query_as::<_, MediaTag>(queries::GET_TAGS_IN_FOLDER)
         .bind(position)
-        .bind(format!("%{}%", key))
-        .fetch_all(&mut *tx)
+        .fetch_all(pool)
         .await?;
 
-    tx.commit().await?;
-
-    Ok(MediaResponse::new(media_list, tags, filter_type.get(0)))
+    Ok(tags)
 }
 
 pub async fn get_folder_media_tags(
@@ -341,6 +330,17 @@ pub async fn update_folder_status(
 ) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::UPDATE_FOLDER_STATUS)
         .bind(status)
+        .bind(position)
+        .execute(pool)
+        .await?;
+    Ok(())
+}
+
+pub async fn update_folder_filter_type(
+    pool: &Pool<Sqlite>,
+    position: &i32,
+) -> Result<(), sqlx::Error> {
+    let _ = sqlx::query(queries::UPDATE_FOLDER_FILTER_TYPE)
         .bind(position)
         .execute(pool)
         .await?;
