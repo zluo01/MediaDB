@@ -44,7 +44,7 @@ function EditFolderModal({ folder }: IFolderNameEdit) {
       <fieldset class="fieldset bg-base-200 border-base-300 rounded-box modal-box border p-4">
         <legend class="fieldset-legend text-nowrap">Edit Folder</legend>
 
-        <legend class="fieldset-legend">Name</legend>
+        <legend class="fieldset-label">Name</legend>
         <input
           type="text"
           class="input validator w-full"

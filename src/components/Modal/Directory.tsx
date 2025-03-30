@@ -46,7 +46,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
       <fieldset class="fieldset bg-base-200 border-base-300 rounded-box modal-box border p-4">
         <legend class="fieldset-legend text-nowrap">Add New Folder</legend>
 
-        <legend class="fieldset-legend">Name</legend>
+        <legend class="fieldset-label">Name</legend>
         <input
           type="text"
           class="input validator w-full"
@@ -59,7 +59,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
         />
         <p class="validator-hint">Name already exists.</p>
 
-        <legend class="fieldset-legend">Directory</legend>
+        <legend class="fieldset-label">Directory</legend>
         <div class="join w-full">
           <input
             class="input join-item grow"

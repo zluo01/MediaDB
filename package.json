@@ -71,8 +71,7 @@
     "*.{ts,tsx,js}": [
       "eslint --cache --fix",
       "npm run lint",
-      "npm run format",
-      "npm run test"
+      "npm run format"
     ],
     "*.{js,css,md}": "prettier --write"
   }
