@@ -2,6 +2,7 @@ import { updateFooter } from '@/lib/context';
 import { openFile } from '@/lib/os';
 import { openModal } from '@/lib/utils';
 import { IMediaData, MediaType } from '@/type';
+import { LogicalPosition } from '@tauri-apps/api/dpi';
 import { Menu } from '@tauri-apps/api/menu/menu';
 import join from 'lodash/join';
 import { Accessor, JSXElement } from 'solid-js';
@@ -71,7 +72,7 @@ function Context({
       ],
     });
 
-    await menu.popup();
+    await menu.popup(new LogicalPosition(e.pageX, e.pageY));
   }
 
   return (
