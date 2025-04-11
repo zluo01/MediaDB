@@ -99,7 +99,7 @@ fn parse_comic(
     Ok(Some(media))
 }
 
-fn save_cover(comic_dest_name: &PathBuf, file: &mut ZipFile) {
+fn save_cover(comic_dest_name: &PathBuf, file: &mut ZipFile<File>) {
     let mut content = Vec::new();
     file.read_to_end(&mut content)
         .expect("Fail to read zip file");
