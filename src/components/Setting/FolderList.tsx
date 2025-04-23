@@ -2,7 +2,7 @@ import { useFilter } from '@/lib/context/filterContext';
 import { folderListQueryOptions, removeFolder } from '@/lib/queries';
 import { openModal } from '@/lib/utils';
 import { IFolder } from '@/type';
-import { createQuery } from '@tanstack/solid-query';
+import { useQuery } from '@tanstack/solid-query';
 import { createSignal, For, lazy } from 'solid-js';
 
 const EditFolderModal = lazy(() => import('@/components/Modal/EditFolder'));
@@ -10,7 +10,7 @@ const EditFolderModal = lazy(() => import('@/components/Modal/EditFolder'));
 function FolderList() {
   const { removeTagFolder } = useFilter();
 
-  const folderListQuery = createQuery(() => folderListQueryOptions());
+  const folderListQuery = useQuery(() => folderListQueryOptions());
   const folderList = () => folderListQuery.data || [];
 
   const [folder, selectFolder] = createSignal<IFolder>();

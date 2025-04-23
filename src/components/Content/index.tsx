@@ -7,7 +7,7 @@ import { openFile } from '@/lib/os';
 import { contentQueryOptions } from '@/lib/queries';
 import { cn, isModalOpen, openModal } from '@/lib/utils';
 import { FilterType, ITVShowData, MediaType } from '@/type';
-import { createQuery } from '@tanstack/solid-query';
+import { useQuery } from '@tanstack/solid-query';
 import { useStore } from '@tanstack/solid-store';
 import join from 'lodash/join';
 import {
@@ -76,7 +76,7 @@ function Content({
 
   const searchKey = useStore(searchStore);
 
-  const folderContentQuery = createQuery(() => contentQueryOptions(folderId()));
+  const folderContentQuery = useQuery(() => contentQueryOptions(folderId()));
   const media = () => folderContentQuery.data || [];
 
   const [mediaList] = createResource(

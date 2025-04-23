@@ -1,6 +1,6 @@
 import { mediaTagsQueryOptions } from '@/lib/queries';
 import { openModal } from '@/lib/utils';
-import { createQuery } from '@tanstack/solid-query';
+import { useQuery } from '@tanstack/solid-query';
 import { Accessor, lazy } from 'solid-js';
 
 const TagFilter = lazy(() => import('@/components/Modal/TagFilter'));
@@ -12,9 +12,7 @@ interface IFilerSection {
 }
 
 function Filters({ folderId, disabled, filterType }: IFilerSection) {
-  const groupOptionsQuery = createQuery(() =>
-    mediaTagsQueryOptions(folderId()),
-  );
+  const groupOptionsQuery = useQuery(() => mediaTagsQueryOptions(folderId()));
 
   const groupOptions = () => groupOptionsQuery.data || [];
 

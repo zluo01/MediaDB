@@ -1,7 +1,7 @@
 import { DirectoryButton } from '@/components/Shares';
 import { folderListQueryOptions, settingQueryOptions } from '@/lib/queries';
 import { cn } from '@/lib/utils';
-import { createQuery } from '@tanstack/solid-query';
+import { useQuery } from '@tanstack/solid-query';
 import { Link, useLocation } from '@tanstack/solid-router';
 import { For, lazy } from 'solid-js';
 
@@ -13,10 +13,10 @@ function SidePanel() {
   const isSettingPage = () => location().pathname.includes('/setting');
   const currFolderIndex = () => (location().search.id as number) || 0;
 
-  const settingQuery = createQuery(() => settingQueryOptions());
+  const settingQuery = useQuery(() => settingQueryOptions());
   const showPanel = () => settingQuery.data?.showSidePanel || false;
 
-  const folderListQuery = createQuery(() => folderListQueryOptions());
+  const folderListQuery = useQuery(() => folderListQueryOptions());
   const folderList = () => folderListQuery.data || [];
 
   const showText = () =>

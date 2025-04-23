@@ -7,7 +7,7 @@ import RefreshButton from '@/components/Toolbar/refresh';
 import SortMenu from '@/components/Toolbar/sort-menu';
 import { folderDataQueryOptions } from '@/lib/queries';
 import { FilterType, FolderStatus, SORT } from '@/type';
-import { createQuery } from '@tanstack/solid-query';
+import { useQuery } from '@tanstack/solid-query';
 import { createFileRoute, useLocation } from '@tanstack/solid-router';
 import { appDataDir } from '@tauri-apps/api/path';
 import { ErrorBoundary, Match, Suspense, Switch } from 'solid-js';
@@ -19,7 +19,7 @@ export const Route = createFileRoute('/')({
 
     const location = useLocation();
     const folderId = () => (location().search.id as number) || 0;
-    const basedInformationQuery = createQuery(() =>
+    const basedInformationQuery = useQuery(() =>
       folderDataQueryOptions(folderId()),
     );
 

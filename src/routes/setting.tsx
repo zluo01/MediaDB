@@ -5,7 +5,7 @@ import SkipFolderList from '@/components/Setting/SkipFolderList';
 import { DirectoryButton, SkipFolderButton } from '@/components/Shares';
 import { notify } from '@/lib/os';
 import { changePanelDisplay, settingQueryOptions } from '@/lib/queries';
-import { createQuery } from '@tanstack/solid-query';
+import { useQuery } from '@tanstack/solid-query';
 import { createFileRoute } from '@tanstack/solid-router';
 import { getVersion } from '@tauri-apps/api/app';
 import { Show } from 'solid-js';
@@ -15,7 +15,7 @@ export const Route: any = createFileRoute('/setting')({
   component: () => {
     const version = Route.useLoaderData();
 
-    const settingQuery = createQuery(() => settingQueryOptions());
+    const settingQuery = useQuery(() => settingQueryOptions());
     const skipFolders = () => settingQuery.data?.skipFolders || [];
 
     async function handleCheckBox(
