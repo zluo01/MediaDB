@@ -18,7 +18,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@solid-primitives/scheduled": "1.5.0",
+    "@solid-primitives/scheduled": "1.5.1",
     "@tailwindcss/vite": "4.1.4",
     "@tanstack/solid-query": "5.74.4",
     "@tanstack/solid-router": "1.117.1",
