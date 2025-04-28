@@ -1,4 +1,5 @@
 import { cn, openModal } from '@/lib/utils';
+import { AnyFieldApi } from '@tanstack/solid-form';
 import { Accessor } from 'solid-js';
 
 export function SkipFolderButton() {
@@ -55,5 +56,21 @@ export function DirectoryButton({
       </svg>
       <span class={cn('hidden', showText && showText())}>Add new folder</span>
     </button>
+  );
+}
+
+interface FormInputHintProps {
+  field: AnyFieldApi;
+}
+
+export function FormInputHint(props: FormInputHintProps) {
+  return (
+    <>
+      {props.field.state.meta.isTouched &&
+      props.field.state.meta.errors.length ? (
+        <em class="text-red-500">{props.field.state.meta.errors.join(',')}</em>
+      ) : null}
+      {props.field.state.meta.isValidating ? 'Validating...' : null}
+    </>
   );
 }

@@ -20,6 +20,7 @@
   "dependencies": {
     "@solid-primitives/scheduled": "1.5.1",
     "@tailwindcss/vite": "4.1.4",
+    "@tanstack/solid-form": "1.8.0",
     "@tanstack/solid-query": "5.74.7",
     "@tanstack/solid-router": "1.117.1",
     "@tanstack/solid-store": "0.7.0",

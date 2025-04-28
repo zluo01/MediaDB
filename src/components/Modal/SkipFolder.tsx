@@ -1,7 +1,9 @@
+import { FormInputHint } from '@/components/Shares';
 import { notify } from '@/lib/os';
 import { updateSkipFolder } from '@/lib/queries';
 import { closeModal } from '@/lib/utils';
-import { Accessor, createSignal } from 'solid-js';
+import { createForm } from '@tanstack/solid-form';
+import { Accessor } from 'solid-js';
 import { DOMElement } from 'solid-js/jsx-runtime';
 
 interface ISkipFolderModal {
@@ -9,47 +11,82 @@ interface ISkipFolderModal {
 }
 
 function SkipFolderModal({ skipFolders }: ISkipFolderModal) {
-  const [folderName, setFolderName] = createSignal('');
-  const [loading, setLoading] = createSignal(false);
+  const form = createForm(() => ({
+    defaultValues: {
+      folderName: '',
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        await updateSkipFolder([...skipFolders(), value.folderName].join(','));
+        closeModal('skip-folder-modal');
+      } catch (e) {
+        await notify(`Edit Folder Name Error: ${e}`);
+      }
+    },
+  }));
 
   async function handleSubmit(
-    e: MouseEvent & { currentTarget: HTMLButtonElement; target: DOMElement },
+    e: SubmitEvent & { currentTarget: HTMLFormElement; target: DOMElement },
   ) {
     e.preventDefault();
-    setLoading(true);
-    try {
-      await updateSkipFolder([...skipFolders(), folderName()].join(','));
-      closeModal('skip-folder-modal');
-    } catch (e) {
-      await notify(`Edit Folder Name Error: ${e}`);
-    } finally {
-      setLoading(false);
-    }
+    e.stopPropagation();
+    await form.handleSubmit();
   }
-
-  const invalidPattern = () => `^(?!${skipFolders().join('$|')}$).+$`;
 
   return (
     <dialog id="skip-folder-modal" class="modal">
       <fieldset class="fieldset bg-base-200 border-base-300 rounded-box modal-box border p-4">
         <legend class="fieldset-legend text-nowrap">Add Skip Folder</legend>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <form.Field
+              name="folderName"
+              validators={{
+                onChangeAsyncDebounceMs: 500,
+                onChangeAsync: async ({ value }) => {
+                  if (skipFolders().includes(value)) {
+                    return 'Name already exists.';
+                  }
+                },
+              }}
+              children={field => {
+                return (
+                  <>
+                    <legend class="fieldset-label">Name</legend>
+                    <input
+                      type="text"
+                      class="input validator w-full"
+                      placeholder="Folder Name"
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value}
+                      onBlur={field().handleBlur}
+                      onInput={e => field().handleChange(e.target.value)}
+                      required
+                    />
+                    <FormInputHint field={field()} />
+                  </>
+                );
+              }}
+            />
+          </div>
 
-        <legend class="fieldset-label">Name</legend>
-        <input
-          type="text"
-          class="input validator w-full"
-          placeholder="Folder Name"
-          value={folderName()}
-          onInput={e => setFolderName(e.target.value)}
-          disabled={loading()}
-          pattern={invalidPattern()}
-          required
-        />
-        <p class="validator-hint">Name already exists.</p>
-
-        <button class="btn btn-neutral mt-4" onClick={handleSubmit}>
-          {loading() ? 'Loading...' : 'Add'}
-        </button>
+          <form.Subscribe
+            selector={state => ({
+              canSubmit: state.canSubmit,
+              isSubmitting: state.isSubmitting,
+            })}
+            children={state => (
+              <button
+                class="btn btn-neutral mt-4"
+                type="submit"
+                disabled={!state().canSubmit}
+              >
+                {state().isSubmitting ? 'Loading...' : 'Add'}
+              </button>
+            )}
+          />
+        </form>
       </fieldset>
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
