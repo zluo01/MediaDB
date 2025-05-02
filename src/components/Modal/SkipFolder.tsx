@@ -1,7 +1,7 @@
 import { FormInputHint } from '@/components/Shares';
 import { notify } from '@/lib/os';
 import { updateSkipFolder } from '@/lib/queries';
-import { closeModal } from '@/lib/utils';
+import { closeModal, cn } from '@/lib/utils';
 import { createForm } from '@tanstack/solid-form';
 import { Accessor } from 'solid-js';
 import { DOMElement } from 'solid-js/jsx-runtime';
@@ -55,7 +55,10 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal) {
                     <legend class="fieldset-label">Name</legend>
                     <input
                       type="text"
-                      class="input validator w-full"
+                      class={cn(
+                        'input w-full',
+                        field().state.meta.errors.length && 'border-red-500',
+                      )}
                       placeholder="Folder Name"
                       id={field().name}
                       name={field().name}

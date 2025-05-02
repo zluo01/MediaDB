@@ -18,6 +18,11 @@
           "path": "**/*"
         }
       ]
+    },
+    "fs:default",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "**/*" }]
     }
   ]
 }

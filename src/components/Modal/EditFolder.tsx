@@ -1,9 +1,11 @@
+import { FormInputHint } from '@/components/Shares';
 import { getDirectory, notify } from '@/lib/os';
 import { invalidateForFolderPathChange } from '@/lib/queries';
 import { updateFolderPathFromStorage } from '@/lib/storage';
 import { closeModal } from '@/lib/utils';
 import { IFolder } from '@/type';
 import { createForm } from '@tanstack/solid-form';
+import { exists } from '@tauri-apps/plugin-fs';
 import { Accessor } from 'solid-js';
 import { DOMElement } from 'solid-js/jsx-runtime';
 
@@ -35,6 +37,7 @@ function EditFolderModal({ folder }: IFolderNameEdit) {
 
   async function handleDirectory() {
     form.setFieldValue('folderPath', await getDirectory());
+    form.validateField('folderPath', 'change');
   }
 
   async function handleSubmit(
@@ -62,6 +65,15 @@ function EditFolderModal({ folder }: IFolderNameEdit) {
           <div>
             <form.Field
               name="folderPath"
+              validators={{
+                onChangeAsyncDebounceMs: 500,
+                onChangeAsync: async ({ value }) => {
+                  const pathExists = await exists(value);
+                  if (!pathExists) {
+                    return 'Path does not exist.';
+                  }
+                },
+              }}
               children={field => {
                 return (
                   <>
@@ -101,6 +113,7 @@ function EditFolderModal({ folder }: IFolderNameEdit) {
                         </svg>
                       </button>
                     </div>
+                    <FormInputHint field={field()} />
                   </>
                 );
               }}

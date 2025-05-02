@@ -1,9 +1,10 @@
 import { FormInputHint } from '@/components/Shares';
 import { getDirectory, notify } from '@/lib/os';
 import { createLibrary } from '@/lib/queries';
-import { closeModal } from '@/lib/utils';
+import { closeModal, cn } from '@/lib/utils';
 import { IFolder } from '@/type';
 import { createForm } from '@tanstack/solid-form';
+import { exists } from '@tauri-apps/plugin-fs';
 import { Accessor } from 'solid-js';
 import { DOMElement } from 'solid-js/jsx-runtime';
 
@@ -33,6 +34,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
     form.setFieldValue('folderName', name);
     form.setFieldValue('folderPath', path);
     form.validateField('folderName', 'change');
+    form.validateField('folderPath', 'change');
   }
 
   async function handleSubmit(
@@ -67,7 +69,10 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
                     <legend class="fieldset-label">Name</legend>
                     <input
                       type="text"
-                      class="input validator w-full"
+                      class={cn(
+                        'input w-full',
+                        field().state.meta.errors.length && 'border-red-500',
+                      )}
                       placeholder="Folder Name"
                       id={field().name}
                       name={field().name}
@@ -86,6 +91,15 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
           <div>
             <form.Field
               name="folderPath"
+              validators={{
+                onChangeAsyncDebounceMs: 500,
+                onChangeAsync: async ({ value }) => {
+                  const pathExists = await exists(value);
+                  if (!pathExists) {
+                    return 'Path does not exist.';
+                  }
+                },
+              }}
               children={field => {
                 return (
                   <>
@@ -125,6 +139,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
                         </svg>
                       </button>
                     </div>
+                    <FormInputHint field={field()} />
                   </>
                 );
               }}

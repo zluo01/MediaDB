@@ -25,3 +25,4 @@ sqlx = { version = "0.8.5", features = ["runtime-tokio", "sqlite"] }
 log = "0.4.27"
 rayon = "1.10"
 zip = "2.6.1"
+tauri-plugin-fs = { version = "2.2.1" }

@@ -554,6 +554,7 @@ fn main() {
 
     info!("Log Level: {:?}", log_level);
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
             let _ = show_window(app);
             println!("{}, {args:?}, {cwd}", app.package_info().name);

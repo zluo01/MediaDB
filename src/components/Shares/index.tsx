@@ -65,12 +65,12 @@ interface FormInputHintProps {
 
 export function FormInputHint(props: FormInputHintProps) {
   return (
-    <>
+    <div class="h-4 min-h-4">
       {props.field.state.meta.isTouched &&
       props.field.state.meta.errors.length ? (
         <em class="text-red-500">{props.field.state.meta.errors.join(',')}</em>
       ) : null}
       {props.field.state.meta.isValidating ? 'Validating...' : null}
-    </>
+    </div>
   );
 }
