@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@solid-primitives/scheduled": "1.5.1",
-    "@tailwindcss/vite": "4.1.5",
+    "@tailwindcss/vite": "4.1.6",
     "@tanstack/solid-form": "1.9.0",
     "@tanstack/solid-query": "5.75.0",
     "@tanstack/solid-router": "1.119.0",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@eslint/js": "9.25.1",
     "@jest/globals": "29.7.0",
-    "@tailwindcss/postcss": "4.1.5",
+    "@tailwindcss/postcss": "4.1.6",
     "@tanstack/eslint-plugin-query": "5.74.7",
     "@tanstack/eslint-plugin-router": "1.115.0",
     "@tanstack/router-plugin": "1.119.0",
@@ -61,7 +61,7 @@
     "postcss": "8.5.3",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "0.6.11",
-    "tailwindcss": "4.1.5",
+    "tailwindcss": "4.1.6",
     "ts-jest": "29.3.2",
     "typescript": "5.8.3",
     "typescript-eslint": "8.31.1",
