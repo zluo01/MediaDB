@@ -34,7 +34,7 @@
     "daisyui": "5.0.35",
     "immutable": "5.1.1",
     "lodash": "4.17.21",
-    "solid-js": "1.9.6",
+    "solid-js": "1.9.7",
     "tailwind-merge": "3.2.0",
     "tailwindcss-animate": "1.0.7"
   },
