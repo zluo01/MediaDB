@@ -1,8 +1,10 @@
 import js from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import pluginRouter from '@tanstack/eslint-plugin-router';
+import * as tsParser from '@typescript-eslint/parser';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import pluginPromise from 'eslint-plugin-promise';
+import solid from 'eslint-plugin-solid/configs/typescript';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 
@@ -15,6 +17,16 @@ export default [
   ...ts.configs.recommended,
   pluginPromise.configs['flat/recommended'],
   eslintConfigPrettier,
+  {
+    files: ['**/*.{ts,tsx}'],
+    ...solid,
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: 'tsconfig.json',
+      },
+    },
+  },
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',

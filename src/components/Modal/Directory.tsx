@@ -9,10 +9,10 @@ import { Accessor } from 'solid-js';
 import { DOMElement } from 'solid-js/jsx-runtime';
 
 interface IDirectoryModal {
-  folderList: Accessor<IFolder[]>;
+  readonly folderList: Accessor<IFolder[]>;
 }
 
-function DirectoryModal({ folderList }: IDirectoryModal) {
+function DirectoryModal(props: IDirectoryModal) {
   const form = createForm(() => ({
     defaultValues: {
       folderName: '',
@@ -45,7 +45,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
     await form.handleSubmit();
   }
 
-  const folderNameList = () => folderList().map(o => o.name);
+  const folderNameList = () => props.folderList().map(o => o.name);
 
   return (
     <dialog id="directory-modal" class="modal">
@@ -135,7 +135,7 @@ function DirectoryModal({ folderList }: IDirectoryModal) {
                             fill="currentColor"
                             fill-rule="evenodd"
                             clip-rule="evenodd"
-                          ></path>
+                          />
                         </svg>
                       </button>
                     </div>

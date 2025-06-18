@@ -8,10 +8,10 @@ interface ISearchFilterControl {
   readonly filterType: Accessor<FilterType>;
 }
 
-function SearchFilterControl({ folderId, filterType }: ISearchFilterControl) {
+function SearchFilterControl(props: ISearchFilterControl) {
   async function handleCheckBox() {
     try {
-      await switchFilterType(folderId());
+      await switchFilterType(props.folderId());
     } catch (e) {
       await notify(`Switch filter type Error: ${e}`);
     }
@@ -20,7 +20,7 @@ function SearchFilterControl({ folderId, filterType }: ISearchFilterControl) {
   return (
     <input
       type="checkbox"
-      checked={filterType() === FilterType.AND}
+      checked={props.filterType() === FilterType.AND}
       onChange={handleCheckBox}
       class="toggle ml-2"
     />

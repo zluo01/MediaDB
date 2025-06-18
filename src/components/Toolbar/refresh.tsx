@@ -10,25 +10,29 @@ type RefreshButtonProps = {
   disabled: Accessor<boolean>;
 };
 
-export default function RefreshButton({
-  folderId,
-  folderName,
-  folderPath,
-  disabled,
-}: RefreshButtonProps) {
+export default function RefreshButton(props: RefreshButtonProps) {
   async function updateLibrary(
     e: MouseEvent & { currentTarget: HTMLButtonElement; target: DOMElement },
   ) {
     e.preventDefault();
     try {
-      await createLibrary(folderName(), folderPath(), folderId(), true);
+      await createLibrary(
+        props.folderName(),
+        props.folderPath(),
+        props.folderId(),
+        true,
+      );
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
     }
   }
 
   return (
-    <button class="btn btn-ghost" onClick={updateLibrary} disabled={disabled()}>
+    <button
+      class="btn btn-ghost"
+      onClick={updateLibrary}
+      disabled={props.disabled()}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

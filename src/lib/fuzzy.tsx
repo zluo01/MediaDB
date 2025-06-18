@@ -97,6 +97,7 @@ function fuzzyHighlight(
 
   return (
     <>
+      {/* eslint-disable-next-line solid/prefer-for */}
       {highlighted
         .join('')
         .split(separator)

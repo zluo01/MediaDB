@@ -18,11 +18,11 @@ function sortTypeLabel(sortType: SORT): string {
 }
 
 interface ISortingMenuProps {
-  folderId: Accessor<number>;
-  sortType: Accessor<SORT>;
+  readonly folderId: Accessor<number>;
+  readonly sortType: Accessor<SORT>;
 }
 
-function SortMenu({ folderId, sortType }: ISortingMenuProps) {
+function SortMenu(props: ISortingMenuProps) {
   return (
     <div class="dropdown">
       <div tabIndex="0" role="button" class="btn btn-ghost m-1">
@@ -40,7 +40,7 @@ function SortMenu({ folderId, sortType }: ISortingMenuProps) {
             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
           />
         </svg>
-        {sortTypeLabel(sortType())}
+        {sortTypeLabel(props.sortType())}
       </div>
       <ul
         tabIndex="0"
@@ -50,10 +50,10 @@ function SortMenu({ folderId, sortType }: ISortingMenuProps) {
           each={Object.keys(SORT)
             .filter(key => !isNaN(Number(key)))
             .map(key => Number(key))
-            .filter(o => o !== sortType())}
+            .filter(o => o !== props.sortType())}
         >
           {type => (
-            <li onClick={() => updateSortType(folderId(), type)}>
+            <li onClick={() => updateSortType(props.folderId(), type)}>
               <a>{sortTypeLabel(type)}</a>
             </li>
           )}

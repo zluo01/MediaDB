@@ -13,23 +13,18 @@ interface ITVShowCardMenuProps {
   media: ITVShowData;
 }
 
-export default function TVShowCardMenu({
-  appDir,
-  folderName,
-  folderPath,
-  media,
-}: ITVShowCardMenuProps) {
+export default function TVShowCardMenu(props: ITVShowCardMenuProps) {
   const [active, setActive] = createSignal(0);
 
   async function openEpisodeFile(media: IEpisode) {
-    const filePath = join([folderPath, media.path, media.file], '/');
+    const filePath = join([props.folderPath, media.path, media.file], '/');
     await openFile(filePath);
   }
 
-  const seasonKeys = () => Object.keys(media.seasons || []).sort();
+  const seasonKeys = () => Object.keys(props.media.seasons || []).sort();
 
   return (
-    <dialog id={`menu-${media.title}`} class="modal modal-bottom">
+    <dialog id={`menu-${props.media.title}`} class="modal modal-bottom">
       <div class="modal-box w-screen p-0">
         <div role="tablist" class="tabs tabs-border">
           <For each={seasonKeys()}>
@@ -49,10 +44,13 @@ export default function TVShowCardMenu({
             <For each={seasonKeys()}>
               {(season, index) => {
                 const cover = getCacheImagePath(
-                  appDir(),
-                  folderName,
+                  props.appDir(),
+                  props.folderName,
                   join(
-                    [media.path, media.posters[season] || media.posters.main],
+                    [
+                      props.media.path,
+                      props.media.posters[season] || props.media.posters.main,
+                    ],
                     '/',
                   ),
                 );
@@ -61,12 +59,12 @@ export default function TVShowCardMenu({
                     <div class="flex flex-row flex-nowrap justify-around">
                       <Poster
                         src={cover}
-                        alt={media.title}
+                        alt={props.media.title}
                         width={240}
                         height={320}
                       />
                       <div class="grid h-full w-[61.8vw] auto-cols-min auto-rows-min grid-cols-10 gap-1">
-                        <For each={media.seasons[season]}>
+                        <For each={props.media.seasons[season]}>
                           {episode => (
                             <div class="tooltip" data-tip={episode.title}>
                               <div

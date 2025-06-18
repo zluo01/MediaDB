@@ -72,7 +72,7 @@ function SidePanel() {
         <div class="flex w-full flex-col flex-nowrap items-center justify-between">
           <DirectoryButton
             buttonStyle="text-base-100 size-8"
-            className="btn-lg flex w-full flex-row flex-nowrap items-center justify-start"
+            classes="btn-lg flex w-full flex-row flex-nowrap items-center justify-start"
             showText={showText}
           />
           <DirectoryModal folderList={folderList} />

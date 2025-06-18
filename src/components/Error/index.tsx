@@ -8,17 +8,18 @@ interface IErrorHandlerProps {
   folderPosition: number;
 }
 
-export default function ErrorHandler({
-  folderName,
-  folderPath,
-  folderPosition,
-}: IErrorHandlerProps) {
+export default function ErrorHandler(props: IErrorHandlerProps) {
   async function updateLibrary(
     e: MouseEvent & { currentTarget: HTMLButtonElement; target: DOMElement },
   ) {
     e.preventDefault();
     try {
-      await createLibrary(folderName, folderPath, folderPosition, true);
+      await createLibrary(
+        props.folderName,
+        props.folderPath,
+        props.folderPosition,
+        true,
+      );
     } catch (e) {
       await notify(`Update Library Error: ${e}`);
     }
@@ -45,7 +46,7 @@ export default function ErrorHandler({
             fill="currentColor"
             fill-rule="evenodd"
             clip-rule="evenodd"
-          ></path>
+          />
         </svg>
       </button>
     </div>

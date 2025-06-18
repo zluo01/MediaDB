@@ -13,21 +13,21 @@ interface IFolderNameEdit {
   folder: Accessor<IFolder | undefined>;
 }
 
-function EditFolderModal({ folder }: IFolderNameEdit) {
+function EditFolderModal(props: IFolderNameEdit) {
   const form = createForm(() => ({
     defaultValues: {
-      folderPath: folder()?.path || '',
+      folderPath: props.folder()?.path || '',
     },
     onSubmit: async ({ value }) => {
-      if (!folder()) {
+      if (!props.folder()) {
         return;
       }
       try {
         await updateFolderPathFromStorage({
-          ...folder()!,
+          ...props.folder()!,
           path: value.folderPath,
         });
-        await invalidateForFolderPathChange(folder()!.position);
+        await invalidateForFolderPathChange(props.folder()!.position);
         closeModal('edit-folder-modal');
       } catch (e) {
         await notify(`Edit Folder Name Error: ${e}`);
@@ -57,7 +57,7 @@ function EditFolderModal({ folder }: IFolderNameEdit) {
         <input
           type="text"
           class="input validator w-full"
-          value={folder()?.name || ''}
+          value={props.folder()?.name || ''}
           disabled
         />
 
@@ -109,7 +109,7 @@ function EditFolderModal({ folder }: IFolderNameEdit) {
                             fill="currentColor"
                             fill-rule="evenodd"
                             clip-rule="evenodd"
-                          ></path>
+                          />
                         </svg>
                       </button>
                     </div>

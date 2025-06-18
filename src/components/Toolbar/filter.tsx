@@ -11,8 +11,10 @@ interface IFilerSection {
   filterType: Accessor<number>;
 }
 
-function Filters({ folderId, disabled, filterType }: IFilerSection) {
-  const groupOptionsQuery = useQuery(() => mediaTagsQueryOptions(folderId()));
+function Filters(props: IFilerSection) {
+  const groupOptionsQuery = useQuery(() =>
+    mediaTagsQueryOptions(props.folderId()),
+  );
 
   const groupOptions = () => groupOptionsQuery.data || [];
 
@@ -20,7 +22,7 @@ function Filters({ folderId, disabled, filterType }: IFilerSection) {
     <>
       <button
         class="btn btn-ghost focus:outline-none"
-        disabled={disabled()}
+        disabled={props.disabled()}
         onClick={() => openModal('filter-modal')}
       >
         <svg
@@ -40,9 +42,9 @@ function Filters({ folderId, disabled, filterType }: IFilerSection) {
         Filter
       </button>
       <TagFilter
-        folderId={folderId}
+        folderId={props.folderId}
         groupOptions={groupOptions}
-        filterType={filterType}
+        filterType={props.filterType}
       />
     </>
   );

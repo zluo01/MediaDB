@@ -32,20 +32,14 @@ async function openContainedFolder(
   }
 }
 
-function Context({
-  index,
-  media,
-  folderPath,
-  children,
-  select,
-}: IContextProps) {
+function Context(props: IContextProps) {
   async function handleOpen(media: IMediaData) {
     switch (media.type) {
       case MediaType.COMIC:
-        await openFile(join([folderPath, media.file], '/'));
+        await openFile(join([props.folderPath, media.file], '/'));
         break;
       case MediaType.MOVIE:
-        await openFile(join([folderPath, media.path, media.file], '/'));
+        await openFile(join([props.folderPath, media.path, media.file], '/'));
         break;
       case MediaType.TV_SERIES:
         openModal(`menu-${media.title}`);
@@ -54,8 +48,8 @@ function Context({
   }
 
   function onSelect() {
-    select();
-    updateFooter(media.title);
+    props.select();
+    updateFooter(props.media.title);
   }
 
   async function openMenu(
@@ -67,7 +61,12 @@ function Context({
         {
           id: 'openInFolder',
           text: 'Open in Folder',
-          action: () => openContainedFolder(folderPath, media.type, media.path),
+          action: () =>
+            openContainedFolder(
+              props.folderPath,
+              props.media.type,
+              props.media.path,
+            ),
         },
       ],
     });
@@ -77,17 +76,17 @@ function Context({
 
   return (
     <div
-      id={`c${index()}`}
+      id={`c${props.index()}`}
       tabIndex={-1}
       onClick={onSelect}
       onContextMenu={openMenu}
-      onDblClick={() => handleOpen(media)}
+      onDblClick={() => handleOpen(props.media)}
       onFocus={e =>
         e.target.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
       class="flex w-full cursor-pointer p-2 hover:rounded-xl focus:rounded-md focus:bg-white/20 focus:shadow-lg focus:ring-0"
     >
-      {children}
+      {props.children}
     </div>
   );
 }

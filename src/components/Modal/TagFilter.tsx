@@ -13,11 +13,11 @@ type ITagFilterProps = {
   readonly groupOptions: Accessor<GroupedOption[]>;
 };
 
-function TagFilter({ folderId, filterType, groupOptions }: ITagFilterProps) {
+function TagFilter(props: ITagFilterProps) {
   const { getTags, modifyTag } = useFilter();
-  const tags = () => getTags(folderId());
+  const tags = () => getTags(props.folderId());
 
-  const options = () => filter(groupOptions(), group => !isEmpty(group));
+  const options = () => filter(props.groupOptions(), group => !isEmpty(group));
 
   const filterTagGroups = () => tags().groupBy(o => o.group);
 
@@ -26,8 +26,11 @@ function TagFilter({ folderId, filterType, groupOptions }: ITagFilterProps) {
       <div class="modal-box h-[61.8vh] w-[61.8vw] max-w-[61.8vw]">
         <div class="relative flex flex-col gap-6">
           <div class="flex flex-row items-center">
-            <TagFilterSelect folderId={folderId} groupOptions={options} />
-            <SearchFilterControl folderId={folderId} filterType={filterType} />
+            <TagFilterSelect folderId={props.folderId} groupOptions={options} />
+            <SearchFilterControl
+              folderId={props.folderId}
+              filterType={props.filterType}
+            />
           </div>
           <For each={options()}>
             {groupOption => {
@@ -41,7 +44,7 @@ function TagFilter({ folderId, filterType, groupOptions }: ITagFilterProps) {
                     <For each={groupOption.options}>
                       {option => (
                         <div
-                          onClick={() => modifyTag(folderId(), option)}
+                          onClick={() => modifyTag(props.folderId(), option)}
                           class={cn(
                             'badge badge-outline hover:badge-ghost cursor-pointer px-2.5 py-0.5 text-sm font-medium',
                             filterTagGroups()

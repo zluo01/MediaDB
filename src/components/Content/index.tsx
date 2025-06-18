@@ -13,6 +13,7 @@ import join from 'lodash/join';
 import {
   Accessor,
   createEffect,
+  createMemo,
   createResource,
   createSignal,
   ErrorBoundary,
@@ -27,7 +28,7 @@ import { LoadingContent } from 'src/components/Loading';
 
 const Menu = lazy(() => import('./menu'));
 
-function useGetColumnSize(): Accessor<number> {
+function useWindowWidth(): Accessor<number> {
   const [width, setWidth] = createSignal(window.innerWidth);
 
   const controller = new AbortController();
@@ -44,14 +45,7 @@ function useGetColumnSize(): Accessor<number> {
 
   onCleanup(() => controller.abort());
 
-  return () => {
-    if (width() < 2560) {
-      return 6;
-    } else if (width() < 3840) {
-      return 8;
-    }
-    return 12;
-  };
+  return width;
 }
 
 interface IContentProps {
@@ -62,30 +56,32 @@ interface IContentProps {
   filterType: Accessor<FilterType>;
 }
 
-function Content({
-  appDir,
-  folderId,
-  folderName,
-  folderPath,
-  filterType,
-}: IContentProps) {
+function Content(props: IContentProps) {
   const { getTags } = useFilter();
 
-  const column = useGetColumnSize();
+  const width = useWindowWidth();
+  const column = createMemo(() => {
+    if (width() < 2560) return 6;
+    if (width() < 3840) return 8;
+    return 12;
+  });
+
   const [selected, setSelected] = createSignal<number>(-1);
 
   const searchKey = useStore(searchStore);
 
-  const folderContentQuery = useQuery(() => contentQueryOptions(folderId()));
+  const folderContentQuery = useQuery(() =>
+    contentQueryOptions(props.folderId()),
+  );
   const media = () => folderContentQuery.data || [];
 
   const [mediaList] = createResource(
     () => ({
-      folderId: folderId(),
+      folderId: props.folderId(),
       mediaList: media(),
-      filterType: filterType(),
+      filterType: props.filterType(),
       searchKey: searchKey(),
-      tags: getTags(folderId()).toArray(),
+      tags: getTags(props.folderId()).toArray(),
     }),
     filterMedia,
   );
@@ -138,10 +134,10 @@ function Content({
         const m = mediaList()![selected()];
         switch (m.type) {
           case MediaType.COMIC:
-            openFile(join([folderPath(), m.file], '/'));
+            openFile(join([props.folderPath(), m.file], '/'));
             break;
           case MediaType.MOVIE:
-            openFile(join([folderPath(), m.path, m.file], '/'));
+            openFile(join([props.folderPath(), m.path, m.file], '/'));
             break;
           case MediaType.TV_SERIES:
             openModal(`menu-${m.title}`);
@@ -181,21 +177,21 @@ function Content({
                 <Context
                   index={index}
                   media={media}
-                  folderPath={folderPath()}
+                  folderPath={props.folderPath()}
                   select={() => setSelected(index())}
                 >
                   <Media
                     media={media}
-                    folderDir={appDir}
-                    folderName={folderName()}
+                    folderDir={props.appDir}
+                    folderName={props.folderName()}
                   />
                 </Context>
                 <Show when={media.type === MediaType.TV_SERIES}>
                   <Menu
-                    appDir={appDir}
+                    appDir={props.appDir}
                     media={media as ITVShowData}
-                    folderName={folderName()}
-                    folderPath={folderPath()}
+                    folderName={props.folderName()}
+                    folderPath={props.folderPath()}
                   />
                 </Show>
               </>

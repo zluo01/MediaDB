@@ -9,12 +9,9 @@ type ITagFilterSelectProps = {
   readonly groupOptions: Accessor<GroupedOption[]>;
 };
 
-export function TagFilterSelect({
-  folderId,
-  groupOptions,
-}: ITagFilterSelectProps) {
+export function TagFilterSelect(props: ITagFilterSelectProps) {
   const { getTags, modifyTag, removeLastTag } = useFilter();
-  const tags = () => getTags(folderId());
+  const tags = () => getTags(props.folderId());
 
   const [search, setSearch] = createSignal('');
 
@@ -47,7 +44,7 @@ export function TagFilterSelect({
         if (search()) {
           return;
         }
-        removeLastTag(folderId());
+        removeLastTag(props.folderId());
         break;
       case ' ':
         if (search()) {
@@ -87,7 +84,7 @@ export function TagFilterSelect({
           <For each={tags().toArray()}>
             {option => (
               <div
-                onClick={() => modifyTag(folderId(), option)}
+                onClick={() => modifyTag(props.folderId(), option)}
                 class={cn(
                   'badge badge-soft hover:badge-ghost cursor-pointer px-2.5 py-0.5 text-sm font-medium',
                 )}
@@ -124,7 +121,7 @@ export function TagFilterSelect({
       </div>
       <Show when={isOpen()}>
         <ul class="list bg-base-100 absolute z-2 mt-2 max-h-[36vh] w-full overflow-y-auto rounded-lg border">
-          <For each={groupOptions()}>
+          <For each={props.groupOptions()}>
             {groupOption => {
               return (
                 <>
@@ -141,7 +138,7 @@ export function TagFilterSelect({
                             ?.has(option) && 'pointer-events-none opacity-30',
                           !includes(option.label, search()) && 'hidden',
                         )}
-                        onClick={() => modifyTag(folderId(), option)}
+                        onClick={() => modifyTag(props.folderId(), option)}
                       >
                         {option.label}
                       </li>

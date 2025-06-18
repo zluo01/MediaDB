@@ -3,14 +3,15 @@ import { updateSkipFolder } from '@/lib/queries';
 import { Accessor, For } from 'solid-js';
 
 interface ISkipFolderListProps {
-  skipFolders: Accessor<string[]>;
+  readonly skipFolders: Accessor<string[]>;
 }
 
-function SkipFolderList({ skipFolders }: ISkipFolderListProps) {
+function SkipFolderList(props: ISkipFolderListProps) {
   async function handleRemove(folder: string) {
     try {
       await updateSkipFolder(
-        skipFolders()
+        props
+          .skipFolders()
           .filter(o => o !== folder)
           .join(','),
       );
@@ -21,7 +22,7 @@ function SkipFolderList({ skipFolders }: ISkipFolderListProps) {
 
   return (
     <ul class="list bg-base-100 rounded-box shadow-md">
-      <For each={skipFolders()}>
+      <For each={props.skipFolders()}>
         {folder => (
           <li class="list-row">
             <svg

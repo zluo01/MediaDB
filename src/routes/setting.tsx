@@ -50,7 +50,7 @@ export const Route: any = createFileRoute('/setting')({
             <span class="py-3 text-lg opacity-30">Imported Folders</span>
             <DirectoryButton
               buttonStyle="size-6"
-              className="btn-circle opacity-30"
+              classes="btn-circle opacity-30"
             />
           </div>
           <FolderList />

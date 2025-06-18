@@ -19,7 +19,7 @@ export function SkipFolderButton() {
           fill="currentColor"
           fill-rule="evenodd"
           clip-rule="evenodd"
-        ></path>
+        />
       </svg>
       <span class="sr-only">Add skip folder</span>
     </button>
@@ -27,26 +27,22 @@ export function SkipFolderButton() {
 }
 
 interface IDirectoryButtonProps {
-  className: string;
+  classes: string;
   buttonStyle: string;
   showText?: Accessor<string>;
 }
 
-export function DirectoryButton({
-  className,
-  buttonStyle,
-  showText,
-}: IDirectoryButtonProps) {
+export function DirectoryButton(props: IDirectoryButtonProps) {
   return (
     <button
-      class={cn('btn btn-ghost focus:outline-none', className)}
+      class={cn('btn btn-ghost focus:outline-none', props.classes)}
       onClick={() => openModal('directory-modal')}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        class={buttonStyle}
+        class={props.buttonStyle}
       >
         <path
           fill-rule="evenodd"
@@ -54,7 +50,9 @@ export function DirectoryButton({
           clip-rule="evenodd"
         />
       </svg>
-      <span class={cn('hidden', showText && showText())}>Add new folder</span>
+      <span class={cn('hidden', props.showText && props.showText())}>
+        Add new folder
+      </span>
     </button>
   );
 }

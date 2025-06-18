@@ -10,14 +10,16 @@ interface ISkipFolderModal {
   skipFolders: Accessor<string[]>;
 }
 
-function SkipFolderModal({ skipFolders }: ISkipFolderModal) {
+function SkipFolderModal(props: ISkipFolderModal) {
   const form = createForm(() => ({
     defaultValues: {
       folderName: '',
     },
     onSubmit: async ({ value }) => {
       try {
-        await updateSkipFolder([...skipFolders(), value.folderName].join(','));
+        await updateSkipFolder(
+          [...props.skipFolders(), value.folderName].join(','),
+        );
         closeModal('skip-folder-modal');
       } catch (e) {
         await notify(`Edit Folder Name Error: ${e}`);
@@ -44,7 +46,7 @@ function SkipFolderModal({ skipFolders }: ISkipFolderModal) {
               validators={{
                 onChangeAsyncDebounceMs: 500,
                 onChangeAsync: async ({ value }) => {
-                  if (skipFolders().includes(value)) {
+                  if (props.skipFolders().includes(value)) {
                     return 'Name already exists.';
                   }
                 },

@@ -1,16 +1,17 @@
 import { cn } from '@/lib/utils';
-import { ComponentProps } from 'solid-js';
+import { ComponentProps, splitProps } from 'solid-js';
 
 interface PosterProps extends ComponentProps<'img'> {
   styles?: string;
 }
 
-function Poster({ styles, ...props }: PosterProps) {
+function Poster(_props: PosterProps) {
+  const [classes, props] = splitProps(_props, ['styles']);
   return (
     <img
       class={cn(
         'h-full w-auto max-w-full bg-cover bg-no-repeat object-cover align-middle italic',
-        styles,
+        classes.styles,
       )}
       {...props}
       alt={props.alt}
