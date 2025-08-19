@@ -61,5 +61,5 @@
       "matchPackagePrefixes": ["vite", "@vitejs/"]
     }
   ],
-  "postUpdateOptions": ["npmDedupe"]
+  "postUpdateOptions": ["pnpmDedupe"]
 }
