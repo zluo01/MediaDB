@@ -47,7 +47,7 @@
     "@tanstack/router-plugin": "1.131.27",
     "@tanstack/solid-query-devtools": "5.85.5",
     "@tanstack/solid-router-devtools": "1.131.27",
-    "@tauri-apps/cli": "2.8.2",
+    "@tauri-apps/cli": "2.8.3",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
     "@types/lodash": "4.17.20",
     "@types/node": "24.3.0",
