@@ -2323,26 +2323,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "liblzma"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66352d7a8ac12d4877b6e6ea5a9b7650ee094257dc40889955bea5bc5b08c1d0"
-dependencies = [
- "liblzma-sys",
-]
-
-[[package]]
-name = "liblzma-sys"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5839bad90c3cc2e0b8c4ed8296b80e86040240f81d46b9c0e9bc8dd51ddd3af1"
-dependencies = [
- "cc",
- "libc",
- "pkg-config",
-]
-
-[[package]]
 name = "libm"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2407,6 +2387,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
 dependencies = [
  "value-bag",
+]
+
+[[package]]
+name = "lzma-rust2"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c60a23ffb90d527e23192f1246b14746e2f7f071cb84476dd879071696c18a4a"
+dependencies = [
+ "crc",
+ "sha2",
 ]
 
 [[package]]
@@ -6524,9 +6514,9 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "4.5.0"
+version = "5.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8835eb39822904d39cb19465de1159e05d371973f0c6df3a365ad50565ddc8b9"
+checksum = "b9fdfa5f34b5980f2c21b3a2c68c09ade4debddc7be52c51056695effc73a08c"
 dependencies = [
  "aes",
  "arbitrary",
@@ -6538,7 +6528,7 @@ dependencies = [
  "getrandom 0.3.3",
  "hmac",
  "indexmap 2.10.0",
- "liblzma",
+ "lzma-rust2",
  "memchr",
  "pbkdf2",
  "ppmd-rust",
