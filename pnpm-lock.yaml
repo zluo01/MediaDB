@@ -48,8 +48,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       daisyui:
-        specifier: 5.1.13
-        version: 5.1.13
+        specifier: 5.1.24
+        version: 5.1.24
       immutable:
         specifier: 5.1.3
         version: 5.1.3
@@ -1718,8 +1718,8 @@ packages:
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
-  daisyui@5.1.13:
-    resolution: {integrity: sha512-KWPF/4R+EHTJRqKZFNmSDPfAZ5xeS6YWB/2kS7Y6wGKg+atscUi2DOp6HoDD/OgGML0PJTtTpgwpTfeHVfjk7w==}
+  daisyui@5.1.24:
+    resolution: {integrity: sha512-CFfVmaTNOM4H6rJ7YjD8pIZNmRg6merSI2Yx0cP2cOSvyfG571zSPf8Y8m6rLqsteVrE6cqI+hBcpJqNB3YqkA==}
 
   debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -4849,7 +4849,7 @@ snapshots:
 
   csstype@3.1.3: {}
 
-  daisyui@5.1.13: {}
+  daisyui@5.1.24: {}
 
   debug@4.4.1:
     dependencies:
