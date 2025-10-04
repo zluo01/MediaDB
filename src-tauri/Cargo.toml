@@ -20,7 +20,7 @@ tauri-plugin-single-instance = { version = "2.3.2" }
 tauri-plugin-opener = "2.4.0"
 tauri-plugin-notification = "2.3.0"
 tauri-plugin-dialog = "2.3.2"
-roxmltree = "0.20.0"
+roxmltree = "0.21.0"
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "sqlite"] }
 log = "0.4.27"
 rayon = "1.11"
