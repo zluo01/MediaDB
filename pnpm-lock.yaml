@@ -13,7 +13,7 @@ importers:
         version: 1.5.2(solid-js@1.9.9)
       '@tailwindcss/vite':
         specifier: 4.1.14
-        version: 4.1.14(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
+        version: 4.1.14(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
       '@tanstack/solid-form':
         specifier: 1.23.7
         version: 1.23.7(solid-js@1.9.9)
@@ -83,7 +83,7 @@ importers:
         version: 1.133.3(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       '@tanstack/router-plugin':
         specifier: 1.133.13
-        version: 1.133.13(vite-plugin-solid@2.11.9(solid-js@1.9.9)(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
+        version: 1.133.13(vite-plugin-solid@2.11.10(solid-js@1.9.9)(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
       '@tanstack/solid-query-devtools':
         specifier: 5.90.4
         version: 5.90.4(@tanstack/solid-query@5.90.6(solid-js@1.9.9))(solid-js@1.9.9)
@@ -151,14 +151,14 @@ importers:
         specifier: 8.46.1
         version: 8.46.1(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       vite:
-        specifier: 7.1.11
-        version: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+        specifier: 7.1.12
+        version: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
       vite-plugin-solid:
-        specifier: 2.11.9
-        version: 2.11.9(solid-js@1.9.9)(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
+        specifier: 2.11.10
+        version: 2.11.10(solid-js@1.9.9)(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
       vite-tsconfig-paths:
         specifier: 5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
+        version: 5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
 
 packages:
 
@@ -2998,8 +2998,8 @@ packages:
   validate-html-nesting@1.2.3:
     resolution: {integrity: sha512-kdkWdCl6eCeLlRShJKbjVOU2kFKxMF8Ghu50n+crEoyx+VKm3FxAxF9z4DCy6+bbTOqNW0+jcIYRnjoIRzigRw==}
 
-  vite-plugin-solid@2.11.9:
-    resolution: {integrity: sha512-bTA6p+bspXZsuulSd2y6aTzegF8xGaJYcq1Uyh/mv+W4DQtzCgL9nN6n2fsTaxp/dMk+ZHHKgGndlNeooqHLKw==}
+  vite-plugin-solid@2.11.10:
+    resolution: {integrity: sha512-Yr1dQybmtDtDAHkii6hXuc1oVH9CPcS/Zb2jN/P36qqcrkNnVPsMTzQ06jyzFPFjj3U1IYKMVt/9ZqcwGCEbjw==}
     peerDependencies:
       '@testing-library/jest-dom': ^5.16.6 || ^5.17.0 || ^6.*
       solid-js: ^1.7.2
@@ -3016,8 +3016,8 @@ packages:
       vite:
         optional: true
 
-  vite@7.1.11:
-    resolution: {integrity: sha512-uzcxnSDVjAopEUjljkWh8EIrg6tlzrjFUfMcR1EVsRDGwf/ccef0qQPRyOrROwhrTDaApueq+ja+KLPlzR/zdg==}
+  vite@7.1.12:
+    resolution: {integrity: sha512-ZWyE8YXEXqJrrSLvYgrRP7p62OziLW7xI5HYGWFzOvupfAlrLvURSzv/FyGyy0eidogEM3ujU+kUG1zuHgb6Ug==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -4053,12 +4053,12 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.14
 
-  '@tailwindcss/vite@4.1.14(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))':
+  '@tailwindcss/vite@4.1.14(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))':
     dependencies:
       '@tailwindcss/node': 4.1.14
       '@tailwindcss/oxide': 4.1.14
       tailwindcss: 4.1.14
-      vite: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
 
   '@tanstack/devtools-event-client@0.3.2': {}
 
@@ -4106,7 +4106,7 @@ snapshots:
       goober: 2.1.16(csstype@3.1.3)
       solid-js: 1.9.9
       tiny-invariant: 1.3.3
-      vite: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
     optionalDependencies:
       csstype: 3.1.3
     transitivePeerDependencies:
@@ -4135,7 +4135,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/router-plugin@1.133.13(vite-plugin-solid@2.11.9(solid-js@1.9.9)(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))':
+  '@tanstack/router-plugin@1.133.13(vite-plugin-solid@2.11.10(solid-js@1.9.9)(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.28.3)
@@ -4152,8 +4152,8 @@ snapshots:
       unplugin: 2.3.6
       zod: 3.25.76
     optionalDependencies:
-      vite: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
-      vite-plugin-solid: 2.11.9(solid-js@1.9.9)(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
+      vite: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+      vite-plugin-solid: 2.11.10(solid-js@1.9.9)(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -4192,7 +4192,7 @@ snapshots:
       '@tanstack/router-devtools-core': 1.133.13(@tanstack/router-core@1.133.13)(@types/node@24.8.1)(csstype@3.1.3)(jiti@2.6.1)(lightningcss@1.30.1)(solid-js@1.9.9)(tiny-invariant@1.3.3)(tsx@4.20.4)(yaml@2.8.1)
       '@tanstack/solid-router': 1.133.13(solid-js@1.9.9)
       solid-js: 1.9.9
-      vite: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
     transitivePeerDependencies:
       - '@tanstack/router-core'
       - '@types/node'
@@ -6167,7 +6167,7 @@ snapshots:
 
   validate-html-nesting@1.2.3: {}
 
-  vite-plugin-solid@2.11.9(solid-js@1.9.9)(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)):
+  vite-plugin-solid@2.11.10(solid-js@1.9.9)(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)):
     dependencies:
       '@babel/core': 7.28.3
       '@types/babel__core': 7.20.5
@@ -6175,23 +6175,23 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.9
       solid-refresh: 0.6.3(solid-js@1.9.9)
-      vite: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
-      vitefu: 1.1.1(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
+      vite: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+      vitefu: 1.1.1(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)):
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)):
     dependencies:
       debug: 4.4.1
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
-      vite: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1):
+  vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.9
       fdir: 6.5.0(picomatch@4.0.3)
@@ -6207,9 +6207,9 @@ snapshots:
       tsx: 4.20.4
       yaml: 2.8.1
 
-  vitefu@1.1.1(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)):
+  vitefu@1.1.1(vite@7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)):
     optionalDependencies:
-      vite: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
 
   walker@1.0.8:
     dependencies:
