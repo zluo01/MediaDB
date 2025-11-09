@@ -82,8 +82,8 @@ importers:
         specifier: 1.133.19
         version: 1.133.19(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@tanstack/router-plugin':
-        specifier: 1.134.15
-        version: 1.134.15(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1))
+        specifier: 1.134.17
+        version: 1.134.17(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1))
       '@tanstack/solid-query-devtools':
         specifier: 5.90.4
         version: 5.90.4(@tanstack/solid-query@5.90.10(solid-js@1.9.10))(solid-js@1.9.10)
@@ -1072,12 +1072,12 @@ packages:
     resolution: {integrity: sha512-TT4+g5Lp+9WiGQNZDcAKK0dxFgrFRSg8y0QQ6NSjJ9B1g+VdpvITa+jk+iel5v5t0zHtpDO6fXARchDR4Bof9A==}
     engines: {node: '>=12'}
 
-  '@tanstack/router-plugin@1.134.15':
-    resolution: {integrity: sha512-zQR+wRcFq5OR2FPWESy1SP/0DNnRCN7t6wQln7eRLTyQVt9JDTFvecr88/6S6OgvUwPtc8WsqLSII64cy+e1mA==}
+  '@tanstack/router-plugin@1.134.17':
+    resolution: {integrity: sha512-NGMtwOagFuHAdRCX0B6m36grRGfTCVcW5tGBbM9vzcNJh3xrLT3KEq4zJ5cqtUwRgMdBTeDeEBJBrLWqMbwl/g==}
     engines: {node: '>=12'}
     peerDependencies:
       '@rsbuild/core': '>=1.0.2'
-      '@tanstack/react-router': ^1.134.15
+      '@tanstack/react-router': ^1.134.17
       vite: '>=5.0.0 || >=6.0.0 || >=7.0.0'
       vite-plugin-solid: ^2.11.10
       webpack: '>=5.92.0'
@@ -4128,7 +4128,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/router-plugin@1.134.15(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1))':
+  '@tanstack/router-plugin@1.134.17(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1)))(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.4)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.28.3)
