@@ -1,14 +1,13 @@
+use crate::db::queries;
+use crate::helper::main::group_tags;
+use crate::model::database::{Folder, FolderData, Media, MediaTag, Setting, Tag};
+use crate::model::parser::MediaItem;
 use log::{debug, error};
 use serde_json::{json, Value};
 use sqlx::{migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Pool, Row, Sqlite, SqlitePool};
 use std::fs;
 use std::result::Result;
 use tauri::{Manager, Runtime};
-
-use crate::db::queries;
-use crate::helper::main::group_tags;
-use crate::model::database::{Folder, FolderData, Media, MediaTag, Setting, Tag};
-use crate::model::parser::MediaItem;
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
     tauri::async_runtime::block_on(async move {
@@ -125,12 +124,12 @@ pub async fn get_folder_list(pool: &Pool<Sqlite>) -> Result<Vec<Folder>, sqlx::E
     Ok(folder_list)
 }
 
-pub async fn get_folder_info(pool: &Pool<Sqlite>, position: &i32) -> Result<Value, sqlx::Error> {
+pub async fn get_folder_info(pool: &Pool<Sqlite>, position: &i32) -> Result<Folder, sqlx::Error> {
     let folder_info = sqlx::query_as::<_, Folder>(queries::GET_FOLDER_INFO)
         .bind(position)
         .fetch_one(pool)
         .await?;
-    Ok(json!(folder_info))
+    Ok(folder_info)
 }
 
 pub async fn get_folder_data(
@@ -215,13 +214,19 @@ pub async fn insert_new_media(
 
 pub async fn get_folder_media(
     pool: &Pool<Sqlite>,
+    app_dir: &str,
     position: &i32,
 ) -> Result<Vec<Media>, sqlx::Error> {
-    let media_list = sqlx::query_as::<_, Media>(queries::GET_FOLDER_CONTENT)
+    let folder_info = get_folder_info(pool, &position).await?;
+    let folder_name = folder_info.folder_name();
+
+    let media_list = sqlx::query(queries::GET_FOLDER_CONTENT)
         .bind(position)
         .fetch_all(pool)
-        .await?;
-
+        .await?
+        .iter()
+        .map(|r| Media::from_row(r, app_dir, folder_name))
+        .collect::<Result<Vec<_>, _>>()?;
     Ok(media_list)
 }
 

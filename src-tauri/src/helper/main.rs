@@ -1,6 +1,7 @@
 use crate::model::database::{MediaTag, Tag, TagBase};
 use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
+use std::path::PathBuf;
 
 pub fn group_tags<T: TagBase>(tags: &[T]) -> HashMap<&str, Vec<Tag>> {
     tags.iter().fold(HashMap::new(), |mut acc, tag| {
@@ -49,4 +50,31 @@ fn check_filter_condition(source: &Vec<Tag>, target: &Vec<Tag>, filter_type: u8)
 
     // AND, we need to make sure source tags contains all tags from filter tags
     target_set.is_subset(&source_set)
+}
+
+pub fn get_cached_image_path(folder_dir: &str, folder_name: &str, src: &str) -> String {
+    let cleanup_image_path = src
+        .replace('\\', "/")
+        .replace(".jpg", "")
+        .replace(".png", "")
+        .replace(".jpeg", "")
+        .replace(".bmp", "")
+        .replace(".gif", "")
+        .replace(".webp", "");
+
+    let path = PathBuf::from(&folder_dir)
+        .join("covers")
+        .join(&folder_name)
+        .join(&cleanup_image_path);
+
+    convert_file_src(path.to_str().unwrap())
+}
+
+fn convert_file_src(file_path: &str) -> String {
+    let urlencoded_path = urlencoding::encode(file_path);
+    if cfg!(windows) {
+        format!("http://asset.localhost/{}", urlencoded_path)
+    } else {
+        format!("asset://localhost/{}", urlencoded_path)
+    }
 }

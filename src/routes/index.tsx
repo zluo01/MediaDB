@@ -9,14 +9,10 @@ import { folderDataQueryOptions } from '@/lib/queries';
 import { FilterType, FolderStatus, SORT } from '@/type';
 import { useQuery } from '@tanstack/solid-query';
 import { createFileRoute, useLocation } from '@tanstack/solid-router';
-import { appDataDir } from '@tauri-apps/api/path';
 import { ErrorBoundary, Match, Suspense, Switch } from 'solid-js';
 
 export const Route = createFileRoute('/')({
-  loader: async () => await appDataDir(),
   component: () => {
-    const appDir = Route.useLoaderData();
-
     const location = useLocation();
     const folderId = () => (location().search.id as number) || 0;
     const basedInformationQuery = useQuery(() =>
@@ -73,9 +69,7 @@ export const Route = createFileRoute('/')({
                       />
                     </div>
                     <Content
-                      appDir={appDir}
                       folderId={folderId}
-                      folderName={folderName}
                       folderPath={folderPath}
                       filterType={filterType}
                     />

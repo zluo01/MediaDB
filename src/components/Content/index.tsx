@@ -49,9 +49,7 @@ function useWindowWidth(): Accessor<number> {
 }
 
 interface IContentProps {
-  appDir: Accessor<string>;
   folderId: Accessor<number>;
-  folderName: Accessor<string>;
   folderPath: Accessor<string>;
   filterType: Accessor<FilterType>;
 }
@@ -180,17 +178,11 @@ function Content(props: IContentProps) {
                   folderPath={props.folderPath()}
                   select={() => setSelected(index())}
                 >
-                  <Media
-                    media={media}
-                    folderDir={props.appDir}
-                    folderName={props.folderName()}
-                  />
+                  <Media media={media} />
                 </Context>
                 <Show when={media.type === MediaType.TV_SERIES}>
                   <Menu
-                    appDir={props.appDir}
                     media={media as ITVShowData}
-                    folderName={props.folderName()}
                     folderPath={props.folderPath()}
                   />
                 </Show>

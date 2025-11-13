@@ -58,6 +58,18 @@ impl MediaType {
     }
 }
 
+impl From<u8> for MediaType {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => MediaType::Movie,
+            1 => MediaType::TvShow,
+            2 => MediaType::Comic,
+            3 => MediaType::Episode,
+            _ => MediaType::Unknown,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct Media {
     media_type: MediaType,

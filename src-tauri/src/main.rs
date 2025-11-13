@@ -327,7 +327,8 @@ async fn get_folder_data(
 }
 
 #[tauri::command]
-async fn get_folder_media(
+async fn get_folder_media<R: Runtime>(
+    app_handle: tauri::AppHandle<R>,
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
 ) -> Result<Vec<Media>, String> {
@@ -336,7 +337,8 @@ async fn get_folder_media(
         .get_mut(&0)
         .expect("Cannot find database instance.");
 
-    let folder_media_result = db::main::get_folder_media(pool, &position).await;
+    let app_dir = app_handle.path().app_data_dir().unwrap();
+    let folder_media_result = db::main::get_folder_media(pool, app_dir.to_str().unwrap(), &position).await;
     if let Err(e) = folder_media_result {
         return Err(format!(
             "Fail to get folder media. Raising Error: {:?}",
@@ -407,7 +409,7 @@ async fn get_folder_media_tags(
 async fn get_folder_info(
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
-) -> Result<Value, String> {
+) -> Result<Folder, String> {
     let mut instances = database_state.0.lock().await;
     let pool = instances
         .get_mut(&0)
