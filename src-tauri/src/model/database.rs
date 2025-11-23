@@ -83,14 +83,14 @@ pub struct Media {
 impl Media {
     pub fn from_row(
         row: &SqliteRow,
-        app_dir: &str,
+        server_port: &u16,
         folder_name: &str,
     ) -> Result<Self, sqlx::Error> {
         let media_type = row.try_get::<u8, _>("t")?;
         let path = row.try_get::<String, _>("path")?;
         let posters = construct_posters_map(
             &media_type,
-            app_dir,
+            server_port,
             folder_name,
             &path,
             &row.try_get::<String, _>("posters")?,
@@ -109,7 +109,7 @@ impl Media {
 
 fn construct_posters_map(
     media_type: &u8,
-    app_dir: &str,
+    server_port: &u16,
     folder_name: &str,
     file_path: &String,
     payload: &String,
@@ -128,11 +128,11 @@ fn construct_posters_map(
         .map(|(k, v)| {
             let value = match media_type_enum {
                 MediaType::Movie | MediaType::TvShow => get_cached_image_path(
-                    app_dir,
+                    server_port,
                     folder_name,
                     PathBuf::from(&file_path).join(v).to_str().unwrap(),
                 ),
-                MediaType::Comic => get_cached_image_path(app_dir, folder_name, v.as_str()),
+                MediaType::Comic => get_cached_image_path(server_port, folder_name, v.as_str()),
                 _ => v,
             };
             (k, Value::String(value))

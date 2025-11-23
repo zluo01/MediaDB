@@ -13,8 +13,10 @@ use serde_json::Value;
 use sqlx::{Pool, Sqlite};
 use std::{collections::HashMap, fs, process::Command, sync::Arc};
 use tauri::{async_runtime::Mutex, Emitter, Manager, Runtime, State};
+use tauri_plugin_fs::FsExt;
 use tauri_plugin_log::{Target, TargetKind};
 use tauri_plugin_notification::NotificationExt;
+use tiny_http::{Header, Response, Server};
 
 mod db;
 mod helper;
@@ -34,6 +36,8 @@ struct InvalidationPayload {
 }
 
 struct DatabaseConnectionState(Arc<Mutex<HashMap<u8, Pool<Sqlite>>>>);
+
+struct ServerPort(u16);
 
 #[tauri::command]
 async fn parser<R: Runtime>(
@@ -327,9 +331,9 @@ async fn get_folder_data(
 }
 
 #[tauri::command]
-async fn get_folder_media<R: Runtime>(
-    app_handle: tauri::AppHandle<R>,
+async fn get_folder_media(
     database_state: State<'_, DatabaseConnectionState>,
+    server_port_state: State<'_, ServerPort>,
     position: i32,
 ) -> Result<Vec<Media>, String> {
     let mut instances = database_state.0.lock().await;
@@ -337,8 +341,8 @@ async fn get_folder_media<R: Runtime>(
         .get_mut(&0)
         .expect("Cannot find database instance.");
 
-    let app_dir = app_handle.path().app_data_dir().unwrap();
-    let folder_media_result = db::main::get_folder_media(pool, app_dir.to_str().unwrap(), &position).await;
+    let server_port = server_port_state.0;
+    let folder_media_result = db::main::get_folder_media(pool, &position, &server_port).await;
     if let Err(e) = folder_media_result {
         return Err(format!(
             "Fail to get folder media. Raising Error: {:?}",
@@ -554,6 +558,8 @@ fn main() {
         log_level = LevelFilter::Error;
     }
 
+    let port = portpicker::pick_unused_port().expect("failed to find unused port");
+
     info!("Log Level: {:?}", log_level);
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
@@ -590,7 +596,8 @@ fn main() {
             delete_folder
         ])
         .manage(DatabaseConnectionState(Arc::new(Mutex::new(HashMap::new()))))
-        .setup(|app| {
+        .manage(ServerPort(port))
+        .setup(move |app| {
             let app_handle = app.app_handle().clone();
             if !check_ffmpeg_exists() {
                 let _ = &app_handle.notification()
@@ -620,6 +627,40 @@ fn main() {
 
                 let db_state: State<DatabaseConnectionState> = app_handle.state::<DatabaseConnectionState>();
                 db_state.0.lock().await.insert(0u8, pool);
+            });
+
+            let app_handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                let server = Server::http(format!("127.0.0.1:{}", port)).unwrap();
+
+                for request in server.incoming_requests() {
+                    let app_handle = app_handle.clone();
+                    let app_data_dir = app_handle.path().app_data_dir().unwrap();
+
+                    tauri::async_runtime::spawn(async move {
+                        let url = request.url().to_string();
+
+                        let path = urlencoding::decode(url.trim_start_matches('/')).unwrap().into_owned();
+                        let image_path = app_data_dir.join(path);
+
+                        if let Ok(data) = app_handle.fs().read(&image_path) {
+                            let content_type = infer::get(&data)
+                                .map(|kind| kind.mime_type())
+                                .unwrap_or("application/octet-stream");
+
+                            let mut response = Response::from_data(data);
+                            response.add_header(
+                                Header::from_bytes(&b"Cache-Control"[..], b"public, max-age=3600").unwrap()
+                            );
+                            response.add_header(
+                                Header::from_bytes(&b"Content-Type"[..], content_type.as_bytes()).unwrap()
+                            );
+                            let _ = request.respond(response);
+                        } else {
+                            let _ = request.respond(Response::from_string("404").with_status_code(404));
+                        }
+                    });
+                }
             });
 
             Ok(())

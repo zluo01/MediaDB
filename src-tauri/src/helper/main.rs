@@ -52,7 +52,7 @@ fn check_filter_condition(source: &Vec<Tag>, target: &Vec<Tag>, filter_type: u8)
     target_set.is_subset(&source_set)
 }
 
-pub fn get_cached_image_path(folder_dir: &str, folder_name: &str, src: &str) -> String {
+pub fn get_cached_image_path(server_port: &u16, folder_name: &str, src: &str) -> String {
     let cleanup_image_path = src
         .replace('\\', "/")
         .replace(".jpg", "")
@@ -62,19 +62,10 @@ pub fn get_cached_image_path(folder_dir: &str, folder_name: &str, src: &str) -> 
         .replace(".gif", "")
         .replace(".webp", "");
 
-    let path = PathBuf::from(&folder_dir)
-        .join("covers")
+    let path = PathBuf::from("covers")
         .join(&folder_name)
         .join(&cleanup_image_path);
 
-    convert_file_src(path.to_str().unwrap())
-}
-
-fn convert_file_src(file_path: &str) -> String {
-    let urlencoded_path = urlencoding::encode(file_path);
-    if cfg!(windows) {
-        format!("http://asset.localhost/{}", urlencoded_path)
-    } else {
-        format!("asset://localhost/{}", urlencoded_path)
-    }
+    let urlencoded_path = urlencoding::encode(path.to_str().unwrap());
+    format!("http://127.0.0.1:{}/{}", server_port, urlencoded_path)
 }

@@ -214,8 +214,8 @@ pub async fn insert_new_media(
 
 pub async fn get_folder_media(
     pool: &Pool<Sqlite>,
-    app_dir: &str,
     position: &i32,
+    server_port: &u16,
 ) -> Result<Vec<Media>, sqlx::Error> {
     let folder_info = get_folder_info(pool, &position).await?;
     let folder_name = folder_info.folder_name();
@@ -225,7 +225,7 @@ pub async fn get_folder_media(
         .fetch_all(pool)
         .await?
         .iter()
-        .map(|r| Media::from_row(r, app_dir, folder_name))
+        .map(|r| Media::from_row(r, server_port, folder_name))
         .collect::<Result<Vec<_>, _>>()?;
     Ok(media_list)
 }
