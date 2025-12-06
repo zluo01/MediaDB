@@ -89,11 +89,6 @@ jobs:
           # Those targets are only used on macOS runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      # https://github.com/tauri-apps/tauri-action/issues/1120
-      - name: remove package-lock.json
-        run: rm -f package-lock.json
-        shell: bash
-
       - name: install dependencies
         run: pnpm install
 
