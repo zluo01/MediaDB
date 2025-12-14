@@ -31,7 +31,7 @@
     "@tauri-apps/plugin-notification": "2.3.3",
     "@tauri-apps/plugin-opener": "2.5.2",
     "clsx": "2.1.1",
-    "daisyui": "5.5.13",
+    "daisyui": "5.5.14",
     "immutable": "5.1.4",
     "lodash": "4.17.21",
     "solid-js": "1.9.10",
