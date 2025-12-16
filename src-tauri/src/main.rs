@@ -13,7 +13,6 @@ use serde_json::Value;
 use sqlx::{Pool, Sqlite};
 use std::{collections::HashMap, fs, process::Command, sync::Arc};
 use tauri::{async_runtime::Mutex, Emitter, Manager, Runtime, State};
-use tauri_plugin_fs::FsExt;
 use tauri_plugin_log::{Target, TargetKind};
 use tauri_plugin_notification::NotificationExt;
 use tiny_http::{Header, Response, Server};
@@ -643,21 +642,20 @@ fn main() {
                         let path = urlencoding::decode(url.trim_start_matches('/')).unwrap().into_owned();
                         let image_path = app_data_dir.join(path);
 
-                        if let Ok(data) = app_handle.fs().read(&image_path) {
-                            let content_type = infer::get(&data)
-                                .map(|kind| kind.mime_type())
-                                .unwrap_or("application/octet-stream");
-
-                            let mut response = Response::from_data(data);
-                            response.add_header(
-                                Header::from_bytes(&b"Cache-Control"[..], b"public, max-age=3600").unwrap()
-                            );
-                            response.add_header(
-                                Header::from_bytes(&b"Content-Type"[..], content_type.as_bytes()).unwrap()
-                            );
-                            let _ = request.respond(response);
+                        if image_path.exists() {
+                            if let Ok(file) = fs::File::open(&image_path) {
+                                let mut response =Response::from_file(file);
+                                response.add_header(
+                                    Header::from_bytes(&b"Cache-Control"[..], b"public, max-age=3600").unwrap()
+                                );
+                                let _ = request.respond(response);
+                            } else {
+                                let _ = request.respond(Response::from_string(format!("Fail to open file: {:?}", image_path))
+                                    .with_status_code(500));
+                            }
                         } else {
-                            let _ = request.respond(Response::from_string("404").with_status_code(404));
+                            let _ = request.respond(Response::from_string(format!("Fail to find image: {:?}", image_path))
+                                .with_status_code(404));
                         }
                     });
                 }
