@@ -44,7 +44,7 @@
     "@tailwindcss/postcss": "4.1.18",
     "@tanstack/eslint-plugin-query": "5.91.2",
     "@tanstack/eslint-plugin-router": "1.141.0",
-    "@tanstack/router-plugin": "1.141.8",
+    "@tanstack/router-plugin": "1.142.0",
     "@tanstack/solid-query-devtools": "5.91.1",
     "@tanstack/solid-router-devtools": "1.141.8",
     "@tauri-apps/cli": "2.9.6",
