@@ -33,7 +33,7 @@
     "clsx": "2.1.1",
     "daisyui": "5.5.14",
     "immutable": "5.1.4",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "solid-js": "1.9.10",
     "tailwind-merge": "3.4.0",
     "tailwindcss-animate": "1.0.7"
