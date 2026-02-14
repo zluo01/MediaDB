@@ -131,7 +131,7 @@ function EditFolderModal(props: IFolderNameEdit) {
 								type="submit"
 								disabled={!state().canSubmit}
 							>
-								{state().isSubmitting ? 'Loading...' : 'Add'}
+								{state().isSubmitting ? 'Loading...' : 'Save'}
 							</button>
 						)}
 					/>
