@@ -30,7 +30,7 @@ function EditFolderModal(props: IFolderNameEdit) {
 				await invalidateForFolderPathChange(props.folder()!.position);
 				closeModal('edit-folder-modal');
 			} catch (e) {
-				await notify(`Edit Folder Name Error: ${e}`);
+				await notify(`Edit Folder Error: ${e}`);
 			}
 		},
 	}));

@@ -23,7 +23,7 @@ function DirectoryModal(props: IDirectoryModal) {
 				await createLibrary(value.folderName, value.folderPath, 0);
 				closeModal('directory-modal');
 			} catch (e) {
-				await notify(`Import Folders Error: ${e}`);
+				await notify(`Import Folder Error: ${e}`);
 			}
 		},
 	}));

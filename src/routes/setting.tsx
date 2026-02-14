@@ -24,7 +24,7 @@ export const Route: any = createFileRoute('/setting')({
 			try {
 				await changePanelDisplay(e.target.checked);
 			} catch (e) {
-				await notify(`Check Box Error: ${e}`);
+				await notify(`Checkbox Error: ${e}`);
 			}
 		}
 

@@ -16,7 +16,7 @@ function SkipFolderList(props: ISkipFolderListProps) {
 					.join(',')
 			);
 		} catch (e) {
-			await notify(`Update Folder Error: ${e}`);
+			await notify(`Remove Skip Folder Error: ${e}`);
 		}
 	}
 

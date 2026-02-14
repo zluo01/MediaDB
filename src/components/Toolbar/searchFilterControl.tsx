@@ -13,7 +13,7 @@ function SearchFilterControl(props: ISearchFilterControl) {
 		try {
 			await switchFilterType(props.folderId());
 		} catch (e) {
-			await notify(`Switch filter type Error: ${e}`);
+			await notify(`Switch Filter Type Error: ${e}`);
 		}
 	}
 
