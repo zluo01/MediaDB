@@ -1,26 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    ":disableDependencyDashboard"
-  ],
-  "schedule": [
-    "every weekend"
-  ],
+  "extends": ["config:recommended", ":disableDependencyDashboard"],
+  "schedule": ["every weekend"],
   "packageRules": [
     {
-      "updateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
+      "updateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     },
     {
-      "matchDepTypes": [
-        "devDependencies"
-      ],
+      "matchDepTypes": ["devDependencies"],
       "matchPackagePatterns": [
         "lint-staged",
         "husky",
@@ -32,23 +20,15 @@
     },
     {
       "groupName": "definitelyTyped",
-      "matchPackagePrefixes": [
-        "@types/"
-      ]
+      "matchPackagePrefixes": ["@types/"]
     },
     {
       "groupName": "web framework",
-      "matchPackagePrefixes": [
-        "solid",
-        "@solid"
-      ]
+      "matchPackagePrefixes": ["solid", "@solid"]
     },
     {
       "groupName": "tauri",
-      "matchPackagePrefixes": [
-        "@tauri-apps/",
-        "tauri"
-      ]
+      "matchPackagePrefixes": ["@tauri-apps/", "tauri"]
     },
     {
       "groupName": "styling",
@@ -57,29 +37,17 @@
         "tailwind",
         "tailwindcss",
         "@tailwindcss",
-        "autoprefixer",
-        "postcss",
         "clsx"
       ]
     },
     {
       "groupName": "utilities",
-      "matchPackagePrefixes": [
-        "@tanstack",
-        "immutable",
-        "lodash",
-        "zod"
-      ]
+      "matchPackagePrefixes": ["@tanstack", "immutable", "lodash", "zod"]
     },
     {
       "groupName": "build-tools",
-      "matchPackagePrefixes": [
-        "vite",
-        "@vitejs/"
-      ]
+      "matchPackagePrefixes": ["vite", "@vitejs/"]
     }
   ],
-  "postUpdateOptions": [
-    "pnpmDedupe"
-  ]
+  "postUpdateOptions": ["pnpmDedupe"]
 }
