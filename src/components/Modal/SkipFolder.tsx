@@ -22,7 +22,7 @@ function SkipFolderModal(props: ISkipFolderModal) {
 				);
 				closeModal('skip-folder-modal');
 			} catch (e) {
-				await notify(`Edit Folder Name Error: ${e}`);
+				await notify(`Add Skip Folder Error: ${e}`);
 			}
 		},
 	}));
