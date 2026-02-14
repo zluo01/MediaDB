@@ -80,9 +80,11 @@ export function invalidateForFolderPathChange(folderId: number) {
 export async function removeFolder(folder: IFolder) {
 	try {
 		await removeFolderFromStorage(folder);
-		invalidateFolderListChange();
 	} catch (e) {
 		await notify(`Update Folder Error: ${e}`);
+		throw e;
+	} finally {
+		invalidateFolderListChange();
 	}
 }
 
