@@ -142,8 +142,12 @@ pub const GET_FOLDER_DATA: &str = "
 
 //language=sqlite
 pub const CLEAR_MEDIA: &str = "
-    DELETE FROM media WHERE folder = ?;
-    DELETE FROM tags  WHERE folder_name = ?;
+    DELETE FROM media WHERE folder = ?
+    ";
+
+//language=sqlite
+pub const CLEAR_TAGS: &str = "
+    DELETE FROM tags WHERE folder_name = ?
     ";
 
 //language=sqlite
@@ -174,8 +178,12 @@ pub const UPDATE_FOLDER_POSITION: &str = "
 
 //language=sqlite
 pub const DELETE_FOLDER: &str = "
-     DELETE FROM folders WHERE folder_name=?;
-     UPDATE folders SET position = position -1 WHERE position > ?
+     DELETE FROM folders WHERE folder_name=?
+    ";
+
+//language=sqlite
+pub const SHIFT_FOLDER_POSITIONS: &str = "
+     UPDATE folders SET position = position - 1 WHERE position > ?
     ";
 
 //language=sqlite

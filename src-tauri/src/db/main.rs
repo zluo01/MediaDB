@@ -149,8 +149,11 @@ pub async fn insert_new_media(
     data: &Vec<MediaItem>,
 ) -> Result<(), sqlx::Error> {
     let mut tx = pool.begin().await?;
-    let _ = sqlx::query(queries::CLEAR_MEDIA)
+    sqlx::query(queries::CLEAR_MEDIA)
         .bind(folder_name)
+        .execute(&mut *tx)
+        .await?;
+    sqlx::query(queries::CLEAR_TAGS)
         .bind(folder_name)
         .execute(&mut *tx)
         .await?;
@@ -320,11 +323,16 @@ pub async fn delete_folder(
     name: &str,
     position: &i32,
 ) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query(queries::DELETE_FOLDER)
+    let mut tx = pool.begin().await?;
+    sqlx::query(queries::DELETE_FOLDER)
         .bind(name)
-        .bind(position)
-        .execute(pool)
+        .execute(&mut *tx)
         .await?;
+    sqlx::query(queries::SHIFT_FOLDER_POSITIONS)
+        .bind(position)
+        .execute(&mut *tx)
+        .await?;
+    tx.commit().await?;
     Ok(())
 }
 
