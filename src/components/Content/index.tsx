@@ -1,3 +1,4 @@
+import { debounce } from '@solid-primitives/scheduled';
 import { useQuery } from '@tanstack/solid-query';
 import { useStore } from '@tanstack/solid-store';
 import {
@@ -32,15 +33,11 @@ function useWindowWidth(): Accessor<number> {
 
 	const controller = new AbortController();
 
-	window.addEventListener(
-		'resize',
-		() => {
-			setWidth(window.innerWidth);
-		},
-		{
-			signal: controller.signal,
-		}
-	);
+	const updateWidth = debounce(() => setWidth(window.innerWidth), 150);
+
+	window.addEventListener('resize', updateWidth, {
+		signal: controller.signal,
+	});
 
 	onCleanup(() => controller.abort());
 
