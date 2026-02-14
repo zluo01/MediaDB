@@ -3,9 +3,7 @@
   "identifier": "default",
   "description": "Capability for the main window",
   "local": true,
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "dialog:allow-open",

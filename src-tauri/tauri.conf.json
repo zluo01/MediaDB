@@ -33,9 +33,7 @@
     ],
     "security": {
       "assetProtocol": {
-        "scope": [
-          "$APPDATA/covers/**"
-        ],
+        "scope": ["$APPDATA/covers/**"],
         "enable": true
       },
       "csp": null

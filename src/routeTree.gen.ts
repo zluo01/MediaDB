@@ -8,70 +8,70 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingRouteImport } from './routes/setting'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as IndexRouteImport } from './routes/index';
+import { Route as SettingRouteImport } from './routes/setting';
 
 const SettingRoute = SettingRouteImport.update({
   id: '/setting',
   path: '/setting',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/setting': typeof SettingRoute
+  '/': typeof IndexRoute;
+  '/setting': typeof SettingRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/setting': typeof SettingRoute
+  '/': typeof IndexRoute;
+  '/setting': typeof SettingRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/setting': typeof SettingRoute
+  __root__: typeof rootRouteImport;
+  '/': typeof IndexRoute;
+  '/setting': typeof SettingRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/setting'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/setting'
-  id: '__root__' | '/' | '/setting'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: '/' | '/setting';
+  fileRoutesByTo: FileRoutesByTo;
+  to: '/' | '/setting';
+  id: '__root__' | '/' | '/setting';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  SettingRoute: typeof SettingRoute
+  IndexRoute: typeof IndexRoute;
+  SettingRoute: typeof SettingRoute;
 }
 
 declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
     '/setting': {
-      id: '/setting'
-      path: '/setting'
-      fullPath: '/setting'
-      preLoaderRoute: typeof SettingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/setting';
+      path: '/setting';
+      fullPath: '/setting';
+      preLoaderRoute: typeof SettingRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SettingRoute: SettingRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
