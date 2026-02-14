@@ -6,12 +6,32 @@ import {
 	sendNotification,
 } from '@tauri-apps/plugin-notification';
 import { openPath } from '@tauri-apps/plugin-opener';
+import join from 'lodash/join';
+import { openModal } from '@/lib/utils';
+import { type IMediaData, MediaType } from '@/type';
 
 export async function openFile(path: string): Promise<void> {
 	try {
 		await openPath(path);
 	} catch (e) {
 		await notify(`${e}. Path: ${path}`);
+	}
+}
+
+export async function openMedia(
+	folderPath: string,
+	media: IMediaData
+): Promise<void> {
+	switch (media.type) {
+		case MediaType.COMIC:
+			await openFile(join([folderPath, media.file], '/'));
+			break;
+		case MediaType.MOVIE:
+			await openFile(join([folderPath, media.path, media.file], '/'));
+			break;
+		case MediaType.TV_SERIES:
+			openModal(`menu-${media.title}`);
+			break;
 	}
 }
 

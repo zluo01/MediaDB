@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/solid-query';
 import { useStore } from '@tanstack/solid-store';
-import join from 'lodash/join';
 import {
 	type Accessor,
 	createEffect,
@@ -21,9 +20,9 @@ import Media from '@/components/Content/media';
 import { searchStore, updateFooter } from '@/lib/context';
 import { useFilter } from '@/lib/context/filterContext';
 import { filterMedia } from '@/lib/filter';
-import { openFile } from '@/lib/os';
+import { openMedia } from '@/lib/os';
 import { contentQueryOptions } from '@/lib/queries';
-import { cn, isModalOpen, openModal } from '@/lib/utils';
+import { cn, isModalOpen } from '@/lib/utils';
 import { type FilterType, type ITVShowData, MediaType } from '@/type';
 
 const Menu = lazy(() => import('./menu'));
@@ -130,17 +129,7 @@ function Content(props: IContentProps) {
 			},
 			Enter: () => {
 				const m = mediaList()![selected()];
-				switch (m.type) {
-					case MediaType.COMIC:
-						openFile(join([props.folderPath(), m.file], '/'));
-						break;
-					case MediaType.MOVIE:
-						openFile(join([props.folderPath(), m.path, m.file], '/'));
-						break;
-					case MediaType.TV_SERIES:
-						openModal(`menu-${m.title}`);
-						break;
-				}
+				openMedia(props.folderPath(), m);
 			},
 		};
 

@@ -4,8 +4,7 @@ import join from 'lodash/join';
 import type { Accessor, JSXElement } from 'solid-js';
 import type { DOMElement } from 'solid-js/jsx-runtime';
 import { updateFooter } from '@/lib/context';
-import { openFile } from '@/lib/os';
-import { openModal } from '@/lib/utils';
+import { openFile, openMedia } from '@/lib/os';
 import { type IMediaData, MediaType } from '@/type';
 
 interface IContextProps {
@@ -33,20 +32,6 @@ async function openContainedFolder(
 }
 
 function Context(props: IContextProps) {
-	async function handleOpen(media: IMediaData) {
-		switch (media.type) {
-			case MediaType.COMIC:
-				await openFile(join([props.folderPath, media.file], '/'));
-				break;
-			case MediaType.MOVIE:
-				await openFile(join([props.folderPath, media.path, media.file], '/'));
-				break;
-			case MediaType.TV_SERIES:
-				openModal(`menu-${media.title}`);
-				break;
-		}
-	}
-
 	function onSelect() {
 		props.select();
 		updateFooter(props.media.title);
@@ -80,7 +65,7 @@ function Context(props: IContextProps) {
 			tabIndex={-1}
 			onClick={onSelect}
 			onContextMenu={openMenu}
-			onDblClick={() => handleOpen(props.media)}
+			onDblClick={() => openMedia(props.folderPath, props.media)}
 			onFocus={e =>
 				e.target.scrollIntoView({ behavior: 'smooth', block: 'center' })
 			}
