@@ -117,8 +117,18 @@ fn handle_media_path<R: tauri::Runtime>(
     media_source: &MediaSource,
 ) -> Vec<Media> {
     let app_dir = app_handle.path().app_data_dir().unwrap();
-    let comic_media: Vec<Media> =
-        parse_comics(&app_handle, &app_dir, root_path, media_source.comic());
+    let comic_media = match parse_comics(&app_handle, &app_dir, root_path, media_source.comic()) {
+        Ok(media) => media,
+        Err(e) => {
+            let _ = app_handle
+                .notification()
+                .builder()
+                .title("MediaDB: Encounter Error when parsing comic files.")
+                .body(e)
+                .show();
+            Vec::new()
+        }
+    };
     nfo_files
         .into_par_iter()
         .filter_map(

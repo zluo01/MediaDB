@@ -13,27 +13,22 @@ pub(crate) fn parse_nfo(
 ) -> Result<Option<Media>, String> {
     let nfo_path = PathBuf::from(nfo_dir);
     let file_path = root_path.join(&nfo_path);
-    let content_result = fs::read_to_string(file_path);
-    if let Err(e) = &content_result {
-        return Err(format!(
+    let content = fs::read_to_string(file_path).map_err(|e| {
+        format!(
             "Error when reading file to string {}. Raising error {}",
             nfo_dir.to_string_lossy(),
             e
-        ));
-    }
-    let content = content_result.unwrap();
+        )
+    })?;
 
-    let parsing_result = roxmltree::Document::parse(content.as_str());
-
-    if let Err(e) = &parsing_result {
-        return Err(format!(
+    let doc = roxmltree::Document::parse(content.as_str()).map_err(|e| {
+        format!(
             "Error when parsing nfo file {}. Raising error {}",
             nfo_dir.to_string_lossy(),
             e
-        ));
-    }
+        )
+    })?;
 
-    let doc = parsing_result.unwrap();
     let nfo_types = doc
         .root()
         .children()
@@ -47,16 +42,25 @@ pub(crate) fn parse_nfo(
         ));
     }
 
-    let nfo_node = nfo_types.first().unwrap();
+    let nfo_node = nfo_types.first().unwrap(); // Safe: we checked is_empty() above
     let nfo_type = nfo_node.tag_name().name();
 
     let mut media = Media::default();
-    media.set_relative_path(nfo_path.parent().unwrap().as_os_str().to_os_string());
+    let parent = nfo_path.parent().ok_or_else(|| {
+        format!(
+            "Cannot get parent directory for nfo path {}",
+            nfo_dir.to_string_lossy()
+        )
+    })?;
+    media.set_relative_path(parent.as_os_str().to_os_string());
+
     match nfo_type {
         "movie" => parse_movie_nfo(&mut media, nfo_node, media_source),
         "tvshow" => parse_tvshow_nfo(&mut media, nfo_node, media_source),
         "episodedetails" => parse_episode_nfo(&mut media, nfo_node, &nfo_path, media_source),
-        &_ => panic!("Get unknown type {} for parsing", nfo_type),
+        _ => {
+            return Err(format!("Unknown nfo type '{}' for parsing", nfo_type));
+        }
     }
 
     // TODO: filter out bdmv until find a better way solve it.
