@@ -157,11 +157,6 @@ pub const INSERT_NEW_MEDIA: &str =
     ";
 
 //language=sqlite
-pub const INSERT_NEW_TAG: &str = "
-    INSERT INTO tags (folder_name, path, name, t) VALUES (?,?,?,?) ON CONFLICT DO NOTHING
-    ";
-
-//language=sqlite
 pub const UPDATE_SORT_TYPE: &str = "
      UPDATE folders SET sort_type = ? WHERE position=?
     ";

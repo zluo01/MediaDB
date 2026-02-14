@@ -157,8 +157,9 @@ pub async fn insert_new_media(
         .bind(folder_name)
         .execute(&mut *tx)
         .await?;
+
     for media in data {
-        let _ = sqlx::query(queries::INSERT_NEW_MEDIA)
+        sqlx::query(queries::INSERT_NEW_MEDIA)
             .bind(media.media_type())
             .bind(media.path())
             .bind(media.title())
@@ -170,48 +171,45 @@ pub async fn insert_new_media(
             .execute(&mut *tx)
             .await?;
 
-        for tag in media.tags() {
-            let _ = sqlx::query(queries::INSERT_NEW_TAG)
-                .bind(folder_name)
-                .bind(media.path())
-                .bind(tag)
-                .bind("tags")
-                .execute(&mut *tx)
-                .await?;
-        }
-
-        for genre in media.genres() {
-            let _ = sqlx::query(queries::INSERT_NEW_TAG)
-                .bind(folder_name)
-                .bind(media.path())
-                .bind(genre)
-                .bind("genres")
-                .execute(&mut *tx)
-                .await?;
-        }
-
-        for actor in media.actors() {
-            let _ = sqlx::query(queries::INSERT_NEW_TAG)
-                .bind(folder_name)
-                .bind(media.path())
-                .bind(actor)
-                .bind("actors")
-                .execute(&mut *tx)
-                .await?;
-        }
-
-        for studio in media.studios() {
-            // folder_name, path, name, t
-            let _ = sqlx::query(queries::INSERT_NEW_TAG)
-                .bind(folder_name)
-                .bind(media.path())
-                .bind(studio)
-                .bind("studios")
-                .execute(&mut *tx)
-                .await?;
-        }
+        insert_tags_batch(&mut tx, folder_name, media.path(), media.tags(), "tags").await?;
+        insert_tags_batch(&mut tx, folder_name, media.path(), media.genres(), "genres").await?;
+        insert_tags_batch(&mut tx, folder_name, media.path(), media.actors(), "actors").await?;
+        insert_tags_batch(
+            &mut tx,
+            folder_name,
+            media.path(),
+            media.studios(),
+            "studios",
+        )
+        .await?;
     }
     tx.commit().await?;
+    Ok(())
+}
+
+async fn insert_tags_batch(
+    tx: &mut sqlx::Transaction<'_, sqlx::Sqlite>,
+    folder_name: &str,
+    path: &str,
+    tags: &[String],
+    tag_type: &str,
+) -> Result<(), sqlx::Error> {
+    if tags.is_empty() {
+        return Ok(());
+    }
+
+    // Build batch insert: INSERT INTO tags (folder_name, path, name, t) VALUES (?,?,?,?),(?,?,?,?),...
+    let placeholders: Vec<&str> = tags.iter().map(|_| "(?,?,?,?)").collect();
+    let sql = format!(
+        "INSERT INTO tags (folder_name, path, name, t) VALUES {} ON CONFLICT DO NOTHING",
+        placeholders.join(",")
+    );
+
+    let mut query = sqlx::query(&sql);
+    for tag in tags {
+        query = query.bind(folder_name).bind(path).bind(tag).bind(tag_type);
+    }
+    query.execute(&mut **tx).await?;
     Ok(())
 }
 
