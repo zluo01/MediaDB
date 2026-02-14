@@ -104,7 +104,7 @@ function Content(props: IContentProps) {
 
 	async function handleKeyPress(ev: KeyboardEvent) {
 		// when menu is opened, do not listen to key change
-		if (isModalOpen() || !mediaList() || !mediaList()) {
+		if (isModalOpen() || !mediaList()) {
 			return;
 		}
 
