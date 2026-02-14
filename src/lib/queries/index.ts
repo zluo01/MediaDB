@@ -17,10 +17,8 @@ import type { IFolder, SORT } from '@/type';
 const FOLDER_LIST = 'folderList';
 const SETTING = 'setting';
 const TAGS = 'TAGS';
-
-const FOLDER_KEY = `folder`;
-const FOLDER_CONTENT_KEY = `content`;
-const FOLDER_DETAIL_KEY = `folder/info`;
+const FOLDER_DETAIL = 'folder/info';
+const FOLDER_CONTENT = 'content';
 
 export const queryClient = new QueryClient();
 
@@ -32,7 +30,7 @@ export const folderListQueryOptions = () =>
 
 export const contentQueryOptions = (folderId: number) =>
 	queryOptions({
-		queryKey: [FOLDER_CONTENT_KEY, folderId],
+		queryKey: [FOLDER_CONTENT, folderId],
 		queryFn: () => getFolderMedia(folderId),
 		throwOnError: true,
 	});
@@ -45,32 +43,20 @@ export const mediaTagsQueryOptions = (folderId: number) =>
 
 export const folderDataQueryOptions = (folderId: number) =>
 	queryOptions({
-		queryKey: [FOLDER_DETAIL_KEY, folderId],
+		queryKey: [FOLDER_DETAIL, folderId],
 		queryFn: () => getFolderInfo(folderId),
 		throwOnError: true,
 	});
 
 export async function switchFilterType(folderId: number) {
 	await switchFolderFilterType(folderId);
-	await queryClient.invalidateQueries({
-		queryKey: [FOLDER_DETAIL_KEY, folderId],
-		exact: true,
-		refetchType: 'active',
-	});
+	queryClient.invalidateQueries({ queryKey: [FOLDER_DETAIL, folderId] });
 }
 
 export async function updateSortType(folderId: number, sortType: SORT) {
 	await updateFolderSortType(folderId, sortType);
-	await queryClient.invalidateQueries({
-		predicate: query => {
-			return (
-				[FOLDER_CONTENT_KEY, FOLDER_DETAIL_KEY].includes(
-					query.queryKey[0] as string
-				) && query.queryKey[1] === folderId
-			);
-		},
-		refetchType: 'active',
-	});
+	queryClient.invalidateQueries({ queryKey: [FOLDER_CONTENT, folderId] });
+	queryClient.invalidateQueries({ queryKey: [FOLDER_DETAIL, folderId] });
 }
 
 export async function createLibrary(
@@ -80,74 +66,38 @@ export async function createLibrary(
 	update?: boolean
 ) {
 	await buildDirectory(folderName, folderPath, folderPosition, update);
-	await queryClient.invalidateQueries({
-		predicate: query => {
-			return (
-				[FOLDER_LIST, TAGS, FOLDER_DETAIL_KEY].includes(
-					query.queryKey[0] as string
-				) && query.queryKey[1] === folderPosition
-			);
-		},
-		refetchType: 'active',
-	});
+	queryClient.invalidateQueries({ queryKey: [FOLDER_LIST] });
+	queryClient.invalidateQueries({ queryKey: [TAGS, folderPosition] });
+	queryClient.invalidateQueries({ queryKey: [FOLDER_DETAIL, folderPosition] });
 }
 
-// export async function updateFolderOrder(folders: IFolder[]) {
-//   await updateFolderList(folders);
-//   await mutate(
-//     key =>
-//       typeof key === 'string' &&
-//       (key === FOLDER_LIST || key.startsWith('content/')),
-//     undefined,
-//     { revalidate: true },
-//   );
-// }
-
-export async function invalidateForFolderPathChange(folderId: number) {
-	await queryClient.invalidateQueries({
-		predicate: query => {
-			return (
-				[FOLDER_LIST, FOLDER_KEY, FOLDER_DETAIL_KEY].includes(
-					query.queryKey[0] as string
-				) && query.queryKey[1] === folderId
-			);
-		},
-		refetchType: 'active',
-	});
+export function invalidateForFolderPathChange(folderId: number) {
+	queryClient.invalidateQueries({ queryKey: [FOLDER_DETAIL, folderId] });
+	queryClient.invalidateQueries({ queryKey: [FOLDER_CONTENT, folderId] });
+	queryClient.invalidateQueries({ queryKey: [TAGS, folderId] });
 }
 
 export async function removeFolder(folder: IFolder) {
 	try {
 		await removeFolderFromStorage(folder);
-		await invalidateFolderListChange();
+		invalidateFolderListChange();
 	} catch (e) {
 		await notify(`Update Folder Error: ${e}`);
 	}
 }
 
-export async function invalidateFolderListChange() {
-	await queryClient.invalidateQueries({
-		queryKey: [FOLDER_LIST],
-		exact: true,
-		refetchType: 'active',
-	});
+export function invalidateFolderListChange() {
+	queryClient.invalidateQueries({ queryKey: [FOLDER_LIST] });
 }
 
-export async function invalidateFolderInformation(folderId: number) {
-	await queryClient.invalidateQueries({
-		predicate: query => {
-			return (
-				[TAGS, FOLDER_DETAIL_KEY].includes(query.queryKey[0] as string) &&
-				query.queryKey[1] === folderId
-			);
-		},
-		refetchType: 'active',
-	});
+export function invalidateFolderInformation(folderId: number) {
+	queryClient.invalidateQueries({ queryKey: [TAGS, folderId] });
+	queryClient.invalidateQueries({ queryKey: [FOLDER_DETAIL, folderId] });
 }
 
 export async function changePanelDisplay(status: boolean) {
 	await hideSidePanel(status);
-	await invalidSetting();
+	invalidSetting();
 }
 
 export const settingQueryOptions = () =>
@@ -158,13 +108,9 @@ export const settingQueryOptions = () =>
 
 export async function updateSkipFolder(skipFolders: string) {
 	await changeSkipFolders(skipFolders);
-	await invalidSetting();
+	invalidSetting();
 }
 
-async function invalidSetting() {
-	await queryClient.invalidateQueries({
-		queryKey: [SETTING],
-		exact: true,
-		refetchType: 'active',
-	});
+function invalidSetting() {
+	queryClient.invalidateQueries({ queryKey: [SETTING] });
 }
