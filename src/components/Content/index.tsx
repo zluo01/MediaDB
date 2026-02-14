@@ -136,7 +136,7 @@ function Content(props: IContentProps) {
 		const action = keyActions[ev.key];
 		if (action) {
 			action();
-			if (ev.key !== 'ENTER') {
+			if (ev.key !== 'Enter') {
 				focus();
 			}
 		}
