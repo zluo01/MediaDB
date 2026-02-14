@@ -42,8 +42,7 @@
 			},
 			"suspicious": {
 				"noConsole": "error",
-				"noShadowRestrictedNames": "off",
-				"noExplicitAny": "off"
+				"noShadowRestrictedNames": "off"
 			},
 			"a11y": {
 				"noSvgWithoutTitle": "off",

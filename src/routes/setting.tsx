@@ -10,7 +10,7 @@ import { DirectoryButton, SkipFolderButton } from '@/components/Shares';
 import { notify } from '@/lib/os';
 import { changePanelDisplay, settingQueryOptions } from '@/lib/queries';
 
-export const Route: any = createFileRoute('/setting')({
+export const Route = createFileRoute('/setting')({
 	loader: async () => await getVersion(),
 	component: () => {
 		const version = Route.useLoaderData();
