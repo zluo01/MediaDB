@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/solid-query';
-import { createFileRoute, useLocation } from '@tanstack/solid-router';
+import { createFileRoute, useSearch } from '@tanstack/solid-router';
 import { ErrorBoundary, Match, Suspense, Switch } from 'solid-js';
+import { z } from 'zod';
 import Content from '@/components/Content';
 import ErrorHandler from '@/components/Error';
 import Footer from '@/components/Footer';
@@ -11,10 +12,15 @@ import SortMenu from '@/components/Toolbar/sort-menu';
 import { folderDataQueryOptions } from '@/lib/queries';
 import { FilterType, FolderStatus, SORT } from '@/type';
 
+const searchSchema = z.object({
+	id: z.number().default(0),
+});
+
 export const Route = createFileRoute('/')({
+	validateSearch: searchSchema,
 	component: () => {
-		const location = useLocation();
-		const folderId = () => (location().search.id as number) || 0;
+		const search = useSearch({ from: '/' });
+		const folderId = () => search().id;
 		const basedInformationQuery = useQuery(() =>
 			folderDataQueryOptions(folderId())
 		);
