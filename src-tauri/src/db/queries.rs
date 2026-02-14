@@ -151,12 +151,6 @@ pub const CLEAR_TAGS: &str = "
     ";
 
 //language=sqlite
-pub const INSERT_NEW_MEDIA: &str =
-    "
-     INSERT INTO media (type, path, title, posters, year, file, seasons, folder) VALUES (?,?,?,?,?,?,?,?)
-    ";
-
-//language=sqlite
 pub const UPDATE_SORT_TYPE: &str = "
      UPDATE folders SET sort_type = ? WHERE position=?
     ";

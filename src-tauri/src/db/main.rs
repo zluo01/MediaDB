@@ -148,6 +148,10 @@ pub async fn insert_new_media(
     folder_name: &str,
     data: &Vec<MediaItem>,
 ) -> Result<(), sqlx::Error> {
+    if data.is_empty() {
+        return Ok(());
+    }
+
     let mut tx = pool.begin().await?;
     sqlx::query(queries::CLEAR_MEDIA)
         .bind(folder_name)
@@ -158,8 +162,16 @@ pub async fn insert_new_media(
         .execute(&mut *tx)
         .await?;
 
+    // Batch insert all media items
+    let placeholders: Vec<&str> = data.iter().map(|_| "(?,?,?,?,?,?,?,?)").collect();
+    let sql = format!(
+        "INSERT INTO media (type, path, title, posters, year, file, seasons, folder) VALUES {}",
+        placeholders.join(",")
+    );
+
+    let mut query = sqlx::query(&sql);
     for media in data {
-        sqlx::query(queries::INSERT_NEW_MEDIA)
+        query = query
             .bind(media.media_type())
             .bind(media.path())
             .bind(media.title())
@@ -167,10 +179,12 @@ pub async fn insert_new_media(
             .bind(media.year())
             .bind(media.file())
             .bind(media.seasons())
-            .bind(folder_name)
-            .execute(&mut *tx)
-            .await?;
+            .bind(folder_name);
+    }
+    query.execute(&mut *tx).await?;
 
+    // Batch insert tags for each media item
+    for media in data {
         insert_tags_batch(&mut tx, folder_name, media.path(), media.tags(), "tags").await?;
         insert_tags_batch(&mut tx, folder_name, media.path(), media.genres(), "genres").await?;
         insert_tags_batch(&mut tx, folder_name, media.path(), media.actors(), "actors").await?;
