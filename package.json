@@ -36,7 +36,7 @@
     "immutable": "5.1.4",
     "lodash": "4.17.23",
     "solid-js": "1.9.11",
-    "tailwind-merge": "3.4.0",
+    "tailwind-merge": "3.4.1",
     "tailwindcss-animate": "1.0.7",
     "zod": "4.3.6"
   },
