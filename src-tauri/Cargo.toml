@@ -24,7 +24,7 @@ roxmltree = "0.21.1"
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "sqlite"] }
 log = "0.4.29"
 rayon = "1.11"
-zip = "7.3.0"
+zip = "8.0.0"
 tauri-plugin-fs = { version = "2.4.5" }
 urlencoding = "2.1.3"
 portpicker = "0.1.1"
