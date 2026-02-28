@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@solid-primitives/scheduled": "1.5.3",
-    "@tailwindcss/vite": "4.2.0",
+    "@tailwindcss/vite": "4.2.1",
     "@tanstack/solid-form": "1.28.3",
     "@tanstack/solid-query": "5.90.23",
     "@tanstack/solid-router": "1.162.4",
@@ -52,7 +52,7 @@
     "husky": "9.1.7",
     "jest": "30.2.0",
     "lint-staged": "16.2.7",
-    "tailwindcss": "4.2.0",
+    "tailwindcss": "4.2.1",
     "ts-jest": "29.4.6",
     "typescript": "5.9.3",
     "vite": "7.3.1",
