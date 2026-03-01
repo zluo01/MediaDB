@@ -1,6 +1,17 @@
 import { type Map, OrderedSet } from 'immutable';
 import type { FilterOption } from '@/type';
 
+function isSameTag(a: FilterOption, b: FilterOption) {
+	return a.group === b.group && a.label === b.label;
+}
+
+export function hasTag(
+	tagSet: OrderedSet<FilterOption>,
+	tag: FilterOption
+): boolean {
+	return tagSet.some(candidate => isSameTag(candidate, tag));
+}
+
 export function modifyTagInFolder(
 	tagRecord: Map<number, OrderedSet<FilterOption>>,
 	folderId: number,
@@ -10,8 +21,11 @@ export function modifyTagInFolder(
 		return tagRecord.set(folderId, OrderedSet.of(tag));
 	}
 	const previousTags = tagRecord.get(folderId);
-	const nextTags = previousTags!.includes(tag)
-		? previousTags!.delete(tag)
+	const existingTag = previousTags!.find(candidate =>
+		isSameTag(candidate, tag)
+	);
+	const nextTags = existingTag
+		? previousTags!.delete(existingTag)
 		: previousTags!.add(tag);
 	return tagRecord.set(folderId, nextTags);
 }

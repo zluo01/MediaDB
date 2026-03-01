@@ -1,6 +1,6 @@
-import includes from 'lodash/includes';
 import { type Accessor, createSignal, For, Show } from 'solid-js';
 import { useFilter } from '@/lib/context/filterContext';
+import { hasTag } from '@/lib/context/helper';
 import { cn } from '@/lib/utils';
 import type { GroupedOption } from '@/type';
 
@@ -14,10 +14,13 @@ export function TagFilterSelect(props: ITagFilterSelectProps) {
 	const tags = () => getTags(props.folderId());
 
 	const [search, setSearch] = createSignal('');
+	const normalizedSearch = () => search().trim().toLowerCase();
 
 	const [isOpen, setIsOpen] = createSignal(false);
 
-	const filterTagGroups = () => tags().groupBy(o => o.group);
+	const matchesSearch = (label: string) =>
+		normalizedSearch().length === 0 ||
+		label.toLowerCase().includes(normalizedSearch());
 
 	const onKeyDown = (event: KeyboardEvent) => {
 		switch (event.key) {
@@ -133,10 +136,9 @@ export function TagFilterSelect(props: ITagFilterSelectProps) {
 											<li
 												class={cn(
 													'list-row cursor-pointer',
-													filterTagGroups()
-														.get(groupOption.label)
-														?.has(option) && 'pointer-events-none opacity-30',
-													!includes(option.label, search()) && 'hidden'
+													hasTag(tags(), option) &&
+														'pointer-events-none opacity-30',
+													!matchesSearch(option.label) && 'hidden'
 												)}
 												onClick={() => modifyTag(props.folderId(), option)}
 											>

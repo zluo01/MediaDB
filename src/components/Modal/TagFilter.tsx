@@ -4,6 +4,7 @@ import { type Accessor, For } from 'solid-js';
 import SearchFilterControl from '@/components/Toolbar/searchFilterControl';
 import { TagFilterSelect } from '@/components/Toolbar/tag-filter-select';
 import { useFilter } from '@/lib/context/filterContext';
+import { hasTag } from '@/lib/context/helper';
 import { cn } from '@/lib/utils';
 import type { FilterType, GroupedOption } from '@/type';
 
@@ -18,8 +19,6 @@ function TagFilter(props: ITagFilterProps) {
 	const tags = () => getTags(props.folderId());
 
 	const options = () => filter(props.groupOptions(), group => !isEmpty(group));
-
-	const filterTagGroups = () => tags().groupBy(o => o.group);
 
 	return (
 		<dialog id="filter-modal" class="modal">
@@ -47,9 +46,7 @@ function TagFilter(props: ITagFilterProps) {
 													onClick={() => modifyTag(props.folderId(), option)}
 													class={cn(
 														'badge badge-outline hover:badge-ghost cursor-pointer px-2.5 py-0.5 text-sm font-medium',
-														filterTagGroups()
-															.get(groupOption.label)
-															?.has(option) && 'badge-soft'
+														hasTag(tags(), option) && 'badge-soft'
 													)}
 												>
 													{option.label}

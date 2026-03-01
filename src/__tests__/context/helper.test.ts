@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { Map, OrderedSet } from 'immutable';
 import {
+	hasTag,
 	modifyTagInFolder,
 	removeFolderFromStore,
 	removeLastTagInFolder,
@@ -77,6 +78,19 @@ describe('Test Filter Context Helper Functions', () => {
 		expect(result.has(1)).toBeFalsy();
 		expect(result.get(0)?.size).toBe(1);
 		expect(result.get(0)?.has(t1)).toBeFalsy();
+	});
+
+	test('Toggle existing tag by semantic identity instead of object reference', () => {
+		const existingTag = { label: 'a', group: 'genres' };
+		let source: Map<number, OrderedSet<FilterOption>> = Map({});
+		source = source.set(0, OrderedSet.of(existingTag));
+
+		const sameTagDifferentRef = { label: 'a', group: 'genres' };
+		expect(source.get(0)?.has(sameTagDifferentRef)).toBeFalsy();
+		expect(hasTag(source.get(0)!, sameTagDifferentRef)).toBeTruthy();
+		const result = modifyTagInFolder(source, 0, sameTagDifferentRef);
+
+		expect(result.get(0)?.size).toBe(0);
 	});
 
 	test('Remove last tag from existing folder', () => {
