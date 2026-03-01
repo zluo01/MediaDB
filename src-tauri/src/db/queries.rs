@@ -44,7 +44,7 @@ pub const CREAT_TABLE_QUERY: &str = "
         on media (title desc);
     create index media_year_asc_index
         on media (year);
-    create index media_year_desc__index
+    create index media_year_desc_index
         on media (year desc);
     CREATE INDEX media_folder_index ON media(folder);
     create table if not exists tags
