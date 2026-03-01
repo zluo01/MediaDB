@@ -44,9 +44,9 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
 
 async fn create_tables(db_url: &str) -> Result<(), sqlx::Error> {
     let pool = SqlitePool::connect(&db_url).await?;
-    let _ = sqlx::query(&queries::CREAT_TABLE_QUERY)
+    sqlx::query(&queries::CREAT_TABLE_QUERY)
         .execute(&pool)
-        .await;
+        .await?;
     pool.close().await;
     Ok(())
 }
