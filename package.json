@@ -43,7 +43,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.4",
     "@jest/globals": "30.2.0",
-    "@tanstack/router-plugin": "1.163.3",
+    "@tanstack/router-plugin": "1.164.0",
     "@tanstack/solid-query-devtools": "5.91.3",
     "@tanstack/solid-router-devtools": "1.163.3",
     "@tauri-apps/cli": "2.10.0",
