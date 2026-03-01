@@ -191,7 +191,7 @@ impl Media {
         if let MediaType::Movie = self.media_type {
             return Some(MediaItem {
                 media_type: MediaType::Movie.as_u8(),
-                path: self.relative_path().to_str().unwrap().to_string(),
+                path: self.relative_path().to_string_lossy().into_owned(),
                 title: self.title.clone(),
                 posters: format!("{}", self.construct_poster_map()),
                 tags: self.tags.clone(),
@@ -232,7 +232,7 @@ impl Media {
                 .collect::<HashMap<&String, Vec<Value>>>();
             return Some(MediaItem {
                 media_type: MediaType::TvShow.as_u8(),
-                path: self.relative_path().to_str().unwrap().to_string(),
+                path: self.relative_path().to_string_lossy().into_owned(),
                 title: self.title.clone(),
                 posters: format!("{}", self.construct_poster_map()),
                 tags: self.tags.clone(),
@@ -254,7 +254,7 @@ impl Media {
                 "file": self.file,
                 "season": self.season,
                 "episode": self.episode,
-                "path": self.relative_path.to_str().unwrap(),
+                "path": self.relative_path.to_string_lossy(),
             });
         }
         panic!("Expect an episode, but get {:?}", self.media_type)

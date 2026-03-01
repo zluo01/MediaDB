@@ -55,7 +55,10 @@ fn read_dir<R: tauri::Runtime>(
             if let Ok(entry) = entry {
                 let path = entry.path();
 
-                let file_name = path.file_name().unwrap().to_str().unwrap();
+                let Some(file_name) = path.file_name().and_then(|n| n.to_str()) else {
+                    error!("Failed to read file name as UTF-8: {:?}", path);
+                    continue;
+                };
                 // check for hidden file or skip paths
                 if file_name.starts_with('.') || skip_paths.contains(&file_name.to_string()) {
                     continue;
@@ -72,7 +75,10 @@ fn read_dir<R: tauri::Runtime>(
                     error!("File does not have proper extension. {:?}", &path);
                     continue;
                 }
-                let ext = extension.unwrap().to_str().unwrap();
+                let Some(ext) = extension.unwrap().to_str() else {
+                    error!("Failed to read file extension as UTF-8: {:?}", path);
+                    continue;
+                };
                 match ext {
                     "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
                     "jpg" | "png" => {
