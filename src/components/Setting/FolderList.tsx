@@ -55,7 +55,7 @@ function FolderList() {
 					)}
 				</For>
 			</ul>
-			<EditFolderModal folder={folder} />
+			<EditFolderModal folder={folder} folderList={folderList} />
 		</>
 	);
 }

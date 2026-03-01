@@ -12,6 +12,7 @@ import type { IFolder } from '@/type';
 
 interface IFolderNameEdit {
 	folder: Accessor<IFolder | undefined>;
+	folderList: Accessor<IFolder[]>;
 }
 
 function EditFolderModal(props: IFolderNameEdit) {
@@ -28,7 +29,7 @@ function EditFolderModal(props: IFolderNameEdit) {
 					...props.folder()!,
 					path: value.folderPath,
 				});
-				await invalidateForFolderPathChange(props.folder()!.position);
+				invalidateForFolderPathChange(props.folder()!.position);
 				closeModal('edit-folder-modal');
 			} catch (e) {
 				await notify(`Edit Folder Error: ${e}`);
@@ -69,6 +70,13 @@ function EditFolderModal(props: IFolderNameEdit) {
 							validators={{
 								onChangeAsyncDebounceMs: 500,
 								onChangeAsync: async ({ value }) => {
+									const otherPaths = props
+										.folderList()
+										.filter(f => f.position !== props.folder()?.position)
+										.map(f => f.path);
+									if (otherPaths.includes(value)) {
+										return 'Path is already in use by another library.';
+									}
 									const pathExists = await exists(value);
 									if (!pathExists) {
 										return 'Path does not exist.';

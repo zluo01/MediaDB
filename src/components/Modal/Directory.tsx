@@ -47,6 +47,7 @@ function DirectoryModal(props: IDirectoryModal) {
 	}
 
 	const folderNameList = () => props.folderList().map(o => o.name);
+	const folderPathList = () => props.folderList().map(o => o.path);
 
 	return (
 		<dialog id="directory-modal" class="modal">
@@ -95,6 +96,9 @@ function DirectoryModal(props: IDirectoryModal) {
 							validators={{
 								onChangeAsyncDebounceMs: 500,
 								onChangeAsync: async ({ value }) => {
+									if (folderPathList().includes(value)) {
+										return 'Path is already in use by another library.';
+									}
 									const pathExists = await exists(value);
 									if (!pathExists) {
 										return 'Path does not exist.';

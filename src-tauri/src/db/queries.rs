@@ -15,7 +15,7 @@ pub const CREAT_TABLE_QUERY: &str = "
             constraint folder_name
                 primary key,
         position    INTEGER           not null,
-        path        INTEGER           not null,
+        path        TEXT              not null unique,
         sort_type   INTEGER default 0 not null,
         filter_type INTEGER default 0 not null,
         status      INTEGER default 0 not null
