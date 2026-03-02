@@ -562,6 +562,19 @@ fn main() {
 						let url = request.url().to_string();
 						let path =
 							urlencoding::decode(url.trim_start_matches('/')).unwrap().into_owned();
+						// Guard against path traversal attacks (e.g. "../../etc/passwd").
+						// Check for any ".." components before joining with app_data_dir,
+						// since PathBuf::join resolves ".." at the OS level and would allow
+						// escaping the intended directory.
+						if std::path::Path::new(&path)
+							.components()
+							.any(|c| matches!(c, std::path::Component::ParentDir))
+						{
+							let _ = request.respond(
+								Response::from_string("Forbidden").with_status_code(403),
+							);
+							return;
+						}
 						let image_path = app_data_dir.join(path);
 
 						if image_path.exists() {
