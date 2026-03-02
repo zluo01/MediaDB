@@ -258,10 +258,10 @@ fn save_cover(source_path: &PathBuf, dest_path: &PathBuf) {
         return;
     }
 
-    let cover_src_path = source_path.as_os_str().to_str().unwrap();
-    let cover_output_path = dest_path.as_os_str().to_str().unwrap();
+    let cover_src_path = source_path.to_string_lossy();
+    let cover_output_path = dest_path.to_string_lossy();
 
-    if let Err(e) = convert_image(cover_src_path, cover_output_path) {
+    if let Err(e) = convert_image(&cover_src_path, &cover_output_path) {
         error!("{}", e);
         return;
     }

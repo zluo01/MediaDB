@@ -192,7 +192,14 @@ async fn handle_parsing<R: Runtime>(
     }
     let skip_folders = skip_folders_result.unwrap();
 
-    let value = parser::main::parse(&app_handle, name, path, &skip_folders);
+    let value = tauri::async_runtime::spawn_blocking({
+        let app_handle = app_handle.clone();
+        let name = name.to_string();
+        let path = path.to_string();
+        move || parser::main::parse(&app_handle, &name, &path, &skip_folders)
+    })
+    .await
+    .map_err(|e| format!("Parser thread panicked: {}", e))?;
 
     if let Err(e) = db::main::insert_new_media(&pool, name, &value).await {
         return Err(format!(
