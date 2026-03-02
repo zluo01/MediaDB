@@ -94,7 +94,7 @@ function SkipFolderModal(props: ISkipFolderModal) {
 				</form>
 			</fieldset>
 			<form method="dialog" class="modal-backdrop">
-				<button>close</button>
+				<button type="button">close</button>
 			</form>
 		</dialog>
 	);
