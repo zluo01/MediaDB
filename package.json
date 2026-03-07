@@ -46,7 +46,7 @@
     "@tanstack/router-plugin": "1.164.0",
     "@tanstack/solid-query-devtools": "5.91.3",
     "@tanstack/solid-router-devtools": "1.163.3",
-    "@tauri-apps/cli": "2.10.0",
+    "@tauri-apps/cli": "2.10.1",
     "@types/lodash": "4.17.24",
     "@types/node": "24.11.0",
     "husky": "9.1.7",
