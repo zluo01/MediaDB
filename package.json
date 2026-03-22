@@ -7,7 +7,6 @@
   "scripts": {
     "build": "tauri build",
     "build-debug": "tauri build --debug",
-    "check": "biome check .",
     "dev": "__NV_DISABLE_EXPLICIT_SYNC=1  tauri dev",
     "lint": "biome check --write .",
     "prepare": "husky",
