@@ -36,7 +36,7 @@
     },
     {
       "groupName": "build tools",
-      "matchPackageNames": ["vite", "vite-tsconfig-paths", "typescript"]
+      "matchPackageNames": ["vite", "typescript"]
     },
     {
       "groupName": "types",
