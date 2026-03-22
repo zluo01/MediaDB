@@ -4,49 +4,51 @@
   "schedule": ["every weekend"],
   "packageRules": [
     {
-      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     },
     {
-      "matchDepTypes": ["devDependencies"],
-      "matchPackagePatterns": [
-        "lint-staged",
-        "husky",
-        "@biomejs/",
-        "@jest",
-        "jest",
-        "ts-jest"
-      ]
-    },
-    {
-      "groupName": "definitelyTyped",
-      "matchPackagePrefixes": ["@types/"]
-    },
-    {
-      "groupName": "web framework",
-      "matchPackagePrefixes": ["solid", "@solid"]
-    },
-    {
       "groupName": "tauri",
-      "matchPackagePrefixes": ["@tauri-apps/", "tauri"]
+      "matchPackageNames": ["@tauri-apps/*"]
+    },
+    {
+      "groupName": "tanstack",
+      "matchPackageNames": ["@tanstack/*"]
+    },
+    {
+      "groupName": "solidjs",
+      "matchPackageNames": ["solid-js", "@solid-primitives/*", "vite-plugin-solid"]
     },
     {
       "groupName": "styling",
-      "matchPackagePrefixes": [
-        "daisyui",
-        "tailwind",
+      "matchPackageNames": [
+        "@tailwindcss/*",
         "tailwindcss",
-        "@tailwindcss",
+        "tailwindcss-animate",
+        "tailwind-merge",
+        "daisyui",
         "clsx"
       ]
     },
     {
-      "groupName": "utilities",
-      "matchPackagePrefixes": ["@tanstack", "immutable", "lodash", "zod"]
+      "groupName": "testing",
+      "matchPackageNames": ["jest", "@jest/*", "ts-jest"]
     },
     {
-      "groupName": "build-tools",
-      "matchPackagePrefixes": ["vite", "@vitejs/"]
+      "groupName": "build tools",
+      "matchPackageNames": ["vite", "vite-tsconfig-paths", "typescript"]
+    },
+    {
+      "groupName": "types",
+      "matchPackageNames": ["@types/*"]
+    },
+    {
+      "groupName": "linting",
+      "matchPackageNames": ["@biomejs/*", "husky"]
+    },
+    {
+      "groupName": "utilities",
+      "matchPackageNames": ["lodash", "immutable", "zod"]
     }
   ],
   "postUpdateOptions": ["pnpmDedupe"]
