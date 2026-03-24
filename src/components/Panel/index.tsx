@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/solid-query';
-import { Link, useLocation, useSearch } from '@tanstack/solid-router';
+import { Link, useLocation } from '@tanstack/solid-router';
 import { For, lazy } from 'solid-js';
 import { FolderIcon, SettingsIcon } from '@/components/Icons';
 import { DirectoryButton } from '@/components/Shares';
@@ -10,10 +10,9 @@ const DirectoryModal = lazy(() => import('@/components/Modal/Directory'));
 
 function SidePanel() {
 	const location = useLocation();
-	const search = useSearch({ from: '/' });
 
 	const isSettingPage = () => location().pathname.includes('/setting');
-	const currFolderIndex = () => search().id;
+	const currFolderIndex = () => (location().search as { id?: number }).id ?? 0;
 
 	const settingQuery = useQuery(() => settingQueryOptions());
 	const showPanel = () => settingQuery.data?.showSidePanel || false;
