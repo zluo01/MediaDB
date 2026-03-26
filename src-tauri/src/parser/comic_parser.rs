@@ -6,6 +6,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use crate::helper::main::strip_comic_extensions;
 use crate::model::parser::{Media, MediaType};
 use crate::parser::utilities::convert_image;
 use log::error;
@@ -62,8 +63,7 @@ fn parse_comic(
     file_path: &OsString,
 ) -> Result<Option<Media>, String> {
     let comic_path = root_path.join(file_path);
-    let relative_file_path =
-        crate::helper::main::strip_comic_extensions(&file_path.to_string_lossy());
+    let relative_file_path = strip_comic_extensions(&file_path.to_string_lossy());
     let cover_dest_path = cover_folder_path.join(&relative_file_path);
 
     let parent_dir = cover_dest_path.parent().ok_or_else(|| {
