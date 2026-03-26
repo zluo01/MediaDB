@@ -6,12 +6,11 @@
 extern crate core;
 
 use crate::db::main::{create_pool, get_database_path};
-use crate::helper::main::filter_media;
 use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use log::{error, info, LevelFilter};
 use serde_json::Value;
 use sqlx::{Pool, Sqlite};
-use std::{collections::HashMap, fs, process::Command};
+use std::{fs, process::Command};
 use tauri::{Emitter, Manager, Runtime, State};
 use tauri_plugin_log::{Target, TargetKind};
 use tauri_plugin_notification::NotificationExt;
@@ -288,50 +287,19 @@ async fn get_folder_media(
     database_state: State<'_, DatabaseConnectionState>,
     server_port_state: State<'_, ServerPort>,
     position: i32,
+    filter_type: u8,
+    tags: Vec<Tag>,
 ) -> Result<Vec<Media>, String> {
     let pool = &database_state.0;
     let server_port = server_port_state.0;
 
-    match db::main::get_folder_media(pool, &position, &server_port).await {
+    match db::main::get_folder_media(pool, &position, &server_port, filter_type, &tags).await {
         Ok(media) => Ok(media),
         Err(e) => Err(format!(
             "Fail to get folder media. Raising Error: {:?}",
             e.into_database_error()
         )),
     }
-}
-
-#[tauri::command]
-async fn filter_media_with_tags(
-    database_state: State<'_, DatabaseConnectionState>,
-    position: i32,
-    filter_type: u8,
-    tags: Vec<Tag>,
-) -> Result<Vec<String>, String> {
-    let pool = &database_state.0;
-
-    let tags_in_folder_result = db::main::get_tags_in_folder(pool, &position).await;
-    if let Err(e) = tags_in_folder_result {
-        return Err(format!(
-            "Fail to get tags in folder {}. Raising Error: {:?}",
-            position,
-            e.into_database_error()
-        ));
-    }
-
-    let tags_group =
-        tags_in_folder_result
-            .unwrap()
-            .into_iter()
-            .fold(HashMap::new(), |mut acc, tag| {
-                acc.entry(tag.path().to_string())
-                    .or_insert_with(Vec::new)
-                    .push(tag.clone());
-                acc
-            });
-
-    let media_keys = filter_media(&tags_group, &tags, filter_type);
-    Ok(media_keys)
 }
 
 #[tauri::command]
@@ -511,7 +479,6 @@ fn main() {
 			get_folder_data,
 			get_folder_media,
 			get_folder_media_tags,
-			filter_media_with_tags,
 			update_folder_filter_type,
 			update_sort_type,
 			update_folder_path,

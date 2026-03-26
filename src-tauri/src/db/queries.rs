@@ -65,8 +65,28 @@ pub const CREAT_TABLE_QUERY: &str = "
         on tags (folder_name);
     ";
 
+// Binds: ?1 = tags JSON array (e.g. '[{"group":"genres","label":"Action"}]' or '[]')
+//        ?2 = folder position
+//        ?3 = filter_type (0 = OR, 1 = AND)
+//
+// - filter_tags CTE unpacks the JSON array into rows via json_each.
+// - filter_groups CTE counts how many tags were selected per group.
+// - NOT EXISTS checks every filter group: the matched tag count must be
+//     >= 1 for OR mode, or = tag_count for AND mode.
+// - When no tags are passed, filter_groups is empty, NOT EXISTS is
+//   vacuously true, and all media in the folder are returned.
 //language=sqlite
 pub const GET_FOLDER_CONTENT: &str = "
+    WITH filter_tags AS (
+        SELECT json_extract(value, '$.group') AS t,
+               json_extract(value, '$.label') AS name
+        FROM json_each(?1)
+    ),
+    filter_groups AS (
+        SELECT t, COUNT(*) AS tag_count
+        FROM filter_tags
+        GROUP BY t
+    )
     SELECT media.type as t,
            media.path,
            media.title,
@@ -76,7 +96,18 @@ pub const GET_FOLDER_CONTENT: &str = "
            media.seasons
     FROM media
              JOIN folders ON media.folder = folders.folder_name
-    WHERE folders.position = ?
+    WHERE folders.position = ?2
+      AND NOT EXISTS (
+          SELECT 1 FROM filter_groups fg
+          WHERE (
+              SELECT COUNT(DISTINCT tags.name)
+              FROM tags
+              JOIN filter_tags ft ON tags.name = ft.name AND tags.t = ft.t
+              WHERE tags.path = media.path
+                AND tags.folder_name = folders.folder_name
+                AND tags.t = fg.t
+          ) < CASE WHEN ?3 = 0 THEN 1 ELSE fg.tag_count END
+      )
     ORDER BY CASE
                  WHEN folders.sort_type = 2 THEN media.title
                  WHEN folders.sort_type = 4 THEN media.year
@@ -86,17 +117,6 @@ pub const GET_FOLDER_CONTENT: &str = "
                  WHEN folders.sort_type = 3 THEN media.year
                  ELSE media.path
                  END;
-";
-
-//language=sqlite
-pub const GET_TAGS_IN_FOLDER: &str = "
-    SELECT tags.path as path,
-           tags.t    as tag_group,
-           tags.name as tag_label
-    FROM media
-             JOIN folders ON media.folder = folders.folder_name
-             JOIN tags ON media.path = tags.path
-    WHERE folders.position = ?
 ";
 
 //language=sqlite

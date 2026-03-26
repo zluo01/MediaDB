@@ -12,7 +12,7 @@ import {
 	switchFolderFilterType,
 	updateFolderSortType,
 } from '@/lib/storage';
-import type { IFolder, SORT } from '@/type';
+import type { FilterOption, FilterType, IFolder, SORT } from '@/type';
 
 const FOLDER_LIST = 'folderList';
 const SETTING = 'setting';
@@ -28,10 +28,14 @@ export const folderListQueryOptions = () =>
 		queryFn: getFolderList,
 	});
 
-export const contentQueryOptions = (folderId: number) =>
+export const contentQueryOptions = (
+	folderId: number,
+	filterType: FilterType,
+	tags: FilterOption[]
+) =>
 	queryOptions({
-		queryKey: [FOLDER_CONTENT, folderId],
-		queryFn: () => getFolderMedia(folderId),
+		queryKey: [FOLDER_CONTENT, folderId, filterType, tags],
+		queryFn: () => getFolderMedia(folderId, filterType, tags),
 		throwOnError: true,
 	});
 

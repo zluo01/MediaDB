@@ -155,19 +155,6 @@ where
     }
 }
 
-#[derive(sqlx::FromRow, Clone, Debug)]
-pub struct MediaTag {
-    path: String,
-    tag_group: String,
-    tag_label: String,
-}
-
-impl MediaTag {
-    pub fn path(&self) -> &str {
-        &self.path
-    }
-}
-
 #[derive(sqlx::FromRow, Clone, Serialize, Deserialize, Eq, PartialEq, Hash, Debug)]
 pub struct Tag {
     #[serde(rename = "group")]
@@ -179,19 +166,6 @@ pub struct Tag {
 pub trait TagBase {
     fn key(&self) -> &str;
     fn to_tag(&self) -> Tag;
-}
-
-impl TagBase for MediaTag {
-    fn key(&self) -> &str {
-        &self.tag_group
-    }
-
-    fn to_tag(&self) -> Tag {
-        Tag {
-            tag_group: self.tag_group.clone(),
-            tag_label: self.tag_label.clone(),
-        }
-    }
 }
 
 impl TagBase for Tag {

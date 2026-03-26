@@ -5,7 +5,6 @@ import {
 	type Accessor,
 	createEffect,
 	createMemo,
-	createResource,
 	createSignal,
 	ErrorBoundary,
 	For,
@@ -20,7 +19,7 @@ import Context from '@/components/Content/context';
 import Media from '@/components/Content/media';
 import { searchStore, updateFooter } from '@/lib/context';
 import { useFilter } from '@/lib/context/filterContext';
-import { filterMedia } from '@/lib/filter';
+import { filterOnSearchKey } from '@/lib/filter';
 import { openMedia } from '@/lib/os';
 import { contentQueryOptions } from '@/lib/queries';
 import { cn, isModalOpen } from '@/lib/utils';
@@ -65,22 +64,17 @@ function Content(props: IContentProps) {
 	const searchKey = useStore(searchStore);
 
 	const folderContentQuery = useQuery(() =>
-		contentQueryOptions(props.folderId())
+		contentQueryOptions(
+			props.folderId(),
+			props.filterType(),
+			getTags(props.folderId()).toArray()
+		)
 	);
 	const media = () => folderContentQuery.data || [];
 
-	const [mediaList] = createResource(
-		() => ({
-			folderId: props.folderId(),
-			mediaList: media(),
-			filterType: props.filterType(),
-			searchKey: searchKey(),
-			tags: getTags(props.folderId()).toArray(),
-		}),
-		filterMedia
-	);
+	const mediaList = createMemo(() => filterOnSearchKey(media(), searchKey()));
 
-	createEffect(on(mediaList, m => updateFooter(`Total ${m?.length}`)));
+	createEffect(on(mediaList, m => updateFooter(`Total ${m.length}`)));
 
 	const controller = new AbortController();
 
@@ -93,14 +87,14 @@ function Content(props: IContentProps) {
 
 	function moveVertical(newRow: number, newColumn: number) {
 		const index = newRow * column() + newColumn;
-		if (index >= 0 && index <= mediaList()!.length - 1) {
+		if (index >= 0 && index <= mediaList().length - 1) {
 			setSelected(index);
 		}
 	}
 
 	async function handleKeyPress(ev: KeyboardEvent) {
 		// when menu is opened, do not listen to key change
-		if (isModalOpen() || !mediaList()) {
+		if (isModalOpen() || mediaList().length === 0) {
 			return;
 		}
 
@@ -109,12 +103,10 @@ function Content(props: IContentProps) {
 
 		const keyActions: Record<string, () => void> = {
 			ArrowLeft: () => {
-				setSelected(prev =>
-					prev - 1 < 0 ? mediaList()!.length - 1 : prev - 1
-				);
+				setSelected(prev => (prev - 1 < 0 ? mediaList().length - 1 : prev - 1));
 			},
 			ArrowRight: () => {
-				setSelected(prev => (prev + 1) % mediaList()!.length);
+				setSelected(prev => (prev + 1) % mediaList().length);
 			},
 			ArrowUp: () => {
 				ev.preventDefault();
@@ -125,7 +117,7 @@ function Content(props: IContentProps) {
 				moveVertical(r + 1, c);
 			},
 			Enter: () => {
-				const m = mediaList()![selected()];
+				const m = mediaList()[selected()];
 				openMedia(props.folderPath(), m);
 			},
 		};

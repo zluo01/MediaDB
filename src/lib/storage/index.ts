@@ -23,18 +23,12 @@ export async function getFolderInfo(position: number): Promise<IFolderData> {
 	return await invoke<IFolderData>('get_folder_data', { position });
 }
 
-export async function getFolderMedia(position: number): Promise<IMediaData[]> {
-	return await invoke<IMediaData[]>('get_folder_media', {
-		position,
-	});
-}
-
-export async function filterMediaWithTag(
+export async function getFolderMedia(
 	position: number,
 	filterType: FilterType,
 	tags: FilterOption[]
-): Promise<string[]> {
-	return await invoke<string[]>('filter_media_with_tags', {
+): Promise<IMediaData[]> {
+	return await invoke<IMediaData[]>('get_folder_media', {
 		position,
 		filterType,
 		tags,

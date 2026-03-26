@@ -1,7 +1,6 @@
-import { describe, expect, jest, test } from '@jest/globals';
-import { filterMedia } from '@/lib/filter';
-import * as stores from '@/lib/storage';
-import { FilterType, type IMediaData } from '@/type';
+import { describe, expect, test } from '@jest/globals';
+import { filterOnSearchKey } from '@/lib/filter';
+import type { IMediaData } from '@/type';
 
 const MEDIA_DATA: IMediaData[] = [
 	{
@@ -243,19 +242,11 @@ const MEDIA_DATA: IMediaData[] = [
 ];
 
 describe('Test Filter Media', () => {
-	test('When search with empty string, should not trigger filtering', async () => {
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: '',
-				tags: [],
-			})
-		).toStrictEqual(MEDIA_DATA);
+	test('When search with empty string, should return all media', () => {
+		expect(filterOnSearchKey(MEDIA_DATA, '')).toStrictEqual(MEDIA_DATA);
 	});
 
-	test('When search with key, should trigger filtering', async () => {
+	test('When search with key, should filter by title (case insensitive)', () => {
 		const expected = [
 			{
 				type: 0,
@@ -291,192 +282,18 @@ describe('Test Filter Media', () => {
 			},
 		];
 
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: 'jo',
-				tags: [],
-			})
-		).toStrictEqual(expected);
-
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: 'Jo',
-				tags: [],
-			})
-		).toStrictEqual(expected);
-
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: 'JO',
-				tags: [],
-			})
-		).toStrictEqual(expected);
-
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: ' Jo',
-				tags: [],
-			})
-		).toStrictEqual(expected);
-
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: 'jO ',
-				tags: [],
-			})
-		).toStrictEqual(expected);
+		expect(filterOnSearchKey(MEDIA_DATA, 'jo')).toStrictEqual(expected);
+		expect(filterOnSearchKey(MEDIA_DATA, 'Jo')).toStrictEqual(expected);
+		expect(filterOnSearchKey(MEDIA_DATA, 'JO')).toStrictEqual(expected);
+		expect(filterOnSearchKey(MEDIA_DATA, ' Jo')).toStrictEqual(expected);
+		expect(filterOnSearchKey(MEDIA_DATA, 'jO ')).toStrictEqual(expected);
 	});
 
-	test('Should return empty when no match media', async () => {
-		const tags = [
-			{ label: 'a', group: 'genres' },
-			{ label: 'b', group: 'studios' },
-		];
-		jest.spyOn(stores, 'filterMediaWithTag').mockResolvedValue([]);
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: '',
-				tags,
-			})
-		).toStrictEqual([]);
+	test('Should return empty when no match', () => {
+		expect(filterOnSearchKey(MEDIA_DATA, 'zzzzz')).toStrictEqual([]);
 	});
 
-	test('Should return media contains by filter list', async () => {
-		const tags = [
-			{ label: 'a', group: 'genres' },
-			{ label: 'b', group: 'studios' },
-		];
-
-		const expected = [
-			{
-				type: 0,
-				path: 'Oppenheimer',
-				title: 'Oppenheimer',
-				posters: { main: 'Oppenheimer-poster.jpg' },
-				year: '2023',
-				file: 'Oppenheimer.mkv',
-			},
-			{
-				type: 0,
-				path: "Paris Je T'aime",
-				title: "Paris Je T'aime",
-				posters: { main: "Paris Je T'aime-poster.jpg" },
-				year: '2006',
-				file: "Paris Je T'aime.mkv",
-			},
-			{
-				type: 0,
-				path: 'The Godfather',
-				title: 'The Godfather',
-				posters: { main: 'The Godfather-poster.jpg' },
-				year: '1972',
-				file: 'The Godfather.mkv',
-			},
-			{
-				type: 0,
-				path: 'The Last Emperor',
-				title: 'The Last Emperor',
-				posters: { main: 'The Last Emperor-poster.jpg' },
-				year: '1987',
-				file: 'The Last Emperor.mkv',
-			},
-		];
-
-		jest
-			.spyOn(stores, 'filterMediaWithTag')
-			.mockResolvedValue([
-				'Oppenheimer',
-				"Paris Je T'aime",
-				'The Godfather',
-				'The Last Emperor',
-			]);
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: '',
-				tags,
-			})
-		).toStrictEqual(expected);
-	});
-
-	test('Should return empty when no match media and with search key', async () => {
-		const tags = [
-			{ label: 'a', group: 'genres' },
-			{ label: 'b', group: 'studios' },
-		];
-		jest.spyOn(stores, 'filterMediaWithTag').mockResolvedValue([]);
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: 'jo',
-				tags,
-			})
-		).toStrictEqual([]);
-	});
-
-	test('Should return media contains by filter list and match search key', async () => {
-		const tags = [
-			{ label: 'a', group: 'genres' },
-			{ label: 'b', group: 'studios' },
-		];
-
-		const expected = [
-			{
-				type: 0,
-				path: 'The Godfather',
-				title: 'The Godfather',
-				posters: { main: 'The Godfather-poster.jpg' },
-				year: '1972',
-				file: 'The Godfather.mkv',
-			},
-			{
-				type: 0,
-				path: 'The Last Emperor',
-				title: 'The Last Emperor',
-				posters: { main: 'The Last Emperor-poster.jpg' },
-				year: '1987',
-				file: 'The Last Emperor.mkv',
-			},
-		];
-
-		jest
-			.spyOn(stores, 'filterMediaWithTag')
-			.mockResolvedValue([
-				'Oppenheimer',
-				"Paris Je T'aime",
-				'The Godfather',
-				'The Last Emperor',
-			]);
-		expect(
-			await filterMedia({
-				folderId: 0,
-				mediaList: MEDIA_DATA,
-				filterType: FilterType.OR,
-				searchKey: 'th',
-				tags,
-			})
-		).toStrictEqual(expected);
+	test('Should return empty when media list is empty', () => {
+		expect(filterOnSearchKey([], 'john')).toStrictEqual([]);
 	});
 });

@@ -1,6 +1,6 @@
 use crate::db::queries;
 use crate::helper::main::group_tags;
-use crate::model::database::{Folder, FolderData, Media, MediaTag, Setting, Tag};
+use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use crate::model::parser::MediaItem;
 use log::{debug, error};
 use serde_json::{json, Value};
@@ -231,30 +231,23 @@ pub async fn get_folder_media(
     pool: &Pool<Sqlite>,
     position: &i32,
     server_port: &u16,
+    filter_type: u8,
+    tags: &[Tag],
 ) -> Result<Vec<Media>, sqlx::Error> {
-    let folder_info = get_folder_info(pool, &position).await?;
+    let folder_info = get_folder_info(pool, position).await?;
     let folder_name = folder_info.folder_name();
+    let tags_json = serde_json::to_string(tags).unwrap_or_else(|_| "[]".to_string());
 
     let media_list = sqlx::query(queries::GET_FOLDER_CONTENT)
+        .bind(&tags_json)
         .bind(position)
+        .bind(filter_type)
         .fetch_all(pool)
         .await?
         .iter()
         .map(|r| Media::from_row(r, server_port, folder_name))
         .collect::<Result<Vec<_>, _>>()?;
     Ok(media_list)
-}
-
-pub async fn get_tags_in_folder(
-    pool: &Pool<Sqlite>,
-    position: &i32,
-) -> Result<Vec<MediaTag>, sqlx::Error> {
-    let tags = sqlx::query_as::<_, MediaTag>(queries::GET_TAGS_IN_FOLDER)
-        .bind(position)
-        .fetch_all(pool)
-        .await?;
-
-    Ok(tags)
 }
 
 pub async fn get_folder_media_tags(
