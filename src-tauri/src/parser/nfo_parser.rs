@@ -29,20 +29,16 @@ pub(crate) fn parse_nfo(
         )
     })?;
 
-    let nfo_types = doc
+    let nfo_node = doc
         .root()
         .children()
-        .filter(|o| is_valid_source(o))
-        .collect::<Vec<Node>>();
-
-    if nfo_types.is_empty() {
-        return Err(format!(
-            "NFO file does not have any valid tag for parsing. {}",
-            nfo_dir.to_string_lossy()
-        ));
-    }
-
-    let nfo_node = nfo_types.first().unwrap(); // Safe: we checked is_empty() above
+        .find(|o| is_valid_source(o))
+        .ok_or_else(|| {
+            format!(
+                "NFO file does not have any valid tag for parsing. {}",
+                nfo_dir.to_string_lossy()
+            )
+        })?;
     let nfo_type = nfo_node.tag_name().name();
 
     let mut media = Media::default();
@@ -55,9 +51,9 @@ pub(crate) fn parse_nfo(
     media.set_relative_path(parent.as_os_str().to_os_string());
 
     match nfo_type {
-        "movie" => parse_movie_nfo(&mut media, nfo_node, media_source),
-        "tvshow" => parse_tvshow_nfo(&mut media, nfo_node, media_source),
-        "episodedetails" => parse_episode_nfo(&mut media, nfo_node, &nfo_path, media_source),
+        "movie" => parse_movie_nfo(&mut media, &nfo_node, media_source),
+        "tvshow" => parse_tvshow_nfo(&mut media, &nfo_node, media_source),
+        "episodedetails" => parse_episode_nfo(&mut media, &nfo_node, &nfo_path, media_source),
         _ => {
             return Err(format!("Unknown nfo type '{}' for parsing", nfo_type));
         }
@@ -83,9 +79,7 @@ fn parse_movie_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) {
 
     // parsing tags
     let mut queue = VecDeque::from([*root]);
-    while !queue.is_empty() {
-        let curr_node = queue.pop_front().unwrap();
-
+    while let Some(curr_node) = queue.pop_front() {
         let tag_name = curr_node.tag_name().name();
         let text = curr_node.text();
         match tag_name {
@@ -196,9 +190,7 @@ fn parse_episode_nfo(
 
     // parsing tags
     let mut queue = VecDeque::from([*root]);
-    while !queue.is_empty() {
-        let curr_node = queue.pop_front().unwrap();
-
+    while let Some(curr_node) = queue.pop_front() {
         let tag_name = curr_node.tag_name().name();
         let text = curr_node.text();
         match tag_name {
