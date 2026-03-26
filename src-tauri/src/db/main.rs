@@ -1,5 +1,4 @@
 use crate::db::queries;
-use crate::helper::main::group_tags;
 use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use crate::model::parser::MediaItem;
 use log::{debug, error};
@@ -254,34 +253,22 @@ pub async fn get_folder_media_tags(
     pool: &Pool<Sqlite>,
     position: &i32,
 ) -> Result<Vec<Value>, sqlx::Error> {
-    let tag_list = sqlx::query_as::<_, Tag>(queries::TAGS_IN_FOLDER)
+    let rows = sqlx::query(queries::TAGS_IN_FOLDER)
         .bind(position)
         .fetch_all(pool)
         .await?;
 
-    if tag_list.is_empty() {
-        return Ok(vec![]);
-    }
-    let tag_groups = group_tags(&tag_list);
-    let empty_tags: Vec<Tag> = vec![];
-    Ok(vec![
-        json!({
-            "label": "genres",
-            "options": tag_groups.get("genres").unwrap_or(&empty_tags)
-        }),
-        json!({
-            "label": "actors",
-            "options": tag_groups.get("actors").unwrap_or(&empty_tags)
-        }),
-        json!({
-            "label": "studios",
-            "options": tag_groups.get("studios").unwrap_or(&empty_tags)
-        }),
-        json!({
-            "label": "tags",
-            "options": tag_groups.get("tags").unwrap_or(&empty_tags)
-        }),
-    ])
+    let result = rows
+        .iter()
+        .map(|r| {
+            let label: String = r.get("label");
+            let options_str: String = r.get("options");
+            let options: Value = serde_json::from_str(&options_str).unwrap_or(json!([]));
+            json!({ "label": label, "options": options })
+        })
+        .collect();
+
+    Ok(result)
 }
 
 pub async fn update_sort_type(
@@ -381,4 +368,237 @@ pub async fn get_folder_position(
 pub async fn recover(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(queries::RECOVER).execute(pool).await?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use sqlx::SqlitePool;
+
+    fn tag(group: &str, label: &str) -> Tag {
+        serde_json::from_value(json!({"group": group, "label": label})).unwrap()
+    }
+
+    async fn setup_pool() -> Pool<Sqlite> {
+        let pool = SqlitePool::connect("sqlite::memory:").await.unwrap();
+        sqlx::query(queries::CREAT_TABLE_QUERY)
+            .execute(&pool)
+            .await
+            .unwrap();
+        pool
+    }
+
+    async fn seed_data(pool: &Pool<Sqlite>) {
+        // Insert a folder
+        sqlx::query("INSERT INTO folders (folder_name, position, path) VALUES ('Movie', 0, '/movies')")
+            .execute(pool)
+            .await
+            .unwrap();
+
+        // Insert media
+        let media = [
+            (0, "John Wick", "John Wick", r#"{"main":"poster.jpg"}"#, "2014", "John Wick.mkv"),
+            (0, "The Dark Knight", "The Dark Knight", r#"{"main":"poster.jpg"}"#, "2008", "The Dark Knight.mkv"),
+            (0, "Blade Runner", "Blade Runner", r#"{"main":"poster.jpg"}"#, "1982", "Blade Runner.mkv"),
+            (0, "Dune", "Dune", r#"{"main":"poster.jpg"}"#, "2021", "Dune.mkv"),
+            (0, "Love Letter", "Love Letter", r#"{"main":"poster.jpg"}"#, "1995", "Love Letter.mp4"),
+        ];
+        for (t, path, title, posters, year, file) in media {
+            sqlx::query(
+                "INSERT INTO media (type, path, title, posters, year, file, seasons, folder) VALUES (?,?,?,?,?,?,'','Movie')",
+            )
+            .bind(t)
+            .bind(path)
+            .bind(title)
+            .bind(posters)
+            .bind(year)
+            .bind(file)
+            .execute(pool)
+            .await
+            .unwrap();
+        }
+
+        // Insert tags
+        let tags = [
+            // John Wick: Action, Thriller
+            ("John Wick", "genres", "Action"),
+            ("John Wick", "genres", "Thriller"),
+            ("John Wick", "actors", "Keanu Reeves"),
+            ("John Wick", "studios", "Summit Entertainment"),
+            // The Dark Knight: Action, Crime, Drama
+            ("The Dark Knight", "genres", "Action"),
+            ("The Dark Knight", "genres", "Crime"),
+            ("The Dark Knight", "genres", "Drama"),
+            ("The Dark Knight", "actors", "Christian Bale"),
+            ("The Dark Knight", "studios", "Warner Bros"),
+            // Blade Runner: Thriller, Sci-Fi
+            ("Blade Runner", "genres", "Thriller"),
+            ("Blade Runner", "genres", "Sci-Fi"),
+            ("Blade Runner", "actors", "Harrison Ford"),
+            // Dune: Action, Sci-Fi, Drama
+            ("Dune", "genres", "Action"),
+            ("Dune", "genres", "Sci-Fi"),
+            ("Dune", "genres", "Drama"),
+            ("Dune", "studios", "Warner Bros"),
+            // Love Letter: Drama, Romance (no action, no thriller)
+            ("Love Letter", "genres", "Drama"),
+            ("Love Letter", "genres", "Romance"),
+        ];
+        for (path, t, name) in tags {
+            sqlx::query(
+                "INSERT INTO tags (folder_name, path, t, name) VALUES ('Movie',?,?,?)",
+            )
+            .bind(path)
+            .bind(t)
+            .bind(name)
+            .execute(pool)
+            .await
+            .unwrap();
+        }
+    }
+
+    // -- get_folder_media_tags --
+
+    #[tokio::test]
+    async fn media_tags_returns_grouped_tags() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        let result = get_folder_media_tags(&pool, &0).await.unwrap();
+
+        // Should have groups: actors, genres, studios (alphabetical from SQL ORDER BY)
+        let labels: Vec<&str> = result.iter().map(|v| v["label"].as_str().unwrap()).collect();
+        assert_eq!(labels, vec!["actors", "genres", "studios"]);
+
+        // Genres should contain all distinct genre tags, sorted
+        let genres: Vec<&str> = result
+            .iter()
+            .find(|v| v["label"] == "genres")
+            .unwrap()["options"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v["label"].as_str().unwrap())
+            .collect();
+        assert_eq!(
+            genres,
+            vec!["Action", "Crime", "Drama", "Romance", "Sci-Fi", "Thriller"]
+        );
+    }
+
+    #[tokio::test]
+    async fn media_tags_empty_folder_returns_empty() {
+        let pool = setup_pool().await;
+        // Insert folder with no media
+        sqlx::query("INSERT INTO folders (folder_name, position, path) VALUES ('Empty', 1, '/empty')")
+            .execute(&pool)
+            .await
+            .unwrap();
+
+        let result = get_folder_media_tags(&pool, &1).await.unwrap();
+        assert!(result.is_empty());
+    }
+
+    // -- get_folder_media (tag filtering) --
+
+    #[tokio::test]
+    async fn folder_media_no_tags_returns_all() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        let result = get_folder_media(&pool, &0, &8080, 0, &[]).await.unwrap();
+        assert_eq!(result.len(), 5);
+    }
+
+    #[tokio::test]
+    async fn folder_media_or_filter_single_tag() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        // OR filter with Action genre -> John Wick, The Dark Knight, Dune
+        let tags = vec![tag("genres", "Action")];
+        let result = get_folder_media(&pool, &0, &8080, 0, &tags).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        assert_eq!(titles.len(), 3);
+        assert!(titles.contains(&"John Wick"));
+        assert!(titles.contains(&"The Dark Knight"));
+        assert!(titles.contains(&"Dune"));
+    }
+
+    #[tokio::test]
+    async fn folder_media_or_filter_multiple_tags_same_group() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        // OR filter: Action OR Thriller -> any media with at least one
+        // John Wick (Action+Thriller), Dark Knight (Action), Blade Runner (Thriller), Dune (Action)
+        let tags = vec![tag("genres", "Action"), tag("genres", "Thriller")];
+        let result = get_folder_media(&pool, &0, &8080, 0, &tags).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        assert_eq!(titles.len(), 4);
+        assert!(titles.contains(&"John Wick"));
+        assert!(titles.contains(&"The Dark Knight"));
+        assert!(titles.contains(&"Blade Runner"));
+        assert!(titles.contains(&"Dune"));
+        // Love Letter has no Action or Thriller
+        assert!(!titles.contains(&"Love Letter"));
+    }
+
+    #[tokio::test]
+    async fn folder_media_and_filter_multiple_tags_same_group() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        // AND filter: Action AND Thriller -> must have both
+        // Only John Wick has both Action + Thriller
+        let tags = vec![tag("genres", "Action"), tag("genres", "Thriller")];
+        let result = get_folder_media(&pool, &0, &8080, 1, &tags).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        assert_eq!(titles, vec!["John Wick"]);
+    }
+
+    #[tokio::test]
+    async fn folder_media_or_filter_across_groups() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        // OR filter: genres=Romance + studios=Warner Bros
+        // Must match at least one from each group that has filter tags
+        // Romance: Love Letter
+        // Warner Bros: The Dark Knight, Dune
+        // No overlap -> empty (each group must pass independently)
+        let tags = vec![tag("genres", "Romance"), tag("studios", "Warner Bros")];
+        let result = get_folder_media(&pool, &0, &8080, 0, &tags).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        // Must satisfy both groups: Romance genre AND Warner Bros studio
+        // No movie has both -> empty
+        assert!(titles.is_empty());
+    }
+
+    #[tokio::test]
+    async fn folder_media_or_filter_across_groups_with_matches() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        // OR filter: genres=Drama + studios=Warner Bros
+        // Drama: Dark Knight, Dune, Love Letter
+        // Warner Bros: Dark Knight, Dune
+        // Intersection (must pass both groups): Dark Knight, Dune
+        let tags = vec![tag("genres", "Drama"), tag("studios", "Warner Bros")];
+        let result = get_folder_media(&pool, &0, &8080, 0, &tags).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        assert_eq!(titles.len(), 2);
+        assert!(titles.contains(&"The Dark Knight"));
+        assert!(titles.contains(&"Dune"));
+    }
+
+    #[tokio::test]
+    async fn folder_media_no_match_returns_empty() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        let tags = vec![tag("genres", "Horror")];
+        let result = get_folder_media(&pool, &0, &8080, 0, &tags).await.unwrap();
+        assert!(result.is_empty());
+    }
 }

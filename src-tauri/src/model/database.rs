@@ -81,6 +81,10 @@ pub struct Media {
 }
 
 impl Media {
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
     pub fn from_row(
         row: &SqliteRow,
         server_port: &u16,
@@ -163,20 +167,3 @@ pub struct Tag {
     tag_label: String,
 }
 
-pub trait TagBase {
-    fn key(&self) -> &str;
-    fn to_tag(&self) -> Tag;
-}
-
-impl TagBase for Tag {
-    fn key(&self) -> &str {
-        &self.tag_group
-    }
-
-    fn to_tag(&self) -> Tag {
-        Tag {
-            tag_group: self.tag_group.clone(),
-            tag_label: self.tag_label.clone(),
-        }
-    }
-}

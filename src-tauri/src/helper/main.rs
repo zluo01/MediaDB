@@ -1,15 +1,4 @@
-use crate::model::database::{Tag, TagBase};
-use std::collections::HashMap;
 use std::path::PathBuf;
-
-pub fn group_tags<T: TagBase>(tags: &[T]) -> HashMap<&str, Vec<Tag>> {
-    tags.iter().fold(HashMap::new(), |mut acc, tag| {
-        acc.entry(tag.key())
-            .or_insert_with(Vec::new)
-            .push(tag.to_tag());
-        acc
-    })
-}
 
 pub fn get_cached_image_path(server_port: &u16, folder_name: &str, src: &str) -> String {
     let cleanup_image_path = src
