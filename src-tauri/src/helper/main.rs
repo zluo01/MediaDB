@@ -26,8 +26,17 @@ pub fn get_cached_image_path(server_port: &u16, folder_name: &str, src: &str) ->
         .join(folder_name)
         .join(&cleanup_image_path);
 
-    let urlencoded_path = urlencoding::encode(path.to_str().unwrap());
-    format!("http://127.0.0.1:{}/{}", server_port, urlencoded_path)
+    let encoded_path = path
+        .components()
+        .filter_map(|c| match c {
+            std::path::Component::Normal(s) => {
+                Some(urlencoding::encode(s.to_str().unwrap()).into_owned())
+            }
+            _ => None,
+        })
+        .collect::<Vec<_>>()
+        .join("/");
+    format!("http://127.0.0.1:{}/{}", server_port, encoded_path)
 }
 
 #[cfg(test)]
@@ -73,7 +82,7 @@ mod tests {
     #[test]
     fn get_cached_image_path_constructs_url() {
         let result = get_cached_image_path(&8080, "Movie", "poster.jpg");
-        assert_eq!(result, "http://127.0.0.1:8080/covers%2FMovie%2Fposter");
+        assert_eq!(result, "http://127.0.0.1:8080/covers/Movie/poster");
     }
 
     #[test]
@@ -81,7 +90,7 @@ mod tests {
         let result = get_cached_image_path(&8080, "Movie", "John Wick/poster.jpg");
         assert_eq!(
             result,
-            "http://127.0.0.1:8080/covers%2FMovie%2FJohn%20Wick%2Fposter"
+            "http://127.0.0.1:8080/covers/Movie/John%20Wick/poster"
         );
     }
 }

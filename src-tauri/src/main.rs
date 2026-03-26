@@ -14,12 +14,12 @@ use std::{collections::HashSet, fs, process::Command};
 use tauri::{Emitter, Manager, Runtime, State};
 use tauri_plugin_log::{Target, TargetKind};
 use tauri_plugin_notification::NotificationExt;
-use tiny_http::{Header, Response, Server};
 
 mod db;
 mod helper;
 mod model;
 mod parser;
+mod server;
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
@@ -511,56 +511,8 @@ fn main() {
 
 			app.manage(DatabaseConnectionState(pool));
 
-			let app_handle = app.handle().clone();
-			tauri::async_runtime::spawn(async move {
-				let server = Server::http(format!("127.0.0.1:{}", port)).unwrap();
-
-				for request in server.incoming_requests() {
-					let app_handle = app_handle.clone();
-					let app_data_dir = app_handle.path().app_data_dir().unwrap();
-
-					tauri::async_runtime::spawn(async move {
-						let url = request.url().to_string();
-						let path =
-							urlencoding::decode(url.trim_start_matches('/')).unwrap().into_owned();
-						// Guard against path traversal attacks (e.g. "../../etc/passwd").
-						// Check for any ".." components before joining with app_data_dir,
-						// since PathBuf::join resolves ".." at the OS level and would allow
-						// escaping the intended directory.
-						if std::path::Path::new(&path)
-							.components()
-							.any(|c| matches!(c, std::path::Component::ParentDir))
-						{
-							let _ = request.respond(
-								Response::from_string("Forbidden").with_status_code(403),
-							);
-							return;
-						}
-						let image_path = app_data_dir.join(path);
-
-						if image_path.exists() {
-							if let Ok(file) = fs::File::open(&image_path) {
-								let mut response = Response::from_file(file);
-								response.add_header(
-									Header::from_bytes(&b"Cache-Control"[..], b"public, max-age=3600")
-										.unwrap(),
-								);
-								let _ = request.respond(response);
-							} else {
-								let _ = request.respond(
-									Response::from_string(format!("Fail to open file: {:?}", image_path))
-										.with_status_code(500),
-								);
-							}
-						} else {
-							let _ = request.respond(
-								Response::from_string(format!("Fail to find image: {:?}", image_path))
-									.with_status_code(404),
-							);
-						}
-					});
-				}
-			});
+			let app_data_dir = app.handle().path().app_data_dir().unwrap();
+			server::start(&app_data_dir, port);
 
 			Ok(())
 		})
