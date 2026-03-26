@@ -11,7 +11,7 @@
     "lint": "biome check --write .",
     "prepare": "husky",
     "tauri": "tauri",
-    "test": "jest",
+    "test": "jest && cargo test --manifest-path src-tauri/Cargo.toml",
     "type-check": "tsc --pretty --noEmit",
     "vite-build": "tsc && vite build",
     "vite-dev": "vite"
