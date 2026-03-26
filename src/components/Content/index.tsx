@@ -14,9 +14,9 @@ import {
 	Show,
 	Suspense,
 } from 'solid-js';
-import { LoadingContent } from 'src/components/Loading';
 import Context from '@/components/Content/context';
 import Media from '@/components/Content/media';
+import { LoadingContent } from '@/components/Loading';
 import { searchStore, updateFooter } from '@/lib/context';
 import { useFilter } from '@/lib/context/filterContext';
 import { filterOnSearchKey } from '@/lib/filter';
