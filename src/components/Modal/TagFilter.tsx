@@ -1,5 +1,3 @@
-import filter from 'lodash/filter';
-import isEmpty from 'lodash/isEmpty';
 import { type Accessor, For } from 'solid-js';
 import SearchFilterControl from '@/components/Toolbar/searchFilterControl';
 import { TagFilterSelect } from '@/components/Toolbar/tag-filter-select';
@@ -18,7 +16,8 @@ function TagFilter(props: ITagFilterProps) {
 	const { getTags, modifyTag } = useFilter();
 	const tags = () => getTags(props.folderId());
 
-	const options = () => filter(props.groupOptions(), group => !isEmpty(group));
+	const options = () =>
+		props.groupOptions().filter(group => group.options.length > 0);
 
 	return (
 		<dialog id="filter-modal" class="modal">

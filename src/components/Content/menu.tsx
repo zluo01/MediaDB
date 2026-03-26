@@ -1,4 +1,3 @@
-import join from 'lodash/join';
 import { createSignal, For, Match, Switch } from 'solid-js';
 import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
@@ -14,7 +13,7 @@ export default function TVShowCardMenu(props: ITVShowCardMenuProps) {
 	const [active, setActive] = createSignal(0);
 
 	async function openEpisodeFile(media: IEpisode) {
-		const filePath = join([props.folderPath, media.path, media.file], '/');
+		const filePath = [props.folderPath, media.path, media.file].join('/');
 		await openFile(filePath);
 	}
 

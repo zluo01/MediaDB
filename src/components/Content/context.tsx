@@ -1,6 +1,5 @@
 import { LogicalPosition } from '@tauri-apps/api/dpi';
 import { Menu } from '@tauri-apps/api/menu/menu';
-import join from 'lodash/join';
 import type { Accessor, JSXElement } from 'solid-js';
 import type { DOMElement } from 'solid-js/jsx-runtime';
 import { updateFooter } from '@/lib/context';
@@ -26,7 +25,7 @@ async function openContainedFolder(
 			break;
 		case MediaType.MOVIE:
 		case MediaType.TV_SERIES:
-			await openFile(join([folderPath, mediaPath], '/'));
+			await openFile([folderPath, mediaPath].join('/'));
 			break;
 	}
 }
