@@ -28,25 +28,28 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
                 error!("{:?}", err_msg);
                 return Err(err_msg);
             }
-            if let Err(e) = create_tables(&db_url).await {
+            let pool = SqlitePool::connect(&db_url)
+                .await
+                .map_err(|e| format!("Fail to connect to db at {:?}. Error: {:?}", &db_url, e))?;
+            if let Err(e) = create_tables(&pool).await {
                 let err_msg = format!(
                     "Fail to create tables. Error: {:?}",
                     e.into_database_error()
                 );
                 error!("{:?}", err_msg);
+                pool.close().await;
                 return Err(err_msg);
             }
+            pool.close().await;
         }
         Ok(())
     })
 }
 
-async fn create_tables(db_url: &str) -> Result<(), sqlx::Error> {
-    let pool = SqlitePool::connect(&db_url).await?;
-    sqlx::query(&queries::CREAT_TABLE_QUERY)
-        .execute(&pool)
+async fn create_tables(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
+    sqlx::query(queries::CREAT_TABLE_QUERY)
+        .execute(pool)
         .await?;
-    pool.close().await;
     Ok(())
 }
 
@@ -379,82 +382,87 @@ mod tests {
         serde_json::from_value(json!({"group": group, "label": label})).unwrap()
     }
 
+    use crate::model::parser::{Media as MediaBuilder, MediaType};
+    use std::ffi::OsString;
+
     async fn setup_pool() -> Pool<Sqlite> {
         let pool = SqlitePool::connect("sqlite::memory:").await.unwrap();
-        sqlx::query(queries::CREAT_TABLE_QUERY)
-            .execute(&pool)
-            .await
-            .unwrap();
+        create_tables(&pool).await.unwrap();
         pool
     }
 
+    fn movie(
+        title: &str,
+        year: &str,
+        file: &str,
+        genres: &[&str],
+        actors: &[&str],
+        studios: &[&str],
+    ) -> MediaItem {
+        let mut m = MediaBuilder::default();
+        m.set_media_type(MediaType::Movie);
+        m.set_relative_path(OsString::from(title));
+        m.set_title(title.to_string());
+        m.set_year(year.to_string());
+        m.set_file(file.to_string());
+        m.add_poster("poster.jpg".to_string());
+        for g in genres {
+            m.add_genre(g.to_string());
+        }
+        m.set_actors(actors.iter().map(|a| a.to_string()).collect());
+        for s in studios {
+            m.add_studio(s.to_string());
+        }
+        m.movie().unwrap()
+    }
+
     async fn seed_data(pool: &Pool<Sqlite>) {
-        // Insert a folder
-        sqlx::query("INSERT INTO folders (folder_name, position, path) VALUES ('Movie', 0, '/movies')")
-            .execute(pool)
-            .await
-            .unwrap();
+        insert_folder_data(pool, "Movie", "/movies").await.unwrap();
 
-        // Insert media
-        let media = [
-            (0, "John Wick", "John Wick", r#"{"main":"poster.jpg"}"#, "2014", "John Wick.mkv"),
-            (0, "The Dark Knight", "The Dark Knight", r#"{"main":"poster.jpg"}"#, "2008", "The Dark Knight.mkv"),
-            (0, "Blade Runner", "Blade Runner", r#"{"main":"poster.jpg"}"#, "1982", "Blade Runner.mkv"),
-            (0, "Dune", "Dune", r#"{"main":"poster.jpg"}"#, "2021", "Dune.mkv"),
-            (0, "Love Letter", "Love Letter", r#"{"main":"poster.jpg"}"#, "1995", "Love Letter.mp4"),
+        let media = vec![
+            movie(
+                "John Wick",
+                "2014",
+                "John Wick.mkv",
+                &["Action", "Thriller"],
+                &["Keanu Reeves"],
+                &["Summit Entertainment"],
+            ),
+            movie(
+                "The Dark Knight",
+                "2008",
+                "The Dark Knight.mkv",
+                &["Action", "Crime", "Drama"],
+                &["Christian Bale"],
+                &["Warner Bros"],
+            ),
+            movie(
+                "Blade Runner",
+                "1982",
+                "Blade Runner.mkv",
+                &["Thriller", "Sci-Fi"],
+                &["Harrison Ford"],
+                &[],
+            ),
+            movie(
+                "Dune",
+                "2021",
+                "Dune.mkv",
+                &["Action", "Sci-Fi", "Drama"],
+                &[],
+                &["Warner Bros"],
+            ),
+            movie(
+                "Love Letter",
+                "1995",
+                "Love Letter.mp4",
+                &["Drama", "Romance"],
+                &[],
+                &[],
+            ),
         ];
-        for (t, path, title, posters, year, file) in media {
-            sqlx::query(
-                "INSERT INTO media (type, path, title, posters, year, file, seasons, folder) VALUES (?,?,?,?,?,?,'','Movie')",
-            )
-            .bind(t)
-            .bind(path)
-            .bind(title)
-            .bind(posters)
-            .bind(year)
-            .bind(file)
-            .execute(pool)
-            .await
-            .unwrap();
-        }
 
-        // Insert tags
-        let tags = [
-            // John Wick: Action, Thriller
-            ("John Wick", "genres", "Action"),
-            ("John Wick", "genres", "Thriller"),
-            ("John Wick", "actors", "Keanu Reeves"),
-            ("John Wick", "studios", "Summit Entertainment"),
-            // The Dark Knight: Action, Crime, Drama
-            ("The Dark Knight", "genres", "Action"),
-            ("The Dark Knight", "genres", "Crime"),
-            ("The Dark Knight", "genres", "Drama"),
-            ("The Dark Knight", "actors", "Christian Bale"),
-            ("The Dark Knight", "studios", "Warner Bros"),
-            // Blade Runner: Thriller, Sci-Fi
-            ("Blade Runner", "genres", "Thriller"),
-            ("Blade Runner", "genres", "Sci-Fi"),
-            ("Blade Runner", "actors", "Harrison Ford"),
-            // Dune: Action, Sci-Fi, Drama
-            ("Dune", "genres", "Action"),
-            ("Dune", "genres", "Sci-Fi"),
-            ("Dune", "genres", "Drama"),
-            ("Dune", "studios", "Warner Bros"),
-            // Love Letter: Drama, Romance (no action, no thriller)
-            ("Love Letter", "genres", "Drama"),
-            ("Love Letter", "genres", "Romance"),
-        ];
-        for (path, t, name) in tags {
-            sqlx::query(
-                "INSERT INTO tags (folder_name, path, t, name) VALUES ('Movie',?,?,?)",
-            )
-            .bind(path)
-            .bind(t)
-            .bind(name)
-            .execute(pool)
-            .await
-            .unwrap();
-        }
+        insert_new_media(pool, "Movie", &media).await.unwrap();
     }
 
     // -- get_folder_media_tags --
@@ -467,14 +475,14 @@ mod tests {
         let result = get_folder_media_tags(&pool, &0).await.unwrap();
 
         // Should have groups: actors, genres, studios (alphabetical from SQL ORDER BY)
-        let labels: Vec<&str> = result.iter().map(|v| v["label"].as_str().unwrap()).collect();
+        let labels: Vec<&str> = result
+            .iter()
+            .map(|v| v["label"].as_str().unwrap())
+            .collect();
         assert_eq!(labels, vec!["actors", "genres", "studios"]);
 
         // Genres should contain all distinct genre tags, sorted
-        let genres: Vec<&str> = result
-            .iter()
-            .find(|v| v["label"] == "genres")
-            .unwrap()["options"]
+        let genres: Vec<&str> = result.iter().find(|v| v["label"] == "genres").unwrap()["options"]
             .as_array()
             .unwrap()
             .iter()
@@ -490,10 +498,12 @@ mod tests {
     async fn media_tags_empty_folder_returns_empty() {
         let pool = setup_pool().await;
         // Insert folder with no media
-        sqlx::query("INSERT INTO folders (folder_name, position, path) VALUES ('Empty', 1, '/empty')")
-            .execute(&pool)
-            .await
-            .unwrap();
+        sqlx::query(
+            "INSERT INTO folders (folder_name, position, path) VALUES ('Empty', 1, '/empty')",
+        )
+        .execute(&pool)
+        .await
+        .unwrap();
 
         let result = get_folder_media_tags(&pool, &1).await.unwrap();
         assert!(result.is_empty());
@@ -600,5 +610,328 @@ mod tests {
         let tags = vec![tag("genres", "Horror")];
         let result = get_folder_media(&pool, &0, &8080, 0, &tags).await.unwrap();
         assert!(result.is_empty());
+    }
+
+    // -- settings --
+
+    #[tokio::test]
+    async fn get_settings_returns_defaults() {
+        let pool = setup_pool().await;
+
+        let settings = get_settings(&pool).await.unwrap();
+        let json = serde_json::to_value(&settings).unwrap();
+        // hide_panel=0 serializes as showSidePanel=true
+        assert_eq!(json["showSidePanel"], true);
+        assert_eq!(json["skipFolders"], json!([]));
+    }
+
+    #[tokio::test]
+    async fn update_and_get_skip_folders() {
+        let pool = setup_pool().await;
+
+        update_skip_folders(&pool, "_Todo,_Bonus").await.unwrap();
+        let result = get_skip_folders(&pool).await.unwrap();
+        assert_eq!(result, vec!["_Todo", "_Bonus"]);
+    }
+
+    #[tokio::test]
+    async fn update_hide_side_panel_toggles() {
+        let pool = setup_pool().await;
+
+        update_hide_side_panel(&pool, &1).await.unwrap();
+        let settings = get_settings(&pool).await.unwrap();
+        let json = serde_json::to_value(&settings).unwrap();
+        // hide_panel=1 -> showSidePanel=false
+        assert_eq!(json["showSidePanel"], false);
+    }
+
+    // -- folder operations --
+
+    #[tokio::test]
+    async fn insert_and_get_folder_list() {
+        let pool = setup_pool().await;
+
+        insert_folder_data(&pool, "Movie", "/movies").await.unwrap();
+        insert_folder_data(&pool, "TV", "/tv").await.unwrap();
+
+        let folders = get_folder_list(&pool).await.unwrap();
+        assert_eq!(folders.len(), 2);
+        assert_eq!(folders[0].folder_name(), "Movie");
+        assert_eq!(folders[1].folder_name(), "TV");
+    }
+
+    #[tokio::test]
+    async fn insert_folder_auto_increments_position() {
+        let pool = setup_pool().await;
+
+        insert_folder_data(&pool, "A", "/a").await.unwrap();
+        insert_folder_data(&pool, "B", "/b").await.unwrap();
+        insert_folder_data(&pool, "C", "/c").await.unwrap();
+
+        let folders = get_folder_list(&pool).await.unwrap();
+        let positions: Vec<i64> = folders
+            .iter()
+            .map(|f| {
+                serde_json::to_value(f).unwrap()["position"]
+                    .as_i64()
+                    .unwrap()
+            })
+            .collect();
+        assert_eq!(positions, vec![0, 1, 2]);
+    }
+
+    #[tokio::test]
+    async fn get_folder_info_and_data() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        let info = get_folder_info(&pool, &0).await.unwrap();
+        assert_eq!(info.folder_name(), "Movie");
+
+        let data = get_folder_data(&pool, &0).await.unwrap();
+        let json = serde_json::to_value(&data).unwrap();
+        assert_eq!(json["name"], "Movie");
+        assert_eq!(json["sort"], 0);
+        assert_eq!(json["filterType"], 0);
+    }
+
+    #[tokio::test]
+    async fn update_sort_type_changes_value() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        update_sort_type(&pool, &0, &1).await.unwrap();
+        let data = get_folder_data(&pool, &0).await.unwrap();
+        let json = serde_json::to_value(&data).unwrap();
+        assert_eq!(json["sort"], 1);
+    }
+
+    #[tokio::test]
+    async fn update_folder_path_changes_path() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        update_folder_path(&pool, &0, "/new/path").await.unwrap();
+        let data = get_folder_data(&pool, &0).await.unwrap();
+        let json = serde_json::to_value(&data).unwrap();
+        assert_eq!(json["path"], "/new/path");
+    }
+
+    #[tokio::test]
+    async fn update_folder_filter_type_toggles() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        // Default is 0, toggle to 1
+        update_folder_filter_type(&pool, &0).await.unwrap();
+        let data = get_folder_data(&pool, &0).await.unwrap();
+        let json = serde_json::to_value(&data).unwrap();
+        assert_eq!(json["filterType"], 1);
+
+        // Toggle back to 0
+        update_folder_filter_type(&pool, &0).await.unwrap();
+        let data = get_folder_data(&pool, &0).await.unwrap();
+        let json = serde_json::to_value(&data).unwrap();
+        assert_eq!(json["filterType"], 0);
+    }
+
+    #[tokio::test]
+    async fn reorder_folders() {
+        let pool = setup_pool().await;
+
+        insert_folder_data(&pool, "A", "/a").await.unwrap();
+        insert_folder_data(&pool, "B", "/b").await.unwrap();
+        insert_folder_data(&pool, "C", "/c").await.unwrap();
+
+        // Reverse order: C=0, B=1, A=2
+        reorder_folder(&pool, &["C", "B", "A"]).await.unwrap();
+
+        let folders = get_folder_list(&pool).await.unwrap();
+        let names: Vec<&str> = folders.iter().map(|f| f.folder_name()).collect();
+        assert_eq!(names, vec!["C", "B", "A"]);
+    }
+
+    #[tokio::test]
+    async fn delete_folder_shifts_positions() {
+        let pool = setup_pool().await;
+
+        insert_folder_data(&pool, "A", "/a").await.unwrap();
+        insert_folder_data(&pool, "B", "/b").await.unwrap();
+        insert_folder_data(&pool, "C", "/c").await.unwrap();
+
+        // Delete B at position 1
+        delete_folder(&pool, "B", &1).await.unwrap();
+
+        let folders = get_folder_list(&pool).await.unwrap();
+        let names: Vec<&str> = folders.iter().map(|f| f.folder_name()).collect();
+        assert_eq!(names, vec!["A", "C"]);
+
+        // C should have shifted from position 2 to 1
+        let positions: Vec<i64> = folders
+            .iter()
+            .map(|f| {
+                serde_json::to_value(f).unwrap()["position"]
+                    .as_i64()
+                    .unwrap()
+            })
+            .collect();
+        assert_eq!(positions, vec![0, 1]);
+    }
+
+    #[tokio::test]
+    async fn delete_folder_cascades_media_and_tags() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        delete_folder(&pool, "Movie", &0).await.unwrap();
+
+        let folders = get_folder_list(&pool).await.unwrap();
+        assert!(folders.is_empty());
+
+        // Media and tags should be cascade-deleted
+        let media_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM media")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(media_count, 0);
+
+        let tag_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tags")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(tag_count, 0);
+    }
+
+    #[tokio::test]
+    async fn get_folder_position_returns_correct_position() {
+        let pool = setup_pool().await;
+
+        insert_folder_data(&pool, "Movie", "/movies").await.unwrap();
+        insert_folder_data(&pool, "TV", "/tv").await.unwrap();
+
+        let pos = get_folder_position(&pool, "TV", "/tv").await.unwrap();
+        assert_eq!(pos, 1);
+    }
+
+    #[tokio::test]
+    async fn update_folder_status_and_recover() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        // Set status to 1 (loading)
+        update_folder_status(&pool, &1, &0).await.unwrap();
+        let data = get_folder_data(&pool, &0).await.unwrap();
+        let json = serde_json::to_value(&data).unwrap();
+        assert_eq!(json["status"], 1);
+
+        // Recover should set status=1 folders to status=2
+        recover(&pool).await.unwrap();
+        let data = get_folder_data(&pool, &0).await.unwrap();
+        let json = serde_json::to_value(&data).unwrap();
+        assert_eq!(json["status"], 2);
+    }
+
+    // -- folder media sorting --
+
+    #[tokio::test]
+    async fn folder_media_default_sort_by_path() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        let result = get_folder_media(&pool, &0, &8080, 0, &[]).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        // Default sort (sort_type=0) is by path ascending
+        assert_eq!(
+            titles,
+            vec![
+                "Blade Runner",
+                "Dune",
+                "John Wick",
+                "Love Letter",
+                "The Dark Knight"
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn folder_media_sort_by_title_asc() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        update_sort_type(&pool, &0, &1).await.unwrap();
+        let result = get_folder_media(&pool, &0, &8080, 0, &[]).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        assert_eq!(
+            titles,
+            vec![
+                "Blade Runner",
+                "Dune",
+                "John Wick",
+                "Love Letter",
+                "The Dark Knight"
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn folder_media_sort_by_title_desc() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        update_sort_type(&pool, &0, &2).await.unwrap();
+        let result = get_folder_media(&pool, &0, &8080, 0, &[]).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        assert_eq!(
+            titles,
+            vec![
+                "The Dark Knight",
+                "Love Letter",
+                "John Wick",
+                "Dune",
+                "Blade Runner"
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn folder_media_sort_by_year_asc() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        update_sort_type(&pool, &0, &3).await.unwrap();
+        let result = get_folder_media(&pool, &0, &8080, 0, &[]).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        // 1982, 1995, 2008, 2014, 2021
+        assert_eq!(
+            titles,
+            vec![
+                "Blade Runner",
+                "Love Letter",
+                "The Dark Knight",
+                "John Wick",
+                "Dune"
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn folder_media_sort_by_year_desc() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        update_sort_type(&pool, &0, &4).await.unwrap();
+        let result = get_folder_media(&pool, &0, &8080, 0, &[]).await.unwrap();
+        let titles: Vec<&str> = result.iter().map(|m| m.title()).collect();
+        // 2021, 2014, 2008, 1995, 1982
+        assert_eq!(
+            titles,
+            vec![
+                "Dune",
+                "John Wick",
+                "The Dark Knight",
+                "Love Letter",
+                "Blade Runner"
+            ]
+        );
     }
 }

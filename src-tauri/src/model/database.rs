@@ -166,4 +166,3 @@ pub struct Tag {
     #[serde(rename = "label")]
     tag_label: String,
 }
-
