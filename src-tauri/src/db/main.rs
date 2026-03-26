@@ -266,7 +266,10 @@ pub async fn get_folder_media_tags(
         .map(|r| {
             let label: String = r.get("label");
             let options_str: String = r.get("options");
-            let options: Value = serde_json::from_str(&options_str).unwrap_or(json!([]));
+            let options: Value = serde_json::from_str(&options_str).unwrap_or_else(|e| {
+                error!("Failed to parse tag options for {}: {}", label, e);
+                json!([])
+            });
             json!({ "label": label, "options": options })
         })
         .collect();
