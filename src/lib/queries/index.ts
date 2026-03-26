@@ -1,4 +1,8 @@
-import { QueryClient, queryOptions } from '@tanstack/solid-query';
+import {
+	keepPreviousData,
+	QueryClient,
+	queryOptions,
+} from '@tanstack/solid-query';
 import { buildDirectory, notify } from '@/lib/os';
 import {
 	changeSkipFolders,
@@ -36,6 +40,7 @@ export const contentQueryOptions = (
 	queryOptions({
 		queryKey: [FOLDER_CONTENT, folderId, filterType, tags],
 		queryFn: () => getFolderMedia(folderId, filterType, tags),
+		placeholderData: keepPreviousData,
 		throwOnError: true,
 	});
 
