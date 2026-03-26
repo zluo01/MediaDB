@@ -266,17 +266,10 @@ impl Media {
             if p.starts_with("season-specials") {
                 poster_map.insert(String::from("00"), Value::String(p.clone()));
             } else if p.starts_with("season") {
-                let season = p.split("-").collect::<Vec<&str>>();
-                if season.first().is_some() {
-                    poster_map.insert(
-                        season
-                            .first()
-                            .unwrap()
-                            .strip_prefix("season")
-                            .unwrap()
-                            .to_string(),
-                        Value::String(p.clone()),
-                    );
+                if let Some(first) = p.split('-').next() {
+                    if let Some(num) = first.strip_prefix("season") {
+                        poster_map.insert(num.to_string(), Value::String(p.clone()));
+                    }
                 }
             } else {
                 poster_map.insert(String::from("main"), Value::String(p.clone()));
@@ -289,7 +282,7 @@ impl Media {
         if let MediaType::Comic = self.media_type {
             return Some(MediaItem {
                 media_type: MediaType::Comic.as_u8(),
-                path: self.relative_path().to_str().unwrap().to_string(),
+                path: self.relative_path().to_string_lossy().into_owned(),
                 title: self.title.clone(),
                 posters: format!("{}", self.construct_poster_map()),
                 tags: vec![],
