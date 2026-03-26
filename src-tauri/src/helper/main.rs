@@ -3,7 +3,7 @@ use std::path::PathBuf;
 const IMAGE_EXTENSIONS: &[&str] = &[".jpg", ".png", ".jpeg", ".bmp", ".gif", ".webp"];
 const COMIC_EXTENSIONS: &[&str] = &[".cbz", ".cbr", ".cbt", ".cb7"];
 
-pub fn strip_extensions(path: &str, extensions: &[&str]) -> String {
+fn strip_extensions(path: &str, extensions: &[&str]) -> String {
     let mut result = path.replace('\\', "/");
     for ext in extensions {
         result = result.replace(ext, "");
