@@ -232,15 +232,7 @@ fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<Pa
     posters.into_par_iter().for_each(|poster_path| {
         let source_path = root_path.join(poster_path);
 
-        let file_path = poster_path
-            .to_string_lossy()
-            .replace("\\", "/")
-            .replace(".jpg", "")
-            .replace(".png", "")
-            .replace(".jpeg", "")
-            .replace(".bmp", "")
-            .replace(".gif", "")
-            .replace(".webp", "");
+        let file_path = crate::helper::main::strip_image_extensions(&poster_path.to_string_lossy());
 
         let cover_dest_path = cover_folder_path.join(&file_path);
 

@@ -62,13 +62,8 @@ fn parse_comic(
     file_path: &OsString,
 ) -> Result<Option<Media>, String> {
     let comic_path = root_path.join(file_path);
-    let relative_file_path = file_path
-        .to_string_lossy()
-        .replace('\\', "/")
-        .replace(".cbz", "")
-        .replace(".cbr", "")
-        .replace(".cbt", "")
-        .replace(".cb7", "");
+    let relative_file_path =
+        crate::helper::main::strip_comic_extensions(&file_path.to_string_lossy());
     let cover_dest_path = cover_folder_path.join(&relative_file_path);
 
     let parent_dir = cover_dest_path.parent().ok_or_else(|| {
