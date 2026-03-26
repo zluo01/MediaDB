@@ -2,11 +2,7 @@ use std::process::Output;
 use std::{fs, path::Path, path::PathBuf, process::Command};
 
 pub fn get_relative_path(path: &Path, base: &Path) -> Option<PathBuf> {
-    let relative_path = path.strip_prefix(base);
-    if relative_path.is_ok() {
-        return Some(relative_path.unwrap().to_path_buf());
-    }
-    None
+    path.strip_prefix(base).ok().map(|p| p.to_path_buf())
 }
 
 #[cfg(target_os = "windows")]

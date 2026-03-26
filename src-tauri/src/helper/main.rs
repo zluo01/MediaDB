@@ -23,7 +23,7 @@ pub fn get_cached_image_path(server_port: &u16, folder_name: &str, src: &str) ->
     let cleanup_image_path = strip_image_extensions(src);
 
     let path = PathBuf::from("covers")
-        .join(&folder_name)
+        .join(folder_name)
         .join(&cleanup_image_path);
 
     let urlencoded_path = urlencoding::encode(path.to_str().unwrap());

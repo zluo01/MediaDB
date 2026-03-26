@@ -180,12 +180,7 @@ fn parse_tvshow_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) 
     media.set_posters(get_poster_filename(media_source));
 }
 
-fn parse_episode_nfo(
-    media: &mut Media,
-    root: &Node,
-    nfo_path: &PathBuf,
-    media_source: &MediaSource,
-) {
+fn parse_episode_nfo(media: &mut Media, root: &Node, nfo_path: &Path, media_source: &MediaSource) {
     media.set_media_type(MediaType::Episode);
 
     // parsing tags
@@ -234,9 +229,7 @@ fn parse_episode_nfo(
 fn get_actor_name(node: &Node) -> Vec<String> {
     node.children()
         .filter(|v| v.tag_name().name() == "name")
-        .map(|v| v.text())
-        .filter(|v| v.is_some())
-        .map(|v| v.unwrap())
+        .filter_map(|v| v.text())
         .filter(|v| !v.is_empty())
         .map(|v| v.to_string())
         .collect::<Vec<String>>()
@@ -254,7 +247,7 @@ fn get_poster_filename(media_source: &MediaSource) -> Vec<String> {
 }
 
 fn get_episode_filename(
-    nfo_path: &PathBuf,
+    nfo_path: &Path,
     media_source: &MediaSource,
     season: &str,
     episode: &str,

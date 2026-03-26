@@ -3,7 +3,7 @@ use std::{
     fs,
     fs::File,
     io::{Read, Write},
-    path::{Path, PathBuf},
+    path::Path,
 };
 
 use crate::helper::main::strip_comic_extensions;
@@ -16,7 +16,7 @@ use zip::{read::ZipFile, ZipArchive};
 
 pub(crate) fn parse_comics<R: tauri::Runtime>(
     app_handle: &tauri::AppHandle<R>,
-    app_dir: &PathBuf,
+    app_dir: &Path,
     root_path: &Path,
     comic_files: &Vec<OsString>,
 ) -> Result<Vec<Media>, String> {
@@ -58,7 +58,7 @@ pub(crate) fn parse_comics<R: tauri::Runtime>(
 }
 
 fn parse_comic(
-    cover_folder_path: &PathBuf,
+    cover_folder_path: &Path,
     root_path: &Path,
     file_path: &OsString,
 ) -> Result<Option<Media>, String> {
@@ -123,7 +123,7 @@ fn parse_comic(
     Ok(Some(media))
 }
 
-fn save_cover(comic_dest_name: &PathBuf, file: &mut ZipFile<File>) -> Result<(), String> {
+fn save_cover(comic_dest_name: &Path, file: &mut ZipFile<File>) -> Result<(), String> {
     let mut content = Vec::new();
     file.read_to_end(&mut content)
         .map_err(|e| format!("Fail to read zip file content. Error: {}", e))?;

@@ -64,7 +64,7 @@ async fn parser<R: Runtime>(
                 return;
             }
 
-            let _ = app_handle
+            app_handle
                 .emit(
                     "parsing",
                     InvalidationPayload {
@@ -104,7 +104,7 @@ async fn update_folder_path<R: Runtime>(
         let path = path.as_str();
         let name = name.as_str();
 
-        if let Err(e) = db::main::update_folder_path(&pool, &position, &path).await {
+        if let Err(e) = db::main::update_folder_path(&pool, &position, path).await {
             error!(
                 "Fail to update folder path. Raising Error: {:?}",
                 e.into_database_error()
@@ -128,30 +128,30 @@ async fn process_parsing<R: Runtime>(
         t: 1u8,
         id: position,
     };
-    if let Err(e) = handle_parsing(&app_handle, &pool, name, path, position).await {
+    if let Err(e) = handle_parsing(app_handle, pool, name, path, position).await {
         error!("Error on parsing: {}", e);
 
-        if let Err(e) = db::main::update_folder_status(&pool, &2, &position).await {
+        if let Err(e) = db::main::update_folder_status(pool, &2, &position).await {
             error!(
                 "Fail to change folder status to error. Raising Error: {:?}",
                 e.into_database_error()
             );
         }
-        let _ = app_handle
+        app_handle
             .emit("parsing", invalidation_payload)
             .expect("Fail to send message to refresh status on error.");
     } else {
-        if let Err(e) = db::main::update_folder_status(&pool, &0, &position).await {
+        if let Err(e) = db::main::update_folder_status(pool, &0, &position).await {
             error!(
                 "Fail to change folder status to done. Raising Error: {:?}",
                 e.into_database_error()
             );
         }
-        let _ = &app_handle
+        app_handle
             .emit("parsing", invalidation_payload)
             .expect("Fail to send message to refresh status on finish.");
 
-        let _ = app_handle
+        app_handle
             .notification()
             .builder()
             .title("MediaDB")
@@ -172,17 +172,17 @@ async fn handle_parsing<R: Runtime>(
         t: 1u8,
         id: position,
     };
-    if let Err(e) = db::main::update_folder_status(&pool, &1, &position).await {
+    if let Err(e) = db::main::update_folder_status(pool, &1, &position).await {
         return Err(format!(
             "Fail to change folder status to loading. Raising Error: {:?}",
             e.into_database_error()
         ));
     }
-    let _ = app_handle
+    app_handle
         .emit("parsing", invalidation_payload)
         .expect("Fail to send message to refresh status on loading.");
 
-    let skip_folders_result = db::main::get_skip_folders(&pool).await;
+    let skip_folders_result = db::main::get_skip_folders(pool).await;
     if let Err(e) = skip_folders_result {
         return Err(format!(
             "Fail to get skip folders. Raising Error: {:?}",
@@ -200,7 +200,7 @@ async fn handle_parsing<R: Runtime>(
     .await
     .map_err(|e| format!("Parser thread panicked: {}", e))?;
 
-    if let Err(e) = db::main::insert_new_media(&pool, name, &value).await {
+    if let Err(e) = db::main::insert_new_media(pool, name, &value).await {
         return Err(format!(
             "Fail to update folder data. Raising Error: {:?}",
             e.into_database_error()
@@ -414,20 +414,14 @@ fn check_ffmpeg_exists() -> bool {
         .creation_flags(0x08000000)
         .output();
 
-    match output {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    output.is_ok()
 }
 
 #[cfg(not(target_os = "windows"))]
 fn check_ffmpeg_exists() -> bool {
     let output = Command::new("ffmpeg").arg("-version").output();
 
-    match output {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    output.is_ok()
 }
 
 fn show_window(app_handle: &tauri::AppHandle) {
@@ -453,7 +447,7 @@ fn main() {
     tauri::Builder::default()
 		.plugin(tauri_plugin_fs::init())
 		.plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
-			let _ = show_window(app);
+			show_window(app);
 			println!("{}, {args:?}, {cwd}", app.package_info().name);
 			app.emit("single-instance", Payload { args, cwd }).unwrap();
 		}))
@@ -490,7 +484,7 @@ fn main() {
 			let app_handle = app.app_handle().clone();
 
 			if !check_ffmpeg_exists() {
-				let _ = app_handle
+				app_handle
 					.notification()
 					.builder()
 					.title("MediaDB")

@@ -3,21 +3,11 @@ use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::ffi::OsString;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct MediaSource {
     media: Vec<OsString>,
     poster: Vec<OsString>,
     comic: Vec<OsString>,
-}
-
-impl Default for MediaSource {
-    fn default() -> MediaSource {
-        MediaSource {
-            media: vec![],
-            poster: vec![],
-            comic: vec![],
-        }
-    }
 }
 
 impl MediaSource {
@@ -217,17 +207,17 @@ impl Media {
         if let MediaType::TvShow = self.media_type {
             let seasons = season_map
                 .unwrap()
-                .into_iter()
+                .iter()
                 .map(|(season, episodes)| {
-                    let mut values = episodes.into_iter().map(|o| o).collect::<Vec<&&Media>>();
+                    let mut values = episodes.iter().collect::<Vec<&&Media>>();
                     values.sort_by(|a, b| a.episode().cmp(b.episode()));
-                    return (
+                    (
                         season,
                         values
                             .iter()
                             .map(|o| o.episode_json())
                             .collect::<Vec<Value>>(),
-                    );
+                    )
                 })
                 .collect::<HashMap<&String, Vec<Value>>>();
             return Some(MediaItem {

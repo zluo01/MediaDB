@@ -20,7 +20,7 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
             return Err(err_msg);
         }
 
-        let db_url = get_database_path(&app);
+        let db_url = get_database_path(app);
         debug!("Database URL: {:?}", &db_url);
         if !Sqlite::database_exists(&db_url).await.unwrap_or(false) {
             if let Err(e) = Sqlite::create_database(&db_url).await {
@@ -305,10 +305,10 @@ pub async fn update_folder_path(
 
 pub async fn reorder_folder(pool: &Pool<Sqlite>, folder_name: &[&str]) -> Result<(), sqlx::Error> {
     let mut tx = pool.begin().await?;
-    for i in 0..folder_name.len() {
-        let _ = sqlx::query(queries::UPDATE_FOLDER_POSITION)
+    for (i, name) in folder_name.iter().enumerate() {
+        sqlx::query(queries::UPDATE_FOLDER_POSITION)
             .bind(i as i32)
-            .bind(folder_name[i])
+            .bind(name)
             .execute(&mut *tx)
             .await?;
     }

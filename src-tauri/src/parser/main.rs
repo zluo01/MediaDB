@@ -52,49 +52,47 @@ fn read_dir<R: tauri::Runtime>(
         let mut nfo_files = Vec::new();
         let mut media_source = MediaSource::default();
 
-        for entry in entries {
-            if let Ok(entry) = entry {
-                let path = entry.path();
+        for entry in entries.flatten() {
+            let path = entry.path();
 
-                let Some(file_name) = path.file_name().and_then(|n| n.to_str()) else {
-                    error!("Failed to read file name as UTF-8: {:?}", path);
-                    continue;
-                };
-                // check for hidden file or skip paths
-                if file_name.starts_with('.') || skip_paths.contains(&file_name.to_string()) {
-                    continue;
-                }
+            let Some(file_name) = path.file_name().and_then(|n| n.to_str()) else {
+                error!("Failed to read file name as UTF-8: {:?}", path);
+                continue;
+            };
+            // check for hidden file or skip paths
+            if file_name.starts_with('.') || skip_paths.contains(&file_name.to_string()) {
+                continue;
+            }
 
-                if path.is_dir() {
-                    queue.push_back(path.into_os_string());
-                    continue;
-                }
+            if path.is_dir() {
+                queue.push_back(path.into_os_string());
+                continue;
+            }
 
-                let relative_path = utilities::get_relative_path(path.as_path(), root_path);
-                let extension = path.extension();
-                if extension.is_none() {
-                    error!("File does not have proper extension. {:?}", &path);
-                    continue;
+            let relative_path = utilities::get_relative_path(path.as_path(), root_path);
+            let extension = path.extension();
+            if extension.is_none() {
+                error!("File does not have proper extension. {:?}", &path);
+                continue;
+            }
+            let Some(ext) = extension.unwrap().to_str() else {
+                error!("Failed to read file extension as UTF-8: {:?}", path);
+                continue;
+            };
+            match ext {
+                "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
+                "jpg" | "png" => {
+                    if file_name.contains("poster") {
+                        media_source.add_poster(relative_path.unwrap().into_os_string())
+                    }
                 }
-                let Some(ext) = extension.unwrap().to_str() else {
-                    error!("Failed to read file extension as UTF-8: {:?}", path);
-                    continue;
-                };
-                match ext {
-                    "nfo" => nfo_files.push(relative_path.unwrap().into_os_string()),
-                    "jpg" | "png" => {
-                        if file_name.contains("poster") {
-                            media_source.add_poster(relative_path.unwrap().into_os_string())
-                        }
-                    }
-                    "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" | "rmvb" => {
-                        media_source.add_media(relative_path.unwrap().into_os_string())
-                    }
-                    "cbr" | "cbz" | "cbt" | "cb7" => {
-                        media_source.add_comic(relative_path.unwrap().into_os_string())
-                    }
-                    _ => {}
+                "m4v" | "avi" | "mpg" | "mp4" | "mkv" | "f4v" | "wmv" | "rmvb" => {
+                    media_source.add_media(relative_path.unwrap().into_os_string())
                 }
+                "cbr" | "cbz" | "cbt" | "cb7" => {
+                    media_source.add_comic(relative_path.unwrap().into_os_string())
+                }
+                _ => {}
             }
         }
 
@@ -124,7 +122,7 @@ fn handle_media_path<R: tauri::Runtime>(
     media_source: &MediaSource,
 ) -> Vec<Media> {
     let app_dir = app_handle.path().app_data_dir().unwrap();
-    let comic_media = match parse_comics(&app_handle, &app_dir, root_path, media_source.comic()) {
+    let comic_media = match parse_comics(app_handle, &app_dir, root_path, media_source.comic()) {
         Ok(media) => media,
         Err(e) => {
             let _ = app_handle
@@ -139,7 +137,7 @@ fn handle_media_path<R: tauri::Runtime>(
     nfo_files
         .into_par_iter()
         .filter_map(
-            |nfo_file| match parse_nfo(root_path, nfo_file, &media_source) {
+            |nfo_file| match parse_nfo(root_path, nfo_file, media_source) {
                 Ok(media) => Some(media),
                 Err(e) => {
                     let _ = &app_handle
@@ -175,7 +173,7 @@ fn aggregate_data(
                         .map(|o| Path::new(m.relative_path()).join(o))
                         .collect::<Vec<PathBuf>>(),
                 ),
-                MediaType::Comic | _ => {}
+                _ => {}
             }
         }
     }
@@ -215,7 +213,7 @@ fn aggregate_data(
     (data, posters)
 }
 
-fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<PathBuf>) {
+fn handle_images(app_dir: &Path, name: &str, path: &str, posters: &HashSet<PathBuf>) {
     let root_path = Path::new(path);
     let cover_path = app_dir.join("covers");
 
@@ -241,9 +239,9 @@ fn handle_images(app_dir: &PathBuf, name: &str, path: &str, posters: &HashSet<Pa
     });
 }
 
-fn save_cover(source_path: &PathBuf, dest_path: &PathBuf) {
-    let parent_path = dest_path.as_path().parent().unwrap();
-    if let Err(e) = fs::create_dir_all(&parent_path) {
+fn save_cover(source_path: &Path, dest_path: &Path) {
+    let parent_path = dest_path.parent().unwrap();
+    if let Err(e) = fs::create_dir_all(parent_path) {
         error!(
             "Fail to create directory {:?}. Raising error {}",
             parent_path, e
@@ -256,6 +254,5 @@ fn save_cover(source_path: &PathBuf, dest_path: &PathBuf) {
 
     if let Err(e) = convert_image(&cover_src_path, &cover_output_path) {
         error!("{}", e);
-        return;
     }
 }

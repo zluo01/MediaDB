@@ -25,7 +25,7 @@ where
     ret.serialize(serializer)
 }
 
-fn serialize_string_list<S>(v: &String, serializer: S) -> Result<S::Ok, S::Error>
+fn serialize_string_list<S>(v: &str, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
@@ -81,6 +81,7 @@ pub struct Media {
 }
 
 impl Media {
+    #[cfg(test)]
     pub fn title(&self) -> &str {
         &self.title
     }
@@ -115,15 +116,14 @@ fn construct_posters_map(
     media_type: &u8,
     server_port: &u16,
     folder_name: &str,
-    file_path: &String,
-    payload: &String,
+    file_path: &str,
+    payload: &str,
 ) -> Value {
     if payload.is_empty() {
         return json!({});
     }
 
-    let posters_map: HashMap<String, String> =
-        serde_json::from_str(payload.as_str()).unwrap_or_default();
+    let posters_map: HashMap<String, String> = serde_json::from_str(payload).unwrap_or_default();
 
     let media_type_enum: MediaType = (*media_type).into();
 
@@ -134,7 +134,7 @@ fn construct_posters_map(
                 MediaType::Movie | MediaType::TvShow => get_cached_image_path(
                     server_port,
                     folder_name,
-                    PathBuf::from(&file_path).join(v).to_str().unwrap(),
+                    PathBuf::from(file_path).join(v).to_str().unwrap(),
                 ),
                 MediaType::Comic => get_cached_image_path(server_port, folder_name, v.as_str()),
                 _ => v,
@@ -146,7 +146,7 @@ fn construct_posters_map(
     Value::Object(posters)
 }
 
-fn serialize_json_string<S>(v: &String, serializer: S) -> Result<S::Ok, S::Error>
+fn serialize_json_string<S>(v: &str, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
@@ -154,7 +154,7 @@ where
         let v: Value = json!("{}");
         v.serialize(serializer)
     } else {
-        let value: Value = serde_json::from_str(v.as_str()).unwrap();
+        let value: Value = serde_json::from_str(v).unwrap();
         value.serialize(serializer)
     }
 }
