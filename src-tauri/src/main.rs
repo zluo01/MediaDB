@@ -10,7 +10,7 @@ use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use log::{error, info, LevelFilter};
 use serde_json::Value;
 use sqlx::{Pool, Sqlite};
-use std::{fs, process::Command};
+use std::{collections::HashSet, fs, process::Command};
 use tauri::{Emitter, Manager, Runtime, State};
 use tauri_plugin_log::{Target, TargetKind};
 use tauri_plugin_notification::NotificationExt;
@@ -189,7 +189,7 @@ async fn handle_parsing<R: Runtime>(
             e.into_database_error()
         ));
     }
-    let skip_folders = skip_folders_result.unwrap();
+    let skip_folders: HashSet<String> = skip_folders_result.unwrap().into_iter().collect();
 
     let value = tauri::async_runtime::spawn_blocking({
         let app_handle = app_handle.clone();

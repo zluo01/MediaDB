@@ -20,7 +20,7 @@ pub fn parse<R: tauri::Runtime>(
     app_handle: &tauri::AppHandle<R>,
     name: &str,
     path: &str,
-    skip_paths: &Vec<String>,
+    skip_paths: &HashSet<String>,
 ) -> Vec<MediaItem> {
     let app_dir = app_handle.path().app_data_dir().unwrap();
     let (major_media, secondary_media) = read_dir(app_handle, path, skip_paths);
@@ -32,7 +32,7 @@ pub fn parse<R: tauri::Runtime>(
 fn read_dir<R: tauri::Runtime>(
     app_handle: &tauri::AppHandle<R>,
     path: &str,
-    skip_paths: &Vec<String>,
+    skip_paths: &HashSet<String>,
 ) -> (Vec<Media>, Vec<Media>) {
     let root_path = Path::new(path);
     let mut queue = VecDeque::from([OsString::from(path)]);
