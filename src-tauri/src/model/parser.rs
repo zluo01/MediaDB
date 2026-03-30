@@ -21,13 +21,13 @@ impl MediaSource {
         self.comic.push(c);
     }
 
-    pub fn media(&self) -> &Vec<OsString> {
+    pub fn media(&self) -> &[OsString] {
         &self.media
     }
-    pub fn poster(&self) -> &Vec<OsString> {
+    pub fn poster(&self) -> &[OsString] {
         &self.poster
     }
-    pub fn comic(&self) -> &Vec<OsString> {
+    pub fn comic(&self) -> &[OsString] {
         &self.comic
     }
 }
@@ -137,7 +137,7 @@ impl Media {
     pub fn file(&self) -> &str {
         &self.file
     }
-    pub fn posters(&self) -> &Vec<String> {
+    pub fn posters(&self) -> &[String] {
         &self.posters
     }
     pub fn season(&self) -> &str {
@@ -322,19 +322,19 @@ impl MediaItem {
         &self.posters
     }
 
-    pub fn tags(&self) -> &Vec<String> {
+    pub fn tags(&self) -> &[String] {
         &self.tags
     }
 
-    pub fn genres(&self) -> &Vec<String> {
+    pub fn genres(&self) -> &[String] {
         &self.genres
     }
 
-    pub fn actors(&self) -> &Vec<String> {
+    pub fn actors(&self) -> &[String] {
         &self.actors
     }
 
-    pub fn studios(&self) -> &Vec<String> {
+    pub fn studios(&self) -> &[String] {
         &self.studios
     }
 

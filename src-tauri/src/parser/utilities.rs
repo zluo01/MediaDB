@@ -6,7 +6,7 @@ pub fn get_relative_path(path: &Path, base: &Path) -> Option<PathBuf> {
 }
 
 #[cfg(target_os = "windows")]
-fn execute_command(args: &Vec<&str>) -> Output {
+fn execute_command(args: &[&str]) -> Output {
     use std::os::windows::process::CommandExt;
     Command::new("ffmpeg")
         .args(args)
@@ -17,7 +17,7 @@ fn execute_command(args: &Vec<&str>) -> Output {
 }
 
 #[cfg(not(target_os = "windows"))]
-fn execute_command(args: &Vec<&str>) -> Output {
+fn execute_command(args: &[&str]) -> Output {
     Command::new("ffmpeg")
         .args(args)
         .output()

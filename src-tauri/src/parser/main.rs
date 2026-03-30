@@ -117,7 +117,7 @@ fn read_dir<R: tauri::Runtime>(
 
 fn handle_media_path<R: tauri::Runtime>(
     app_handle: &tauri::AppHandle<R>,
-    nfo_files: &Vec<OsString>,
+    nfo_files: &[OsString],
     root_path: &Path,
     media_source: &MediaSource,
 ) -> Vec<Media> {
@@ -157,8 +157,8 @@ fn handle_media_path<R: tauri::Runtime>(
 }
 
 fn aggregate_data(
-    major_media: &Vec<Media>,
-    secondary_media: &Vec<Media>,
+    major_media: &[Media],
+    secondary_media: &[Media],
 ) -> (Vec<MediaItem>, HashSet<PathBuf>) {
     let mut posters = HashSet::new();
     let mut seasons_map: HashMap<OsString, HashMap<String, Vec<&Media>>> = HashMap::new();

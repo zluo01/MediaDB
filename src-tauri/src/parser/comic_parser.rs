@@ -18,7 +18,7 @@ pub(crate) fn parse_comics<R: tauri::Runtime>(
     app_handle: &tauri::AppHandle<R>,
     app_dir: &Path,
     root_path: &Path,
-    comic_files: &Vec<OsString>,
+    comic_files: &[OsString],
 ) -> Result<Vec<Media>, String> {
     if comic_files.is_empty() {
         return Ok(Vec::new());
