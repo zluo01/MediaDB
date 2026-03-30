@@ -1,6 +1,6 @@
 import { createForm } from '@tanstack/solid-form';
 import { exists } from '@tauri-apps/plugin-fs';
-import type { Accessor } from 'solid-js';
+import { type Accessor, createEffect } from 'solid-js';
 import type { DOMElement } from 'solid-js/jsx-runtime';
 import { EllipsisIcon } from '@/components/Icons';
 import { FormInputHint } from '@/components/Shares';
@@ -36,6 +36,10 @@ function EditFolderModal(props: IFolderNameEdit) {
 			}
 		},
 	}));
+
+	createEffect(() => {
+		form.setFieldValue('folderPath', props.folder()?.path || '');
+	});
 
 	async function handleDirectory() {
 		form.setFieldValue('folderPath', await getDirectory());
