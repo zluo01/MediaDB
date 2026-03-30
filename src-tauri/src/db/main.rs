@@ -164,26 +164,28 @@ pub async fn insert_new_media(
         .execute(&mut *tx)
         .await?;
 
-    // Batch insert all media items
-    let placeholders: Vec<&str> = data.iter().map(|_| "(?,?,?,?,?,?,?,?)").collect();
-    let sql = format!(
-        "INSERT INTO media (type, path, title, posters, year, file, seasons, folder) VALUES {}",
-        placeholders.join(",")
-    );
+    // Batch insert media items in chunks to stay within SQLite bind parameter limits
+    for chunk in data.chunks(100) {
+        let placeholders: Vec<&str> = chunk.iter().map(|_| "(?,?,?,?,?,?,?,?)").collect();
+        let sql = format!(
+            "INSERT INTO media (type, path, title, posters, year, file, seasons, folder) VALUES {}",
+            placeholders.join(",")
+        );
 
-    let mut query = sqlx::query(&sql);
-    for media in data {
-        query = query
-            .bind(media.media_type())
-            .bind(media.path())
-            .bind(media.title())
-            .bind(media.posters())
-            .bind(media.year())
-            .bind(media.file())
-            .bind(media.seasons())
-            .bind(folder_name);
+        let mut query = sqlx::query(&sql);
+        for media in chunk {
+            query = query
+                .bind(media.media_type())
+                .bind(media.path())
+                .bind(media.title())
+                .bind(media.posters())
+                .bind(media.year())
+                .bind(media.file())
+                .bind(media.seasons())
+                .bind(folder_name);
+        }
+        query.execute(&mut *tx).await?;
     }
-    query.execute(&mut *tx).await?;
 
     // Batch insert tags for each media item
     for media in data {
@@ -214,18 +216,19 @@ async fn insert_tags_batch(
         return Ok(());
     }
 
-    // Build batch insert: INSERT INTO tags (folder_name, path, name, t) VALUES (?,?,?,?),(?,?,?,?),...
-    let placeholders: Vec<&str> = tags.iter().map(|_| "(?,?,?,?)").collect();
-    let sql = format!(
-        "INSERT INTO tags (folder_name, path, name, t) VALUES {} ON CONFLICT DO NOTHING",
-        placeholders.join(",")
-    );
+    for chunk in tags.chunks(100) {
+        let placeholders: Vec<&str> = chunk.iter().map(|_| "(?,?,?,?)").collect();
+        let sql = format!(
+            "INSERT INTO tags (folder_name, path, name, t) VALUES {} ON CONFLICT DO NOTHING",
+            placeholders.join(",")
+        );
 
-    let mut query = sqlx::query(&sql);
-    for tag in tags {
-        query = query.bind(folder_name).bind(path).bind(tag).bind(tag_type);
+        let mut query = sqlx::query(&sql);
+        for tag in chunk {
+            query = query.bind(folder_name).bind(path).bind(tag).bind(tag_type);
+        }
+        query.execute(&mut **tx).await?;
     }
-    query.execute(&mut **tx).await?;
     Ok(())
 }
 
