@@ -148,11 +148,6 @@ pub const GET_FOLDER_LIST: &str = "
     ";
 
 //language=sqlite
-pub const GET_FOLDER_INFO: &str = "
-    SELECT folder_name, path, position from folders WHERE position=?
-    ";
-
-//language=sqlite
 pub const GET_FOLDER_DATA: &str = "
     SELECT * from folders WHERE position=?
     ";

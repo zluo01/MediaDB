@@ -13,12 +13,6 @@ export async function getFolderList(): Promise<IFolder[]> {
 	return (await invoke<IFolder[]>('get_folder_list')) || [];
 }
 
-export async function getFolder(position: number): Promise<IFolder> {
-	return (
-		(await invoke<IFolder>('get_folder_info', { position })) || ({} as IFolder)
-	);
-}
-
 export async function getFolderInfo(position: number): Promise<IFolderData> {
 	return await invoke<IFolderData>('get_folder_data', { position });
 }

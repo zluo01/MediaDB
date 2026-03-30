@@ -330,21 +330,6 @@ async fn get_folder_media_tags(
 }
 
 #[tauri::command]
-async fn get_folder_info(
-    database_state: State<'_, DatabaseConnectionState>,
-    position: i32,
-) -> Result<Folder, String> {
-    let pool = &database_state.0;
-    match db::main::get_folder_info(pool, &position).await {
-        Ok(info) => Ok(info),
-        Err(e) => Err(format!(
-            "Fail to get folder info. Raising Error: {:?}",
-            e.into_database_error()
-        )),
-    }
-}
-
-#[tauri::command]
 async fn update_sort_type(
     database_state: State<'_, DatabaseConnectionState>,
     position: i32,
@@ -481,7 +466,6 @@ fn main() {
 			hide_side_panel,
 			update_skip_folders,
 			get_folder_list,
-			get_folder_info,
 			get_folder_data,
 			get_folder_media,
 			get_folder_media_tags,

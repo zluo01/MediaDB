@@ -129,14 +129,6 @@ pub async fn get_folder_list(pool: &Pool<Sqlite>) -> Result<Vec<Folder>, sqlx::E
     Ok(folder_list)
 }
 
-pub async fn get_folder_info(pool: &Pool<Sqlite>, position: &i32) -> Result<Folder, sqlx::Error> {
-    let folder_info = sqlx::query_as::<_, Folder>(queries::GET_FOLDER_INFO)
-        .bind(position)
-        .fetch_one(pool)
-        .await?;
-    Ok(folder_info)
-}
-
 pub async fn get_folder_data(
     pool: &Pool<Sqlite>,
     position: &i32,
@@ -687,12 +679,9 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn get_folder_info_and_data() {
+    async fn get_folder_data_returns_defaults() {
         let pool = setup_pool().await;
         seed_data(&pool).await;
-
-        let info = get_folder_info(&pool, &0).await.unwrap();
-        assert_eq!(info.folder_name(), "Movie");
 
         let data = get_folder_data(&pool, &0).await.unwrap();
         let json = serde_json::to_value(&data).unwrap();
