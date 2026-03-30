@@ -1,5 +1,5 @@
 //language=sqlite
-pub const CREAT_TABLE_QUERY: &str = "
+pub const CREATE_TABLE_QUERY: &str = "
     create table if not exists settings
     (
         settings_id INTEGER not null
@@ -20,7 +20,7 @@ pub const CREAT_TABLE_QUERY: &str = "
         filter_type INTEGER default 0 not null,
         status      INTEGER default 0 not null
     );
-    create index folders_position_index
+    create index if not exists folders_position_index
         on folders (position);
     create table if not exists media
     (
@@ -38,11 +38,11 @@ pub const CREAT_TABLE_QUERY: &str = "
         constraint media_pk
             primary key (type, path)
     );
-    create index media_title_index
+    create index if not exists media_title_index
         on media (title);
-    create index media_year_index
+    create index if not exists media_year_index
         on media (year);
-    CREATE INDEX media_folder_index ON media(folder);
+    create index if not exists media_folder_index on media(folder);
     create table if not exists tags
     (
         folder_name TEXT not null
@@ -57,7 +57,7 @@ pub const CREAT_TABLE_QUERY: &str = "
         constraint tags_t_check
             check (t IN ('genres', 'tags', 'actors', 'studios'))
     );
-    create index tags_folder_name_index
+    create index if not exists tags_folder_name_index
         on tags (folder_name);
     ";
 

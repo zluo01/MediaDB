@@ -47,7 +47,7 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
 }
 
 async fn create_tables(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
-    sqlx::query(queries::CREAT_TABLE_QUERY)
+    sqlx::query(queries::CREATE_TABLE_QUERY)
         .execute(pool)
         .await?;
     Ok(())
@@ -148,7 +148,7 @@ pub async fn get_folder_data(
 pub async fn insert_new_media(
     pool: &Pool<Sqlite>,
     folder_name: &str,
-    data: &Vec<MediaItem>,
+    data: &[MediaItem],
 ) -> Result<(), sqlx::Error> {
     if data.is_empty() {
         return Ok(());
