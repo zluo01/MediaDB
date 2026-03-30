@@ -140,13 +140,12 @@ fn handle_media_path<R: tauri::Runtime>(
             |nfo_file| match parse_nfo(root_path, nfo_file, media_source) {
                 Ok(media) => Some(media),
                 Err(e) => {
-                    let _ = &app_handle
+                    let _ = app_handle
                         .notification()
                         .builder()
                         .title("MediaDB: Encounter Error when parsing nfo file.")
                         .body(e)
-                        .show()
-                        .unwrap();
+                        .show();
                     None
                 }
             },
