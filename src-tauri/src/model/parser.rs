@@ -198,7 +198,8 @@ impl Media {
                 seasons: String::from(""),
             });
         }
-        panic!("Expect a movie, but get {:?}", self.media_type)
+        error!("Expected a movie, but got {:?}", self.media_type);
+        None
     }
 
     pub fn tv_show(&self, season_map: Option<&HashMap<String, Vec<&Media>>>) -> Option<MediaItem> {
@@ -220,7 +221,7 @@ impl Media {
                         season,
                         values
                             .iter()
-                            .map(|o| o.episode_json())
+                            .filter_map(|o| o.episode_json())
                             .collect::<Vec<Value>>(),
                     )
                 })
@@ -239,20 +240,22 @@ impl Media {
                 seasons: format!("{}", json!(seasons)),
             });
         }
-        panic!("Expect a tv show, but get {:?}", self.media_type)
+        error!("Expected a tv show, but got {:?}", self.media_type);
+        None
     }
 
-    fn episode_json(&self) -> Value {
+    fn episode_json(&self) -> Option<Value> {
         if let MediaType::Episode = self.media_type {
-            return json!({
+            return Some(json!({
                 "title": self.title,
                 "file": self.file,
                 "season": self.season,
                 "episode": self.episode,
                 "path": self.relative_path.to_string_lossy(),
-            });
+            }));
         }
-        panic!("Expect an episode, but get {:?}", self.media_type)
+        error!("Expected an episode, but got {:?}", self.media_type);
+        None
     }
 
     fn construct_poster_map(&self) -> Value {
@@ -289,7 +292,8 @@ impl Media {
                 seasons: String::from(""),
             });
         }
-        panic!("Expect a comic, but get {:?}", self.media_type)
+        error!("Expected a comic, but got {:?}", self.media_type);
+        None
     }
 }
 

@@ -205,7 +205,10 @@ fn aggregate_data(
             MediaType::Movie => o.movie(),
             MediaType::TvShow => o.tv_show(seasons_map.get(o.relative_path())),
             MediaType::Comic => o.comic(),
-            _ => panic!("Unexpected media type: {:?}", o.media_type()),
+            _ => {
+                error!("Unexpected media type: {:?}", o.media_type());
+                None
+            }
         })
         .filter_map(|o| o)
         .collect::<Vec<MediaItem>>();
