@@ -3,9 +3,11 @@ use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use crate::model::parser::MediaItem;
 use log::{debug, error};
 use serde_json::{json, Value};
+use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::{migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Pool, Row, Sqlite, SqlitePool};
 use std::fs;
 use std::result::Result;
+use std::str::FromStr;
 use tauri::{Manager, Runtime};
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
@@ -59,9 +61,10 @@ pub fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
 }
 
 pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
+    let options = SqliteConnectOptions::from_str(db_path)?.foreign_keys(true);
     let pool = SqlitePoolOptions::new()
         .max_connections(10)
-        .connect(db_path)
+        .connect_with(options)
         .await?;
     Ok(pool)
 }
@@ -239,8 +242,6 @@ pub async fn get_folder_media(
     filter_type: u8,
     tags: &[Tag],
 ) -> Result<Vec<Media>, sqlx::Error> {
-    let folder_info = get_folder_info(pool, position).await?;
-    let folder_name = folder_info.folder_name();
     let tags_json = serde_json::to_string(tags).unwrap_or_else(|_| "[]".to_string());
 
     let media_list = sqlx::query(queries::GET_FOLDER_CONTENT)
@@ -250,7 +251,7 @@ pub async fn get_folder_media(
         .fetch_all(pool)
         .await?
         .iter()
-        .map(|r| Media::from_row(r, server_port, folder_name))
+        .map(|r| Media::from_row(r, server_port))
         .collect::<Result<Vec<_>, _>>()?;
     Ok(media_list)
 }
@@ -382,7 +383,6 @@ pub async fn recover(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sqlx::SqlitePool;
 
     fn tag(group: &str, label: &str) -> Tag {
         serde_json::from_value(json!({"group": group, "label": label})).unwrap()
@@ -392,7 +392,7 @@ mod tests {
     use std::ffi::OsString;
 
     async fn setup_pool() -> Pool<Sqlite> {
-        let pool = SqlitePool::connect("sqlite::memory:").await.unwrap();
+        let pool = create_pool("sqlite::memory:").await.unwrap();
         create_tables(&pool).await.unwrap();
         pool
     }
@@ -938,6 +938,22 @@ mod tests {
                 "Love Letter",
                 "Blade Runner"
             ]
+        );
+    }
+
+    #[tokio::test]
+    async fn folder_media_poster_urls_contain_folder_name() {
+        let pool = setup_pool().await;
+        seed_data(&pool).await;
+
+        let result = get_folder_media(&pool, &0, &8080, 0, &[]).await.unwrap();
+        let first = &result[0];
+        let json = serde_json::to_value(first).unwrap();
+        let poster_url = json["posters"]["main"].as_str().unwrap();
+        assert!(
+            poster_url.contains("/Movie/"),
+            "poster URL should contain folder name, got: {}",
+            poster_url
         );
     }
 }
