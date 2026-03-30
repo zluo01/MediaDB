@@ -3,8 +3,6 @@
     windows_subsystem = "windows"
 )]
 
-extern crate core;
-
 use crate::db::main::{create_pool, get_database_path};
 use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use log::{error, info, LevelFilter};
@@ -50,7 +48,7 @@ async fn parser<R: Runtime>(
     let path = String::from(path);
     let pool = database_state.0.clone();
 
-    tauri::async_runtime::spawn(async move {
+    let handle = tauri::async_runtime::spawn(async move {
         let path = path.as_str();
         let name = name.as_str();
 
@@ -87,6 +85,13 @@ async fn parser<R: Runtime>(
 
         process_parsing(&app_handle, &pool, name, path, folder_position).await;
     });
+
+    tauri::async_runtime::spawn(async move {
+        if let Err(e) = handle.await {
+            error!("Parser task panicked: {}", e);
+        }
+    });
+
     Ok(())
 }
 
@@ -100,7 +105,7 @@ async fn update_folder_path<R: Runtime>(
 ) -> Result<(), String> {
     let pool = database_state.0.clone();
 
-    tauri::async_runtime::spawn(async move {
+    let handle = tauri::async_runtime::spawn(async move {
         let path = path.as_str();
         let name = name.as_str();
 
@@ -114,6 +119,13 @@ async fn update_folder_path<R: Runtime>(
 
         process_parsing(&app_handle, &pool, name, path, position).await;
     });
+
+    tauri::async_runtime::spawn(async move {
+        if let Err(e) = handle.await {
+            error!("Update folder path task panicked: {}", e);
+        }
+    });
+
     Ok(())
 }
 
