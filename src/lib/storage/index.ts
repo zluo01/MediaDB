@@ -66,7 +66,7 @@ export async function getSetting(): Promise<ISetting> {
 	return await invoke<ISetting>('get_setting');
 }
 
-export async function hideSidePanel(show: boolean): Promise<void> {
+export async function setShowSidePanel(show: boolean): Promise<void> {
 	await invoke('hide_side_panel', { hide: show ? 0 : 1 });
 }
 

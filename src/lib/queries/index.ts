@@ -11,8 +11,8 @@ import {
 	getFolderMedia,
 	getFolderMediaTags,
 	getSetting,
-	hideSidePanel,
 	removeFolderFromStorage,
+	setShowSidePanel,
 	switchFolderFilterType,
 	updateFolderSortType,
 } from '@/lib/storage';
@@ -107,7 +107,7 @@ export function invalidateFolderInformation(folderId: number) {
 }
 
 export async function changePanelDisplay(status: boolean) {
-	await hideSidePanel(status);
+	await setShowSidePanel(status);
 	invalidSetting();
 }
 
