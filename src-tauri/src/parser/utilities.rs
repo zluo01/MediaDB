@@ -6,22 +6,22 @@ pub fn get_relative_path(path: &Path, base: &Path) -> Option<PathBuf> {
 }
 
 #[cfg(target_os = "windows")]
-fn execute_command(args: &[&str]) -> Output {
+fn execute_command(args: &[&str]) -> Result<Output, String> {
     use std::os::windows::process::CommandExt;
     Command::new("ffmpeg")
         .args(args)
         // https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
         .creation_flags(0x08000000)
         .output()
-        .expect("Failed to execute command")
+        .map_err(|e| format!("Failed to execute ffmpeg: {}", e))
 }
 
 #[cfg(not(target_os = "windows"))]
-fn execute_command(args: &[&str]) -> Output {
+fn execute_command(args: &[&str]) -> Result<Output, String> {
     Command::new("ffmpeg")
         .args(args)
         .output()
-        .expect("Failed to execute command")
+        .map_err(|e| format!("Failed to execute ffmpeg: {}", e))
 }
 
 pub fn convert_image(src_path: &str, dst_path: &str) -> Result<(), String> {
@@ -43,7 +43,7 @@ pub fn convert_image(src_path: &str, dst_path: &str) -> Result<(), String> {
         &dst_conversion_path,
     ];
 
-    let output = execute_command(&args);
+    let output = execute_command(&args)?;
 
     if !&output.status.success() {
         return Err(format!(
