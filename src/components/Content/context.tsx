@@ -31,6 +31,8 @@ async function openContainedFolder(
 }
 
 function Context(props: IContextProps) {
+	let cachedMenu: Menu | null = null;
+
 	function onSelect() {
 		props.select();
 		updateFooter(props.media.title);
@@ -40,22 +42,24 @@ function Context(props: IContextProps) {
 		e: MouseEvent & { currentTarget: HTMLDivElement; target: DOMElement }
 	) {
 		e.preventDefault();
-		const menu = await Menu.new({
-			items: [
-				{
-					id: 'openInFolder',
-					text: 'Open in Folder',
-					action: () =>
-						openContainedFolder(
-							props.folderPath,
-							props.media.type,
-							props.media.path
-						),
-				},
-			],
-		});
+		if (!cachedMenu) {
+			cachedMenu = await Menu.new({
+				items: [
+					{
+						id: 'openInFolder',
+						text: 'Open in Folder',
+						action: () =>
+							openContainedFolder(
+								props.folderPath,
+								props.media.type,
+								props.media.path
+							),
+					},
+				],
+			});
+		}
 
-		await menu.popup(new LogicalPosition(e.pageX, e.pageY));
+		await cachedMenu.popup(new LogicalPosition(e.pageX, e.pageY));
 	}
 
 	return (
