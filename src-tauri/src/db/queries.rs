@@ -89,7 +89,8 @@ pub const GET_FOLDER_CONTENT: &str = "
            media.posters,
            media.year,
            media.file,
-           media.seasons
+           media.seasons,
+           folders.folder_name
     FROM media
              JOIN folders ON media.folder = folders.folder_name
     WHERE folders.position = ?2
