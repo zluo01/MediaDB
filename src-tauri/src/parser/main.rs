@@ -3,6 +3,7 @@ use std::{
     ffi::OsString,
     fs,
     path::{Path, PathBuf},
+    sync::atomic::{AtomicUsize, Ordering},
 };
 
 use log::error;
@@ -134,25 +135,37 @@ fn handle_media_path<R: tauri::Runtime>(
             Vec::new()
         }
     };
-    nfo_files
+    let nfo_error_count = AtomicUsize::new(0);
+    let results: Vec<Media> = nfo_files
         .into_par_iter()
         .filter_map(
             |nfo_file| match parse_nfo(root_path, nfo_file, media_source) {
                 Ok(media) => Some(media),
                 Err(e) => {
-                    let _ = app_handle
-                        .notification()
-                        .builder()
-                        .title("MediaDB: Encounter Error when parsing nfo file.")
-                        .body(e)
-                        .show();
+                    error!("Failed to parse NFO file: {}", e);
+                    nfo_error_count.fetch_add(1, Ordering::Relaxed);
                     None
                 }
             },
         )
         .flat_map(|v| v)
         .chain(comic_media)
-        .collect()
+        .collect();
+
+    let count = nfo_error_count.load(Ordering::Relaxed);
+    if count > 0 {
+        let _ = app_handle
+            .notification()
+            .builder()
+            .title("MediaDB")
+            .body(format!(
+                "Failed to parse {} NFO file(s). Check logs for details.",
+                count
+            ))
+            .show();
+    }
+
+    results
 }
 
 fn aggregate_data(
