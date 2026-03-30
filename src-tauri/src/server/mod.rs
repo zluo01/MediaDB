@@ -6,7 +6,7 @@ use tower_http::set_header::SetResponseHeaderLayer;
 
 pub fn start(app_data_dir: &Path, port: u16) {
     let router = Router::new()
-        .fallback_service(ServeDir::new(app_data_dir))
+        .fallback_service(ServeDir::new(app_data_dir.join("covers")))
         .layer(SetResponseHeaderLayer::if_not_present(
             axum::http::header::CACHE_CONTROL,
             axum::http::HeaderValue::from_static("public, max-age=3600"),
@@ -31,18 +31,20 @@ mod tests {
     use tower::ServiceExt;
 
     fn test_router(dir: &Path) -> Router {
-        Router::new().fallback_service(ServeDir::new(dir)).layer(
-            SetResponseHeaderLayer::if_not_present(
+        Router::new()
+            .fallback_service(ServeDir::new(dir.join("covers")))
+            .layer(SetResponseHeaderLayer::if_not_present(
                 axum::http::header::CACHE_CONTROL,
                 axum::http::HeaderValue::from_static("public, max-age=3600"),
-            ),
-        )
+            ))
     }
 
     #[tokio::test]
     async fn serves_existing_file() {
         let dir = tempfile::tempdir().unwrap();
-        let file_path = dir.path().join("test.txt");
+        let covers = dir.path().join("covers");
+        fs::create_dir_all(&covers).unwrap();
+        let file_path = covers.join("test.txt");
         fs::write(&file_path, "hello").unwrap();
 
         let app = test_router(dir.path());
@@ -62,6 +64,7 @@ mod tests {
     #[tokio::test]
     async fn returns_not_found_for_missing_file() {
         let dir = tempfile::tempdir().unwrap();
+        fs::create_dir_all(dir.path().join("covers")).unwrap();
 
         let app = test_router(dir.path());
         let response = app
@@ -80,7 +83,9 @@ mod tests {
     #[tokio::test]
     async fn sets_cache_control_header() {
         let dir = tempfile::tempdir().unwrap();
-        let file_path = dir.path().join("image.jpg");
+        let covers = dir.path().join("covers");
+        fs::create_dir_all(&covers).unwrap();
+        let file_path = covers.join("image.jpg");
         fs::write(&file_path, "fake image").unwrap();
 
         let app = test_router(dir.path());
@@ -112,7 +117,7 @@ mod tests {
         let response = app
             .oneshot(
                 Request::builder()
-                    .uri("/covers/Movie/poster")
+                    .uri("/Movie/poster")
                     .body(Body::empty())
                     .unwrap(),
             )
@@ -125,6 +130,7 @@ mod tests {
     #[tokio::test]
     async fn rejects_path_traversal() {
         let dir = tempfile::tempdir().unwrap();
+        fs::create_dir_all(dir.path().join("covers")).unwrap();
 
         let app = test_router(dir.path());
         let response = app

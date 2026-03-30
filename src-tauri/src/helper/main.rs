@@ -22,9 +22,7 @@ pub fn strip_comic_extensions(path: &str) -> String {
 pub fn get_cached_image_path(server_port: &u16, folder_name: &str, src: &str) -> String {
     let cleanup_image_path = strip_image_extensions(src);
 
-    let path = PathBuf::from("covers")
-        .join(folder_name)
-        .join(&cleanup_image_path);
+    let path = PathBuf::from(folder_name).join(&cleanup_image_path);
 
     let encoded_path = path
         .components()
@@ -82,15 +80,12 @@ mod tests {
     #[test]
     fn get_cached_image_path_constructs_url() {
         let result = get_cached_image_path(&8080, "Movie", "poster.jpg");
-        assert_eq!(result, "http://127.0.0.1:8080/covers/Movie/poster");
+        assert_eq!(result, "http://127.0.0.1:8080/Movie/poster");
     }
 
     #[test]
     fn get_cached_image_path_encodes_special_chars() {
         let result = get_cached_image_path(&8080, "Movie", "John Wick/poster.jpg");
-        assert_eq!(
-            result,
-            "http://127.0.0.1:8080/covers/Movie/John%20Wick/poster"
-        );
+        assert_eq!(result, "http://127.0.0.1:8080/Movie/John%20Wick/poster");
     }
 }
