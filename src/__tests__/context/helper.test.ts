@@ -1,5 +1,5 @@
-import { describe, expect, test } from '@jest/globals';
 import { Map, OrderedSet } from 'immutable';
+import { describe, expect, test } from 'vitest';
 import {
 	hasTag,
 	modifyTagInFolder,

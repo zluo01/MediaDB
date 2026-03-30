@@ -9,6 +9,9 @@ export default defineConfig(async () => ({
 		tailwindcss(),
 		solidPlugin(),
 	],
+	test: {
+		environment: 'node',
+	},
 	clearScreen: false,
 	build: {
 		target: 'esnext',

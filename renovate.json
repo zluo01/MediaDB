@@ -31,24 +31,12 @@
       ]
     },
     {
-      "groupName": "testing",
-      "matchPackageNames": ["jest", "@jest/*", "ts-jest"]
-    },
-    {
-      "groupName": "build tools",
-      "matchPackageNames": ["vite", "typescript"]
-    },
-    {
-      "groupName": "types",
-      "matchPackageNames": ["@types/*"]
-    },
-    {
-      "groupName": "linting",
-      "matchPackageNames": ["@biomejs/*", "husky"]
+      "groupName": "tooling",
+      "matchPackageNames": ["vite", "vitest", "typescript", "@biomejs/*", "husky", "@types/*"]
     },
     {
       "groupName": "utilities",
-      "matchPackageNames": ["lodash", "immutable", "zod"]
+      "matchPackageNames": ["immutable", "zod"]
     }
   ],
   "postUpdateOptions": ["pnpmDedupe"]
