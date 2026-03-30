@@ -152,7 +152,7 @@ where
         let v: Value = json!({});
         v.serialize(serializer)
     } else {
-        let value: Value = serde_json::from_str(v).unwrap();
+        let value: Value = serde_json::from_str(v).map_err(serde::ser::Error::custom)?;
         value.serialize(serializer)
     }
 }
