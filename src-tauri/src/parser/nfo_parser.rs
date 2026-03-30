@@ -113,7 +113,7 @@ fn parse_movie_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) {
                     media.add_studio(v.to_string());
                 }
             }
-            "actor" => media.set_actors(get_actor_name(&curr_node)),
+            "actor" => media.extend_actors(get_actor_name(&curr_node)),
             &_ => {}
         }
         if curr_node.has_children() {
@@ -166,7 +166,7 @@ fn parse_tvshow_nfo(media: &mut Media, root: &Node, media_source: &MediaSource) 
                     media.add_studio(v.to_string());
                 }
             }
-            "actor" => media.set_actors(get_actor_name(&curr_node)),
+            "actor" => media.extend_actors(get_actor_name(&curr_node)),
             &_ => {}
         }
         if curr_node.has_children() {
@@ -276,4 +276,60 @@ fn get_episode_filename(
         }
     }
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+
+    #[test]
+    fn parse_movie_nfo_preserves_all_actors() {
+        let dir = tempfile::tempdir().unwrap();
+        let nfo_content = r#"<?xml version="1.0" encoding="UTF-8"?>
+<movie>
+    <title>Test Movie</title>
+    <year>2024</year>
+    <actor><name>Actor One</name></actor>
+    <actor><name>Actor Two</name></actor>
+    <actor><name>Actor Three</name></actor>
+</movie>"#;
+
+        let movie_dir = dir.path().join("Test Movie");
+        fs::create_dir_all(&movie_dir).unwrap();
+        fs::write(movie_dir.join("movie.nfo"), nfo_content).unwrap();
+
+        let nfo_path = OsString::from("Test Movie/movie.nfo");
+        let media_source = MediaSource::default();
+
+        let result = parse_nfo(dir.path(), &nfo_path, &media_source)
+            .unwrap()
+            .unwrap();
+        let item = result.movie().unwrap();
+        assert_eq!(item.actors(), &["Actor One", "Actor Two", "Actor Three"]);
+    }
+
+    #[test]
+    fn parse_tvshow_nfo_preserves_all_actors() {
+        let dir = tempfile::tempdir().unwrap();
+        let nfo_content = r#"<?xml version="1.0" encoding="UTF-8"?>
+<tvshow>
+    <title>Test Show</title>
+    <actor><name>Actor A</name></actor>
+    <actor><name>Actor B</name></actor>
+</tvshow>"#;
+
+        let show_dir = dir.path().join("Test Show");
+        fs::create_dir_all(&show_dir).unwrap();
+        fs::write(show_dir.join("tvshow.nfo"), nfo_content).unwrap();
+
+        let nfo_path = OsString::from("Test Show/tvshow.nfo");
+        let media_source = MediaSource::default();
+
+        let result = parse_nfo(dir.path(), &nfo_path, &media_source)
+            .unwrap()
+            .unwrap();
+        let item = result.tv_show(Some(&HashMap::new())).unwrap();
+        assert_eq!(item.actors(), &["Actor A", "Actor B"]);
+    }
 }

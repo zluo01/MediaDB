@@ -166,8 +166,13 @@ impl Media {
     pub fn set_year(&mut self, year: String) {
         self.year = year;
     }
+    #[cfg(test)]
     pub fn set_actors(&mut self, actors: Vec<String>) {
         self.actors = actors;
+    }
+    pub fn extend_actors(&mut self, actors: Vec<String>) {
+        self.actors
+            .extend(actors.into_iter().filter(|a| !a.trim().is_empty()));
     }
     pub fn set_season(&mut self, season: String) {
         self.season = format!("{:0>2}", season);
