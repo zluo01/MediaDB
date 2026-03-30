@@ -4,9 +4,11 @@ const IMAGE_EXTENSIONS: &[&str] = &[".jpg", ".png", ".jpeg", ".bmp", ".gif", ".w
 const COMIC_EXTENSIONS: &[&str] = &[".cbz", ".cbr", ".cbt", ".cb7"];
 
 fn strip_extensions(path: &str, extensions: &[&str]) -> String {
-    let mut result = path.replace('\\', "/");
+    let result = path.replace('\\', "/");
     for ext in extensions {
-        result = result.replace(ext, "");
+        if result.ends_with(ext) {
+            return result[..result.len() - ext.len()].to_string();
+        }
     }
     result
 }
@@ -62,6 +64,14 @@ mod tests {
     #[test]
     fn strip_image_extensions_no_extension() {
         assert_eq!(strip_image_extensions("poster"), "poster");
+    }
+
+    #[test]
+    fn strip_image_extensions_only_strips_suffix() {
+        assert_eq!(
+            strip_image_extensions("gifted.jpg/poster.png"),
+            "gifted.jpg/poster"
+        );
     }
 
     #[test]
