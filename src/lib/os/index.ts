@@ -29,7 +29,7 @@ export async function openMedia(
 			await openFile([folderPath, media.path, media.file].join('/'));
 			break;
 		case MediaType.TV_SERIES:
-			openModal(`menu-${media.title}`);
+			openModal('tv-show-menu');
 			break;
 	}
 }

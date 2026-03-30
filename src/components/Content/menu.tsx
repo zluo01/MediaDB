@@ -1,4 +1,4 @@
-import { createSignal, For, Show } from 'solid-js';
+import { createEffect, createSignal, For, on, Show } from 'solid-js';
 import Poster from '@/components/ImageLoader/poster';
 import { openFile } from '@/lib/os';
 import { cn } from '@/lib/utils';
@@ -12,6 +12,13 @@ interface ITVShowCardMenuProps {
 export default function TVShowCardMenu(props: ITVShowCardMenuProps) {
 	const [active, setActive] = createSignal(0);
 
+	createEffect(
+		on(
+			() => props.media,
+			() => setActive(0)
+		)
+	);
+
 	async function openEpisodeFile(media: IEpisode) {
 		const filePath = [props.folderPath, media.path, media.file].join('/');
 		await openFile(filePath);
@@ -20,7 +27,7 @@ export default function TVShowCardMenu(props: ITVShowCardMenuProps) {
 	const seasonKeys = () => Object.keys(props.media.seasons || []).sort();
 
 	return (
-		<dialog id={`menu-${props.media.title}`} class="modal modal-bottom">
+		<dialog id="tv-show-menu" class="modal modal-bottom">
 			<div class="modal-box w-screen p-0">
 				<div role="tablist" class="tabs tabs-border">
 					<For each={seasonKeys()}>

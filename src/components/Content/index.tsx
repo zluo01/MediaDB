@@ -23,7 +23,12 @@ import { filterOnSearchKey } from '@/lib/filter';
 import { openMedia } from '@/lib/os';
 import { contentQueryOptions } from '@/lib/queries';
 import { cn, isModalOpen } from '@/lib/utils';
-import { type FilterType, type ITVShowData, MediaType } from '@/type';
+import {
+	type FilterType,
+	type IMediaData,
+	type ITVShowData,
+	MediaType,
+} from '@/type';
 
 const Menu = lazy(() => import('./menu'));
 
@@ -60,6 +65,16 @@ function Content(props: IContentProps) {
 	});
 
 	const [selected, setSelected] = createSignal<number>(-1);
+	const [selectedTVShow, setSelectedTVShow] = createSignal<ITVShowData | null>(
+		null
+	);
+
+	async function handleOpen(folderPath: string, media: IMediaData) {
+		if (media.type === MediaType.TV_SERIES) {
+			setSelectedTVShow(media as ITVShowData);
+		}
+		await openMedia(folderPath, media);
+	}
 
 	const searchKey = useStore(searchStore);
 
@@ -118,7 +133,7 @@ function Content(props: IContentProps) {
 			},
 			Enter: () => {
 				const m = mediaList()[selected()];
-				openMedia(props.folderPath(), m);
+				handleOpen(props.folderPath(), m);
 			},
 		};
 
@@ -149,25 +164,21 @@ function Content(props: IContentProps) {
 				>
 					<For each={mediaList()}>
 						{(media, index) => (
-							<>
-								<Context
-									index={index}
-									media={media}
-									folderPath={props.folderPath()}
-									select={() => setSelected(index())}
-								>
-									<Media media={media} />
-								</Context>
-								<Show when={media.type === MediaType.TV_SERIES}>
-									<Menu
-										media={media as ITVShowData}
-										folderPath={props.folderPath()}
-									/>
-								</Show>
-							</>
+							<Context
+								index={index}
+								media={media}
+								folderPath={props.folderPath()}
+								select={() => setSelected(index())}
+								onOpen={handleOpen}
+							>
+								<Media media={media} />
+							</Context>
 						)}
 					</For>
 				</div>
+				<Show when={selectedTVShow()}>
+					{tvShow => <Menu media={tvShow()} folderPath={props.folderPath()} />}
+				</Show>
 			</Suspense>
 		</ErrorBoundary>
 	);

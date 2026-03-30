@@ -3,7 +3,7 @@ import { Menu } from '@tauri-apps/api/menu/menu';
 import type { Accessor, JSXElement } from 'solid-js';
 import type { DOMElement } from 'solid-js/jsx-runtime';
 import { updateFooter } from '@/lib/context';
-import { openFile, openMedia } from '@/lib/os';
+import { openFile } from '@/lib/os';
 import { type IMediaData, MediaType } from '@/type';
 
 interface IContextProps {
@@ -11,6 +11,7 @@ interface IContextProps {
 	media: IMediaData;
 	folderPath: string;
 	select: VoidFunction;
+	onOpen: (folderPath: string, media: IMediaData) => Promise<void>;
 	children: JSXElement;
 }
 
@@ -68,7 +69,7 @@ function Context(props: IContextProps) {
 			tabIndex={-1}
 			onClick={onSelect}
 			onContextMenu={openMenu}
-			onDblClick={() => openMedia(props.folderPath, props.media)}
+			onDblClick={() => props.onOpen(props.folderPath, props.media)}
 			onFocus={e =>
 				e.target.scrollIntoView({ behavior: 'smooth', block: 'center' })
 			}
