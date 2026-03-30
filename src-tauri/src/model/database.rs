@@ -49,6 +49,7 @@ pub struct Folder {
 }
 
 impl Folder {
+    #[cfg(test)]
     pub fn folder_name(&self) -> &str {
         &self.folder_name
     }
@@ -86,17 +87,14 @@ impl Media {
         &self.title
     }
 
-    pub fn from_row(
-        row: &SqliteRow,
-        server_port: &u16,
-        folder_name: &str,
-    ) -> Result<Self, sqlx::Error> {
+    pub fn from_row(row: &SqliteRow, server_port: &u16) -> Result<Self, sqlx::Error> {
         let media_type = row.try_get::<u8, _>("t")?;
         let path = row.try_get::<String, _>("path")?;
+        let folder_name = row.try_get::<String, _>("folder_name")?;
         let posters = construct_posters_map(
             &media_type,
             server_port,
-            folder_name,
+            &folder_name,
             &path,
             &row.try_get::<String, _>("posters")?,
         );
@@ -151,7 +149,7 @@ where
     S: Serializer,
 {
     if v.is_empty() {
-        let v: Value = json!("{}");
+        let v: Value = json!({});
         v.serialize(serializer)
     } else {
         let value: Value = serde_json::from_str(v).unwrap();
