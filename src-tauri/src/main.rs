@@ -72,15 +72,16 @@ async fn parser<R: Runtime>(
                 )
                 .expect("Fail to send message to update folder list.");
 
-            let folder_position_result = db::main::get_folder_position(&pool, name, path).await;
-            if let Err(e) = folder_position_result {
-                error!(
-                    "Fail to get new folder position. Raising Error: {:?}",
-                    e.into_database_error()
-                );
-                return;
+            match db::main::get_folder_position(&pool, name, path).await {
+                Ok(pos) => folder_position = pos,
+                Err(e) => {
+                    error!(
+                        "Fail to get new folder position. Raising Error: {:?}",
+                        e.into_database_error()
+                    );
+                    return;
+                }
             }
-            folder_position = folder_position_result.unwrap();
         }
 
         process_parsing(&app_handle, &pool, name, path, folder_position).await;
@@ -194,14 +195,16 @@ async fn handle_parsing<R: Runtime>(
         .emit("parsing", invalidation_payload)
         .expect("Fail to send message to refresh status on loading.");
 
-    let skip_folders_result = db::main::get_skip_folders(pool).await;
-    if let Err(e) = skip_folders_result {
-        return Err(format!(
-            "Fail to get skip folders. Raising Error: {:?}",
-            e.into_database_error()
-        ));
-    }
-    let skip_folders: HashSet<String> = skip_folders_result.unwrap().into_iter().collect();
+    let skip_folders: HashSet<String> = db::main::get_skip_folders(pool)
+        .await
+        .map_err(|e| {
+            format!(
+                "Fail to get skip folders. Raising Error: {:?}",
+                e.into_database_error()
+            )
+        })?
+        .into_iter()
+        .collect();
 
     let value = tauri::async_runtime::spawn_blocking({
         let app_handle = app_handle.clone();
