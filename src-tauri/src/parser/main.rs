@@ -65,7 +65,20 @@ fn read_dir<R: tauri::Runtime>(
                 continue;
             }
 
-            if path.is_dir() {
+            let file_type = match entry.file_type() {
+                Ok(ft) => ft,
+                Err(e) => {
+                    error!("Failed to read file type for {:?}: {}", path, e);
+                    continue;
+                }
+            };
+
+            // skip symlinks to avoid potential loops and unexpected behavior
+            if file_type.is_symlink() {
+                continue;
+            }
+
+            if file_type.is_dir() {
                 queue.push_back(path.into_os_string());
                 continue;
             }
