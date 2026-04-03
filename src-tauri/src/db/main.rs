@@ -3,11 +3,12 @@ use crate::model::database::{Folder, FolderData, Media, Setting, Tag};
 use crate::model::parser::MediaItem;
 use log::{debug, error};
 use serde_json::{json, Value};
-use sqlx::sqlite::SqliteConnectOptions;
+use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode};
 use sqlx::{migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Pool, Row, Sqlite, SqlitePool};
 use std::fs;
 use std::result::Result;
 use std::str::FromStr;
+use std::time::Duration;
 use tauri::{Manager, Runtime};
 
 pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
@@ -58,7 +59,10 @@ pub fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
 }
 
 pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
-    let options = SqliteConnectOptions::from_str(db_path)?.foreign_keys(true);
+    let options = SqliteConnectOptions::from_str(db_path)?
+        .foreign_keys(true)
+        .journal_mode(SqliteJournalMode::Wal)
+        .busy_timeout(Duration::from_secs(5));
     let pool = SqlitePoolOptions::new()
         .max_connections(10)
         .connect_with(options)
