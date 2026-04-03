@@ -222,7 +222,7 @@ fn aggregate_data(
                 None
             }
         })
-        .filter_map(|o| o)
+        .flatten()
         .collect::<Vec<MediaItem>>();
 
     (data, posters)

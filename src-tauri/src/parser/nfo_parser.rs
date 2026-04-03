@@ -239,10 +239,9 @@ fn get_poster_filename(media_source: &MediaSource) -> Vec<String> {
     media_source
         .poster()
         .iter()
-        .map(|o| Path::new(o.as_os_str()))
-        .map(|o| o.file_name())
-        .filter(|o| o.is_some())
-        .map(|o| o.unwrap().to_str().unwrap().to_string())
+        .filter_map(|o| Path::new(o.as_os_str()).file_name())
+        .filter_map(|o| o.to_str())
+        .map(|o| o.to_string())
         .collect::<Vec<String>>()
 }
 
