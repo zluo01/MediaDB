@@ -51,7 +51,7 @@ pub(crate) fn parse_comics<R: tauri::Runtime>(
                 }
             },
         )
-        .flat_map(|v| v)
+        .flatten()
         .collect();
 
     Ok(results)

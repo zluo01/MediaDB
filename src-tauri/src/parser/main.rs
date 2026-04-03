@@ -148,7 +148,7 @@ fn handle_media_path<R: tauri::Runtime>(
                 }
             },
         )
-        .flat_map(|v| v)
+        .flatten()
         .chain(comic_media)
         .collect();
 
