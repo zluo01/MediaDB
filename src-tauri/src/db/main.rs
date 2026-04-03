@@ -57,7 +57,7 @@ async fn create_tables(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
 
 pub fn get_database_path<R: Runtime>(app: &tauri::AppHandle<R>) -> String {
     let app_dir = app.path().app_data_dir().unwrap();
-    format!("sqlite://{}/sqlite.db", app_dir.display()).to_string()
+    format!("sqlite://{}/sqlite.db", app_dir.display())
 }
 
 pub async fn create_pool(db_path: &str) -> Result<Pool<Sqlite>, sqlx::Error> {
