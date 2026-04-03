@@ -251,26 +251,20 @@ fn get_episode_filename(
     season: &str,
     episode: &str,
 ) -> Option<String> {
-    if let Some(nfo_stem) = nfo_path.file_stem() {
-        for media in media_source.media() {
-            let media_path = Path::new(media);
-            if let Some(media_stem) = media_path.file_stem() {
-                if media_stem.eq(nfo_stem)
-                    || media_stem
-                        .to_str()
-                        .unwrap()
-                        .to_lowercase()
-                        .contains(format!("s{}e{}", season, episode).as_str())
-                {
-                    return Some(
-                        media_path
-                            .file_name()
-                            .unwrap()
-                            .to_str()
-                            .unwrap()
-                            .to_string(),
-                    );
-                }
+    let nfo_stem = nfo_path.file_stem()?;
+    let pattern = format!("s{}e{}", season, episode);
+    for media in media_source.media() {
+        let media_path = Path::new(media);
+        if let Some(media_stem) = media_path.file_stem() {
+            let matches_stem = media_stem.eq(nfo_stem);
+            let matches_pattern = media_stem
+                .to_str()
+                .is_some_and(|s| s.to_lowercase().contains(&pattern));
+            if matches_stem || matches_pattern {
+                return media_path
+                    .file_name()
+                    .and_then(|f| f.to_str())
+                    .map(|f| f.to_string());
             }
         }
     }
@@ -330,5 +324,67 @@ mod tests {
             .unwrap();
         let item = result.tv_show(Some(&HashMap::new())).unwrap();
         assert_eq!(item.actors(), &["Actor A", "Actor B"]);
+    }
+
+    #[test]
+    fn get_episode_filename_matches_by_stem() {
+        let nfo_path = Path::new("Show/S01E01.nfo");
+        let mut source = MediaSource::default();
+        source.add_media(OsString::from("Show/S01E01.mkv"));
+        source.add_media(OsString::from("Show/S01E02.mkv"));
+
+        let result = get_episode_filename(nfo_path, &source, "01", "01");
+        assert_eq!(result, Some("S01E01.mkv".to_string()));
+    }
+
+    #[test]
+    fn get_episode_filename_matches_by_season_episode_pattern() {
+        let nfo_path = Path::new("Show/episode.nfo");
+        let mut source = MediaSource::default();
+        source.add_media(OsString::from("Show/My Show s01e03 720p.mkv"));
+
+        let result = get_episode_filename(nfo_path, &source, "01", "03");
+        assert_eq!(result, Some("My Show s01e03 720p.mkv".to_string()));
+    }
+
+    #[test]
+    fn get_episode_filename_returns_none_when_no_match() {
+        let nfo_path = Path::new("Show/S01E01.nfo");
+        let mut source = MediaSource::default();
+        source.add_media(OsString::from("Show/S02E05.mkv"));
+
+        let result = get_episode_filename(nfo_path, &source, "01", "01");
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn get_episode_filename_returns_none_for_empty_nfo_path() {
+        let nfo_path = Path::new("");
+        let mut source = MediaSource::default();
+        source.add_media(OsString::from("Show/S01E01.mkv"));
+
+        let result = get_episode_filename(nfo_path, &source, "01", "01");
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn get_poster_filename_extracts_filenames() {
+        let mut source = MediaSource::default();
+        source.add_poster(OsString::from("Movie/poster.jpg"));
+        source.add_poster(OsString::from("Movie/season01-poster.jpg"));
+
+        let result = get_poster_filename(&source);
+        assert_eq!(result, vec!["poster.jpg", "season01-poster.jpg"]);
+    }
+
+    #[test]
+    fn get_poster_filename_skips_entries_without_filename() {
+        let mut source = MediaSource::default();
+        source.add_poster(OsString::from("Movie/poster.jpg"));
+        // Root path has no file_name component
+        source.add_poster(OsString::from("/"));
+
+        let result = get_poster_filename(&source);
+        assert_eq!(result, vec!["poster.jpg"]);
     }
 }

@@ -132,7 +132,7 @@ fn construct_posters_map(
                 MediaType::Movie | MediaType::TvShow => get_cached_image_path(
                     server_port,
                     folder_name,
-                    PathBuf::from(file_path).join(v).to_str().unwrap(),
+                    &PathBuf::from(file_path).join(v).to_string_lossy(),
                 ),
                 MediaType::Comic => get_cached_image_path(server_port, folder_name, v.as_str()),
                 _ => v,
