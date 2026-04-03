@@ -55,10 +55,7 @@ async fn parser<R: Runtime>(
         let mut folder_position = position;
         if !update {
             if let Err(e) = db::main::insert_folder_data(&pool, name, path).await {
-                error!(
-                    "Fail to add data to database. Raising Error: {:?}",
-                    e.into_database_error()
-                );
+                error!("Fail to add data to database. Raising Error: {:?}", e);
                 return;
             }
 
@@ -75,10 +72,7 @@ async fn parser<R: Runtime>(
             match db::main::get_folder_position(&pool, name, path).await {
                 Ok(pos) => folder_position = pos,
                 Err(e) => {
-                    error!(
-                        "Fail to get new folder position. Raising Error: {:?}",
-                        e.into_database_error()
-                    );
+                    error!("Fail to get new folder position. Raising Error: {:?}", e);
                     return;
                 }
             }
@@ -111,10 +105,7 @@ async fn update_folder_path<R: Runtime>(
         let name = name.as_str();
 
         if let Err(e) = db::main::update_folder_path(&pool, &position, path).await {
-            error!(
-                "Fail to update folder path. Raising Error: {:?}",
-                e.into_database_error()
-            );
+            error!("Fail to update folder path. Raising Error: {:?}", e);
             return;
         }
 
@@ -147,7 +138,7 @@ async fn process_parsing<R: Runtime>(
         if let Err(e) = db::main::update_folder_status(pool, &2, &position).await {
             error!(
                 "Fail to change folder status to error. Raising Error: {:?}",
-                e.into_database_error()
+                e
             );
         }
         app_handle
@@ -157,7 +148,7 @@ async fn process_parsing<R: Runtime>(
         if let Err(e) = db::main::update_folder_status(pool, &0, &position).await {
             error!(
                 "Fail to change folder status to done. Raising Error: {:?}",
-                e.into_database_error()
+                e
             );
         }
         app_handle
@@ -188,7 +179,7 @@ async fn handle_parsing<R: Runtime>(
     if let Err(e) = db::main::update_folder_status(pool, &1, &position).await {
         return Err(format!(
             "Fail to change folder status to loading. Raising Error: {:?}",
-            e.into_database_error()
+            e
         ));
     }
     app_handle
@@ -197,12 +188,7 @@ async fn handle_parsing<R: Runtime>(
 
     let skip_folders: HashSet<String> = db::main::get_skip_folders(pool)
         .await
-        .map_err(|e| {
-            format!(
-                "Fail to get skip folders. Raising Error: {:?}",
-                e.into_database_error()
-            )
-        })?
+        .map_err(|e| format!("Fail to get skip folders. Raising Error: {:?}", e))?
         .into_iter()
         .collect();
 
@@ -218,7 +204,7 @@ async fn handle_parsing<R: Runtime>(
     if let Err(e) = db::main::insert_new_media(pool, name, &value).await {
         return Err(format!(
             "Fail to update folder data. Raising Error: {:?}",
-            e.into_database_error()
+            e
         ));
     }
     Ok(())
@@ -231,10 +217,7 @@ async fn get_setting(
     let pool = &database_state.0;
     match db::main::get_settings(pool).await {
         Ok(setting) => Ok(setting),
-        Err(e) => Err(format!(
-            "Fail to get setting. Raising Error: {:?}",
-            e.into_database_error()
-        )),
+        Err(e) => Err(format!("Fail to get setting. Raising Error: {:?}", e)),
     }
 }
 
@@ -247,7 +230,7 @@ async fn hide_side_panel(
     if let Err(e) = db::main::update_hide_side_panel(pool, &hide).await {
         return Err(format!(
             "Fail to update hide side panel. Raising Error: {:?}",
-            e.into_database_error()
+            e
         ));
     }
     Ok(())
@@ -262,7 +245,7 @@ async fn update_skip_folders(
     if let Err(e) = db::main::update_skip_folders(pool, skip_folders).await {
         return Err(format!(
             "Fail to update skip folders. Raising Error: {:?}",
-            e.into_database_error()
+            e
         ));
     }
     Ok(())
@@ -275,10 +258,7 @@ async fn get_folder_list(
     let pool = &database_state.0;
     match db::main::get_folder_list(pool).await {
         Ok(folder_list) => Ok(folder_list),
-        Err(e) => Err(format!(
-            "Fail to get folder list. Raising Error: {:?}",
-            e.into_database_error()
-        )),
+        Err(e) => Err(format!("Fail to get folder list. Raising Error: {:?}", e)),
     }
 }
 
@@ -290,10 +270,7 @@ async fn get_folder_data(
     let pool = &database_state.0;
     match db::main::get_folder_data(pool, &position).await {
         Ok(folder_data) => Ok(folder_data),
-        Err(e) => Err(format!(
-            "Fail to get folder data. Raising Error: {:?}",
-            e.into_database_error()
-        )),
+        Err(e) => Err(format!("Fail to get folder data. Raising Error: {:?}", e)),
     }
 }
 
@@ -310,10 +287,7 @@ async fn get_folder_media(
 
     match db::main::get_folder_media(pool, &position, &server_port, filter_type, &tags).await {
         Ok(media) => Ok(media),
-        Err(e) => Err(format!(
-            "Fail to get folder media. Raising Error: {:?}",
-            e.into_database_error()
-        )),
+        Err(e) => Err(format!("Fail to get folder media. Raising Error: {:?}", e)),
     }
 }
 
@@ -327,7 +301,7 @@ async fn get_folder_media_tags(
         Ok(tags) => Ok(tags),
         Err(e) => Err(format!(
             "Fail to get folder media tags. Raising Error: {:?}",
-            e.into_database_error()
+            e
         )),
     }
 }
@@ -340,10 +314,7 @@ async fn update_sort_type(
 ) -> Result<(), String> {
     let pool = &database_state.0;
     if let Err(e) = db::main::update_sort_type(pool, &position, &sort_type).await {
-        return Err(format!(
-            "Fail to update sort type. Raising Error: {:?}",
-            e.into_database_error()
-        ));
+        return Err(format!("Fail to update sort type. Raising Error: {:?}", e));
     }
     Ok(())
 }
@@ -355,10 +326,7 @@ async fn reorder_folder(
 ) -> Result<(), String> {
     let pool = &database_state.0;
     if let Err(e) = db::main::reorder_folder(pool, &folder_list).await {
-        return Err(format!(
-            "Fail to reorder folders. Raising Error: {:?}",
-            e.into_database_error()
-        ));
+        return Err(format!("Fail to reorder folders. Raising Error: {:?}", e));
     }
     Ok(())
 }
@@ -372,10 +340,7 @@ async fn delete_folder<R: Runtime>(
 ) -> Result<(), String> {
     let pool = &database_state.0;
     if let Err(e) = db::main::delete_folder(pool, name, &position).await {
-        return Err(format!(
-            "Fail to delete folders. Raising Error: {:?}",
-            e.into_database_error()
-        ));
+        return Err(format!("Fail to delete folders. Raising Error: {:?}", e));
     }
 
     let app_dir = app_handle.path().app_data_dir().unwrap();
@@ -399,7 +364,7 @@ async fn update_folder_filter_type(
     if let Err(e) = db::main::update_folder_filter_type(pool, &position).await {
         return Err(format!(
             "Fail to update folder filter type. Raising Error: {:?}",
-            e.into_database_error()
+            e
         ));
     }
     Ok(())

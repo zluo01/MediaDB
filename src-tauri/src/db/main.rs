@@ -34,10 +34,7 @@ pub fn initialize<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
                 .await
                 .map_err(|e| format!("Fail to connect to db at {:?}. Error: {:?}", &db_url, e))?;
             if let Err(e) = create_tables(&pool).await {
-                let err_msg = format!(
-                    "Fail to create tables. Error: {:?}",
-                    e.into_database_error()
-                );
+                let err_msg = format!("Fail to create tables. Error: {:?}", e);
                 error!("{:?}", err_msg);
                 pool.close().await;
                 return Err(err_msg);
