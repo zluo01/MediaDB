@@ -9,7 +9,7 @@
     },
     {
       "groupName": "tauri",
-      "matchPackageNames": ["@tauri-apps/*"]
+      "matchPackageNames": ["@tauri-apps/*", "tauri*"]
     },
     {
       "groupName": "tanstack",
