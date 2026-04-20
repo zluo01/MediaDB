@@ -38,7 +38,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.11",
+    "@biomejs/biome": "2.4.12",
     "@tanstack/router-plugin": "1.167.22",
     "@tanstack/solid-query-devtools": "5.99.2",
     "@tanstack/solid-router-devtools": "1.166.13",
@@ -46,8 +46,8 @@
     "@types/node": "24.12.2",
     "husky": "9.1.7",
     "tailwindcss": "4.2.2",
-    "typescript": "6.0.2",
-    "vite": "8.0.8",
+    "typescript": "6.0.3",
+    "vite": "8.0.9",
     "vite-plugin-solid": "2.11.12",
     "vitest": "4.1.4"
   },
