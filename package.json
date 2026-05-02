@@ -38,7 +38,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.13",
+    "@biomejs/biome": "2.4.14",
     "@tanstack/router-plugin": "1.167.27",
     "@tanstack/solid-query-devtools": "5.100.5",
     "@tanstack/solid-router-devtools": "1.166.13",
