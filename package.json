@@ -42,7 +42,7 @@
     "@tanstack/router-plugin": "1.167.32",
     "@tanstack/solid-query-devtools": "5.100.9",
     "@tanstack/solid-router-devtools": "1.166.13",
-    "@tauri-apps/cli": "2.11.0",
+    "@tauri-apps/cli": "2.11.1",
     "@types/node": "24.12.2",
     "husky": "9.1.7",
     "tailwindcss": "4.2.2",
