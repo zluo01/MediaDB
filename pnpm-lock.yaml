@@ -51,8 +51,8 @@ importers:
         specifier: 5.5.20
         version: 5.5.20
       immutable:
-        specifier: 5.1.5
-        version: 5.1.5
+        specifier: 5.1.6
+        version: 5.1.6
       solid-js:
         specifier: 1.9.13
         version: 1.9.13
@@ -977,8 +977,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  immutable@5.1.5:
-    resolution: {integrity: sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==}
+  immutable@5.1.6:
+    resolution: {integrity: sha512-q1swsS8K7L8usSHuOqF2TAoCCkonYz0SG38wLAggaa4Wml70zixIvt2ql4coQ2C2B3hTjltJry4r6bULwgAXLQ==}
 
   is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
@@ -2202,7 +2202,7 @@ snapshots:
 
   husky@9.1.7: {}
 
-  immutable@5.1.5: {}
+  immutable@5.1.6: {}
 
   is-binary-path@2.1.0:
     dependencies:
