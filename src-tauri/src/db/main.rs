@@ -4,7 +4,10 @@ use crate::model::parser::MediaItem;
 use log::{debug, error};
 use serde_json::{json, Value};
 use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode};
-use sqlx::{migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Pool, Row, Sqlite, SqlitePool};
+use sqlx::{
+    migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Pool, QueryBuilder, Row, Sqlite,
+    SqlitePool,
+};
 use std::fs;
 use std::result::Result;
 use std::str::FromStr;
@@ -162,25 +165,20 @@ pub async fn insert_new_media(
 
     // Batch insert media items in chunks to stay within SQLite bind parameter limits
     for chunk in data.chunks(100) {
-        let placeholders: Vec<&str> = chunk.iter().map(|_| "(?,?,?,?,?,?,?,?)").collect();
-        let sql = format!(
-            "INSERT INTO media (type, path, title, posters, year, file, seasons, folder) VALUES {}",
-            placeholders.join(",")
+        let mut query_builder = QueryBuilder::<Sqlite>::new(
+            "INSERT INTO media (type, path, title, posters, year, file, seasons, folder) ",
         );
-
-        let mut query = sqlx::query(&sql);
-        for media in chunk {
-            query = query
-                .bind(media.media_type())
-                .bind(media.path())
-                .bind(media.title())
-                .bind(media.posters())
-                .bind(media.year())
-                .bind(media.file())
-                .bind(media.seasons())
-                .bind(folder_name);
-        }
-        query.execute(&mut *tx).await?;
+        query_builder.push_values(chunk, |mut row, media| {
+            row.push_bind(media.media_type())
+                .push_bind(media.path())
+                .push_bind(media.title())
+                .push_bind(media.posters())
+                .push_bind(media.year())
+                .push_bind(media.file())
+                .push_bind(media.seasons())
+                .push_bind(folder_name);
+        });
+        query_builder.build().execute(&mut *tx).await?;
     }
 
     // Batch insert tags for each media item
@@ -213,17 +211,16 @@ async fn insert_tags_batch(
     }
 
     for chunk in tags.chunks(100) {
-        let placeholders: Vec<&str> = chunk.iter().map(|_| "(?,?,?,?)").collect();
-        let sql = format!(
-            "INSERT INTO tags (folder_name, path, name, t) VALUES {} ON CONFLICT DO NOTHING",
-            placeholders.join(",")
-        );
-
-        let mut query = sqlx::query(&sql);
-        for tag in chunk {
-            query = query.bind(folder_name).bind(path).bind(tag).bind(tag_type);
-        }
-        query.execute(&mut **tx).await?;
+        let mut query_builder =
+            QueryBuilder::<Sqlite>::new("INSERT INTO tags (folder_name, path, name, t) ");
+        query_builder.push_values(chunk, |mut row, tag| {
+            row.push_bind(folder_name)
+                .push_bind(path)
+                .push_bind(tag)
+                .push_bind(tag_type);
+        });
+        query_builder.push(" ON CONFLICT DO NOTHING");
+        query_builder.build().execute(&mut **tx).await?;
     }
     Ok(())
 }
