@@ -1,65 +1,4 @@
-//language=sqlite
-pub const CREATE_TABLE_QUERY: &str = "
-    create table if not exists settings
-    (
-        settings_id INTEGER not null
-            primary key,
-        hide_panel  INTEGER not null,
-        skip_folders TEXT default '' not null
-    );
-    INSERT INTO settings (settings_id, hide_panel)
-    VALUES (0, 0) ON CONFLICT (settings_id) DO NOTHING ;
-    create table if not exists folders
-    (
-        folder_name TEXT              not null
-            constraint folder_name
-                primary key,
-        position    INTEGER           not null,
-        path        TEXT              not null unique,
-        sort_type   INTEGER default 0 not null,
-        filter_type INTEGER default 0 not null,
-        status      INTEGER default 0 not null
-    );
-    create index if not exists folders_position_index
-        on folders (position);
-    create table if not exists media
-    (
-        type    INTEGER not null,
-        path    TEXT    not null,
-        title   TEXT    not null,
-        posters TEXT    not null,
-        year    TEXT,
-        file    TEXT,
-        seasons TEXT,
-        folder  TEXT    not null
-            constraint media_folders_folder_name_fk
-                references folders
-                on update cascade on delete cascade,
-        constraint media_pk
-            primary key (type, path)
-    );
-    create index if not exists media_title_index
-        on media (title);
-    create index if not exists media_year_index
-        on media (year);
-    create index if not exists media_folder_index on media(folder);
-    create table if not exists tags
-    (
-        folder_name TEXT not null
-            constraint tags_folders_folder_name_fk
-                references folders
-                on update cascade on delete cascade,
-        path        TEXT not null,
-        t           TEXT not null,
-        name        TEXT not null,
-        constraint tags_pk
-            unique (folder_name, path, name, t),
-        constraint tags_t_check
-            check (t IN ('genres', 'tags', 'actors', 'studios'))
-    );
-    create index if not exists tags_folder_name_index
-        on tags (folder_name);
-    ";
+pub const CREATE_TABLE_QUERY: &str = include_str!("sql/create_tables.sql");
 
 // Binds: ?1 = tags JSON array (e.g. '[{"group":"genres","label":"Action"}]' or '[]')
 //        ?2 = folder position
@@ -71,50 +10,7 @@ pub const CREATE_TABLE_QUERY: &str = "
 //     >= 1 for OR mode, or = tag_count for AND mode.
 // - When no tags are passed, filter_groups is empty, NOT EXISTS is
 //   vacuously true, and all media in the folder are returned.
-//language=sqlite
-pub const GET_FOLDER_CONTENT: &str = "
-    WITH filter_tags AS (
-        SELECT json_extract(value, '$.group') AS t,
-               json_extract(value, '$.label') AS name
-        FROM json_each(?1)
-    ),
-    filter_groups AS (
-        SELECT t, COUNT(*) AS tag_count
-        FROM filter_tags
-        GROUP BY t
-    )
-    SELECT media.type as t,
-           media.path,
-           media.title,
-           media.posters,
-           media.year,
-           media.file,
-           media.seasons,
-           folders.folder_name
-    FROM media
-             JOIN folders ON media.folder = folders.folder_name
-    WHERE folders.position = ?2
-      AND NOT EXISTS (
-          SELECT 1 FROM filter_groups fg
-          WHERE (
-              SELECT COUNT(DISTINCT tags.name)
-              FROM tags
-              JOIN filter_tags ft ON tags.name = ft.name AND tags.t = ft.t
-              WHERE tags.path = media.path
-                AND tags.folder_name = folders.folder_name
-                AND tags.t = fg.t
-          ) < CASE WHEN ?3 = 0 THEN 1 ELSE fg.tag_count END
-      )
-    ORDER BY CASE
-                 WHEN folders.sort_type = 2 THEN media.title
-                 WHEN folders.sort_type = 4 THEN media.year
-                 END DESC,
-             CASE
-                 WHEN folders.sort_type = 1 THEN media.title
-                 WHEN folders.sort_type = 3 THEN media.year
-                 ELSE media.path
-                 END;
-";
+pub const GET_FOLDER_CONTENT: &str = include_str!("sql/get_folder_content.sql");
 
 //language=sqlite
 pub const GET_SETTINGS: &str = "
@@ -202,20 +98,7 @@ pub const RECOVER: &str = "
      UPDATE folders SET status =2 WHERE status=1
     ";
 
-//language=sqlite
-pub const TAGS_IN_FOLDER: &str = "
-    SELECT tags.t AS label,
-           json_group_array(json_object('group', tags.t, 'label', tags.name)) AS options
-    FROM (
-        SELECT DISTINCT tags.t, tags.name
-        FROM tags
-                 JOIN folders ON tags.folder_name = folders.folder_name
-        WHERE folders.position = ?
-        ORDER BY tags.t, tags.name
-    ) tags
-    GROUP BY tags.t
-    ORDER BY tags.t;
-    ";
+pub const TAGS_IN_FOLDER: &str = include_str!("sql/tags_in_folder.sql");
 
 //language=sqlite
 pub const UPDATE_FOLDER_FILTER_TYPE: &str = "
